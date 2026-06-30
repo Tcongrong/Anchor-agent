@@ -1,0 +1,352 @@
+[
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 1 (file/chunk localization, Agentless). Select the bundle chunks most likely to contain the behaviour anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On doyo.cn login, the submitted `password` is not the raw password but a salted SHA-1 hash (the page first fetches a nonce + ts, then hashes; e.g. 13819912565 becomes 16119784763b3e501cc8eae56190fb0993517cfe). Locate the single complete function whose own body derives that final password value (combining the fetched nonce/ts with the hashed password) and posts it. Return exactly one JSON object (see answer_format). Do NOT return the generic SHA-1 implementation it calls, or an unrelated page/search helper. Only code under captures is in scope.  network_request POST /User/Passport/login password 13819912565 16119784763b3e501cc8eae56190fb0993517cfe\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/User/Passport/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"16119784763b3e501cc8eae56190fb0993517cfe\"}\n\nBundle chunks:\n- chunk_000 (80 functions): (anon), set, get, rb, c, (anon), (anon), i, j, J, Xb, Z\n- chunk_001 (80 functions): onload, get, wa, b, k, onreadystatechange, (anon), onreadystatechange, (anon), c, c, k\n- chunk_002 (80 functions): Ra, (anon), (anon), (anon), lb, lb, Gb, Gb, (anon), e, D, D\n- chunk_003 (80 functions): (anon), tb, tb, va, va, oa, oa, Ba, Ba, Cb, Cb, f\n- chunk_004 (80 functions): proxy, proxy, d, now, now, (anon), s, (anon), B, J, ca, da\n- chunk_005 (80 functions): (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), target, target, root\n- chunk_006 (80 functions): filter, filter, not, not, is, is, init, has, has, (anon), closest, closest\n- chunk_007 (80 functions): then, then, (anon), (anon), (anon), promise, promise, (anon), (anon), (anon), when, when\n- chunk_008 (80 functions): (anon), pa, qa, ra, sa, e, (anon), add, add, handle, remove, remove\n- chunk_009 (80 functions): trigger, (anon), triggerHandler, triggerHandler, Ca, Da, Ea, Fa, Ga, Ha, (anon), Ia\n- chunk_010 (80 functions): get, style, style, css, css, (anon), get, get, (anon), set, set, get\n- chunk_011 (80 functions): stop, d, (anon), finish, finish, (anon), (anon), b, (anon), a, tick, timer\n- chunk_012 (80 functions): (anon), Cb, addClass, addClass, (anon), removeClass, removeClass, (anon), toggleClass, toggleClass, (anon), (anon)\n- chunk_013 (80 functions): serializeArray, (anon), (anon), (anon), (anon), (anon), (anon), (anon), send, send, c, abort\n- chunk_014 (13 functions): first_resetbestrow, second_resetbestrow, word_counter, hash, f, ROTL, toHexStr, encode, (anon), (anon), decode, (anon)\n\nReturn JSON {\"chunks\": [\"<chunk_id>\", ...]} (most-relevant first)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782613010.121159
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"chunks\": [\"chunk_013\", \"chunk_014\", \"chunk_001\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 943,
+    "output_tokens": 20
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-be620698-5744-9cff-aa54-5466d729e5ff",
+    "object": "chat.completion",
+    "created": 1782613007,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 943,
+     "completion_tokens": 20,
+     "total_tokens": 963,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 943,
+     "output_tokens": 20
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"chunks\": [\"chunk_013\", \"chunk_014\", \"chunk_001\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 943,
+   "output_tokens": 20
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On doyo.cn login, the submitted `password` is not the raw password but a salted SHA-1 hash (the page first fetches a nonce + ts, then hashes; e.g. 13819912565 becomes 16119784763b3e501cc8eae56190fb0993517cfe). Locate the single complete function whose own body derives that final password value (combining the fetched nonce/ts with the hashed password) and posts it. Return exactly one JSON object (see answer_format). Do NOT return the generic SHA-1 implementation it calls, or an unrelated page/search helper. Only code under captures is in scope.  network_request POST /User/Passport/login password 13819912565 16119784763b3e501cc8eae56190fb0993517cfe\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/User/Passport/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"16119784763b3e501cc8eae56190fb0993517cfe\"}\n\nFunctions:\n- 883dbe5afe912c28 (serializeArray): function()\n- db18059a3ae66abe ((anon)): function()\n- 9295a446fab83a61 ((anon)): function()\n- 8aca5511d376b562 ((anon)): function(a,b)\n- 2ac1ea91a0a4adcc ((anon)): function(a)\n- dcf5a8c80e2b1388 ((anon)): function()\n- eaa0200c6f3b605b ((anon)): function()\n- 4676c7f9f222e568 ((anon)): function(b)\n- 7c2f31b7ccb03ede (send): send:function(d,e)\n- e5ca194d2894acf8 (send): function(d,e)\n- 2193a27400d7eefa (c): function(a,d)\n- 2f5cf78fee7a60ec (abort): abort:function()\n- 8c6ebcd16303319a (abort): function()\n- aff51bea2dda0f8d (hc): function hc()\n- 653d3cd1dbce5c4d (ic): function ic()\n- 56144fab88b45fc6 (text script): \"text script\":function(a)\n- 100e43693f871314 (text script): function(a)\n- 02311eec3a0414e1 ((anon)): function(a)\n- 9138f263146e2309 ((anon)): function(a)\n- 1d39ac9cd4be3a92 (send): send:function(e,f)\n- bf24b0ad687b35db (send): function(e,f)\n- 53a4021661035520 (onreadystatechange): function(a,c)\n- cdaeea0efc4782a9 (abort): abort:function()\n- 79962d3a6e691cc5 (abort): function()\n- 4042c0642e59f68a (jsonpCallback): jsonpCallback:function()\n- 38a542e5d9c3c8a7 (jsonpCallback): function()\n- 16ddd0ca01f35d4f ((anon)): function(b,c,d)\n- c3776e80d5e595cc (script json): function()\n- 6f1a06cd91fb6a58 (e): function()\n- 49664ef417774583 ((anon)): function()\n- 0359878fbe123f17 (parseHTML): function(a,b,c)\n- 947b2ccc8a39e872 (load): function(a,b,c)\n- 81c53c448e855958 ((anon)): function(a)\n- 0eb2cab58165473f ((anon)): function(a,b)\n- 677fc8fae5ca491e ((anon)): function()\n- 8a36d95cb7d31aac ((anon)): function(a,b)\n- 5766b131d46163eb (b): function(a)\n- c7efbc9f80f46e23 (animated): function(a)\n- 8cb29512c57f5c83 ((anon)): function(b)\n- 65b11ba9f76c5128 (mc): function mc(a)\n- 8fb083d64383e63c (setOffset): setOffset:function(a,b,c)\n- 4141c696b899d16c (setOffset): function(a,b,c)\n- e03dcfe49f517428 (offset): offset:function(a)\n- f6bde2747f93acaf (offset): function(a)\n- d0738af6234a7c83 ((anon)): function(b)\n- 7215096a16e4bf32 (position): position:function()\n- 25f8c4500ebb795f (position): function()\n- b35e23cd9c4799df (offsetParent): offsetParent:function()\n- 05348fafb2d4d63f (offsetParent): function()\n- ba92fb4f0c4cf804 ((anon)): function()\n- 30a9b067c6d93138 ((anon)): function(a,b)\n- 92320937fd44d71f (a): function(d)\n- 235984ad5a7c3083 ((anon)): function(a,d,e)\n- 2e1da63c73fb3b17 ((anon)): function(a,b)\n- c09b5aaf5e8207ab ((anon)): function(a,c)\n- 5d0a79debcced2b5 ((anon)): function(a,b)\n- b603b16cbaaf5254 ((anon)): function(c,d)\n- 309bf9c1bed00da7 (d): function(d,e)\n- 7c154f1d8af1c57d ((anon)): function(b,c,d)\n- 9eecb75100354b15 (bind): bind:function(a,b,c)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782613010.956439
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"92320937fd44d71f\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1520,
+    "output_tokens": 14
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-72b0d150-642b-9976-b8a8-a9b6ea7c5d4b",
+    "object": "chat.completion",
+    "created": 1782613008,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1520,
+     "completion_tokens": 14,
+     "total_tokens": 1534,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1520,
+     "output_tokens": 14
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"92320937fd44d71f\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1520,
+   "output_tokens": 14
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On doyo.cn login, the submitted `password` is not the raw password but a salted SHA-1 hash (the page first fetches a nonce + ts, then hashes; e.g. 13819912565 becomes 16119784763b3e501cc8eae56190fb0993517cfe). Locate the single complete function whose own body derives that final password value (combining the fetched nonce/ts with the hashed password) and posts it. Return exactly one JSON object (see answer_format). Do NOT return the generic SHA-1 implementation it calls, or an unrelated page/search helper. Only code under captures is in scope.  network_request POST /User/Passport/login password 13819912565 16119784763b3e501cc8eae56190fb0993517cfe\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/User/Passport/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"16119784763b3e501cc8eae56190fb0993517cfe\"}\n\nFunctions:\n- c71fd80b6592cd59 (bind): function(a,b,c)\n- bf9966ed4322ce38 (unbind): unbind:function(a,b)\n- 83eb787784b4eb5e (unbind): function(a,b)\n- 9fd3f9484fd5f5f1 (delegate): delegate:function(a,b,c,d)\n- 3d6e446c94a235a6 (delegate): function(a,b,c,d)\n- 69e73e2034fcac71 (undelegate): undelegate:function(a,b,c)\n- 27b76748e507c6aa (undelegate): function(a,b,c)\n- 357c4bd5ecce65c6 (size): function()\n- 08c0693237aa39ba ((anon)): function()\n- e8dd89b69767eb3c (noConflict): function(b)\n- 3d3af9640ac4ef95 (independent_statistics): function independent_statistics()\n- 87ef62cdfa334e61 (set_channel_init): function set_channel_init()\n- c2b7c37a17c5df34 (from_tongji_init): function from_tongji_init()\n- 652f04aab74357b6 ((anon)): function($)\n- 5dd682e94a14f2fd (showbestrow): function showbestrow(page,callback)\n- 2dd7fb1610470236 ((anon)): function()\n- 7f3ff21e646c0ee4 ((anon)): function()\n- e72316c842080d0c ((anon)): function()\n- 58d8e1a5a4d39c02 ((anon)): function()\n- 6f78b2793884b997 ((anon)): function()\n- 7d15ece40a88b224 (first_resetbestrow): function first_resetbestrow()\n- 0694d36313cd38cf (second_resetbestrow): function second_resetbestrow()\n- c693dd6e47ce2dbd (word_counter): function word_counter()\n- 7be815a28f0aadf2 (hash): function(msg, utf8encode)\n- dd9c600efd0d8dbb (f): function(s, x, y, z)\n- 1f67634fb72c9ad5 (ROTL): function(x, n)\n- 36a4f22c6396d3bf (toHexStr): function(n)\n- d7d1cad05f780a61 (encode): function(strUni)\n- 75c7ab19440a11a5 ((anon)): function(c)\n- b4af08ca04b1a756 ((anon)): function(c)\n- 0e866854246e6908 (decode): function(strUtf)\n- df9a41dc986f4cbb ((anon)): function(c)\n- 3d6fb0145910d75e ((anon)): function(c)\n- bd0b866aeaa4cd4f (onload): function()\n- 4c7ba5695b775851 (get): function(a,b)\n- b3b5fed5cb129770 (wa): function(a)\n- dd17423a6a127d78 (b): function b(a)\n- 65ed5ae311db6e82 (k): function k(b)\n- 6b1df9bf6f0de5f8 (onreadystatechange): function()\n- e039087fd76cf306 ((anon)): function()\n- 2e6db7d21e35110a (onreadystatechange): function()\n- 4dbcd95d8e3a9bae ((anon)): function()\n- 253151fb2d8a6900 (c): c:function(a,b)\n- 0a701cee88602140 (c): function(a,b)\n- 84bccd7b48380738 (k): k:function(a,b)\n- c59223ee2d6ac771 (k): function(a,b)\n- 4ccc8436e85ddb3f ((anon)): function()\n- 7bd880895e004b7c (Oa): Oa:function(a)\n- c62101f774503fd9 (Oa): function(a)\n- fa17d47e47c40d74 (la): la:function(a,d)\n- d322684ff22ce49c (la): function(a,d)\n- 5458059dfe3b6210 (ma): ma:function(b,d,f)\n- 194d795af2465aef (ma): function(b,d,f)\n- e1f8016f8c07e7fe (H): H:function(a,d)\n- 3426c152c166c49c (H): function(a,d)\n- aee40287e5b6e090 ((anon)): function()\n- 47ba63f2c35c3599 (e): function e(b,e)\n- d9de1b24632c8b76 (onreadystatechange): function()\n- 2e4b12ac9199b751 (onload): function()\n- 7b6738188c836e80 ((anon)): function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782613012.0466855
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"65ed5ae311db6e82\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1579,
+    "output_tokens": 15
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-28b0146f-09f5-95ed-afdb-30b57ac0411d",
+    "object": "chat.completion",
+    "created": 1782613009,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1579,
+     "completion_tokens": 15,
+     "total_tokens": 1594,
+     "prompt_tokens_details": {
+      "cached_tokens": 256
+     },
+     "input_tokens_details": {
+      "cached_tokens": 256
+     },
+     "input_tokens": 1579,
+     "output_tokens": 15
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"65ed5ae311db6e82\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1579,
+   "output_tokens": 15
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On doyo.cn login, the submitted `password` is not the raw password but a salted SHA-1 hash (the page first fetches a nonce + ts, then hashes; e.g. 13819912565 becomes 16119784763b3e501cc8eae56190fb0993517cfe). Locate the single complete function whose own body derives that final password value (combining the fetched nonce/ts with the hashed password) and posts it. Return exactly one JSON object (see answer_format). Do NOT return the generic SHA-1 implementation it calls, or an unrelated page/search helper. Only code under captures is in scope.  network_request POST /User/Passport/login password 13819912565 16119784763b3e501cc8eae56190fb0993517cfe\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/User/Passport/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"16119784763b3e501cc8eae56190fb0993517cfe\"}\n\nFunctions:\n- b60ee5d5d480f2de (D): D:function()\n- 62c639d365ba2b58 (D): function()\n- ce2a1a028ce542f6 ((anon)): function()\n- 5795f728f5a99d28 (getData): getData:function(d)\n- 6f67d4990614ff62 (getData): function(d)\n- d47d847813f42716 (setData): setData:function(f,e,l)\n- 7961a6da5d23433c (setData): function(f,e,l)\n- cdfa47b9285d85f4 (removeData): removeData:function(e)\n- 872e014dc8f40eda (removeData): function(e)\n- 30b7e9d1a308995d (I): I:function()\n- 6dcba40b8a1b0f50 (I): function()\n- 30e8ba14022c0616 (U): U:function()\n- 82a573167d05fe7b (U): function()\n- 91ab38663543ff60 ((anon)): function()\n- 6694d43a2a049cfc (Ha): Ha:function(d,e)\n- c7ddd7ea7deba1ea (Ha): function(d,e)\n- d6c70044514a0c6e ((anon)): function(g)\n- 2b0475687ae541f3 (qa): qa:function(a,b)\n- 9a71bcf703e4c986 (qa): function(a,b)\n- d0f1063be1b19ac6 (zb): zb:function(a,b)\n- 48740e1fcf3d158a (zb): function(a,b)\n- e7c2ce93f5cbd0f0 ((anon)): function(e)\n- ec508c5a91bd6ff8 ((anon)): function()\n- 69ce16cd07b0d2e2 (ua): ua:function()\n- 5516248564ef90c6 (ua): function()\n- c4c616710e9417f2 (ba): ba:function(a)\n- 149515a7057b699d (ba): function(a)\n- 2547eb4c41c46478 (N): N:function(a,b)\n- 6040c278c4ef80ca (N): function(a,b)\n- 4c0bfed5a8a0ed75 ((anon)): function()\n- d37550625a06a876 (ta): ta:function()\n- e612316daee906af (ta): function()\n- f6d8f299ce7db1e1 ((anon)): function()\n- c19312d77de0f7b3 ((anon)): function()\n- 8486e01509d34729 (Ca): Ca:function()\n- 62b79924addf8758 (Ca): function()\n- de94a4a084d54cb4 ((anon)): function(a)\n- 7326011fb88df0fd (Na): Na:function(b)\n- f2b2e2864a775eda (Na): function(b)\n- 1ba7d07450c4302d (Ta): Ta:function(b,d,f,m)\n- 23447d60f190cf75 (Ta): function(b,d,f,m)\n- 9f1d8338ff522e9a (M): M:function()\n- ae9494ab9b05e9e4 (M): function()\n- 9d0cdf0a839e3ebc ((anon)): function()\n- 1fc16cdbfea3fc62 (e): function e()\n- 7e041965694d15ff ((anon)): function()\n- 03e870e3462b7f3d (a): function a()\n- b27b0cb573288c6e (b): function b(b)\n- 330813acc2cd01ca (k): function k(b)\n- f941848eb0ebeb0e ((anon)): function()\n- 1911a0355436d393 (Va): Va:function()\n- d0375748bf211944 (Va): function()\n- 9cb1c71bd637c196 (Ra): Ra:function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782613011.6414042
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"1fc16cdbfea3fc62\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1379,
+    "output_tokens": 13
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-9b4137dc-eb9c-99ce-8140-5bdcc5cf9799",
+    "object": "chat.completion",
+    "created": 1782613010,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1379,
+     "completion_tokens": 13,
+     "total_tokens": 1392,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1379,
+     "output_tokens": 13
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"1fc16cdbfea3fc62\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1379,
+   "output_tokens": 13
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On doyo.cn login, the submitted `password` is not the raw password but a salted SHA-1 hash (the page first fetches a nonce + ts, then hashes; e.g. 13819912565 becomes 16119784763b3e501cc8eae56190fb0993517cfe). Locate the single complete function whose own body derives that final password value (combining the fetched nonce/ts with the hashed password) and posts it. Return exactly one JSON object (see answer_format). Do NOT return the generic SHA-1 implementation it calls, or an unrelated page/search helper. Only code under captures is in scope.  network_request POST /User/Passport/login password 13819912565 16119784763b3e501cc8eae56190fb0993517cfe\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/User/Passport/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"16119784763b3e501cc8eae56190fb0993517cfe\"}\n\nSuspicious functions:\n### 92320937fd44d71f (a)\n```js\nfunction(d){return Y(this,function(a,d,e){var f=mc(a);return void 0===e?f?b in f?f[b]:f.document.documentElement[d]:a[d]:void(f?f.scrollTo(c?n(f).scrollLeft():e,c?e:n(f).scrollTop()):a[d]=e)},a,d,arguments.length,null)}\n```\n### 65ed5ae311db6e82 (k)\n```js\nfunction k(b){var d=a[b];if(d)if(q&&clearTimeout(q),\"success\"!==b)d&&d(m);else{var f;try{f=e.parse(m.responseText)}catch(g){d&&d(m);return}d&&d(m,f)}}\n```\n### 1fc16cdbfea3fc62 (e)\n```js\nfunction e(){return function(){h.b.a.et=3;h.b.a.ep=h.T.Va()+\",\"+h.T.Ra();h.b.a.hca=c.hca;h.b.m()}}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+    }
+   ],
+   "tools": null,
+   "ts": 1782613013.2102997
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"top1\":\"65ed5ae311db6e82\",\"ranking\":[\"65ed5ae311db6e82\",\"1fc16cdbfea3fc62\",\"92320937fd44d71f\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 596,
+    "output_tokens": 47
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-ef68dfc9-73d5-9f1f-ad50-a5f685bac650",
+    "object": "chat.completion",
+    "created": 1782613011,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 596,
+     "completion_tokens": 47,
+     "total_tokens": 643,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 596,
+     "output_tokens": 47
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"top1\":\"65ed5ae311db6e82\",\"ranking\":[\"65ed5ae311db6e82\",\"1fc16cdbfea3fc62\",\"92320937fd44d71f\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 596,
+   "output_tokens": 47
+  }
+ }
+]

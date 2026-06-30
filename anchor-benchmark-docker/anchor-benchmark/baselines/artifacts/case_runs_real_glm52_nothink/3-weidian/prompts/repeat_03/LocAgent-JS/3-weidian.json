@@ -1,0 +1,467 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On the Weidian PC login page, the login POST to sso.weidian.com/user/login sends phone, countryCode and password as RSA-encrypted values rather than plaintext. Locate the single complete function that is the anchor for the encrypted password field. The anchor function is the target-specific function on the dynamic behavior chain from the login click to the network request whose own body assembles the request payload and writes the encrypted password into it: after the submit handler validates the form and dispatches login, the anchor's body builds the request object r = {phone: <enc>, countryCode: <enc>, password: <RSA ciphertext>, ...} and POSTs it to sso.weidian.com/user/login, rather than merely validating/dispatching (the submit handler), computing one field's ciphertext (the dedicated per-field encryptor it calls), performing the RSA math (the generic JSEncrypt/RSA library primitive), or mapping a sibling field. Return exactly one JSON object (see answer_format). The per-field encryptor and the generic JSEncrypt primitive below it are NOT the answer (they are helpers nested below this function). Only code under captures is in scope.  network_request POST sso.weidian.com/user/login password 13819912565 cLhf/IoKEkAkByIWgtpD2FGOZT5W7PzBDX/8k0w4ZzViMVJusApHdFXMO5ngm7h6... (RSA, base64)\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': 'sso.weidian.com/user/login', 'field': 'password', 'plaintext_sample': '13819912565', 'value_sample': 'cLhf/IoKEkAkByIWgtpD2FGOZT5W7PzBDX/8k0w4ZzViMVJusApHdFXMO5ngm7h6... (RSA, base64)'}\nCandidate seed nodes (lexical prior, not a ranking): ['af59d03cb1bb1fe7', 'cbf693a08668ce58', '502cd4ebad2c4e51', '26c109bcce268518', 'ce351f26f2c84fd2', '5e4eb861d0ff8cf9', 'cc056c7c345eaed1', '244952363839e65e']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_d77c37b723e948e798ac7f24",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "af59d03cb1bb1fe7"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_0bc30d8aa48a46bd8efe3050",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "cbf693a08668ce58"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_dae3c7efb3544aa4a25e81e7",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "502cd4ebad2c4e51"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7c14e55f36734910895d192f",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "26c109bcce268518"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_e05b91ec62494ea8898bd035",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ce351f26f2c84fd2"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_11d9ab3a383c4e0aa7bf52cb",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "5e4eb861d0ff8cf9"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_1c30302a8d4d4c618d36c908",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "cc056c7c345eaed1"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_fe9b1f9fab8b41d9aefe2ab5",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "244952363839e65e"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_d77c37b723e948e798ac7f24",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498482, \"end_offset\": 1499113}, \"_best_guess_score\": 0, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498482, \"end_offset\": 1499113, \"code\": \"function(t){for(;;)switch(t.prev=t.next){case 0:return n={action:\\\"//sso.weidian.com/user/passwd/recover\\\",countryCode:e.getCountryCode(e.ruleForm.countryCode),phone:e.ruleForm.telephone,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/vcode/verify\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?e.$router.push({path:\\\"/forgetPassword/step2\\\",query:{session:r.result.session}}):e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_0bc30d8aa48a46bd8efe3050",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498428, \"end_offset\": 1499119}, \"_best_guess_score\": -1, \"name\": \"t\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498428, \"end_offset\": 1499119, \"code\": \"function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={action:\\\"//sso.weidian.com/user/passwd/recover\\\",countryCode:e.getCountryCode(e.ruleForm.countryCode),phone:e.ruleForm.telephone,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/vcode/verify\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?e.$router.push({path:\\\"/forgetPassword/step2\\\",query:{session:r.result.session}}):e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}},t,e)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_dae3c7efb3544aa4a25e81e7",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487938, \"end_offset\": 1488497}, \"_best_guess_score\": -2, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487938, \"end_offset\": 1488497, \"code\": \"function(t){for(;;)switch(t.prev=t.next){case 0:return n={phone:e.telephone,countryCode:e.countryCode,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyvcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\":e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7c14e55f36734910895d192f",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498373, \"end_offset\": 1499124}, \"_best_guess_score\": -3, \"name\": \"verify\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498373, \"end_offset\": 1499124, \"code\": \"function(){var e=this;return r(regeneratorRuntime.mark(function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={action:\\\"//sso.weidian.com/user/passwd/recover\\\",countryCode:e.getCountryCode(e.ruleForm.countryCode),phone:e.ruleForm.telephone,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/vcode/verify\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?e.$router.push({path:\\\"/forgetPassword/step2\\\",query:{session:r.result.session}}):e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}},t,e)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_e05b91ec62494ea8898bd035",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498366, \"end_offset\": 1499124}, \"_best_guess_score\": -4, \"name\": \"verify\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1498366, \"end_offset\": 1499124, \"code\": \"verify:function(){var e=this;return r(regeneratorRuntime.mark(function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={action:\\\"//sso.weidian.com/user/passwd/recover\\\",countryCode:e.getCountryCode(e.ruleForm.countryCode),phone:e.ruleForm.telephone,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/vcode/verify\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?e.$router.push({path:\\\"/forgetPassword/step2\\\",query:{session:r.result.session}}):e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}},t,e)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_11d9ab3a383c4e0aa7bf52cb",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487884, \"end_offset\": 1488503}, \"_best_guess_score\": -5, \"name\": \"t\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487884, \"end_offset\": 1488503, \"code\": \"function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={phone:e.telephone,countryCode:e.countryCode,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyvcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\":e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}},t,e)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_1c30302a8d4d4c618d36c908",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487829, \"end_offset\": 1488508}, \"_best_guess_score\": -6, \"name\": \"loginbyvcode\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487829, \"end_offset\": 1488508, \"code\": \"function(){var e=this;return i(regeneratorRuntime.mark(function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={phone:e.telephone,countryCode:e.countryCode,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyvcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\":e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}},t,e)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_fe9b1f9fab8b41d9aefe2ab5",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487816, \"end_offset\": 1488508}, \"_best_guess_score\": -7, \"name\": \"loginbyvcode\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487816, \"end_offset\": 1488508, \"code\": \"loginbyvcode:function(){var e=this;return i(regeneratorRuntime.mark(function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={phone:e.telephone,countryCode:e.countryCode,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyvcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\":e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}},t,e)}))()}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "None of the seed nodes match the password login function. Let me search for the actual login function that posts to `sso.weidian.com/user/login` with RSA encryption."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_edb8a99f2a844094bd1f58b7",
+     "name": "search_entity",
+     "input": {
+      "query": "sso.weidian.com/user/login"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_a4284bf1f865427caccb36bf",
+     "name": "search_entity",
+     "input": {
+      "query": "password encrypt RSA login"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_edb8a99f2a844094bd1f58b7",
+     "content": "{\"nodes\": [\"e1472db379aa5c75\", \"a971ed6576b86f77\", \"d678808ef840be45\", \"a72c3945d09a5249\", \"5ea59fa48c569049\", \"7f5846bb6659121b\", \"91f8d1928e427ce6\", \"d2e10b4e70a9ab1a\", \"80890470c62807d5\", \"d6b0f27d61b923a5\", \"07eca0a143e833fb\", \"85312762e862da45\", \"bfa98b5b314ba588\", \"e64d17fd084f53be\", \"41cff7b92216e514\", \"b819e144df1668b2\", \"cc056c7c345eaed1\", \"244952363839e65e\", \"5e4eb861d0ff8cf9\", \"502cd4ebad2c4e51\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_a4284bf1f865427caccb36bf",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_802b7dd40a094ce58322a476",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e1472db379aa5c75"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7ab086bb9e394b90b4ff8747",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "a971ed6576b86f77"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c388359f567543f88d269e25",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "d678808ef840be45"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_bac61934de26467b803ce309",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "a72c3945d09a5249"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4361869b8a8c4cc78aa94f1a",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "5ea59fa48c569049"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_e80ed212ede4461ebf04383f",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "7f5846bb6659121b"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_f237a7b6d00b42c78adfb52c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "91f8d1928e427ce6"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_27928fe214894b57abd35986",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "d2e10b4e70a9ab1a"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c7186ad97eb7431db5a0004e",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "80890470c62807d5"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_66375167920f497dbf21c1df",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "d6b0f27d61b923a5"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_a1b81b6719d34331bdf258d7",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "07eca0a143e833fb"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_155c737a9f5a4961beb98eb0",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "85312762e862da45"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_b1eb6783e6844d7483b52cfc",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "bfa98b5b314ba588"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_132a51e6ce8249bcbbb90ef3",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e64d17fd084f53be"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_edc24e9b29da4a448cd35a7e",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "41cff7b92216e514"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_06521f64d90a408f92587ba3",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "b819e144df1668b2"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_802b7dd40a094ce58322a476",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 607560, \"end_offset\": 615091}, \"_best_guess_score\": -40, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 607560, \"end_offset\": 615091, \"code\": \"function(e,t,n){\\\"use strict\\\";function i(e){return e&&e.__esModule?e:{default:e}}function r(e){return function(){var t=e.apply(this,arguments);return new Promise(function(e,n){function i(r,o){try{var a=t[r](o),s=a.value}catch(e){return void n(e)}if(!a.done)return Promise.resolve(s).then(function(e){i(\\\"next\\\",e)},function(e){i(\\\"throw\\\",e)});e(s)}return i(\\\"next\\\")})}}Object.defineProperty(t,\\\"__esModule\\\",{value:!0});var o=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},a=n(102),s=i(a),c=n(202),l=i(c),u=n(206),d=i(u),h=n(545),f=i(h),p=n(550),m=i(p),v=new JSEncrypt;v.setPublicKey(\\\"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvhNi13l0nwSInj/87JeZagQ0PVYTY2IipiLrGLttJLgHH16N3Zpixci6lDgQRWdzomDnNvzD2QFUyVZNjmfmb2fhMDNbzfDktXjSfsNg3NoW85pShlUXLjnggu+OxeJrOYfZT0VFCYzAkbcZKXr+kE+BvvP1eDai8yRib6+PQ9wIDAQAB\\\"),t.default={data:function(){var e=this;return{popLoginFlag:!1,popFlag:!0,smsupParam:{},sessionId:\\\"\\\",ruleForm:{countryCode:\\\"86-Z\\\",telephone:\\\"\\\",password:\\\"\\\",messageCode:\\\"\\\"},rules:{validator:function(t,n,i){if(e.loginCase){if(!n)return i(new Error(\\\"\\u8bf7\\u8f93\\u5165\\u9a8c\\u8bc1\\u7801\\\"));i()}else{if(!n)return i(new Error(\\\"\\u8bf7\\u8f93\\u5165\\u5bc6\\u7801\\\"));i()}},trigger:\\\"change\\\"},agreementFlag:!1,loginCase:0,purpose:{scene:\\\"PCLogin\\\"},isLoginType:!0,checkCodes:\\\"\\\",confirmPhone:\\\"\\\",confirmPhoneFlag:!1,changePhoneFlag:!1,isFromOfficial:\\\"official\\\"===this.$route.query.from}},components:{userTelephone:s.default,swiperAd:d.default,scanQRcode:l.default,verifyCode:f.default,pop:m.default},created:function(){this.judgeKnowSubAccount(),this.loginCase=this.isFromOfficial?1:0},methods:{inUse:function(){window.location.hash.split(\\\"=\\\")[1]?this.$router.push({name:\\\"shopSelect\\\",query:{bigCoffeeId:location.hash.split(\\\"=\\\")[1]}}):this.$router.push({name:\\\"shopSelect\\\"})},cannotUse:function(){this.changePhoneFlag=!0},changeLoginCase:function(e){this.loginCase=e},encrypt:function(e){return e?v.encrypt(e+\\\"\\\"):\\\"\\\"},getShopExistInfo:function(e){var t=this;return r(regeneratorRuntime.mark(function n(){var i,r;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return n.next=2,t.$http({method:\\\"get\\\",url:\\\"//thor.weidian.com/wdshop/shop.base.getShopExistInfo/1.0\\\",params:{param:{userID:t.$cookie.get(\\\"sid\\\")}}});case 2:i=n.sent,r=i.data,0==r.status.code?e(r.result):t.$Toast({content:r.status.message,duration:1e3});case 5:case\\\"end\\\":return n.stop()}},n,t)}))()},login:function(e){var t=this;return r(regeneratorRuntime.mark(function n(){var i,r,a,s,c,l,u,d,h;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return window.getUa&&(i=window.getUa()),r={phone:t.encrypt(t.ruleForm.telephone),countryCode:t.encrypt(t.getCountryCode(t.ruleForm.countryCode)),password:t.encrypt(t.ruleForm.password),version:100,subaccountId:\\\"\\\",clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\",ua:encodeURIComponent(i),scene:\\\"PCLogin\\\"},e&&o(r,e),n.next=5,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/login\\\",data:r});case 5:a=n.sent,s=a.data,0==s.status.status_code?(c=s.result,c&&c.confirmPhone?(t.confirmPhone=c.confirmPhone.phoneNum,t.confirmPhoneFlag=!0):window.location.hash.split(\\\"=\\\")[1]?t.$router.push({name:\\\"shopSelect\\\",query:{bigCoffeeId:location.hash.split(\\\"=\\\")[1]}}):t.$router.push({name:\\\"shopSelect\\\"})):91102==s.status.status_code?s&&s.result&&s.result.sessionId?(t.sessionId=s.result.sessionId,t.rulesGet(s.result.sessionId)):t.$Toast({content:s.status.status_reason,duration:1e3}):91131==s.status.status_code?s&&s.result&&s.result.appId?(l=s.result.appId,u=new TencentCaptcha(l+\\\"\\\",function(e){if(0==e.ret){var n={slideImageAppId:e.appid,slideTicket:e.ticket,slideRandStr:e.randstr};t.login(n)}else t.$Toast({content:s.status.status_reason,duration:1e3})}),u.show()):t.$Toast({content:s.status.status_reason,duration:1e3}):420067==s.status.status_code?(t.$Toast({content:s.status.status_reason,duration:1e3}),s&&s.result&&s.result.realNameUrl&&(d=\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7ab086bb9e394b90b4ff8747",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 609990, \"end_offset\": 611858}, \"_best_guess_score\": -55, \"name\": \"login\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 609990, \"end_offset\": 611858, \"code\": \"function(e){var t=this;return r(regeneratorRuntime.mark(function n(){var i,r,a,s,c,l,u,d,h;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return window.getUa&&(i=window.getUa()),r={phone:t.encrypt(t.ruleForm.telephone),countryCode:t.encrypt(t.getCountryCode(t.ruleForm.countryCode)),password:t.encrypt(t.ruleForm.password),version:100,subaccountId:\\\"\\\",clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\",ua:encodeURIComponent(i),scene:\\\"PCLogin\\\"},e&&o(r,e),n.next=5,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/login\\\",data:r});case 5:a=n.sent,s=a.data,0==s.status.status_code?(c=s.result,c&&c.confirmPhone?(t.confirmPhone=c.confirmPhone.phoneNum,t.confirmPhoneFlag=!0):window.location.hash.split(\\\"=\\\")[1]?t.$router.push({name:\\\"shopSelect\\\",query:{bigCoffeeId:location.hash.split(\\\"=\\\")[1]}}):t.$router.push({name:\\\"shopSelect\\\"})):91102==s.status.status_code?s&&s.result&&s.result.sessionId?(t.sessionId=s.result.sessionId,t.rulesGet(s.result.sessionId)):t.$Toast({content:s.status.status_reason,duration:1e3}):91131==s.status.status_code?s&&s.result&&s.result.appId?(l=s.result.appId,u=new TencentCaptcha(l+\\\"\\\",function(e){if(0==e.ret){var n={slideImageAppId:e.appid,slideTicket:e.ticket,slideRandStr:e.randstr};t.login(n)}else t.$Toast({content:s.status.status_reason,duration:1e3})}),u.show()):t.$Toast({content:s.status.status_reason,duration:1e3}):420067==s.status.status_code?(t.$Toast({content:s.status.status_reason,duration:1e3}),s&&s.result&&s.result.realNameUrl&&(d=encodeURIComponent(location.href),h=s.result.realNameUrl,h=h.match(\\\"[?]\\\")?h+\\\"&redirectUrl=\\\"+d+\\\"&authFrom=pc\\\":h+\\\"?redirectUrl=\\\"+d+\\\"&authFrom=pc\\\",setTimeout(function(){window.location.href=h},2e3))):t.$Toast({content:s.status.status_reason,duration:1e3});case 8:case\\\"end\\\":return n.stop()}},n,t)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_c388359f567543f88d269e25",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 609984, \"end_offset\": 611858}, \"_best_guess_score\": -49, \"name\": \"login\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 609984, \"end_offset\": 611858, \"code\": \"login:function(e){var t=this;return r(regeneratorRuntime.mark(function n(){var i,r,a,s,c,l,u,d,h;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return window.getUa&&(i=window.getUa()),r={phone:t.encrypt(t.ruleForm.telephone),countryCode:t.encrypt(t.getCountryCode(t.ruleForm.countryCode)),password:t.encrypt(t.ruleForm.password),version:100,subaccountId:\\\"\\\",clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\",ua:encodeURIComponent(i),scene:\\\"PCLogin\\\"},e&&o(r,e),n.next=5,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/login\\\",data:r});case 5:a=n.sent,s=a.data,0==s.status.status_code?(c=s.result,c&&c.confirmPhone?(t.confirmPhone=c.confirmPhone.phoneNum,t.confirmPhoneFlag=!0):window.location.hash.split(\\\"=\\\")[1]?t.$router.push({name:\\\"shopSelect\\\",query:{bigCoffeeId:location.hash.split(\\\"=\\\")[1]}}):t.$router.push({name:\\\"shopSelect\\\"})):91102==s.status.status_code?s&&s.result&&s.result.sessionId?(t.sessionId=s.result.sessionId,t.rulesGet(s.result.sessionId)):t.$Toast({content:s.status.status_reason,duration:1e3}):91131==s.status.status_code?s&&s.result&&s.result.appId?(l=s.result.appId,u=new TencentCaptcha(l+\\\"\\\",function(e){if(0==e.ret){var n={slideImageAppId:e.appid,slideTicket:e.ticket,slideRandStr:e.randstr};t.login(n)}else t.$Toast({content:s.status.status_reason,duration:1e3})}),u.show()):t.$Toast({content:s.status.status_reason,duration:1e3}):420067==s.status.status_code?(t.$Toast({content:s.status.status_reason,duration:1e3}),s&&s.result&&s.result.realNameUrl&&(d=encodeURIComponent(location.href),h=s.result.realNameUrl,h=h.match(\\\"[?]\\\")?h+\\\"&redirectUrl=\\\"+d+\\\"&authFrom=pc\\\":h+\\\"?redirectUrl=\\\"+d+\\\"&authFrom=pc\\\",setTimeout(function(){window.location.href=h},2e3))):t.$Toast({content:s.status.status_reason,duration:1e3});case 8:case\\\"end\\\":return n.stop()}},n,t)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_bac61934de26467b803ce309",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 610046, \"end_offset\": 611853}, \"_best_guess_score\": -52, \"name\": \"n\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 610046, \"end_offset\": 611853, \"code\": \"function n(){var i,r,a,s,c,l,u,d,h;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return window.getUa&&(i=window.getUa()),r={phone:t.encrypt(t.ruleForm.telephone),countryCode:t.encrypt(t.getCountryCode(t.ruleForm.countryCode)),password:t.encrypt(t.ruleForm.password),version:100,subaccountId:\\\"\\\",clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\",ua:encodeURIComponent(i),scene:\\\"PCLogin\\\"},e&&o(r,e),n.next=5,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/login\\\",data:r});case 5:a=n.sent,s=a.data,0==s.status.status_code?(c=s.result,c&&c.confirmPhone?(t.confirmPhone=c.confirmPhone.phoneNum,t.confirmPhoneFlag=!0):window.location.hash.split(\\\"=\\\")[1]?t.$router.push({name:\\\"shopSelect\\\",query:{bigCoffeeId:location.hash.split(\\\"=\\\")[1]}}):t.$router.push({name:\\\"shopSelect\\\"})):91102==s.status.status_code?s&&s.result&&s.result.sessionId?(t.sessionId=s.result.sessionId,t.rulesGet(s.result.sessionId)):t.$Toast({content:s.status.status_reason,duration:1e3}):91131==s.status.status_code?s&&s.result&&s.result.appId?(l=s.result.appId,u=new TencentCaptcha(l+\\\"\\\",function(e){if(0==e.ret){var n={slideImageAppId:e.appid,slideTicket:e.ticket,slideRandStr:e.randstr};t.login(n)}else t.$Toast({content:s.status.status_reason,duration:1e3})}),u.show()):t.$Toast({content:s.status.status_reason,duration:1e3}):420067==s.status.status_code?(t.$Toast({content:s.status.status_reason,duration:1e3}),s&&s.result&&s.result.realNameUrl&&(d=encodeURIComponent(location.href),h=s.result.realNameUrl,h=h.match(\\\"[?]\\\")?h+\\\"&redirectUrl=\\\"+d+\\\"&authFrom=pc\\\":h+\\\"?redirectUrl=\\\"+d+\\\"&authFrom=pc\\\",setTimeout(function(){window.location.href=h},2e3))):t.$Toast({content:s.status.status_reason,duration:1e3});case 8:case\\\"end\\\":return n.stop()}},n,t)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4361869b8a8c4cc78aa94f1a",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 610112, \"end_offset\": 611847}, \"_best_guess_score\": -51, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 610112, \"end_offset\": 611847, \"code\": \"function(n){for(;;)switch(n.prev=n.next){case 0:return window.getUa&&(i=window.getUa()),r={phone:t.encrypt(t.ruleForm.telephone),countryCode:t.encrypt(t.getCountryCode(t.ruleForm.countryCode)),password:t.encrypt(t.ruleForm.password),version:100,subaccountId:\\\"\\\",clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\",ua:encodeURIComponent(i),scene:\\\"PCLogin\\\"},e&&o(r,e),n.next=5,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/login\\\",data:r});case 5:a=n.sent,s=a.data,0==s.status.status_code?(c=s.result,c&&c.confirmPhone?(t.confirmPhone=c.confirmPhone.phoneNum,t.confirmPhoneFlag=!0):window.location.hash.split(\\\"=\\\")[1]?t.$router.push({name:\\\"shopSelect\\\",query:{bigCoffeeId:location.hash.split(\\\"=\\\")[1]}}):t.$router.push({name:\\\"shopSelect\\\"})):91102==s.status.status_code?s&&s.result&&s.result.sessionId?(t.sessionId=s.result.sessionId,t.rulesGet(s.result.sessionId)):t.$Toast({content:s.status.status_reason,duration:1e3}):91131==s.status.status_code?s&&s.result&&s.result.appId?(l=s.result.appId,u=new TencentCaptcha(l+\\\"\\\",function(e){if(0==e.ret){var n={slideImageAppId:e.appid,slideTicket:e.ticket,slideRandStr:e.randstr};t.login(n)}else t.$Toast({content:s.status.status_reason,duration:1e3})}),u.show()):t.$Toast({content:s.status.status_reason,duration:1e3}):420067==s.status.status_code?(t.$Toast({content:s.status.status_reason,duration:1e3}),s&&s.result&&s.result.realNameUrl&&(d=encodeURIComponent(location.href),h=s.result.realNameUrl,h=h.match(\\\"[?]\\\")?h+\\\"&redirectUrl=\\\"+d+\\\"&authFrom=pc\\\":h+\\\"?redirectUrl=\\\"+d+\\\"&authFrom=pc\\\",setTimeout(function(){window.location.href=h},2e3))):t.$Toast({content:s.status.status_reason,duration:1e3});case 8:case\\\"end\\\":return n.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_e80ed212ede4461ebf04383f",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 618792, \"end_offset\": 622903}, \"_best_guess_score\": -125, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 618792, \"end_offset\": 622903, \"code\": \"function(e,t,n){\\\"use strict\\\";function i(e){return function(){var t=e.apply(this,arguments);return new Promise(function(e,n){function i(r,o){try{var a=t[r](o),s=a.value}catch(e){return void n(e)}if(!a.done)return Promise.resolve(s).then(function(e){i(\\\"next\\\",e)},function(e){i(\\\"throw\\\",e)});e(s)}return i(\\\"next\\\")})}}Object.defineProperty(t,\\\"__esModule\\\",{value:!0}),n(537),t.default={props:{intoType:{}},data:function(){return{moveQrCode:!1,isLoginSuccess:!1,isLoseEfficacy:!1,cUid:\\\"\\\",sessionId:\\\"\\\",qrCodeUrl:\\\"\\\",businessId:\\\"scan_code_login\\\",sdk:null,hasBind:!0}},created:function(){this.sdk=window.IMSDK.getInstance(),this.connectSdk()},methods:{getQRcode:function(){var e=this;return i(regeneratorRuntime.mark(function t(){var n,i,r,o;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={cuid:e.cUid},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/getqrcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?(o=r.result,e.sessionId=o.sessionId,e.qrCodeUrl=\\\"https://sso.weidian.com/login/park/qrlogin.php?sessionId=\\\"+e.sessionId,setTimeout(function(){e.closeSdkChannel()},o.expire)):e.sdk?(e.sdk.channel.close(),e.reloadQrcode()):e.reloadQrcode();case 6:case\\\"end\\\":return t.stop()}},t,e)}))()},loginbyQrcode:function(e){var t=this;return i(regeneratorRuntime.mark(function n(){var i,r,o,a;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return i={code:e,clientInfo:{clientType:1,platform:\\\"pc\\\"},redirect:\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},n.next=3,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyqrcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:i});case 3:if(r=n.sent,o=r.data,-1!=o.status.code){n.next=18;break}if(a=o.result,t.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),\\\"SUB_ACCOUNT\\\"!=t.$cookie.get(\\\"login_type\\\")){n.next=14;break}return n.next=11,t.getHasBind();case 11:t.hasBind?setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3):setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),n.next=15;break;case 14:setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3);case 15:return n.abrupt(\\\"return\\\");case 18:return t.$Toast({content:\\\"\\u767b\\u5f55\\u5931\\u8d25,\\u8bf7\\u91cd\\u8bd5\\\",duration:1e3}),setTimeout(function(){t.isLoginSuccess=!1,t.sdk.channel.close(),t.reloadQrcode()},1e3),n.abrupt(\\\"return\\\");case 21:case\\\"end\\\":return n.stop()}},n,t)}))()},urlQuery:function(e,t){var n=location.search;t&&(n=t);var i=n.match(new RegExp(\\\"(\\\\\\\\?|&)(\\\"+e+\\\")=([^&$]*)\\\"));return i?i[3]:\\\"\\\"},connectSdk:function(){var e=this,t=this.urlQuery(\\\"spider\\\",location.href);t=t&&-1!=t.indexOf(\\\"#\\\")?t.slice(0,t.indexOf(\\\"#\\\")):t,this.sdk.channel.init({appId:\\\"weidian.scanCode\\\",sourceType:\\\"h5\\\",userId:window.IMSDK.util.generateUUID(),spider:t}),this.sdk.channel.connect(function(t,n){e.cUid=n.token,t?e.reloadQrcode():(e.sdk.event.on(e.businessId+\\\"MESSAGE\\\",function(t){if(\\\"scanSuccess\\\"==t.type&&(e.isLoginSuccess=!0),\\\"cancelLogin\\\"==t.type&&(e.isLoginSuccess=!1),\\\"code\\\"==t.type)return void(t.content?e.loginbyQrcode(t.content):setTimeout(function(){e.isLoginSuccess=!1,e.sdk.channel.close(),e.reloadQrcode()},1e3))}),e.getQRcode())})},getHasBind:function(){var e=this;return i(regeneratorRuntime.mark(function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return t.next=2,e.$http({method:\\\"get\\\",url:\\\"//thor.weidian.com/subaccount/hasBind/1.0\\\",params:{param:{}}});case 2:n=t.sent,i=n.data,0==i.status.code&&(r=i.result,e.hasBind=r&&r.bind);case 5:case\\\"end\\\":return t.stop()}},t,e)}))()},closeSdkChannel:function(){this.isLoseEfficacy=!0,this.sdk.channel.close(),this.leaveQrCodeFun()},reloadQrcode:function(){this.connectSdk(),this.isLoseEfficacy=!1},moveQrCodeFun:function(){\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_f237a7b6d00b42c78adfb52c",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620166, \"end_offset\": 621452}, \"_best_guess_score\": -38, \"name\": \"loginbyQrcode\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620166, \"end_offset\": 621452, \"code\": \"function(e){var t=this;return i(regeneratorRuntime.mark(function n(){var i,r,o,a;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return i={code:e,clientInfo:{clientType:1,platform:\\\"pc\\\"},redirect:\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},n.next=3,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyqrcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:i});case 3:if(r=n.sent,o=r.data,-1!=o.status.code){n.next=18;break}if(a=o.result,t.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),\\\"SUB_ACCOUNT\\\"!=t.$cookie.get(\\\"login_type\\\")){n.next=14;break}return n.next=11,t.getHasBind();case 11:t.hasBind?setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3):setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),n.next=15;break;case 14:setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3);case 15:return n.abrupt(\\\"return\\\");case 18:return t.$Toast({content:\\\"\\u767b\\u5f55\\u5931\\u8d25,\\u8bf7\\u91cd\\u8bd5\\\",duration:1e3}),setTimeout(function(){t.isLoginSuccess=!1,t.sdk.channel.close(),t.reloadQrcode()},1e3),n.abrupt(\\\"return\\\");case 21:case\\\"end\\\":return n.stop()}},n,t)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_27928fe214894b57abd35986",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620152, \"end_offset\": 621452}, \"_best_guess_score\": -39, \"name\": \"loginbyQrcode\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620152, \"end_offset\": 621452, \"code\": \"loginbyQrcode:function(e){var t=this;return i(regeneratorRuntime.mark(function n(){var i,r,o,a;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return i={code:e,clientInfo:{clientType:1,platform:\\\"pc\\\"},redirect:\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},n.next=3,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyqrcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:i});case 3:if(r=n.sent,o=r.data,-1!=o.status.code){n.next=18;break}if(a=o.result,t.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),\\\"SUB_ACCOUNT\\\"!=t.$cookie.get(\\\"login_type\\\")){n.next=14;break}return n.next=11,t.getHasBind();case 11:t.hasBind?setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3):setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),n.next=15;break;case 14:setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3);case 15:return n.abrupt(\\\"return\\\");case 18:return t.$Toast({content:\\\"\\u767b\\u5f55\\u5931\\u8d25,\\u8bf7\\u91cd\\u8bd5\\\",duration:1e3}),setTimeout(function(){t.isLoginSuccess=!1,t.sdk.channel.close(),t.reloadQrcode()},1e3),n.abrupt(\\\"return\\\");case 21:case\\\"end\\\":return n.stop()}},n,t)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_c7186ad97eb7431db5a0004e",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620222, \"end_offset\": 621447}, \"_best_guess_score\": -37, \"name\": \"n\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620222, \"end_offset\": 621447, \"code\": \"function n(){var i,r,o,a;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return i={code:e,clientInfo:{clientType:1,platform:\\\"pc\\\"},redirect:\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},n.next=3,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyqrcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:i});case 3:if(r=n.sent,o=r.data,-1!=o.status.code){n.next=18;break}if(a=o.result,t.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),\\\"SUB_ACCOUNT\\\"!=t.$cookie.get(\\\"login_type\\\")){n.next=14;break}return n.next=11,t.getHasBind();case 11:t.hasBind?setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3):setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),n.next=15;break;case 14:setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3);case 15:return n.abrupt(\\\"return\\\");case 18:return t.$Toast({content:\\\"\\u767b\\u5f55\\u5931\\u8d25,\\u8bf7\\u91cd\\u8bd5\\\",duration:1e3}),setTimeout(function(){t.isLoginSuccess=!1,t.sdk.channel.close(),t.reloadQrcode()},1e3),n.abrupt(\\\"return\\\");case 21:case\\\"end\\\":return n.stop()}},n,t)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_66375167920f497dbf21c1df",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620278, \"end_offset\": 621441}, \"_best_guess_score\": -36, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 620278, \"end_offset\": 621441, \"code\": \"function(n){for(;;)switch(n.prev=n.next){case 0:return i={code:e,clientInfo:{clientType:1,platform:\\\"pc\\\"},redirect:\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},n.next=3,t.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyqrcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:i});case 3:if(r=n.sent,o=r.data,-1!=o.status.code){n.next=18;break}if(a=o.result,t.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),\\\"SUB_ACCOUNT\\\"!=t.$cookie.get(\\\"login_type\\\")){n.next=14;break}return n.next=11,t.getHasBind();case 11:t.hasBind?setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3):setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),n.next=15;break;case 14:setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/login/#/shopSelect\\\"},1e3);case 15:return n.abrupt(\\\"return\\\");case 18:return t.$Toast({content:\\\"\\u767b\\u5f55\\u5931\\u8d25,\\u8bf7\\u91cd\\u8bd5\\\",duration:1e3}),setTimeout(function(){t.isLoginSuccess=!1,t.sdk.channel.close(),t.reloadQrcode()},1e3),n.abrupt(\\\"return\\\");case 21:case\\\"end\\\":return n.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_a1b81b6719d34331bdf258d7",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 748893, \"end_offset\": 751646}, \"_best_guess_score\": -16, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 748893, \"end_offset\": 751646, \"code\": \"function(e,t,n){\\\"use strict\\\";function i(e){return e&&e.__esModule?e:{default:e}}function r(e){return function(){var t=e.apply(this,arguments);return new Promise(function(e,n){function i(r,o){try{var a=t[r](o),s=a.value}catch(e){return void n(e)}if(!a.done)return Promise.resolve(s).then(function(e){i(\\\"next\\\",e)},function(e){i(\\\"throw\\\",e)});e(s)}return i(\\\"next\\\")})}}Object.defineProperty(t,\\\"__esModule\\\",{value:!0});var o=n(102),a=i(o),s=n(202),c=i(s),l=n(206),u=i(l);t.default={data:function(){return{ruleForm:{countryCode:\\\"86-Z\\\",telephone:\\\"\\\",subAccount:\\\"\\\",password:\\\"\\\"},rules1:{validator:function(e,t,n){if(!t)return n(new Error(\\\"\\u8bf7\\u8f93\\u5165\\u5b50\\u8d26\\u53f7\\\"));n()},trigger:\\\"change\\\"},rules2:{validator:function(e,t,n){if(!t)return n(new Error(\\\"\\u8bf7\\u8f93\\u5165\\u5bc6\\u7801\\\"));n()},trigger:\\\"change\\\"},loginCase:0}},components:{userTelephone:a.default,scanQRcode:c.default,swiperAd:u.default},created:function(){this.$router.replace({name:\\\"Login\\\"})},methods:{goBack:function(){this.$router.push({name:\\\"Login\\\"})},changeLoginCase:function(e){this.loginCase=e},subAccountlogin:function(){var e=this;return r(regeneratorRuntime.mark(function t(){var n,i,r,o;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(!e.ruleForm.telephone||86!=e.getCountryCode(e.ruleForm.countryCode)||11==e.ruleForm.telephone.length){t.next=3;break}return e.$Toast({content:\\\"\\u624b\\u673a\\u53f7\\u5e94\\u8be5\\u662f11\\u4f4d\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 3:return n={phone:e.ruleForm.telephone,countryCode:e.getCountryCode(e.ruleForm.countryCode),password:e.ruleForm.password,version:1,subaccountId:e.ruleForm.subAccount,clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\"},t.next=6,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbysubaccount\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 6:if(i=t.sent,r=i.data,0!=r.status.status_code){t.next=17;break}if(o=r.result,\\\"0\\\"!=o.switch){t.next=13;break}return e.$Toast({content:\\\"\\u8be5\\u5b50\\u8d26\\u53f7\\u5df2\\u88ab\\u505c\\u7528\\uff0c\\u65e0\\u6cd5\\u767b\\u5f55\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 13:e.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),t.next=18;break;case 17:e.$Toast({content:r.status.status_reason,duration:1e3});case 18:case\\\"end\\\":return t.stop()}},t,e)}))()},goToIndex:function(){this.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3)},enterWeidian:function(e){var t=this;this.$refs[e].validate(function(e){if(!e)return console.log(\\\"error submit!!\\\"),!1;t.subAccountlogin()})},getCountryCode:function(e){return Number(e.split(\\\"-\\\")[0])}}},e.exports=t.default}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_155c737a9f5a4961beb98eb0",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 749918, \"end_offset\": 751240}, \"_best_guess_score\": -19, \"name\": \"subAccountlogin\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 749918, \"end_offset\": 751240, \"code\": \"function(){var e=this;return r(regeneratorRuntime.mark(function t(){var n,i,r,o;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(!e.ruleForm.telephone||86!=e.getCountryCode(e.ruleForm.countryCode)||11==e.ruleForm.telephone.length){t.next=3;break}return e.$Toast({content:\\\"\\u624b\\u673a\\u53f7\\u5e94\\u8be5\\u662f11\\u4f4d\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 3:return n={phone:e.ruleForm.telephone,countryCode:e.getCountryCode(e.ruleForm.countryCode),password:e.ruleForm.password,version:1,subaccountId:e.ruleForm.subAccount,clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\"},t.next=6,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbysubaccount\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 6:if(i=t.sent,r=i.data,0!=r.status.status_code){t.next=17;break}if(o=r.result,\\\"0\\\"!=o.switch){t.next=13;break}return e.$Toast({content:\\\"\\u8be5\\u5b50\\u8d26\\u53f7\\u5df2\\u88ab\\u505c\\u7528\\uff0c\\u65e0\\u6cd5\\u767b\\u5f55\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 13:e.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),t.next=18;break;case 17:e.$Toast({content:r.status.status_reason,duration:1e3});case 18:case\\\"end\\\":return t.stop()}},t,e)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_b1eb6783e6844d7483b52cfc",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 749902, \"end_offset\": 751240}, \"_best_guess_score\": -20, \"name\": \"subAccountlogin\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 749902, \"end_offset\": 751240, \"code\": \"subAccountlogin:function(){var e=this;return r(regeneratorRuntime.mark(function t(){var n,i,r,o;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(!e.ruleForm.telephone||86!=e.getCountryCode(e.ruleForm.countryCode)||11==e.ruleForm.telephone.length){t.next=3;break}return e.$Toast({content:\\\"\\u624b\\u673a\\u53f7\\u5e94\\u8be5\\u662f11\\u4f4d\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 3:return n={phone:e.ruleForm.telephone,countryCode:e.getCountryCode(e.ruleForm.countryCode),password:e.ruleForm.password,version:1,subaccountId:e.ruleForm.subAccount,clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\"},t.next=6,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbysubaccount\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 6:if(i=t.sent,r=i.data,0!=r.status.status_code){t.next=17;break}if(o=r.result,\\\"0\\\"!=o.switch){t.next=13;break}return e.$Toast({content:\\\"\\u8be5\\u5b50\\u8d26\\u53f7\\u5df2\\u88ab\\u505c\\u7528\\uff0c\\u65e0\\u6cd5\\u767b\\u5f55\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 13:e.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),t.next=18;break;case 17:e.$Toast({content:r.status.status_reason,duration:1e3});case 18:case\\\"end\\\":return t.stop()}},t,e)}))()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_132a51e6ce8249bcbbb90ef3",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 749973, \"end_offset\": 751235}, \"_best_guess_score\": -18, \"name\": \"t\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 749973, \"end_offset\": 751235, \"code\": \"function t(){var n,i,r,o;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(!e.ruleForm.telephone||86!=e.getCountryCode(e.ruleForm.countryCode)||11==e.ruleForm.telephone.length){t.next=3;break}return e.$Toast({content:\\\"\\u624b\\u673a\\u53f7\\u5e94\\u8be5\\u662f11\\u4f4d\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 3:return n={phone:e.ruleForm.telephone,countryCode:e.getCountryCode(e.ruleForm.countryCode),password:e.ruleForm.password,version:1,subaccountId:e.ruleForm.subAccount,clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\"},t.next=6,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbysubaccount\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 6:if(i=t.sent,r=i.data,0!=r.status.status_code){t.next=17;break}if(o=r.result,\\\"0\\\"!=o.switch){t.next=13;break}return e.$Toast({content:\\\"\\u8be5\\u5b50\\u8d26\\u53f7\\u5df2\\u88ab\\u505c\\u7528\\uff0c\\u65e0\\u6cd5\\u767b\\u5f55\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 13:e.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),t.next=18;break;case 17:e.$Toast({content:r.status.status_reason,duration:1e3});case 18:case\\\"end\\\":return t.stop()}},t,e)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_edc24e9b29da4a448cd35a7e",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 750029, \"end_offset\": 751229}, \"_best_guess_score\": -12, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 750029, \"end_offset\": 751229, \"code\": \"function(t){for(;;)switch(t.prev=t.next){case 0:if(!e.ruleForm.telephone||86!=e.getCountryCode(e.ruleForm.countryCode)||11==e.ruleForm.telephone.length){t.next=3;break}return e.$Toast({content:\\\"\\u624b\\u673a\\u53f7\\u5e94\\u8be5\\u662f11\\u4f4d\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 3:return n={phone:e.ruleForm.telephone,countryCode:e.getCountryCode(e.ruleForm.countryCode),password:e.ruleForm.password,version:1,subaccountId:e.ruleForm.subAccount,clientInfo:JSON.stringify({clientType:1,platform:\\\"pc\\\"}),captcha_session:\\\"\\\",captcha_answer:\\\"\\\",vcode:\\\"\\\",mediaVcode:\\\"\\\"},t.next=6,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbysubaccount\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 6:if(i=t.sent,r=i.data,0!=r.status.status_code){t.next=17;break}if(o=r.result,\\\"0\\\"!=o.switch){t.next=13;break}return e.$Toast({content:\\\"\\u8be5\\u5b50\\u8d26\\u53f7\\u5df2\\u88ab\\u505c\\u7528\\uff0c\\u65e0\\u6cd5\\u767b\\u5f55\\\",duration:1e3}),t.abrupt(\\\"return\\\");case 13:e.$Toast({content:\\\"\\u767b\\u5f55\\u6210\\u529f\\\",duration:1e3}),setTimeout(function(){location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\"},1e3),t.next=18;break;case 17:e.$Toast({content:r.status.status_reason,duration:1e3});case 18:case\\\"end\\\":return t.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_06521f64d90a408f92587ba3",
+     "content": "{\"_best_guess\": {\"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487003, \"end_offset\": 1488531}, \"_best_guess_score\": -21, \"name\": \"(anon)\", \"file\": \"captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js\", \"start_offset\": 1487003, \"end_offset\": 1488531, \"code\": \"function(e,t,n){\\\"use strict\\\";function i(e){return function(){var t=e.apply(this,arguments);return new Promise(function(e,n){function i(r,o){try{var a=t[r](o),s=a.value}catch(e){return void n(e)}if(!a.done)return Promise.resolve(s).then(function(e){i(\\\"next\\\",e)},function(e){i(\\\"throw\\\",e)});e(s)}return i(\\\"next\\\")})}}Object.defineProperty(t,\\\"__esModule\\\",{value:!0});var r=n(837),o=function(e){return e&&e.__esModule?e:{default:e}}(r);t.default={data:function(){return{ruleForm:{messageCode:\\\"\\\"},telephone:\\\"\\\",countryCode:\\\"\\\"}},components:{firstAutoMessageCode:o.default},created:function(){this.telephone=this.$route.query.phone,this.countryCode=this.$route.query.countryCode},methods:{sureLogin:function(e){var t=this;this.$refs[e].validate(function(e){if(!e)return console.log(\\\"error submit!!\\\"),!1;t.loginbyvcode()})},loginbyvcode:function(){var e=this;return i(regeneratorRuntime.mark(function t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return n={phone:e.telephone,countryCode:e.countryCode,vcode:e.ruleForm.messageCode},t.next=3,e.$http({method:\\\"POST\\\",url:\\\"//sso.weidian.com/user/loginbyvcode\\\",transformRequest:[function(e){var t=[];for(var n in e)t.push(n+\\\"=\\\"+encodeURIComponent(e[n]));return t.join(\\\"&\\\")}],data:n});case 3:i=t.sent,r=i.data,0==r.status.status_code?location.href=\\\"https://d.weidian.com/weidian-pc/weidian-loader/#/pc-vue-micro-index/index\\\":e.$Toast({content:r.status.status_reason,duration:1e3});case 6:case\\\"end\\\":return t.stop()}},t,e)}))()}}},e.exports=t.default}\"}"
+    }
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "name": "search_entity",
+   "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ]
+   }
+  },
+  {
+   "name": "traverse_graph",
+   "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     },
+     "edge": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node",
+     "edge"
+    ]
+   }
+  },
+  {
+   "name": "retrieve_entity",
+   "description": "Return the full source and location of a function node id.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node"
+    ]
+   }
+  },
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782557322.008295
+}

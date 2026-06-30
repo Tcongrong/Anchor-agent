@@ -1,0 +1,100 @@
+{
+  "case_id": "case004_byte_array_transformation",
+  "page": "captures/devtools-source-dump/127.0.0.1_4173/index.html",
+  "interaction": [
+    {
+      "action": "fill",
+      "selector": "#batchKey",
+      "value": "REC-7749"
+    },
+    {
+      "action": "select",
+      "selector": "#compressionMode",
+      "value": "zstd"
+    },
+    {
+      "action": "click",
+      "selector": "#encodeButton"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "batch.encode",
+    "field": "batch_payload"
+  },
+  "question": "Locate the anchor function for the batch_payload field in the console.log object whose action is batch.encode after entering the batch key, selecting the compression mode, and clicking Encode Package on the page. The anchor function is the first target-specific byte-array transformation value constructor on the dynamic behavior chain: after two-stage routing, click-time runtime collection, batch configuration collection and input preparation, its function body itself constructs the target observable byte-array payload value rather than merely collecting inputs, dispatching control, wrapping a return value, or emitting to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, byte-payload wrappers, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice. Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends, exclusive."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with function <function_name>( or async function <function_name>( and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleBatchPayloadAnchor",
+      "file": "captures/devtools-source-dump/127.0.0.1_4173/assets/batch.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 108,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleBatchPayloadAnchor(parts, config, extra = {}) {\n  const selected = pickExampleReducer(config.branch)(parts, extra);\n  const bytes = exampleBytesFrom(selected, config);\n  return exampleEncode(bytes);\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function with balanced braces, not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, formatter, router, payload wrapper, or byte encoder utility when a more target-specific byte-array payload constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The target behavior is byte-array conversion, not request signing, browser fingerprinting, state encoding, or request transformation."
+  ],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested field, or dispatches the requested action, and removing that statement would break the observed target output under the prescribed interaction. A function is generic when it is a reusable utility, control-flow dispatcher, scheduler, DOM/form collector, validator, serializer, normalizer, or wrapper whose body would look the same regardless of which behavior it currently serves. The anchor is the shallowest target-specific function on the path from trigger to sink: upstream dispatchers are too generic, downstream reusable utilities are too low-level, and final sinks that only emit an already-built value are wrappers rather than anchors.",
+  "anchor_worked_example": "Worked example from a different scenario: a checkout page emits body.order_sig_v2 after Submit Order. The chain collects an order draft, encodes checkout state, collects an async profile receipt, composes a request envelope, runs a generic interceptor pipeline, then selects a sealing interceptor. The sealing interceptor is the anchor because its immediate caller is a generic dispatcher and its own body is the highest point that explains why order_sig_v2 is produced. Helpers below it that canonicalize fields or fold payload bytes are nested target-specific helpers; the digest routine is a reusable core utility; the dispatcher and request sender are wrappers or path functions; same-click analytics_sig or retry_fingerprint values are off-chain decoys. Apply the same reasoning to the actual page and bundle below."
+}

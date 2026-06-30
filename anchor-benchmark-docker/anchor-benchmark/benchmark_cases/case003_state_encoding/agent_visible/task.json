@@ -1,0 +1,110 @@
+{
+  "case_id": "case003_state_encoding",
+  "page": "captures/devtools-source-dump/127.0.0.1_7599/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#noteText",
+      "value": "Call supplier before Friday"
+    },
+    {
+      "action": "type",
+      "selector": "#tagInput",
+      "value": "work"
+    },
+    {
+      "action": "select",
+      "selector": "#prioritySelect",
+      "value": "high"
+    },
+    {
+      "action": "focus",
+      "selector": "#noteText"
+    },
+    {
+      "action": "press",
+      "selector": "#noteText",
+      "keys": "Control+Enter"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "note.add",
+    "field": "state_code"
+  },
+  "question": "Locate the anchor function for the state_code field in the console.log object whose action is note.add after typing a note body and tag, selecting priority High, focusing the note editor, and pressing Control+Enter. The anchor function is the first target-specific state encoding value constructor on the dynamic behavior chain: after keyboard shortcut recognition, intent queuing, custom event dispatch, flow execution, draft reading, normalization and input preparation, its function body itself constructs the target observable state encoding value rather than merely collecting inputs, dispatching control, wrapping a return value, or writing to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "General rule for resolving ambiguity: a function is target-specific with respect to the observable described above if at least one statement in its body either constructs/binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) If target-specific C is called by generic dispatcher B and calls generic utility D, the anchor is C, not B or D. (2) If generic A writes whatever callee B returns into the target field and B computes that value, the anchor is B. (3) If the target-specific statement is one branch inside a larger function F, F remains a valid anchor candidate.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): A checkout page emits body.order_sig_v2 after Submit Order. Chain: click Submit -> construct order draft (generic prep) -> encode checkout state (generic prep) -> collect async profile receipt (generic prep) -> compose request envelope (generic prep) -> run interceptor pipeline (generic dispatcher) -> select sealing interceptor (ANCHOR) -> canonicalize payload fields (nested helper) -> fold payload with receipt + pepper (nested helper) -> compute digest (core utility) -> write body.order_sig_v2 -> send request (wrapper/sink). The sealing interceptor is the anchor because its immediate caller is the generic pipeline and its body explains why order_sig_v2 is produced. Apply the same reasoning to this quick-notes page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleDraftStateEncoder",
+      "file": "captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js",
+      "slice": {
+        "start_line": 1,
+        "end_line": 1,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleDraftStateEncoder(frame, cfg, extra, variant) {\n  const rows = buildStateRows(frame, cfg, extra);\n  const folded = foldDraftRows(rows, cfg, extra);\n  const body = formatBase36(folded.left, folded.right, cfg);\n  return 'sc_' + body + checksum(folded, rows.length);\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, keyboard handler, formatter, flow dispatcher or event bus wrapper when a more target-specific state value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The target value matches ^sc_[a-z0-9]{14}$ and should not be confused with sidecar preview, undo, status, metric or word-fence values."
+  ]
+}

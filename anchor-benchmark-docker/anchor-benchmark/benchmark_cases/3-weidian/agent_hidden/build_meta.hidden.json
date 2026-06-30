@@ -1,0 +1,116 @@
+{
+  "case_id": "real03_weidian_request_transformation",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 10,
+    "captured_js_total_bytes": 3388407,
+    "anchor_bundle_lines": 172,
+    "minified": true,
+    "bundler": "webpack",
+    "obfuscation_level": 1,
+    "vendor_noise_level": "very_high",
+    "call_depth_estimate": 3,
+    "cross_file_anchor": false,
+    "primitive_in_separate_file": true,
+    "same_request_decoy_fields": 0,
+    "notes": "2.2 MB minified index.js (everything on line 154). The anchor is the login regenerator state machine that assembles the payload and writes the encrypted password field; it calls the page's encrypt helper (0.7), which wraps a JSEncrypt instance (v) bound with the site public key. JSEncrypt primitive is a separate vendor file. wasm/ + turing.captcha are device/captcha noise. phone/countryCode/password all go through the same encrypt helper."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "fill phone",
+          "fill password",
+          "click login"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "POST",
+        "url_contains": "sso.weidian.com/user/login",
+        "field": "password",
+        "plaintext_sample": "13819912565",
+        "value_sample": "cLhf/IoKEk... (RSA, base64)"
+      }
+    },
+    "anchor_definition": "The login function (regenerator state-machine body) that assembles the request payload and writes the RSA-encrypted password field before POSTing; it is the complete function containing the captured 1.json code. The per-field encrypt helper is a nested target-specific helper (0.7); JSEncrypt/RSAEncrypt are core utilities."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures",
+      "wasm modules"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_transformation",
+    "case_category": "login_payload_field_rsa_encryption",
+    "subtype": "phone/countryCode/password each RSA-encrypted into the login payload",
+    "network_request_present": true,
+    "recomputable_offline": false,
+    "recompute_check": "JSEncrypt RSA uses PKCS#1 random padding; not reproducible to a fixed value",
+    "near_categories": [
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "Multiple payload fields are transformed (not a single signature/token field), so this is request_transformation."
+      },
+      {
+        "category": "state_encoding",
+        "why_not": "The values are RSA of user input, not a local UI-state encoding."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "2.2 MB minified bundle; the encrypt method is one property among thousands; JSEncrypt primitive in a separate file."
+      ]
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The page encrypt method vs JSEncrypt.prototype.encrypt vs the login assembly all involve 'encrypt' and are easy to confuse."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "Reached through a regenerator-compiled async login method."
+      ]
+    }
+  },
+  "provenance": {
+    "source_url": "https://d.weidian.com/weidian-pc/login/#/",
+    "label_in_1json": "index.js:154:39759",
+    "label_is_stale": false,
+    "label_points_to": "the login payload assembly (case 0) inside the login regenerator state machine — this is the anchor function; the per-field encrypt method it calls is a 0.7 nested helper",
+    "located_by": "content_search",
+    "anchor_locate_method": "ast"
+  },
+  "primary_anchor": {
+    "answer_function": "login",
+    "source_function": "login",
+    "source_file": "assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js",
+    "captured_file": "captures/assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js",
+    "captured_span": {
+      "start_line": 154,
+      "end_line": 154,
+      "start_offset": 610112,
+      "end_offset": 611847
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "real19_yhd_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is double_submit: the login submit handler whose body reads #pwd/#un, constructs a JSEncrypt, sets the public key, RSA-encrypts password (and username) inline, and assembles the credentials.* payload it posts. PLAN §4.3: the password ciphertext is constructed inline inside this function (no dedicated encrypt function), so this enclosing function is the anchor; PLAN §5.1: not the validation precondition it calls, a cookie util, or the JSEncrypt library primitive.",
+  "anchor": {
+    "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+    "locator": "var k=$(\"#un\").val();var j=$(\"#pwd\").val();var i=new JSEncrypt()",
+    "answer_function": "double_submit",
+    "source_function": "double_submit",
+    "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+    "why": "Builds the login request: new JSEncrypt + setPublicKey(pubkey), j=i.encrypt(password), then h={'credentials.password':j,...} which is posted to /publicPassport/login.do. This constructs the exact credentials.password value observed."
+  },
+  "roles": [
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function checkAccountAndPwdForLogin(",
+      "role": "Path-critical",
+      "answer_function": "checkAccountAndPwdForLogin",
+      "why": "Validation gate called by the submit handler before encryption (checks the account and password fields). On the path but does not construct the encrypted value."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function getCookie(",
+      "role": "Off-chain",
+      "answer_function": "getCookie",
+      "why": "A generic cookie reader utility; unrelated to the password encryption path."
+    }
+  ]
+}

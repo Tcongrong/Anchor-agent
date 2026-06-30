@@ -1,0 +1,188 @@
+{
+  "case_id": "case005_byte_array_transformation",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3072,
+    "async_level": 6,
+    "distractor_count": 44,
+    "distractor_count_note": "distractor_count counts shadow reducers x00-x43 only. role_oracle Off-chain rows total 7 because each scored decoy is one captured function span, not every x-module file.",
+    "semantic_decoy_count": 26,
+    "semantic_decoy_note": "Named byte-array and proof-like constructor candidates in src/z0/k7/q3/t9.js and adjacent chain modules that resemble the anchor but do not emit the live batch_payload.",
+    "emit_path_decoy_count": 18,
+    "emit_path_decoy_note": "Side-path handlers and console objects on the batch.encode route that carry batch_payload-like values without being the target observable action.",
+    "vendor_noise_file_count": 25,
+    "construct_validity_note": "The primary challenge is semantic disambiguation among byte-array constructor candidates and off-chain decoys in the captured bundle; callable names remain visible so submissions can name captured functions deterministically.",
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "fill",
+            "selector": "#batchKey",
+            "value": "REC-7749"
+          },
+          {
+            "action": "select",
+            "selector": "#compressionMode",
+            "value": "zstd"
+          },
+          {
+            "action": "click",
+            "selector": "#encodeButton"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "batch.encode",
+        "field": "batch_payload",
+        "value_pattern": "^ca_[A-Za-z0-9_-]{24}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific byte-array value-construction function on the dynamic behavior chain: the earliest function, after routing, batch configuration collection, runtime state collection and input preparation, whose own body constructs the target observable batch_payload value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "included_note": "Paths are relative to agent_visible/, matching task.json visible_corpus.",
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_hidden/dist/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/batch.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_9500/assets/batch.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 1693740,
+    "bundle_lines": 35079
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name is assembled from character-code arrays at the sink, so direct literal search is insufficient.",
+        "The target byte payload is carried through runtime-derived transport keys and recovered shortly before console output.",
+        "The live byte-conversion configuration is selected only after the prescribed #encodeButton click, once click-time DOM, form-order, style and dataset state are captured.",
+        "Function names related to byte-array construction remain intentionally visible for answerability; the intended difficulty is semantic disambiguation among the byte candidates, not hiding every relevant identifier."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1693740,
+        "captured_bundle_lines": 35079,
+        "route_table_rows": 44,
+        "state_machine_steps": 3072
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The target path crosses delegated event handling, two-stage action routing, staged-state gate checks, tuple construction, asynchronous scheduling, local event dispatch, runtime slot materialization, byte-array conversion, dynamic transport and sink wrapping.",
+        "The same batch.encode interaction produces non-target preview/audit objects carrying batch_payload-like values before the target batch.encode object.",
+        "The deployed bundle also contains proof-like, state-like and vendor-like decoys that execute or remain reachable-looking without feeding the target batch_payload field."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 24,
+        "off_chain_decoy_modules": 44,
+        "same_field_non_target_console_objects": 2
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from the #encodeButton click by Promise, microtask, timer, animation-frame, MutationObserver and DOM CustomEvent boundaries.",
+        "The selected runtime configuration is cloned and mutated in a WeakMap-backed materialization step before the byte converter receives it.",
+        "The final sink receives an already encoded byte payload after dynamic cell and lane recovery, so sink inspection alone does not identify the construction site."
+      ],
+      "async_boundaries": [
+        "queueMicrotask continuation",
+        "Promise.resolve continuation",
+        "setTimeout(..., 0)",
+        "requestAnimationFrame callback",
+        "MutationObserver callback",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "byte_array_transformation",
+    "case_category": "client_side_batch_payload_materialization",
+    "subtype": "route-selected Uint8Array-to-base64url payload",
+    "network_request_present": false,
+    "reason": "The observable value is produced by materializing a runtime-dependent byte array and encoding it as a stable byte payload string. It is not a request signature, browser fingerprint, plain state encoding or request-body rewrite.",
+    "near_categories": [
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The output has no proof/token/seal semantics; proof-like code in the bundle is decoy material and does not feed the target field."
+      },
+      {
+        "category": "state_encoding",
+        "why_not": "The target specifically constructs a byte array and serializes it as a byte payload rather than only formatting UI state."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "No network request body is emitted or rewritten; the target is a console-observable byte payload."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The chain uses local DOM and form state, not browser/device capability collection as the target behavior."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "full role_oracle and span hashes live in oracle.hidden.json; this file mirrors primary_anchor identity only for maintainer clarity",
+    "private_oracle_location": "agent_hidden/oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "Maintainers read answer_function (agent-visible bundle name) and source_function (private src mapping) here. Agent-facing task material still must not leak the anchor name."
+  },
+  "primary_anchor": {
+    "answer_function": "serializePackedBytes",
+    "source_function": "serializePackedBytes",
+    "source_file": "src/z0/k7/q3/t9.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_9500/assets/batch.app.bundle.js",
+    "captured_span": {
+      "start_line": 504,
+      "end_line": 507,
+      "start_offset": 42461,
+      "end_offset": 42876
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

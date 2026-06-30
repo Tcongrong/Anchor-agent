@@ -1,0 +1,17 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You locate the single behaviour-anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON only.",
+ "thinking": null,
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: Locate the anchor function for the req_sig field in the console.log object whose action is request.sign after filling API Endpoint with /api/v2/users, selecting HTTP Method POST, selecting Auth Scheme bearer, and clicking Generate Signature. The anchor is the first target-specific value-construction function on the dynamic behavior chain: it appears after routing, request action-table resolution, scope-field selection, and input preparation, and its own function body constructs the target request-signature hash value instead of merely collecting request parameters, forwarding control, wrapping a return value, or emitting to the sink. Return exactly one complete JavaScript function and its location in the captured corpus. Do not return a generic utility, event handler, action-table dispatcher, scope resolver, full call chain, or final console sink.\n\nExample value pattern: ^sig_[a-z0-9]{12}$\nObservable: {\"type\": \"console\", \"method\": \"log\", \"action\": \"request.sign\", \"field\": \"req_sig\", \"format\": \"^sig_[a-z0-9]{12}$\"}\n\nShortlisted functions:\n### 26001f46af692637 (n0)\n```js\nfunction n0(envelope) {\n  const payload = Object.freeze(buildPayload(envelope));\n  paint(payload);\n  console[methodName()](payload);\n  return payload;\n}\n```\n### c483eea3878d4f29 (buildSignParams)\n```js\nfunction buildSignParams(ctx) {\n  return {\n    ...ctx,\n    endpoint: readApiEndpoint(),\n    requestMethod: readHttpMethod(),\n    authScheme: readAuthScheme(),\n    clickCount: Number(ctx.clickCount || 0) + 1,\n    trace: Array.isArray(ctx.trace) ? ctx.trace.concat(\"b1\") : [\"b1\"]\n  };\n}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782627322.2994366
+}

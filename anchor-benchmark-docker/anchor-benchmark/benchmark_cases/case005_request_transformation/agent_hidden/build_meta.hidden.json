@@ -1,0 +1,174 @@
+{
+  "case_id": "case005_request_transformation",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3120,
+    "async_level": 6,
+    "distractor_count": 44,
+    "semantic_decoy_count": 26,
+    "submit_path_decoy_count": 12,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#searchScope",
+            "value": "logs-ops"
+          },
+          {
+            "action": "select",
+            "selector": "#filterMode",
+            "value": "strict"
+          },
+          {
+            "action": "check",
+            "selector": "#filterEnabled"
+          },
+          {
+            "action": "submit",
+            "selector": "#queryForm"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "request.transform",
+        "field": "query_payload",
+        "value_pattern": "^qp_[a-z0-9_-]{10,18}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after form-submit gating, action routing, local-event dispatch, asynchronous scheduling, form-input collection, tuple normalization and projection preparation, whose own body constructs the target observable query_payload value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the console sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_hidden/dist/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/query.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4173/assets/query.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 2762391,
+    "bundle_lines": 107298
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name query_payload is assembled from string fragments at the sink, so a direct literal search does not reveal the anchor.",
+        "Form input values are normalized, projected and transported through dynamic lanes before the payload is emitted."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 2762391,
+        "captured_bundle_lines": 107298,
+        "route_table_rows": 44,
+        "state_machine_steps": 3120
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The form-submit path crosses filter arming, enabled gating, action routing, local event dispatch, route layers, asynchronous scheduling, tuple construction, runtime slot materialization, payload construction, dynamic transport and sink wrapping.",
+        "Decoy modules call the alternate reducer selector y() to emit qp-like shadow values that do not feed the requested query_payload field."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 24,
+        "off_chain_decoy_modules": 44,
+        "same_field_non_target_console_objects": 0
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from the form submit by DOM CustomEvent, Promise, microtask, timer, animation-frame and MutationObserver boundaries.",
+        "The final sink receives an already-constructed query_payload value after projection and transport recovery, so sink inspection alone does not identify the construction site."
+      ],
+      "async_boundaries": [
+        "queueMicrotask continuation",
+        "Promise.resolve continuation",
+        "setTimeout(..., 0)",
+        "requestAnimationFrame callback",
+        "MutationObserver callback",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_transformation",
+    "case_category": "client_side_request_payload_construction",
+    "subtype": "form input query payload construction",
+    "network_request_present": false,
+    "reason": "The observable value is a deterministic transform of form input fields (scope, filter mode, sort key, page, limit) and the active reducer recipe, emitted to the console under action request.transform. It is not a browser fingerprint, state encoding, byte-array transform or request signature.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "The value is derived from multiple form fields through a reducer recipe rather than encoding a single state token."
+      },
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The output has no cryptographic proof/seal semantics; it is a transform of request inputs, not a signature over them."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "primary_anchor": {
+    "answer_function": "buildQueryPayload",
+    "source_function": "buildQueryPayload",
+    "source_file": "src/z0/k7/q3/t9.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4173/assets/query.app.bundle.js",
+    "captured_span": {
+      "start_line": 91,
+      "end_line": 119,
+      "start_offset": 3488,
+      "end_offset": 4958
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "case_id": "real06_37_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "GET",
+      "url_contains": "/login",
+      "field": "password",
+      "plaintext_sample": "13819912565",
+      "value_sample": "bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4="
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the SQ login/registration dispatcher _action (the answer recorded in 1.json): it assembles the request object h, binds the password by calling the site's password encoder (h.password=td(f), also password1/rpassword), applies the request-level cryps transform and sends the GET jsonp /login request. Graded below it: td (the bespoke password scrambler that produces the observed token, 0.7) -> __rsa (the base64 primitive td and cryp share, 0.5). cryp (a sibling scrambler for other data) is off-chain (0). NOTE: the file is a single-line minified blob that does not parse with acorn (Dean-Edwards eval was statically unpacked in place); _action is pinned by explicit offsets because the locator/AST path cannot resolve it.",
+  "primary_anchor": {
+    "answer_function": "_action",
+    "source_function": "_action",
+    "source_file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+    "captured_file": "captures/ptres.37.com/js/sq/widget/sq.login2015.js",
+    "captured_span": {
+      "file": "captures/ptres.37.com/js/sq/widget/sq.login2015.js",
+      "start_line": 1,
+      "end_line": 2,
+      "start_column": 27893,
+      "end_column": 261,
+      "start_offset": 27893,
+      "end_offset": 31671,
+      "sha256": "a0e58410c6c7c7a1adfdbf250faa19b0970c31e0b2834e95c22d3de68e572218",
+      "normalized_sha256": "e82d4f8b0851aa10a3333317234b5e4e012ad2a31891d898fecde42cb7a7068e"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "_action: the SQ login/reg dispatcher captured as the 1.json answer. It assembles the request h, binds the password to the site encoder (h.password=td(f)), applies the request transform (g.cryps) and sends the GET jsonp request to /login. The field->encoder binding that produces the observed password token lives in this function's body."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "_action",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+      "captured_span": {
+        "file": "captures/ptres.37.com/js/sq/widget/sq.login2015.js",
+        "start_line": 1,
+        "end_line": 2,
+        "start_column": 27893,
+        "end_column": 261,
+        "start_offset": 27893,
+        "end_offset": 31671,
+        "sha256": "a0e58410c6c7c7a1adfdbf250faa19b0970c31e0b2834e95c22d3de68e572218",
+        "normalized_sha256": "e82d4f8b0851aa10a3333317234b5e4e012ad2a31891d898fecde42cb7a7068e"
+      },
+      "why": "_action: the SQ login/reg dispatcher captured as the 1.json answer. It assembles the request h, binds the password to the site encoder (h.password=td(f)), applies the request transform (g.cryps) and sends the GET jsonp request to /login. The field->encoder binding that produces the observed password token lives in this function's body.",
+      "answer_function": "_action",
+      "source_function": "_action"
+    },
+    {
+      "function": "td",
+      "role": "Nested target-specific helper",
+      "score": 0.7,
+      "source_file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+      "captured_span": {
+        "file": "captures/ptres.37.com/js/sq/widget/sq.login2015.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 2641,
+        "end_column": 2843,
+        "start_offset": 2641,
+        "end_offset": 2843,
+        "sha256": "21cadee74ff129d14cc81f62d3e0401053faf8c29207a62ee25e30a93614956e",
+        "normalized_sha256": "21cadee74ff129d14cc81f62d3e0401053faf8c29207a62ee25e30a93614956e"
+      },
+      "why": "td: the bespoke password scrambler — it inserts a.substr(0,3) at index 7 and a.substr(3) at index 12 among 15 random chars, then base64-encodes the joined result via __rsa, producing the observed password token. A target-specific helper nested below the dispatcher.",
+      "answer_function": "td",
+      "source_function": "td"
+    },
+    {
+      "function": "__rsa",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+      "captured_span": {
+        "file": "captures/ptres.37.com/js/sq/widget/sq.login2015.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 2136,
+        "end_column": 2641,
+        "start_offset": 2136,
+        "end_offset": 2641,
+        "sha256": "67d9c7204d7cf0b982515c0f64fa6e1353e5177e9bcb2a8e1ac468c97c6fbb83",
+        "normalized_sha256": "67d9c7204d7cf0b982515c0f64fa6e1353e5177e9bcb2a8e1ac468c97c6fbb83"
+      },
+      "why": "__rsa: a standard base64 encoder (despite the name) over the `ch` charset with '='/'==' padding, shared by td (password) and cryp (other data). The generic encoding primitive on the construction path — a core utility below the field-binding helper.",
+      "answer_function": "__rsa",
+      "source_function": "__rsa"
+    },
+    {
+      "function": "cryp",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+      "captured_span": {
+        "file": "captures/ptres.37.com/js/sq/widget/sq.login2015.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 2844,
+        "end_column": 3094,
+        "start_offset": 2844,
+        "end_offset": 3094,
+        "sha256": "a6d7e322a3b27f9c10a653447c241a7877f4381f53f8f4b9c187b9495ebf3de1",
+        "normalized_sha256": "a6d7e322a3b27f9c10a653447c241a7877f4381f53f8f4b9c187b9495ebf3de1"
+      },
+      "why": "cryp: a different scrambling/encoding routine (URL-encodes then permutes its input, joined by '.', also via __rsa) for other data; not the password encoder. A sibling decoy.",
+      "answer_function": "cryp",
+      "source_function": "cryp"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The network sink / request-sending service emits an already constructed value and is not the constructor.",
+      "Thin forwarding wrappers and submit handlers that merely call the value constructor should not outrank the anchor.",
+      "Generic crypto/encoding primitives (md5/AES/RSA/SM/base64/uuid libraries) are Core utilities, below the field-binding anchor.",
+      "Same-request OTHER fields (a second encrypted parameter, signatures, fingerprints) are off-chain decoys for this observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention."
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to primary_anchor.captured_span (the field-binding/value-constructing function)."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to a target-specific helper nested below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to a generic crypto/encoding primitive used by the construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to a path-critical step, a forwarding wrapper or the submit handler."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Span maps to a generic low-level helper (BigInt math, DOM read) on the upstream path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to an off-chain decoy / same-request other field, or cannot be uniquely mapped."
+    }
+  ]
+}

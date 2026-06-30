@@ -1,0 +1,16 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On the Weidian PC login page, the login POST to sso.weidian.com/user/login sends phone, countryCode and password as RSA-encrypted values rather than plaintext. Locate the single complete function through whose body each of those payload fields is encrypted (the page's encryption entry). Return exactly one JSON object (see answer_format). Do NOT return the login handler that assembles the payload, or the generic JSEncrypt library primitive it delegates to. Only code under captures is in scope.  network_request POST sso.weidian.com/user/login password 13819912565 cLhf/IoKEkAkByIWgtpD2FGOZT5W7PzBDX/8k0w4ZzViMVJusApHdFXMO5ngm7h6... (RSA, base64)\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"sso.weidian.com/user/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"cLhf/IoKEkAkByIWgtpD2FGOZT5W7PzBDX/8k0w4ZzViMVJusApHdFXMO5ngm7h6... (RSA, base64)\"}\n\nSuspicious functions:\n### f74ae52cd650a85c (t)\n```js\nfunction t(){var n,i,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return t.next=2,e.$http({method:\"get\",url:\"//thor.weidian.com/passport/get.telephone/1.0\",params:{param:{}}});case 2:n=t.sent,i=n.data,0==i.status.code&&(r=i.result)&&(e.countryCode=r.countryCode,e.telephone=r.telephone);case 5:case\"end\":return t.stop()}},t,e)}\n```\n### 52f4c71644accf05 ((anon))\n```js\nfunction(e){n.d(t,e,function(){return r[e]})}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782233991.2783775
+}

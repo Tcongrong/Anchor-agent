@@ -1,0 +1,112 @@
+{
+  "case_id": "real04_iquicker_request_signature",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 23,
+    "captured_js_total_bytes": 2339951,
+    "anchor_bundle_lines": 2784,
+    "minified": false,
+    "bundler": "none",
+    "obfuscation_level": 0,
+    "vendor_noise_level": "high",
+    "call_depth_estimate": 3,
+    "cross_file_anchor": true,
+    "same_request_decoy_fields": 0,
+    "notes": "AngularJS app. Anchor (base64Encode) is defined in js/app.min.js; the call site (doLogin) is in login/js/controllers.js, which contains four near-identical doLogin handlers. Vendor noise: angular/jquery/bootstrap/moment libraries under lib/."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "fill account",
+          "fill password",
+          "click login"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "POST",
+        "url_contains": "/login",
+        "field": "password",
+        "plaintext_sample": "13819912565",
+        "value_sample": "MTM4MTk5MTI1NjU="
+      }
+    },
+    "anchor_definition": "The first/only function whose body constructs the encoded password token (base64Encode), not the doLogin call-site wrapper or the request sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "client_side_password_base64_encode",
+    "subtype": "base64 of raw password as the request password field",
+    "network_request_present": true,
+    "recomputable_offline": true,
+    "recompute_check": "base64Encode('13819912565') === 'MTM4MTk5MTI1NjU='",
+    "near_categories": [
+      {
+        "category": "request_transformation",
+        "why_not": "Only one scalar field is encoded; the request body is not wholesale rewritten/encrypted."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The token is a deterministic encoding of user input, not a device/browser capability digest."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "Anchor lives in a differently-named bundle (js/app.min.js) than the login controller (login/js/controllers.js); the encoder is reached only by name across files."
+      ]
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "Four near-identical $scope.doLogin handlers and many base64Encode call sites; vendor libraries add large generic noise."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": false,
+      "evidence": []
+    }
+  },
+  "provenance": {
+    "source_url": "https://www.iquicker.com.cn/login/",
+    "label_in_1json": "controllers.js?v=1.1.1:345:5",
+    "label_is_stale": false,
+    "label_points_to": "the doLogin@329 call site (data assembly), not the encoder definition",
+    "located_by": "content_search",
+    "anchor_locate_method": "ast"
+  },
+  "primary_anchor": {
+    "answer_function": "base64Encode",
+    "source_function": "base64Encode",
+    "source_file": "js/app.min.js",
+    "captured_file": "captures/js/app.min.js",
+    "captured_span": {
+      "start_line": 2527,
+      "end_line": 2562,
+      "start_offset": 100278,
+      "end_offset": 101176
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

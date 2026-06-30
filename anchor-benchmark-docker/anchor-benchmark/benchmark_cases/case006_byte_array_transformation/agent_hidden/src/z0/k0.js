@@ -1,0 +1,185 @@
+import { k1 } from "./k1.js";
+
+function routeMark(packet) {
+  const trace = Array.isArray(packet.trace) ? packet.trace.slice() : [];
+  const seed = (Number(packet.routeSeed || 0) + 4 * 31 + trace.length) >>> 0;
+  const lane = (seed ^ (4 * 97)) >>> 0;
+  trace.push({ stage: "k0", seed, lane });
+  return {
+    ...packet,
+    routeSeed: seed,
+    routeLane4: lane,
+    trace
+  };
+}
+
+function routeGuard(packet) {
+  const action = String(packet.actionName || "");
+  const accepted = action === "byte.pipe.commit";
+  document.documentElement.dataset.case006Route4 = accepted ? "1" : "0";
+  return accepted;
+}
+
+function routeDecorate(packet) {
+  const projection = Array.isArray(packet.projection) ? packet.projection.slice() : [];
+  projection.push(["r4", String((Number(packet.routeSeed || 0) + 4) % 997)]);
+  return { ...packet, projection };
+}
+
+export function k0(packet) {
+  const marked = routeDecorate(routeMark(packet));
+  if (!routeGuard(marked)) return marked;
+  return k1(marked);
+}
+const k0_070 = "batch-tag:k0.js:070";
+const k0_071 = "audit-line:k0.js:071";
+const k0_072 = "intake-row:k0.js:072";
+const k0_073 = "manifest-slot:k0.js:073";
+const k0_074 = "ledger-entry:k0.js:074";
+const k0_075 = "shard-label:k0.js:075";
+const k0_076 = "codec-field:k0.js:076";
+const k0_077 = "queue-item:k0.js:077";
+const k0_078 = "batch-tag:k0.js:078";
+const k0_079 = "audit-line:k0.js:079";
+const k0_080 = "intake-row:k0.js:080";
+const k0_081 = "manifest-slot:k0.js:081";
+const k0_082 = "ledger-entry:k0.js:082";
+const k0_083 = "shard-label:k0.js:083";
+const k0_084 = "codec-field:k0.js:084";
+const k0_085 = "queue-item:k0.js:085";
+const k0_086 = "batch-tag:k0.js:086";
+const k0_087 = "audit-line:k0.js:087";
+const k0_088 = "intake-row:k0.js:088";
+const k0_089 = "manifest-slot:k0.js:089";
+const k0_090 = "ledger-entry:k0.js:090";
+const k0_091 = "shard-label:k0.js:091";
+const k0_092 = "codec-field:k0.js:092";
+const k0_093 = "queue-item:k0.js:093";
+const k0_094 = "batch-tag:k0.js:094";
+const k0_095 = "audit-line:k0.js:095";
+const k0_096 = "intake-row:k0.js:096";
+const k0_097 = "manifest-slot:k0.js:097";
+const k0_098 = "ledger-entry:k0.js:098";
+const k0_099 = "shard-label:k0.js:099";
+const k0_100 = "codec-field:k0.js:100";
+const k0_101 = "queue-item:k0.js:101";
+const k0_102 = "batch-tag:k0.js:102";
+const k0_103 = "audit-line:k0.js:103";
+const k0_104 = "intake-row:k0.js:104";
+const k0_105 = "manifest-slot:k0.js:105";
+const k0_106 = "ledger-entry:k0.js:106";
+const k0_107 = "shard-label:k0.js:107";
+const k0_108 = "codec-field:k0.js:108";
+const k0_109 = "queue-item:k0.js:109";
+const k0_110 = "batch-tag:k0.js:110";
+const k0_111 = "audit-line:k0.js:111";
+const k0_112 = "intake-row:k0.js:112";
+const k0_113 = "manifest-slot:k0.js:113";
+const k0_114 = "ledger-entry:k0.js:114";
+const k0_115 = "shard-label:k0.js:115";
+const k0_116 = "codec-field:k0.js:116";
+const k0_117 = "queue-item:k0.js:117";
+const k0_118 = "batch-tag:k0.js:118";
+const k0_119 = "audit-line:k0.js:119";
+const k0_120 = "intake-row:k0.js:120";
+const k0_121 = "manifest-slot:k0.js:121";
+const k0_122 = "ledger-entry:k0.js:122";
+const k0_123 = "shard-label:k0.js:123";
+const k0_124 = "codec-field:k0.js:124";
+const k0_125 = "queue-item:k0.js:125";
+const k0_126 = "batch-tag:k0.js:126";
+const k0_127 = "audit-line:k0.js:127";
+const k0_128 = "intake-row:k0.js:128";
+const k0_129 = "manifest-slot:k0.js:129";
+const k0_130 = "ledger-entry:k0.js:130";
+const k0_131 = "shard-label:k0.js:131";
+const k0_132 = "codec-field:k0.js:132";
+const k0_133 = "queue-item:k0.js:133";
+const k0_134 = "batch-tag:k0.js:134";
+const k0_135 = "audit-line:k0.js:135";
+const k0_136 = "intake-row:k0.js:136";
+const k0_137 = "manifest-slot:k0.js:137";
+const k0_138 = "ledger-entry:k0.js:138";
+const k0_139 = "shard-label:k0.js:139";
+const k0_140 = "codec-field:k0.js:140";
+const k0_141 = "queue-item:k0.js:141";
+const k0_142 = "batch-tag:k0.js:142";
+const k0_143 = "audit-line:k0.js:143";
+const k0_144 = "intake-row:k0.js:144";
+const k0_145 = "manifest-slot:k0.js:145";
+const k0_146 = "ledger-entry:k0.js:146";
+const k0_147 = "shard-label:k0.js:147";
+const k0_148 = "codec-field:k0.js:148";
+const k0_149 = "queue-item:k0.js:149";
+const k0_150 = "batch-tag:k0.js:150";
+const k0_151 = "audit-line:k0.js:151";
+const k0_152 = "intake-row:k0.js:152";
+const k0_153 = "manifest-slot:k0.js:153";
+const k0_154 = "ledger-entry:k0.js:154";
+const k0_155 = "shard-label:k0.js:155";
+const k0_156 = "codec-field:k0.js:156";
+const k0_157 = "queue-item:k0.js:157";
+const k0_158 = "batch-tag:k0.js:158";
+const k0_159 = "audit-line:k0.js:159";
+const k0_160 = "intake-row:k0.js:160";
+const k0_161 = "manifest-slot:k0.js:161";
+const k0_162 = "ledger-entry:k0.js:162";
+const k0_163 = "shard-label:k0.js:163";
+const k0_164 = "codec-field:k0.js:164";
+const k0_165 = "queue-item:k0.js:165";
+const k0_166 = "batch-tag:k0.js:166";
+const k0_167 = "audit-line:k0.js:167";
+const k0_168 = "intake-row:k0.js:168";
+const k0_169 = "manifest-slot:k0.js:169";
+const k0_170 = "ledger-entry:k0.js:170";
+const k0_171 = "shard-label:k0.js:171";
+const k0_172 = "codec-field:k0.js:172";
+const k0_173 = "queue-item:k0.js:173";
+const k0_174 = "batch-tag:k0.js:174";
+const k0_175 = "audit-line:k0.js:175";
+const k0_176 = "intake-row:k0.js:176";
+const k0_177 = "manifest-slot:k0.js:177";
+const k0_178 = "ledger-entry:k0.js:178";
+const k0_179 = "shard-label:k0.js:179";
+const k0_180 = "codec-field:k0.js:180";
+const k0_181 = "queue-item:k0.js:181";
+const k0_182 = "batch-tag:k0.js:182";
+const k0_183 = "audit-line:k0.js:183";
+const k0_184 = "intake-row:k0.js:184";
+const k0_185 = "manifest-slot:k0.js:185";
+const k0_186 = "ledger-entry:k0.js:186";
+const k0_187 = "shard-label:k0.js:187";
+const k0_188 = "codec-field:k0.js:188";
+const k0_189 = "queue-item:k0.js:189";
+const k0_190 = "batch-tag:k0.js:190";
+const k0_191 = "audit-line:k0.js:191";
+const k0_192 = "intake-row:k0.js:192";
+const k0_193 = "manifest-slot:k0.js:193";
+const k0_194 = "ledger-entry:k0.js:194";
+const k0_195 = "shard-label:k0.js:195";
+const k0_196 = "codec-field:k0.js:196";
+const k0_197 = "queue-item:k0.js:197";
+const k0_198 = "batch-tag:k0.js:198";
+const k0_199 = "audit-line:k0.js:199";
+const k0_200 = "intake-row:k0.js:200";
+const k0_201 = "manifest-slot:k0.js:201";
+const k0_202 = "ledger-entry:k0.js:202";
+const k0_203 = "shard-label:k0.js:203";
+const k0_204 = "codec-field:k0.js:204";
+const k0_205 = "queue-item:k0.js:205";
+const k0_206 = "batch-tag:k0.js:206";
+const k0_207 = "audit-line:k0.js:207";
+const k0_208 = "intake-row:k0.js:208";
+const k0_209 = "manifest-slot:k0.js:209";
+const k0_210 = "ledger-entry:k0.js:210";
+const k0_211 = "shard-label:k0.js:211";
+const k0_212 = "codec-field:k0.js:212";
+const k0_213 = "queue-item:k0.js:213";
+const k0_214 = "batch-tag:k0.js:214";
+const k0_215 = "audit-line:k0.js:215";
+const k0_216 = "intake-row:k0.js:216";
+const k0_217 = "manifest-slot:k0.js:217";
+const k0_218 = "ledger-entry:k0.js:218";
+const k0_219 = "shard-label:k0.js:219";
+const k0_220 = "codec-field:k0.js:220";
+const k0_221 = "queue-item:k0.js:221";

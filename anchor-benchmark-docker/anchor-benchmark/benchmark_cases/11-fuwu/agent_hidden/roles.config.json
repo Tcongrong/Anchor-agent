@@ -1,0 +1,43 @@
+{
+  "case_id": "real11_fuwu_request_transformation",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the request interceptor f (the function 1.json's label points at): it assembles the entire transformed request body for the queryFixedHospital POST — it sets the x-tif-* headers, builds the signData (SM2 signature) field and the encData (SM4-encrypted body) field, and JSON-stringifies the envelope. The 1.json description asks where BOTH encData AND signData are generated, and f is the function that generates both. Graded below it: the encData builder (SM2/3/4 dispatch) 0.7 and the signData builder 0.7 (the two requested fields), and the inner SM4 encryptor that produces the encData ciphertext bytes 0.5. The x-tif-signature header (sha256 of timestamp+nonce) is a different, unrequested field.",
+  "anchor": {
+    "file": "fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+    "start_offset": 1001346,
+    "end_offset": 1002592,
+    "answer_function": "f",
+    "source_function": "f",
+    "source_file": "fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+    "why": "The request interceptor f(t) recorded as the 1.json answer: it builds the whole transformed body — x-tif-* headers, t.data.signData (SM2 signature) and t.data.data.encData (SM4 ciphertext) — then JSON-stringifies it. This is the function where both the encData and signData fields asked about in the description are generated."
+  },
+  "roles": [
+    {
+      "file": "fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+      "start_offset": 1002002,
+      "end_offset": 1002542,
+      "role": "Nested target-specific helper",
+      "answer_function": "encData",
+      "source_function": "encData",
+      "why": "The encData builder: function(e,t){switch(e.toUpperCase()){...}} that dispatches by cipher (SM2/SM3/SM4) and returns the encrypted payload placed in t.data.data.encData. A target-specific field builder nested in f."
+    },
+    {
+      "file": "fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+      "start_offset": 1001826,
+      "end_offset": 1001977,
+      "role": "Nested target-specific helper",
+      "answer_function": "signData",
+      "source_function": "signData",
+      "why": "The signData builder: function(t){...o.doSignature(...)...} that SM2-signs the serialized request data and returns the base64 signature placed in t.data.signData. The other requested field's builder, nested in f."
+    },
+    {
+      "file": "fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+      "start_offset": 1002239,
+      "end_offset": 1002537,
+      "role": "Core utility",
+      "answer_function": "encData_sm4",
+      "source_function": "sm4Encrypt",
+      "why": "The SM4 branch's encryptor: function(e){...var s=A(c,u),l=b(s,a);return l.toUpperCase()} that unicode-escapes the body, SM4-encrypts it (b) under the derived key (A) and returns the observed uppercase ciphertext. The crypto primitive nested below the encData builder."
+    }
+  ]
+}

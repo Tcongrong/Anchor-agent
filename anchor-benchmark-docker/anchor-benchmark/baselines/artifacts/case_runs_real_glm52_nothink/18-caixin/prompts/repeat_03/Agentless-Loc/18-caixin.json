@@ -1,0 +1,19 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On u.caixin.com login, clicking login POSTs a payload whose `password` field is an encrypted token (e.g. 13819912565 becomes Wy0AkgthChYWCDF9MwOCyQ==). Locate the anchor function for that login request. The anchor function is the target-specific login submit handler on the submit->request chain: the single complete function whose own body reads the form, binds the password into the payload by running it through encode(encrypt(...)), assembles the request object and posts it \u2014 rather than the AES encrypt function it calls to produce the ciphertext (a nested target-specific helper), the generic URL-encode utility it also applies to several fields (a core utility), or the inverse decrypt function (an off-chain decoy). Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the encrypt function, the encode utility, or the decrypt function \u2014 return the submit handler that binds the encrypted password into the request. Only code under captures is in scope.  network_request POST login password 13819912565 Wy0AkgthChYWCDF9MwOCyQ==\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"Wy0AkgthChYWCDF9MwOCyQ==\"}\n\nSuspicious functions:\n### 1efa2849c13b28b1 (loginHandle)\n```js\nloginHandle:function(){var e={form:this.$refs.form,fields:[\"email\",\"password\"],fn:this.callback};this.validate(e)}\n```\n### da9470ae5765e21d (click)\n```js\nclick:function(e){return t.signinHandle(\"weibo\")}\n```\n### 8958b8818fbf1ad6 (encrypt)\n```js\nencrypt:function(t,e,n,r){var i=(r=this.cfg.extend(r)).kdf.execute(n,t.keySize,t.ivSize,r.salt,r.hasher);r.iv=i.iv;var o=g.encrypt.call(this,t,e,i.key,r);return o.mixIn(i),o}\n```\n### 8a293eb8bef645dd ((anon))\n```js\nfunction(){return new n(this,t)}\n```\n### 7e5bf0a3e475f8a8 (cryptoData)\n```js\nfunction(e){return e}\n```\n### b49a9a835c501b1a ((anon))\n```js\nfunction(){return e.href}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782616621.8494384
+}

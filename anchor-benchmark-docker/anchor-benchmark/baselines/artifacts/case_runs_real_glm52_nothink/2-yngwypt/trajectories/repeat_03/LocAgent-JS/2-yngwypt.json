@@ -1,0 +1,1278 @@
+[
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the yngwypt login page, clicking login POSTs a FormData whose `password` field is an SM-crypto token (the password 13819912565 becomes a long hex token beginning 0436...) and whose `username` field is a separate SM token. Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the form inputs, binds each credential to its encryption scheme \u2014 the password to the sm32 scheme and the username to the sm2nokey scheme, through the encrypt entry \u2014 and writes the resulting SM tokens into the FormData it POSTs, rather than the generic encrypt dispatcher that merely routes a value by scheme type (a control-flow selector), the sm32 scheme function that composes sm3-then-sm2 for whatever value it is handed (a nested scheme helper), or the lower-level SM2 primitive it ultimately calls (a core crypto utility). It is the only function that decides which field uses which scheme; the scheme functions and crypto primitives below it do not know which request field they serve. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the encrypt dispatcher, the sm32 scheme function, or the lower-level SM2 helper \u2014 those are graded below the handler. Only code under captures is in scope.  network_request POST /login password 13819912565 0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/login', 'field': 'password', 'plaintext_sample': '13819912565', 'value_sample': '0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...'}\nCandidate seed nodes (lexical prior, not a ranking): ['ca29fba7bd4194b1', '319d394832fc49e8', '3298eda5853d730c', '260c17379f3b3fca', 'e92aedc8ce4ca7f2', 'dde450c5d71f3548', 'dc6dc04bc91881f1', '4167d68a0a58a5ce']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+    }
+   ],
+   "tools": [
+    {
+     "name": "search_entity",
+     "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "traverse_graph",
+     "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       },
+       "edge": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node",
+       "edge"
+      ]
+     }
+    },
+    {
+     "name": "retrieve_entity",
+     "description": "Return the full source and location of a function node id.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node"
+      ]
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782555180.3859317
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "I'll start by searching for relevant functions related to login, encryption, and FormData handling."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_b2b032d3c2c14d589eaae534",
+     "name": "search_entity",
+     "input": {
+      "query": "login FormData password encrypt"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ca8ea4517117440687eba6bb",
+     "name": "search_entity",
+     "input": {
+      "query": "sm2 sm3 encrypt username"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c4005794e69e4dc893fea512",
+     "name": "search_entity",
+     "input": {
+      "query": "login click submit"
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 1078,
+    "output_tokens": 58
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-ed2eab89-b6f0-9eea-8a6f-9d2090275122",
+    "object": "chat.completion",
+    "created": 1782555178,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1078,
+     "completion_tokens": 58,
+     "total_tokens": 1136,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1078,
+     "output_tokens": 58
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "I'll start by searching for relevant functions related to login, encryption, and FormData handling.",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "search_entity",
+          "arguments": "{\"query\": \"login FormData password encrypt\"}"
+         },
+         "index": 0,
+         "id": "call_b2b032d3c2c14d589eaae534",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search_entity",
+          "arguments": "{\"query\": \"sm2 sm3 encrypt username\"}"
+         },
+         "index": 1,
+         "id": "call_ca8ea4517117440687eba6bb",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search_entity",
+          "arguments": "{\"query\": \"login click submit\"}"
+         },
+         "index": 2,
+         "id": "call_c4005794e69e4dc893fea512",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1078,
+   "output_tokens": 58
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the yngwypt login page, clicking login POSTs a FormData whose `password` field is an SM-crypto token (the password 13819912565 becomes a long hex token beginning 0436...) and whose `username` field is a separate SM token. Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the form inputs, binds each credential to its encryption scheme \u2014 the password to the sm32 scheme and the username to the sm2nokey scheme, through the encrypt entry \u2014 and writes the resulting SM tokens into the FormData it POSTs, rather than the generic encrypt dispatcher that merely routes a value by scheme type (a control-flow selector), the sm32 scheme function that composes sm3-then-sm2 for whatever value it is handed (a nested scheme helper), or the lower-level SM2 primitive it ultimately calls (a core crypto utility). It is the only function that decides which field uses which scheme; the scheme functions and crypto primitives below it do not know which request field they serve. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the encrypt dispatcher, the sm32 scheme function, or the lower-level SM2 helper \u2014 those are graded below the handler. Only code under captures is in scope.  network_request POST /login password 13819912565 0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/login', 'field': 'password', 'plaintext_sample': '13819912565', 'value_sample': '0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...'}\nCandidate seed nodes (lexical prior, not a ranking): ['ca29fba7bd4194b1', '319d394832fc49e8', '3298eda5853d730c', '260c17379f3b3fca', 'e92aedc8ce4ca7f2', 'dde450c5d71f3548', 'dc6dc04bc91881f1', '4167d68a0a58a5ce']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "I'll start by searching for relevant functions related to login, encryption, and FormData handling."
+      },
+      {
+       "type": "tool_use",
+       "id": "call_b2b032d3c2c14d589eaae534",
+       "name": "search_entity",
+       "input": {
+        "query": "login FormData password encrypt"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_ca8ea4517117440687eba6bb",
+       "name": "search_entity",
+       "input": {
+        "query": "sm2 sm3 encrypt username"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_c4005794e69e4dc893fea512",
+       "name": "search_entity",
+       "input": {
+        "query": "login click submit"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_b2b032d3c2c14d589eaae534",
+       "content": "{\"nodes\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_ca8ea4517117440687eba6bb",
+       "content": "{\"nodes\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_c4005794e69e4dc893fea512",
+       "content": "{\"nodes\": []}"
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "search_entity",
+     "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "traverse_graph",
+     "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       },
+       "edge": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node",
+       "edge"
+      ]
+     }
+    },
+    {
+     "name": "retrieve_entity",
+     "description": "Return the full source and location of a function node id.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node"
+      ]
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782555183.0952861
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me try different search terms and also retrieve the candidate seed nodes."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_669a7464df57437993037d85",
+     "name": "search_entity",
+     "input": {
+      "query": "login"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_200250f773e84a8b9e1d861e",
+     "name": "search_entity",
+     "input": {
+      "query": "encrypt"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7d8e97bedf2c4a5a91aee391",
+     "name": "search_entity",
+     "input": {
+      "query": "FormData"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ad330c58cb6f473a96299a40",
+     "name": "search_entity",
+     "input": {
+      "query": "sm2"
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 1161,
+    "output_tokens": 55
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-2a1c2c5a-add7-9435-9249-e08a84c24264",
+    "object": "chat.completion",
+    "created": 1782555180,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1161,
+     "completion_tokens": 55,
+     "total_tokens": 1216,
+     "prompt_tokens_details": {
+      "cached_tokens": 1024
+     },
+     "input_tokens_details": {
+      "cached_tokens": 1024
+     },
+     "input_tokens": 1161,
+     "output_tokens": 55
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "Let me try different search terms and also retrieve the candidate seed nodes.",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "search_entity",
+          "arguments": "{\"query\": \"login\"}"
+         },
+         "index": 0,
+         "id": "call_669a7464df57437993037d85",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search_entity",
+          "arguments": "{\"query\": \"encrypt\"}"
+         },
+         "index": 1,
+         "id": "call_200250f773e84a8b9e1d861e",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search_entity",
+          "arguments": "{\"query\": \"FormData\"}"
+         },
+         "index": 2,
+         "id": "call_7d8e97bedf2c4a5a91aee391",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search_entity",
+          "arguments": "{\"query\": \"sm2\"}"
+         },
+         "index": 3,
+         "id": "call_ad330c58cb6f473a96299a40",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1161,
+   "output_tokens": 55
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the yngwypt login page, clicking login POSTs a FormData whose `password` field is an SM-crypto token (the password 13819912565 becomes a long hex token beginning 0436...) and whose `username` field is a separate SM token. Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the form inputs, binds each credential to its encryption scheme \u2014 the password to the sm32 scheme and the username to the sm2nokey scheme, through the encrypt entry \u2014 and writes the resulting SM tokens into the FormData it POSTs, rather than the generic encrypt dispatcher that merely routes a value by scheme type (a control-flow selector), the sm32 scheme function that composes sm3-then-sm2 for whatever value it is handed (a nested scheme helper), or the lower-level SM2 primitive it ultimately calls (a core crypto utility). It is the only function that decides which field uses which scheme; the scheme functions and crypto primitives below it do not know which request field they serve. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the encrypt dispatcher, the sm32 scheme function, or the lower-level SM2 helper \u2014 those are graded below the handler. Only code under captures is in scope.  network_request POST /login password 13819912565 0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/login', 'field': 'password', 'plaintext_sample': '13819912565', 'value_sample': '0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...'}\nCandidate seed nodes (lexical prior, not a ranking): ['ca29fba7bd4194b1', '319d394832fc49e8', '3298eda5853d730c', '260c17379f3b3fca', 'e92aedc8ce4ca7f2', 'dde450c5d71f3548', 'dc6dc04bc91881f1', '4167d68a0a58a5ce']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "I'll start by searching for relevant functions related to login, encryption, and FormData handling."
+      },
+      {
+       "type": "tool_use",
+       "id": "call_b2b032d3c2c14d589eaae534",
+       "name": "search_entity",
+       "input": {
+        "query": "login FormData password encrypt"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_ca8ea4517117440687eba6bb",
+       "name": "search_entity",
+       "input": {
+        "query": "sm2 sm3 encrypt username"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_c4005794e69e4dc893fea512",
+       "name": "search_entity",
+       "input": {
+        "query": "login click submit"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_b2b032d3c2c14d589eaae534",
+       "content": "{\"nodes\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_ca8ea4517117440687eba6bb",
+       "content": "{\"nodes\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_c4005794e69e4dc893fea512",
+       "content": "{\"nodes\": []}"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Let me try different search terms and also retrieve the candidate seed nodes."
+      },
+      {
+       "type": "tool_use",
+       "id": "call_669a7464df57437993037d85",
+       "name": "search_entity",
+       "input": {
+        "query": "login"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_200250f773e84a8b9e1d861e",
+       "name": "search_entity",
+       "input": {
+        "query": "encrypt"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_7d8e97bedf2c4a5a91aee391",
+       "name": "search_entity",
+       "input": {
+        "query": "FormData"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_ad330c58cb6f473a96299a40",
+       "name": "search_entity",
+       "input": {
+        "query": "sm2"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_669a7464df57437993037d85",
+       "content": "{\"nodes\": [\"f5523bef0cb393cc\", \"0efeda3063cdd55d\", \"2d74979890749e27\", \"eea1e8b6d8246bcb\", \"5fe1c0e85eebe580\", \"f6b3015d1b4c3e7f\", \"aa9e71ba0141e05d\", \"45a2f2252d341619\", \"573603ebf04e6935\", \"8b6135af3fb5164b\", \"565c2d4a07c952c6\", \"1d1a73944244e43f\", \"12fc216e46546ca7\", \"ae3750e70d3bbb65\", \"b3f83f69490d4975\", \"25978ac0bdb14bc3\", \"109fbbe680525497\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"329b74d30cc5f436\"]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_200250f773e84a8b9e1d861e",
+       "content": "{\"nodes\": [\"4f91acd340a431b6\", \"8d3c8962ab465e3d\", \"49520108665e37e1\", \"5ba61e08d058a894\", \"69224d7bf56cc868\", \"79f4920a66ef0ce3\", \"1bb5e2d0c41195eb\", \"1192055af2188ee3\", \"260c17379f3b3fca\", \"e92aedc8ce4ca7f2\", \"b62d143601b07ba9\", \"7833ae3c297af950\", \"c7b8241dedd1cd86\", \"6a4a5c0c6bb61b3f\", \"1b71b0218cdd35a3\", \"8c948ab453d7df45\", \"c614ef5514f9b9f2\", \"83be48a22cbc934c\", \"b25e9e10f699e65e\", \"073305d7d15b548d\"]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_7d8e97bedf2c4a5a91aee391",
+       "content": "{\"nodes\": [\"dde450c5d71f3548\", \"dc6dc04bc91881f1\", \"ca29fba7bd4194b1\", \"94de5f77e7227c92\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"319d394832fc49e8\", \"3298eda5853d730c\", \"4167d68a0a58a5ce\", \"45b847a9e6fce05b\", \"d17ca588c4c21ef8\", \"db97f3ed6b9184ba\", \"245c5327281ab866\", \"de053a42de777d27\", \"bd6a2f2c416bfc04\", \"7c98f8f092902d37\", \"77036368bb2db44f\", \"7f9629dce0b4a7e8\", \"0bdaa54184514e27\", \"76a355539f7d10f2\"]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_ad330c58cb6f473a96299a40",
+       "content": "{\"nodes\": [\"260c17379f3b3fca\", \"e92aedc8ce4ca7f2\", \"b62d143601b07ba9\", \"025e6c54f69b1213\", \"65fb4c6a850320fe\", \"1def473404e8f1cd\", \"90e54fc9a1b7512d\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"9bfb86ad629c92a8\", \"9841830e75a9f8df\", \"71531c635045698e\", \"fb7578ac3b3f9a4c\", \"53c16c9c5b50021e\", \"146fbd269cefe4b6\", \"319d394832fc49e8\", \"3298eda5853d730c\", \"4167d68a0a58a5ce\", \"45b847a9e6fce05b\", \"d17ca588c4c21ef8\"]}"
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "search_entity",
+     "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "traverse_graph",
+     "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       },
+       "edge": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node",
+       "edge"
+      ]
+     }
+    },
+    {
+     "name": "retrieve_entity",
+     "description": "Return the full source and location of a function node id.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node"
+      ]
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782555189.8688433
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me retrieve the candidate seed nodes to understand what they contain."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_cd727bc1c469427dba2b8fed",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ca29fba7bd4194b1"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_3d3ca51b3d324b03a947a08c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "319d394832fc49e8"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_fe13f3c674894a678d99de77",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "3298eda5853d730c"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_0c8b7f89578d41faa69ed107",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "260c17379f3b3fca"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_2b3f53b0546344fab4007060",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e92aedc8ce4ca7f2"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c64fe9f2c78b4365b62ed4b1",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "dde450c5d71f3548"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_79556fd7f85e40c2a482071c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "dc6dc04bc91881f1"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_529e1296ec454867bb2353b9",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "4167d68a0a58a5ce"
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 2283,
+    "output_tokens": 171
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-dc470a31-7536-99b3-96a0-cf8b17f1472b",
+    "object": "chat.completion",
+    "created": 1782555186,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 2283,
+     "completion_tokens": 171,
+     "total_tokens": 2454,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 2283,
+     "output_tokens": 171
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "Let me retrieve the candidate seed nodes to understand what they contain.",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"ca29fba7bd4194b1\"}"
+         },
+         "index": 0,
+         "id": "call_cd727bc1c469427dba2b8fed",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"319d394832fc49e8\"}"
+         },
+         "index": 1,
+         "id": "call_3d3ca51b3d324b03a947a08c",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"3298eda5853d730c\"}"
+         },
+         "index": 2,
+         "id": "call_fe13f3c674894a678d99de77",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"260c17379f3b3fca\"}"
+         },
+         "index": 3,
+         "id": "call_0c8b7f89578d41faa69ed107",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"e92aedc8ce4ca7f2\"}"
+         },
+         "index": 4,
+         "id": "call_2b3f53b0546344fab4007060",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"dde450c5d71f3548\"}"
+         },
+         "index": 5,
+         "id": "call_c64fe9f2c78b4365b62ed4b1",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"dc6dc04bc91881f1\"}"
+         },
+         "index": 6,
+         "id": "call_79556fd7f85e40c2a482071c",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "retrieve_entity",
+          "arguments": "{\"node\": \"4167d68a0a58a5ce\"}"
+         },
+         "index": 7,
+         "id": "call_529e1296ec454867bb2353b9",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 2283,
+   "output_tokens": 171
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the yngwypt login page, clicking login POSTs a FormData whose `password` field is an SM-crypto token (the password 13819912565 becomes a long hex token beginning 0436...) and whose `username` field is a separate SM token. Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the form inputs, binds each credential to its encryption scheme \u2014 the password to the sm32 scheme and the username to the sm2nokey scheme, through the encrypt entry \u2014 and writes the resulting SM tokens into the FormData it POSTs, rather than the generic encrypt dispatcher that merely routes a value by scheme type (a control-flow selector), the sm32 scheme function that composes sm3-then-sm2 for whatever value it is handed (a nested scheme helper), or the lower-level SM2 primitive it ultimately calls (a core crypto utility). It is the only function that decides which field uses which scheme; the scheme functions and crypto primitives below it do not know which request field they serve. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the encrypt dispatcher, the sm32 scheme function, or the lower-level SM2 helper \u2014 those are graded below the handler. Only code under captures is in scope.  network_request POST /login password 13819912565 0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/login', 'field': 'password', 'plaintext_sample': '13819912565', 'value_sample': '0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...'}\nCandidate seed nodes (lexical prior, not a ranking): ['ca29fba7bd4194b1', '319d394832fc49e8', '3298eda5853d730c', '260c17379f3b3fca', 'e92aedc8ce4ca7f2', 'dde450c5d71f3548', 'dc6dc04bc91881f1', '4167d68a0a58a5ce']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "I'll start by searching for relevant functions related to login, encryption, and FormData handling."
+      },
+      {
+       "type": "tool_use",
+       "id": "call_b2b032d3c2c14d589eaae534",
+       "name": "search_entity",
+       "input": {
+        "query": "login FormData password encrypt"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_ca8ea4517117440687eba6bb",
+       "name": "search_entity",
+       "input": {
+        "query": "sm2 sm3 encrypt username"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_c4005794e69e4dc893fea512",
+       "name": "search_entity",
+       "input": {
+        "query": "login click submit"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_b2b032d3c2c14d589eaae534",
+       "content": "{\"nodes\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_ca8ea4517117440687eba6bb",
+       "content": "{\"nodes\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_c4005794e69e4dc893fea512",
+       "content": "{\"nodes\": []}"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Let me try different search terms and also retrieve the candidate seed nodes."
+      },
+      {
+       "type": "tool_use",
+       "id": "call_669a7464df57437993037d85",
+       "name": "search_entity",
+       "input": {
+        "query": "login"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_200250f773e84a8b9e1d861e",
+       "name": "search_entity",
+       "input": {
+        "query": "encrypt"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_7d8e97bedf2c4a5a91aee391",
+       "name": "search_entity",
+       "input": {
+        "query": "FormData"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_ad330c58cb6f473a96299a40",
+       "name": "search_entity",
+       "input": {
+        "query": "sm2"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_669a7464df57437993037d85",
+       "content": "{\"nodes\": [\"f5523bef0cb393cc\", \"0efeda3063cdd55d\", \"2d74979890749e27\", \"eea1e8b6d8246bcb\", \"5fe1c0e85eebe580\", \"f6b3015d1b4c3e7f\", \"aa9e71ba0141e05d\", \"45a2f2252d341619\", \"573603ebf04e6935\", \"8b6135af3fb5164b\", \"565c2d4a07c952c6\", \"1d1a73944244e43f\", \"12fc216e46546ca7\", \"ae3750e70d3bbb65\", \"b3f83f69490d4975\", \"25978ac0bdb14bc3\", \"109fbbe680525497\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"329b74d30cc5f436\"]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_200250f773e84a8b9e1d861e",
+       "content": "{\"nodes\": [\"4f91acd340a431b6\", \"8d3c8962ab465e3d\", \"49520108665e37e1\", \"5ba61e08d058a894\", \"69224d7bf56cc868\", \"79f4920a66ef0ce3\", \"1bb5e2d0c41195eb\", \"1192055af2188ee3\", \"260c17379f3b3fca\", \"e92aedc8ce4ca7f2\", \"b62d143601b07ba9\", \"7833ae3c297af950\", \"c7b8241dedd1cd86\", \"6a4a5c0c6bb61b3f\", \"1b71b0218cdd35a3\", \"8c948ab453d7df45\", \"c614ef5514f9b9f2\", \"83be48a22cbc934c\", \"b25e9e10f699e65e\", \"073305d7d15b548d\"]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_7d8e97bedf2c4a5a91aee391",
+       "content": "{\"nodes\": [\"dde450c5d71f3548\", \"dc6dc04bc91881f1\", \"ca29fba7bd4194b1\", \"94de5f77e7227c92\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"319d394832fc49e8\", \"3298eda5853d730c\", \"4167d68a0a58a5ce\", \"45b847a9e6fce05b\", \"d17ca588c4c21ef8\", \"db97f3ed6b9184ba\", \"245c5327281ab866\", \"de053a42de777d27\", \"bd6a2f2c416bfc04\", \"7c98f8f092902d37\", \"77036368bb2db44f\", \"7f9629dce0b4a7e8\", \"0bdaa54184514e27\", \"76a355539f7d10f2\"]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_ad330c58cb6f473a96299a40",
+       "content": "{\"nodes\": [\"260c17379f3b3fca\", \"e92aedc8ce4ca7f2\", \"b62d143601b07ba9\", \"025e6c54f69b1213\", \"65fb4c6a850320fe\", \"1def473404e8f1cd\", \"90e54fc9a1b7512d\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"9bfb86ad629c92a8\", \"9841830e75a9f8df\", \"71531c635045698e\", \"fb7578ac3b3f9a4c\", \"53c16c9c5b50021e\", \"146fbd269cefe4b6\", \"319d394832fc49e8\", \"3298eda5853d730c\", \"4167d68a0a58a5ce\", \"45b847a9e6fce05b\", \"d17ca588c4c21ef8\"]}"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "text",
+       "text": "Let me retrieve the candidate seed nodes to understand what they contain."
+      },
+      {
+       "type": "tool_use",
+       "id": "call_cd727bc1c469427dba2b8fed",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "ca29fba7bd4194b1"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_3d3ca51b3d324b03a947a08c",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "319d394832fc49e8"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_fe13f3c674894a678d99de77",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "3298eda5853d730c"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_0c8b7f89578d41faa69ed107",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "260c17379f3b3fca"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_2b3f53b0546344fab4007060",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "e92aedc8ce4ca7f2"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_c64fe9f2c78b4365b62ed4b1",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "dde450c5d71f3548"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_79556fd7f85e40c2a482071c",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "dc6dc04bc91881f1"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_529e1296ec454867bb2353b9",
+       "name": "retrieve_entity",
+       "input": {
+        "node": "4167d68a0a58a5ce"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_cd727bc1c469427dba2b8fed",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56698, \"end_offset\": 58792}, \"_best_guess_score\": 0, \"name\": \"(anon)\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56698, \"end_offset\": 58792, \"code\": \"function(e) {\\n            var n = r(\\\"c532\\\")\\n              , o = r(\\\"c8af\\\")\\n              , i = {\\n                \\\"Content-Type\\\": \\\"application/x-www-form-urlencoded\\\"\\n            };\\n            function s(t, e) {\\n                !n.isUndefined(t) && n.isUndefined(t[\\\"Content-Type\\\"]) && (t[\\\"Content-Type\\\"] = e)\\n            }\\n            var a, c = {\\n                adapter: ((\\\"undefined\\\" != typeof XMLHttpRequest || void 0 !== e && \\\"[object process]\\\" === Object.prototype.toString.call(e)) && (a = r(\\\"b50d\\\")),\\n                a),\\n                transformRequest: [function(t, e) {\\n                    return o(e, \\\"Accept\\\"),\\n                    o(e, \\\"Content-Type\\\"),\\n                    n.isFormData(t) || n.isArrayBuffer(t) || n.isBuffer(t) || n.isStream(t) || n.isFile(t) || n.isBlob(t) ? t : n.isArrayBufferView(t) ? t.buffer : n.isURLSearchParams(t) ? (s(e, \\\"application/x-www-form-urlencoded;charset=utf-8\\\"),\\n                    t.toString()) : n.isObject(t) ? (s(e, \\\"application/json;charset=utf-8\\\"),\\n                    JSON.stringify(t)) : t\\n                }\\n                ],\\n                transformResponse: [function(t) {\\n                    if (\\\"string\\\" == typeof t)\\n                        try {\\n                            t = JSON.parse(t)\\n                        } catch (t) {}\\n                    return t\\n                }\\n                ],\\n                timeout: 0,\\n                xsrfCookieName: \\\"XSRF-TOKEN\\\",\\n                xsrfHeaderName: \\\"X-XSRF-TOKEN\\\",\\n                maxContentLength: -1,\\n                validateStatus: function(t) {\\n                    return t >= 200 && t < 300\\n                }\\n            };\\n            c.headers = {\\n                common: {\\n                    Accept: \\\"application/json, text/plain, */*\\\"\\n                }\\n            },\\n            n.forEach([\\\"delete\\\", \\\"get\\\", \\\"head\\\"], (function(t) {\\n                c.headers[t] = {}\\n            }\\n            )),\\n            n.forEach([\\\"post\\\", \\\"put\\\", \\\"patch\\\"], (function(t) {\\n                c.headers[t] = n.merge(i)\\n            }\\n            )),\\n            t.exports = c\\n        }\"}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_3d3ca51b3d324b03a947a08c",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 227011, \"end_offset\": 234090}, \"_best_guess_score\": -1, \"name\": \"accountSubmit\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 227011, \"end_offset\": 234090, \"code\": \"function() {\\n                    var t = this;\\n                    this.accountLoginForm.validateFields((function(e, r) {\\n                        if (!e) {\\n                            var n, o = /012345|123456|234567|345678|456789/.test(r.password), i = /987654|876543|765432|654321|543210/.test(r.password), s = /(\\\\d)\\\\1{5}/.test(r.password);\\n                            n = /^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\\\-=\\\\[\\\\]{};':\\\"\\\\\\\\|,.<>\\\\/?]).{8,64}$/.test(r.password) && !o && !i && !s;\\n                            var a = new FormData;\\n\\n                            a.append(\\\"username\\\", Object(h.b)(r.username, h.a.sm2nokey)),\\n                            a.append(\\\"password\\\", Object(h.b)(r.password, h.a.sm32)),\\n                            a.append(\\\"captchaVerification\\\", t.captchaVerification.captchaVerification),\\n\\t\\t\\t\\t\\t\\t\\twindow.__fd = Array.from(a.entries());\\n\\t\\t\\t\\t\\t\\t\\twindow.__password = a.get(\\\"password\\\");\\n                            t.accountLoading = !0,\\n                            t.limitAccount.includes(r.username) ? (a.append(\\\"smsCaptcha\\\", r.captcha),\\n                            a.append(\\\"type\\\", 0),\\n                            Object(u.q)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n                                localStorage.setItem(\\\"logintoken-pro\\\", e.data.token),\\n                                p.a.set(\\\"complexity\\\", n ? 1 : 0, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"bGNnd3lwdF9hdA\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TOKEN\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TYPE\\\", \\\"UNIT\\\", {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_token\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_userid\\\", e.data.userid, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_modifypassword\\\", e.data.modifypassword, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                t.$message.success(\\\"\\u767b\\u5f55\\u6210\\u529f\\\", 1.5).then((function() {\\n                                    t.accountLoading = !1,\\n                                    t.$router.push({\\n                                        name: \\\"home\\\",\\n                                        params: {\\n                                            password: r.password\\n                                        }\\n                                    })\\n                                }\\n                                ))) : (t.accountAlt.disabled = !0,\\n                                t.accountLoading = !1,\\n                                t.accountAlt.charact = e.msg,\\n                                t.captchaVerificationVis = !1)\\n                            }\\n                            )).catch((function() {\\n                                t.codeLoading = !1\\n                            }\\n                            ))) : (t.$route.query.tripartiteId && a.append(\\\"tripartiteId\\\", t.$route.query.tripartiteId),\\n                            Object(u.p)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n \"}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_fe13f3c674894a678d99de77",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 226996, \"end_offset\": 234090}, \"_best_guess_score\": -2, \"name\": \"accountSubmit\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 226996, \"end_offset\": 234090, \"code\": \"accountSubmit: function() {\\n                    var t = this;\\n                    this.accountLoginForm.validateFields((function(e, r) {\\n                        if (!e) {\\n                            var n, o = /012345|123456|234567|345678|456789/.test(r.password), i = /987654|876543|765432|654321|543210/.test(r.password), s = /(\\\\d)\\\\1{5}/.test(r.password);\\n                            n = /^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\\\-=\\\\[\\\\]{};':\\\"\\\\\\\\|,.<>\\\\/?]).{8,64}$/.test(r.password) && !o && !i && !s;\\n                            var a = new FormData;\\n\\n                            a.append(\\\"username\\\", Object(h.b)(r.username, h.a.sm2nokey)),\\n                            a.append(\\\"password\\\", Object(h.b)(r.password, h.a.sm32)),\\n                            a.append(\\\"captchaVerification\\\", t.captchaVerification.captchaVerification),\\n\\t\\t\\t\\t\\t\\t\\twindow.__fd = Array.from(a.entries());\\n\\t\\t\\t\\t\\t\\t\\twindow.__password = a.get(\\\"password\\\");\\n                            t.accountLoading = !0,\\n                            t.limitAccount.includes(r.username) ? (a.append(\\\"smsCaptcha\\\", r.captcha),\\n                            a.append(\\\"type\\\", 0),\\n                            Object(u.q)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n                                localStorage.setItem(\\\"logintoken-pro\\\", e.data.token),\\n                                p.a.set(\\\"complexity\\\", n ? 1 : 0, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"bGNnd3lwdF9hdA\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TOKEN\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TYPE\\\", \\\"UNIT\\\", {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_token\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_userid\\\", e.data.userid, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_modifypassword\\\", e.data.modifypassword, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                t.$message.success(\\\"\\u767b\\u5f55\\u6210\\u529f\\\", 1.5).then((function() {\\n                                    t.accountLoading = !1,\\n                                    t.$router.push({\\n                                        name: \\\"home\\\",\\n                                        params: {\\n                                            password: r.password\\n                                        }\\n                                    })\\n                                }\\n                                ))) : (t.accountAlt.disabled = !0,\\n                                t.accountLoading = !1,\\n                                t.accountAlt.charact = e.msg,\\n                                t.captchaVerificationVis = !1)\\n                            }\\n                            )).catch((function() {\\n                                t.codeLoading = !1\\n                            }\\n                            ))) : (t.$route.query.tripartiteId && a.append(\\\"tripartiteId\\\", t.$route.query.tripartiteId),\\n                            Object(u.p)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.d\"}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_0c8b7f89578d41faa69ed107",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44844, \"end_offset\": 46800}, \"_best_guess_score\": -3, \"name\": \"193c\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44844, \"end_offset\": 46800, \"code\": \"function(t, e, r) {\\n        \\\"use strict\\\";\\n        function n(t) {\\n            return i((0,\\n            r(\\\"8060\\\").sm3)(t), \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\", 1)\\n        }\\n        function o(t) {\\n            return (0,\\n            r(\\\"8060\\\").sm3)(t)\\n        }\\n        function i(t) {\\n            var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\"\\n              , n = r(\\\"8060\\\").sm2\\n              , o = n.doEncrypt(t, e, 1);\\n            return \\\"04\\\" + o\\n        }\\n        r.d(e, \\\"a\\\", (function() {\\n            return a\\n        }\\n        )),\\n        r.d(e, \\\"b\\\", (function() {\\n            return c\\n        }\\n        ));\\n        var s = r(\\\"3c77\\\")\\n          , a = {\\n            sm2nokey: \\\"2nokey\\\",\\n            sm2key: \\\"2key\\\",\\n            sm3nokey: \\\"3nokey\\\",\\n            sm3key: \\\"3key\\\",\\n            sm32: 32\\n        };\\n        function c(t, e, r) {\\n            var a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : \\\"SM\\\";\\n            if (\\\"SM\\\" == a) {\\n                if (\\\"3nokey\\\" == e || \\\"3key\\\" == e) {\\n                    var c = o(t);\\n                    return c\\n                }\\n                if (\\\"2nokey\\\" == e || \\\"2key\\\" == e) {\\n                    var u = i(t);\\n                    return u\\n                }\\n                if (32 == e) {\\n                    var f = n(t);\\n                    return f\\n                }\\n            } else if (\\\"NSM\\\" == a) {\\n                if (32 == e || \\\"2nokey\\\" == e || \\\"3nokey\\\" == e) {\\n                    var l = Object(s.b)(t);\\n                    return l\\n                }\\n                if (\\\"3key\\\" == e || \\\"2key\\\" == e) {\\n                    var p = Object(s.a)(t, r);\\n                    return p\\n                }\\n            }\\n        }\\n    }\"}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_2b3f53b0546344fab4007060",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44836, \"end_offset\": 46800}, \"_best_guess_score\": -4, \"name\": \"193c\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44836, \"end_offset\": 46800, \"code\": \"\\\"193c\\\": function(t, e, r) {\\n        \\\"use strict\\\";\\n        function n(t) {\\n            return i((0,\\n            r(\\\"8060\\\").sm3)(t), \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\", 1)\\n        }\\n        function o(t) {\\n            return (0,\\n            r(\\\"8060\\\").sm3)(t)\\n        }\\n        function i(t) {\\n            var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\"\\n              , n = r(\\\"8060\\\").sm2\\n              , o = n.doEncrypt(t, e, 1);\\n            return \\\"04\\\" + o\\n        }\\n        r.d(e, \\\"a\\\", (function() {\\n            return a\\n        }\\n        )),\\n        r.d(e, \\\"b\\\", (function() {\\n            return c\\n        }\\n        ));\\n        var s = r(\\\"3c77\\\")\\n          , a = {\\n            sm2nokey: \\\"2nokey\\\",\\n            sm2key: \\\"2key\\\",\\n            sm3nokey: \\\"3nokey\\\",\\n            sm3key: \\\"3key\\\",\\n            sm32: 32\\n        };\\n        function c(t, e, r) {\\n            var a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : \\\"SM\\\";\\n            if (\\\"SM\\\" == a) {\\n                if (\\\"3nokey\\\" == e || \\\"3key\\\" == e) {\\n                    var c = o(t);\\n                    return c\\n                }\\n                if (\\\"2nokey\\\" == e || \\\"2key\\\" == e) {\\n                    var u = i(t);\\n                    return u\\n                }\\n                if (32 == e) {\\n                    var f = n(t);\\n                    return f\\n                }\\n            } else if (\\\"NSM\\\" == a) {\\n                if (32 == e || \\\"2nokey\\\" == e || \\\"3nokey\\\" == e) {\\n                    var l = Object(s.b)(t);\\n                    return l\\n                }\\n                if (\\\"3key\\\" == e || \\\"2key\\\" == e) {\\n                    var p = Object(s.a)(t, r);\\n                    return p\\n                }\\n            }\\n        }\\n    }\"}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_c64fe9f2c78b4365b62ed4b1",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56647, \"end_offset\": 58830}, \"_best_guess_score\": -5, \"name\": \"2444\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56647, \"end_offset\": 58830, \"code\": \"function(t, e, r) {\\n        \\\"use strict\\\";\\n        (function(e) {\\n            var n = r(\\\"c532\\\")\\n              , o = r(\\\"c8af\\\")\\n              , i = {\\n                \\\"Content-Type\\\": \\\"application/x-www-form-urlencoded\\\"\\n            };\\n            function s(t, e) {\\n                !n.isUndefined(t) && n.isUndefined(t[\\\"Content-Type\\\"]) && (t[\\\"Content-Type\\\"] = e)\\n            }\\n            var a, c = {\\n                adapter: ((\\\"undefined\\\" != typeof XMLHttpRequest || void 0 !== e && \\\"[object process]\\\" === Object.prototype.toString.call(e)) && (a = r(\\\"b50d\\\")),\\n                a),\\n                transformRequest: [function(t, e) {\\n                    return o(e, \\\"Accept\\\"),\\n                    o(e, \\\"Content-Type\\\"),\\n                    n.isFormData(t) || n.isArrayBuffer(t) || n.isBuffer(t) || n.isStream(t) || n.isFile(t) || n.isBlob(t) ? t : n.isArrayBufferView(t) ? t.buffer : n.isURLSearchParams(t) ? (s(e, \\\"application/x-www-form-urlencoded;charset=utf-8\\\"),\\n                    t.toString()) : n.isObject(t) ? (s(e, \\\"application/json;charset=utf-8\\\"),\\n                    JSON.stringify(t)) : t\\n                }\\n                ],\\n                transformResponse: [function(t) {\\n                    if (\\\"string\\\" == typeof t)\\n                        try {\\n                            t = JSON.parse(t)\\n                        } catch (t) {}\\n                    return t\\n                }\\n                ],\\n                timeout: 0,\\n                xsrfCookieName: \\\"XSRF-TOKEN\\\",\\n                xsrfHeaderName: \\\"X-XSRF-TOKEN\\\",\\n                maxContentLength: -1,\\n                validateStatus: function(t) {\\n                    return t >= 200 && t < 300\\n                }\\n            };\\n            c.headers = {\\n                common: {\\n                    Accept: \\\"application/json, text/plain, */*\\\"\\n                }\\n            },\\n            n.forEach([\\\"delete\\\", \\\"get\\\", \\\"head\\\"], (function(t) {\\n                c.headers[t] = {}\\n            }\\n            )),\\n            n.forEach([\\\"post\\\", \\\"put\\\", \\\"patch\\\"], (function(t) {\\n                c.headers[t] = n.merge(i)\\n            }\\n            )),\\n            t.exports = c\\n        }\\n        ).call(this, r(\\\"f28c\\\"))\\n    }\"}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_79556fd7f85e40c2a482071c",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56641, \"end_offset\": 58830}, \"_best_guess_score\": -6, \"name\": \"2444\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56641, \"end_offset\": 58830, \"code\": \"2444: function(t, e, r) {\\n        \\\"use strict\\\";\\n        (function(e) {\\n            var n = r(\\\"c532\\\")\\n              , o = r(\\\"c8af\\\")\\n              , i = {\\n                \\\"Content-Type\\\": \\\"application/x-www-form-urlencoded\\\"\\n            };\\n            function s(t, e) {\\n                !n.isUndefined(t) && n.isUndefined(t[\\\"Content-Type\\\"]) && (t[\\\"Content-Type\\\"] = e)\\n            }\\n            var a, c = {\\n                adapter: ((\\\"undefined\\\" != typeof XMLHttpRequest || void 0 !== e && \\\"[object process]\\\" === Object.prototype.toString.call(e)) && (a = r(\\\"b50d\\\")),\\n                a),\\n                transformRequest: [function(t, e) {\\n                    return o(e, \\\"Accept\\\"),\\n                    o(e, \\\"Content-Type\\\"),\\n                    n.isFormData(t) || n.isArrayBuffer(t) || n.isBuffer(t) || n.isStream(t) || n.isFile(t) || n.isBlob(t) ? t : n.isArrayBufferView(t) ? t.buffer : n.isURLSearchParams(t) ? (s(e, \\\"application/x-www-form-urlencoded;charset=utf-8\\\"),\\n                    t.toString()) : n.isObject(t) ? (s(e, \\\"application/json;charset=utf-8\\\"),\\n                    JSON.stringify(t)) : t\\n                }\\n                ],\\n                transformResponse: [function(t) {\\n                    if (\\\"string\\\" == typeof t)\\n                        try {\\n                            t = JSON.parse(t)\\n                        } catch (t) {}\\n                    return t\\n                }\\n                ],\\n                timeout: 0,\\n                xsrfCookieName: \\\"XSRF-TOKEN\\\",\\n                xsrfHeaderName: \\\"X-XSRF-TOKEN\\\",\\n                maxContentLength: -1,\\n                validateStatus: function(t) {\\n                    return t >= 200 && t < 300\\n                }\\n            };\\n            c.headers = {\\n                common: {\\n                    Accept: \\\"application/json, text/plain, */*\\\"\\n                }\\n            },\\n            n.forEach([\\\"delete\\\", \\\"get\\\", \\\"head\\\"], (function(t) {\\n                c.headers[t] = {}\\n            }\\n            )),\\n            n.forEach([\\\"post\\\", \\\"put\\\", \\\"patch\\\"], (function(t) {\\n                c.headers[t] = n.merge(i)\\n            }\\n            )),\\n            t.exports = c\\n        }\\n        ).call(this, r(\\\"f28c\\\"))\\n    }\"}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_529e1296ec454867bb2353b9",
+       "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 227116, \"end_offset\": 234049}, \"_best_guess_score\": -7, \"name\": \"(anon)\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 227116, \"end_offset\": 234049, \"code\": \"function(e, r) {\\n                        if (!e) {\\n                            var n, o = /012345|123456|234567|345678|456789/.test(r.password), i = /987654|876543|765432|654321|543210/.test(r.password), s = /(\\\\d)\\\\1{5}/.test(r.password);\\n                            n = /^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\\\-=\\\\[\\\\]{};':\\\"\\\\\\\\|,.<>\\\\/?]).{8,64}$/.test(r.password) && !o && !i && !s;\\n                            var a = new FormData;\\n\\n                            a.append(\\\"username\\\", Object(h.b)(r.username, h.a.sm2nokey)),\\n                            a.append(\\\"password\\\", Object(h.b)(r.password, h.a.sm32)),\\n                            a.append(\\\"captchaVerification\\\", t.captchaVerification.captchaVerification),\\n\\t\\t\\t\\t\\t\\t\\twindow.__fd = Array.from(a.entries());\\n\\t\\t\\t\\t\\t\\t\\twindow.__password = a.get(\\\"password\\\");\\n                            t.accountLoading = !0,\\n                            t.limitAccount.includes(r.username) ? (a.append(\\\"smsCaptcha\\\", r.captcha),\\n                            a.append(\\\"type\\\", 0),\\n                            Object(u.q)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n                                localStorage.setItem(\\\"logintoken-pro\\\", e.data.token),\\n                                p.a.set(\\\"complexity\\\", n ? 1 : 0, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"bGNnd3lwdF9hdA\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TOKEN\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TYPE\\\", \\\"UNIT\\\", {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_token\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_userid\\\", e.data.userid, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_modifypassword\\\", e.data.modifypassword, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                t.$message.success(\\\"\\u767b\\u5f55\\u6210\\u529f\\\", 1.5).then((function() {\\n                                    t.accountLoading = !1,\\n                                    t.$router.push({\\n                                        name: \\\"home\\\",\\n                                        params: {\\n                                            password: r.password\\n                                        }\\n                                    })\\n                                }\\n                                ))) : (t.accountAlt.disabled = !0,\\n                                t.accountLoading = !1,\\n                                t.accountAlt.charact = e.msg,\\n                                t.captchaVerificationVis = !1)\\n                            }\\n                            )).catch((function() {\\n                                t.codeLoading = !1\\n                            }\\n                            ))) : (t.$route.query.tripartiteId && a.append(\\\"tripartiteId\\\", t.$route.query.tripartiteId),\\n                            Object(u.p)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n                                localStorage.setItem(\\\"logintoken-pro\\\", e.data.token),\\n                    \"}"
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "search_entity",
+     "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "traverse_graph",
+     "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       },
+       "edge": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node",
+       "edge"
+      ]
+     }
+    },
+    {
+     "name": "retrieve_entity",
+     "description": "Return the full source and location of a function node id.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "node": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "node"
+      ]
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782555197.9921122
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "I've found the anchor function. The `accountSubmit` function (node `3298eda5853d730c`) is the login-submission handler that:\n\n1. Reads form inputs (`r.username`, `r.password`) from the validated form\n2. Creates a `new FormData`\n3. Binds the **username** to the `sm2nokey` scheme: `a.append(\"username\", Object(h.b)(r.username, h.a.sm2nokey))`\n4. Binds the **password** to the `sm32` scheme: `a.append(\"password\", Object(h.b)(r.password, h.a.sm32))`\n5. POSTs the FormData via `Object(u.q)(a)` or `Object(u.p)(a)`\n\nThis is exactly the function described in the task \u2014 it's the only function that decides which field uses which scheme. The `h.b` function (node `260c17379f3b3fca`/`e92aedc8ce4ca7f2`) is the encrypt dispatcher that merely routes by scheme type, and the `n` function inside module `193c` is the sm32 scheme helper \u2014 both are explicitly excluded.\n\nThe complete function starts at offset 226996 (with `accountSubmit: function() {`) and ends at offset 234090."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_054e1cc3575048e7b7e5c609",
+     "name": "submit",
+     "input": {
+      "file": "captures/js/chunk-858ed276.7bbb8c3f.js",
+      "start_offset": 226996,
+      "end_offset": 234090,
+      "reason": "This is the `accountSubmit` function \u2014 the login-submission click handler. Its own body reads the form inputs (r.username, r.password), creates a new FormData, and explicitly binds each credential to its encryption scheme: the password to `h.a.sm32` and the username to `h.a.sm2nokey`, both through the `h.b` encrypt entry. It then appends the resulting SM tokens to the FormData and POSTs it via `Object(u.q)(a)` / `Object(u.p)(a)`. This is the only function on the chain that decides which field uses which scheme; the encrypt dispatcher (`h.b`/module 193c's function `c`) and the sm32 scheme helper (module 193c's function `n`) below it do not know which request field they serve."
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 9010,
+    "output_tokens": 504
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-95efa7bc-a9ae-922e-83c6-836a9796aa85",
+    "object": "chat.completion",
+    "created": 1782555189,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 9010,
+     "completion_tokens": 504,
+     "total_tokens": 9514,
+     "prompt_tokens_details": {
+      "cached_tokens": 2176
+     },
+     "input_tokens_details": {
+      "cached_tokens": 2176
+     },
+     "input_tokens": 9010,
+     "output_tokens": 504
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "I've found the anchor function. The `accountSubmit` function (node `3298eda5853d730c`) is the login-submission handler that:\n\n1. Reads form inputs (`r.username`, `r.password`) from the validated form\n2. Creates a `new FormData`\n3. Binds the **username** to the `sm2nokey` scheme: `a.append(\"username\", Object(h.b)(r.username, h.a.sm2nokey))`\n4. Binds the **password** to the `sm32` scheme: `a.append(\"password\", Object(h.b)(r.password, h.a.sm32))`\n5. POSTs the FormData via `Object(u.q)(a)` or `Object(u.p)(a)`\n\nThis is exactly the function described in the task \u2014 it's the only function that decides which field uses which scheme. The `h.b` function (node `260c17379f3b3fca`/`e92aedc8ce4ca7f2`) is the encrypt dispatcher that merely routes by scheme type, and the `n` function inside module `193c` is the sm32 scheme helper \u2014 both are explicitly excluded.\n\nThe complete function starts at offset 226996 (with `accountSubmit: function() {`) and ends at offset 234090.",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "submit",
+          "arguments": "{\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 226996, \"end_offset\": 234090, \"reason\": \"This is the `accountSubmit` function \u2014 the login-submission click handler. Its own body reads the form inputs (r.username, r.password), creates a new FormData, and explicitly binds each credential to its encryption scheme: the password to `h.a.sm32` and the username to `h.a.sm2nokey`, both through the `h.b` encrypt entry. It then appends the resulting SM tokens to the FormData and POSTs it via `Object(u.q)(a)` / `Object(u.p)(a)`. This is the only function on the chain that decides which field uses which scheme; the encrypt dispatcher (`h.b`/module 193c's function `c`) and the sm32 scheme helper (module 193c's function `n`) below it do not know which request field they serve.\"}"
+         },
+         "index": 0,
+         "id": "call_054e1cc3575048e7b7e5c609",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 9010,
+   "output_tokens": 504
+  }
+ }
+]

@@ -1,0 +1,185 @@
+import { k0 } from "./k0.js";
+
+function routeMark(packet) {
+  const trace = Array.isArray(packet.trace) ? packet.trace.slice() : [];
+  const seed = (Number(packet.routeSeed || 0) + 3 * 31 + trace.length) >>> 0;
+  const lane = (seed ^ (3 * 97)) >>> 0;
+  trace.push({ stage: "j9", seed, lane });
+  return {
+    ...packet,
+    routeSeed: seed,
+    routeLane3: lane,
+    trace
+  };
+}
+
+function routeGuard(packet) {
+  const action = String(packet.actionName || "");
+  const accepted = action === "byte.pipe.commit";
+  document.documentElement.dataset.case006Route3 = accepted ? "1" : "0";
+  return accepted;
+}
+
+function routeDecorate(packet) {
+  const projection = Array.isArray(packet.projection) ? packet.projection.slice() : [];
+  projection.push(["r3", String((Number(packet.routeSeed || 0) + 3) % 997)]);
+  return { ...packet, projection };
+}
+
+export function j9(packet) {
+  const marked = routeDecorate(routeMark(packet));
+  if (!routeGuard(marked)) return marked;
+  return k0(marked);
+}
+const j9_070 = "batch-tag:j9.js:070";
+const j9_071 = "audit-line:j9.js:071";
+const j9_072 = "intake-row:j9.js:072";
+const j9_073 = "manifest-slot:j9.js:073";
+const j9_074 = "ledger-entry:j9.js:074";
+const j9_075 = "shard-label:j9.js:075";
+const j9_076 = "codec-field:j9.js:076";
+const j9_077 = "queue-item:j9.js:077";
+const j9_078 = "batch-tag:j9.js:078";
+const j9_079 = "audit-line:j9.js:079";
+const j9_080 = "intake-row:j9.js:080";
+const j9_081 = "manifest-slot:j9.js:081";
+const j9_082 = "ledger-entry:j9.js:082";
+const j9_083 = "shard-label:j9.js:083";
+const j9_084 = "codec-field:j9.js:084";
+const j9_085 = "queue-item:j9.js:085";
+const j9_086 = "batch-tag:j9.js:086";
+const j9_087 = "audit-line:j9.js:087";
+const j9_088 = "intake-row:j9.js:088";
+const j9_089 = "manifest-slot:j9.js:089";
+const j9_090 = "ledger-entry:j9.js:090";
+const j9_091 = "shard-label:j9.js:091";
+const j9_092 = "codec-field:j9.js:092";
+const j9_093 = "queue-item:j9.js:093";
+const j9_094 = "batch-tag:j9.js:094";
+const j9_095 = "audit-line:j9.js:095";
+const j9_096 = "intake-row:j9.js:096";
+const j9_097 = "manifest-slot:j9.js:097";
+const j9_098 = "ledger-entry:j9.js:098";
+const j9_099 = "shard-label:j9.js:099";
+const j9_100 = "codec-field:j9.js:100";
+const j9_101 = "queue-item:j9.js:101";
+const j9_102 = "batch-tag:j9.js:102";
+const j9_103 = "audit-line:j9.js:103";
+const j9_104 = "intake-row:j9.js:104";
+const j9_105 = "manifest-slot:j9.js:105";
+const j9_106 = "ledger-entry:j9.js:106";
+const j9_107 = "shard-label:j9.js:107";
+const j9_108 = "codec-field:j9.js:108";
+const j9_109 = "queue-item:j9.js:109";
+const j9_110 = "batch-tag:j9.js:110";
+const j9_111 = "audit-line:j9.js:111";
+const j9_112 = "intake-row:j9.js:112";
+const j9_113 = "manifest-slot:j9.js:113";
+const j9_114 = "ledger-entry:j9.js:114";
+const j9_115 = "shard-label:j9.js:115";
+const j9_116 = "codec-field:j9.js:116";
+const j9_117 = "queue-item:j9.js:117";
+const j9_118 = "batch-tag:j9.js:118";
+const j9_119 = "audit-line:j9.js:119";
+const j9_120 = "intake-row:j9.js:120";
+const j9_121 = "manifest-slot:j9.js:121";
+const j9_122 = "ledger-entry:j9.js:122";
+const j9_123 = "shard-label:j9.js:123";
+const j9_124 = "codec-field:j9.js:124";
+const j9_125 = "queue-item:j9.js:125";
+const j9_126 = "batch-tag:j9.js:126";
+const j9_127 = "audit-line:j9.js:127";
+const j9_128 = "intake-row:j9.js:128";
+const j9_129 = "manifest-slot:j9.js:129";
+const j9_130 = "ledger-entry:j9.js:130";
+const j9_131 = "shard-label:j9.js:131";
+const j9_132 = "codec-field:j9.js:132";
+const j9_133 = "queue-item:j9.js:133";
+const j9_134 = "batch-tag:j9.js:134";
+const j9_135 = "audit-line:j9.js:135";
+const j9_136 = "intake-row:j9.js:136";
+const j9_137 = "manifest-slot:j9.js:137";
+const j9_138 = "ledger-entry:j9.js:138";
+const j9_139 = "shard-label:j9.js:139";
+const j9_140 = "codec-field:j9.js:140";
+const j9_141 = "queue-item:j9.js:141";
+const j9_142 = "batch-tag:j9.js:142";
+const j9_143 = "audit-line:j9.js:143";
+const j9_144 = "intake-row:j9.js:144";
+const j9_145 = "manifest-slot:j9.js:145";
+const j9_146 = "ledger-entry:j9.js:146";
+const j9_147 = "shard-label:j9.js:147";
+const j9_148 = "codec-field:j9.js:148";
+const j9_149 = "queue-item:j9.js:149";
+const j9_150 = "batch-tag:j9.js:150";
+const j9_151 = "audit-line:j9.js:151";
+const j9_152 = "intake-row:j9.js:152";
+const j9_153 = "manifest-slot:j9.js:153";
+const j9_154 = "ledger-entry:j9.js:154";
+const j9_155 = "shard-label:j9.js:155";
+const j9_156 = "codec-field:j9.js:156";
+const j9_157 = "queue-item:j9.js:157";
+const j9_158 = "batch-tag:j9.js:158";
+const j9_159 = "audit-line:j9.js:159";
+const j9_160 = "intake-row:j9.js:160";
+const j9_161 = "manifest-slot:j9.js:161";
+const j9_162 = "ledger-entry:j9.js:162";
+const j9_163 = "shard-label:j9.js:163";
+const j9_164 = "codec-field:j9.js:164";
+const j9_165 = "queue-item:j9.js:165";
+const j9_166 = "batch-tag:j9.js:166";
+const j9_167 = "audit-line:j9.js:167";
+const j9_168 = "intake-row:j9.js:168";
+const j9_169 = "manifest-slot:j9.js:169";
+const j9_170 = "ledger-entry:j9.js:170";
+const j9_171 = "shard-label:j9.js:171";
+const j9_172 = "codec-field:j9.js:172";
+const j9_173 = "queue-item:j9.js:173";
+const j9_174 = "batch-tag:j9.js:174";
+const j9_175 = "audit-line:j9.js:175";
+const j9_176 = "intake-row:j9.js:176";
+const j9_177 = "manifest-slot:j9.js:177";
+const j9_178 = "ledger-entry:j9.js:178";
+const j9_179 = "shard-label:j9.js:179";
+const j9_180 = "codec-field:j9.js:180";
+const j9_181 = "queue-item:j9.js:181";
+const j9_182 = "batch-tag:j9.js:182";
+const j9_183 = "audit-line:j9.js:183";
+const j9_184 = "intake-row:j9.js:184";
+const j9_185 = "manifest-slot:j9.js:185";
+const j9_186 = "ledger-entry:j9.js:186";
+const j9_187 = "shard-label:j9.js:187";
+const j9_188 = "codec-field:j9.js:188";
+const j9_189 = "queue-item:j9.js:189";
+const j9_190 = "batch-tag:j9.js:190";
+const j9_191 = "audit-line:j9.js:191";
+const j9_192 = "intake-row:j9.js:192";
+const j9_193 = "manifest-slot:j9.js:193";
+const j9_194 = "ledger-entry:j9.js:194";
+const j9_195 = "shard-label:j9.js:195";
+const j9_196 = "codec-field:j9.js:196";
+const j9_197 = "queue-item:j9.js:197";
+const j9_198 = "batch-tag:j9.js:198";
+const j9_199 = "audit-line:j9.js:199";
+const j9_200 = "intake-row:j9.js:200";
+const j9_201 = "manifest-slot:j9.js:201";
+const j9_202 = "ledger-entry:j9.js:202";
+const j9_203 = "shard-label:j9.js:203";
+const j9_204 = "codec-field:j9.js:204";
+const j9_205 = "queue-item:j9.js:205";
+const j9_206 = "batch-tag:j9.js:206";
+const j9_207 = "audit-line:j9.js:207";
+const j9_208 = "intake-row:j9.js:208";
+const j9_209 = "manifest-slot:j9.js:209";
+const j9_210 = "ledger-entry:j9.js:210";
+const j9_211 = "shard-label:j9.js:211";
+const j9_212 = "codec-field:j9.js:212";
+const j9_213 = "queue-item:j9.js:213";
+const j9_214 = "batch-tag:j9.js:214";
+const j9_215 = "audit-line:j9.js:215";
+const j9_216 = "intake-row:j9.js:216";
+const j9_217 = "manifest-slot:j9.js:217";
+const j9_218 = "ledger-entry:j9.js:218";
+const j9_219 = "shard-label:j9.js:219";
+const j9_220 = "codec-field:j9.js:220";
+const j9_221 = "queue-item:j9.js:221";

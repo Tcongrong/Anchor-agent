@@ -1,0 +1,368 @@
+{
+  "case_id": "real17_doyo_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "POST",
+      "url_contains": "/User/Passport/login",
+      "field": "password",
+      "plaintext_sample": "13819912565",
+      "value_sample": "16119784763b3e501cc8eae56190fb0993517cfe"
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the $.get('/User/Passport/token') success callback: it reads the server nonce/ts, computes pwd = Sha1.hash(rawPassword) then pwd = Sha1.hash(nonce+ts+pwd), and posts it as the password field. PLAN section 4.3: the value-construction lives inside this anonymous callback, so it is the smallest complete enclosing function. PLAN section 5.1: not the generic Sha1.hash primitive it calls, and not the outer submit handler that also performs validation.",
+  "primary_anchor": {
+    "answer_function": "loginTokenCallback",
+    "source_function": "loginTokenCallback",
+    "source_file": "www.doyo.cn/passport/login.html",
+    "captured_file": "captures/www.doyo.cn/passport/login.html",
+    "captured_span": {
+      "file": "captures/www.doyo.cn/passport/login.html",
+      "start_line": 97,
+      "end_line": 122,
+      "start_column": 108,
+      "end_column": 3,
+      "start_offset": 3841,
+      "end_offset": 4630,
+      "sha256": "9c48445058c231258c1189b70a262e8f587e7940d955c421745421a2f879aadb",
+      "normalized_sha256": "46ac114af0f89c6ddc22e257377e072c11dd53354884d8a3245b5c76ec1686b6"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "Anonymous token success callback. Salts the SHA-1 of the password with the freshly fetched nonce+ts (double SHA-1) and posts it to /User/Passport/login. This constructs the exact password value sent in the login request."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "loginTokenCallback",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 97,
+        "end_line": 122,
+        "start_column": 108,
+        "end_column": 3,
+        "start_offset": 3841,
+        "end_offset": 4630,
+        "sha256": "9c48445058c231258c1189b70a262e8f587e7940d955c421745421a2f879aadb",
+        "normalized_sha256": "46ac114af0f89c6ddc22e257377e072c11dd53354884d8a3245b5c76ec1686b6"
+      },
+      "why": "Anonymous token success callback. Salts the SHA-1 of the password with the freshly fetched nonce+ts (double SHA-1) and posts it to /User/Passport/login. This constructs the exact password value sent in the login request.",
+      "answer_function": "loginTokenCallback",
+      "source_function": "loginTokenCallback"
+    },
+    {
+      "function": "login_submit click handler",
+      "role": "Target-specific enclosing handler",
+      "score": 0.7,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 90,
+        "end_line": 124,
+        "start_column": 25,
+        "end_column": 1,
+        "start_offset": 3516,
+        "end_offset": 4644,
+        "sha256": "c517d7762b22e1ddfb1dfafff6d405b8ff38c1ce6acb19ad9a28eb0148c21115",
+        "normalized_sha256": "eefcf952f6caa1e21d058dfee3ba2ec29bd70bf27dbfbdc54e07d08a80006224"
+      },
+      "why": "The login submit click handler validates the fields, fetches the token, and contains the anchor callback. It is target-specific and would reach the right behavior, but it is coarser than the smallest function that actually derives the final password value.",
+      "answer_function": "login_submit click handler",
+      "source_function": "anonymous login_submit click handler"
+    },
+    {
+      "function": "Sha1.hash",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "www.doyo.cn/Tpl/web/Public/js/sha1.js",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/Tpl/web/Public/js/sha1.js",
+        "start_line": 16,
+        "end_line": 87,
+        "start_column": 12,
+        "end_column": 1,
+        "start_offset": 811,
+        "end_offset": 3522,
+        "sha256": "b458787b9f7655a351f909ef84f3aa3e2f60e77267a1dfdc4e7c0c36632d8582",
+        "normalized_sha256": "917c9a1b823389cbf7b9f887440ac5231684c035698666c17c3f22f2ba6c9ffa"
+      },
+      "why": "Reusable SHA-1 implementation used twice by the anchor. It computes the hash primitive but does not combine nonce+ts or bind the result to the login password field.",
+      "answer_function": "Sha1.hash",
+      "source_function": "Sha1.hash"
+    },
+    {
+      "function": "Sha1.ROTL",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "www.doyo.cn/Tpl/web/Public/js/sha1.js",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/Tpl/web/Public/js/sha1.js",
+        "start_line": 104,
+        "end_line": 106,
+        "start_column": 12,
+        "end_column": 1,
+        "start_offset": 3926,
+        "end_offset": 3976,
+        "sha256": "06dc00318a6349c309a0ef5841d5e55c89e90ea6fb046929e4e857d1d1668ece",
+        "normalized_sha256": "fa14d852590ed5853d2d26f56b7d60c1b934d9cf1c27931eca5dec23a14a94f6"
+      },
+      "why": "Generic SHA-1 rotate-left helper used inside Sha1.hash. It is below the hashing primitive and has no login-specific semantics.",
+      "answer_function": "Sha1.ROTL",
+      "source_function": "Sha1.ROTL"
+    },
+    {
+      "function": "Sha1.toHexStr",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "www.doyo.cn/Tpl/web/Public/js/sha1.js",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/Tpl/web/Public/js/sha1.js",
+        "start_line": 113,
+        "end_line": 117,
+        "start_column": 16,
+        "end_column": 1,
+        "start_offset": 4161,
+        "end_offset": 4278,
+        "sha256": "45519c124fad7db25e84483d1ba41bf5b5b8eec938bcb2c882c45eb61771c5d7",
+        "normalized_sha256": "c86a067b03df49068170b12b2be603a24f149e1d084deb3b64e83307c285307b"
+      },
+      "why": "Generic SHA-1 word-to-hex formatter used to produce the final hash string. It formats hash words but does not build the salted password.",
+      "answer_function": "Sha1.toHexStr",
+      "source_function": "Sha1.toHexStr"
+    },
+    {
+      "function": "Utf8.encode",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "www.doyo.cn/Tpl/web/Public/js/sha1.js",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/Tpl/web/Public/js/sha1.js",
+        "start_line": 136,
+        "end_line": 152,
+        "start_column": 14,
+        "end_column": 1,
+        "start_offset": 5055,
+        "end_offset": 5712,
+        "sha256": "7b33c0ac65b2901c752c1ed0ef8529b1c6ecc2167635fc3ae37ac51c65450061",
+        "normalized_sha256": "65d51f2e7d13cf004d2a138254b2b31a729b148b3ce770b31d9f82f94a6afed3"
+      },
+      "why": "Generic UTF-8 encoder called by Sha1.hash before hashing. It supports the primitive but is not target-specific.",
+      "answer_function": "Utf8.encode",
+      "source_function": "Utf8.encode"
+    },
+    {
+      "function": "jQuery.get/post wrapper",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "s.doyo.cn/j/dj_1.12.4.js",
+      "captured_span": {
+        "file": "captures/s.doyo.cn/j/dj_1.12.4.js",
+        "start_line": 4,
+        "end_line": 4,
+        "start_column": 23108,
+        "end_column": 23255,
+        "start_offset": 87264,
+        "end_offset": 87411,
+        "sha256": "3271767e58a3e6225ad1b9e1412ee603d43e72ac0022c74990abb0b0cfbc249f",
+        "normalized_sha256": "3271767e58a3e6225ad1b9e1412ee603d43e72ac0022c74990abb0b0cfbc249f"
+      },
+      "why": "Generic jQuery shorthand wrapper used for both token fetch and login post. It forwards options to ajax but does not derive the password value.",
+      "answer_function": "jQuery.get/post wrapper",
+      "source_function": "jQuery get/post shorthand"
+    },
+    {
+      "function": "loginPostCallback",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 106,
+        "end_line": 117,
+        "start_column": 20,
+        "end_column": 5,
+        "start_offset": 4219,
+        "end_offset": 4572,
+        "sha256": "775b2233addedae8c0005f27a99ab6a78ac7f610a8319e802b2c3d333080c6f0",
+        "normalized_sha256": "bcfaf9a15f95e75cf5725ae407889020413f32940b50699d214f6e364d9c029a"
+      },
+      "why": "The /User/Passport/login response callback runs after the password field has already been constructed and sent. It is on the same request path but is response handling, not value construction.",
+      "answer_function": "loginPostCallback",
+      "source_function": "loginPostCallback"
+    },
+    {
+      "function": "login input keypress handler",
+      "role": "Path-critical",
+      "score": 0.2,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 126,
+        "end_line": 132,
+        "start_column": 32,
+        "end_column": 1,
+        "start_offset": 4680,
+        "end_offset": 4827,
+        "sha256": "dd5961cfe726bce4ea3379f70b506034f6a38acc355ba90c11f69929e48d09ca",
+        "normalized_sha256": "f37519926b41a6974e22c2efd04d91daf16e2c28e7b9e26a5cc9948a08318bf8"
+      },
+      "why": "Pressing Enter focuses and clicks the login button, entering the same submit path. It is a trigger helper upstream of the nonce/hash logic.",
+      "answer_function": "login input keypress handler",
+      "source_function": "anonymous keypress handler"
+    },
+    {
+      "function": "jQuery.ajax",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "s.doyo.cn/j/dj_1.12.4.js",
+      "captured_span": {
+        "file": "captures/s.doyo.cn/j/dj_1.12.4.js",
+        "start_line": 4,
+        "end_line": 4,
+        "start_column": 19772,
+        "end_column": 22953,
+        "start_offset": 83928,
+        "end_offset": 87109,
+        "sha256": "a437fd8293100630a3d81f1c035e13f16878f02226180b18457c783d2d44b28f",
+        "normalized_sha256": "a437fd8293100630a3d81f1c035e13f16878f02226180b18457c783d2d44b28f"
+      },
+      "why": "Generic network sink reached after the anchor has placed the derived password into the post data. It emits an already constructed request.",
+      "answer_function": "jQuery.ajax",
+      "source_function": "jQuery.ajax"
+    },
+    {
+      "function": "go_search_page",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 261,
+        "end_line": 261,
+        "start_column": 0,
+        "end_column": 119,
+        "start_offset": 10021,
+        "end_offset": 10140,
+        "sha256": "08dac2a6ba731af5881a972dac93ccb65deb2892e0d219407ce74d24cf78e6fe",
+        "normalized_sha256": "08dac2a6ba731af5881a972dac93ccb65deb2892e0d219407ce74d24cf78e6fe"
+      },
+      "why": "A page search-bar helper (navigates to the search results page); unrelated to the login password path.",
+      "answer_function": "go_search_page",
+      "source_function": "go_search_page"
+    },
+    {
+      "function": "check_search_key",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 250,
+        "end_line": 258,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 9791,
+        "end_offset": 9998,
+        "sha256": "b6a58fe9b47321a15a82baaec692506d4e6ae976ebc77cd0fdbe6d2380b09df0",
+        "normalized_sha256": "a2b826e968ae0ae0825f01d402f503f79002b9fd6aa3ff1c73ffbe26b7ebdc3e"
+      },
+      "why": "Validates the search-box keyword; unrelated to the login password path.",
+      "answer_function": "check_search_key",
+      "source_function": "check_search_key"
+    },
+    {
+      "function": "login_bar_init",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 264,
+        "end_line": 286,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 10163,
+        "end_offset": 11807,
+        "sha256": "6d4fecb2727f81f26d0cd40f06d73770f61dad181221c5b63527778859d58214",
+        "normalized_sha256": "07473a43fba1343331bfecfafe65816b9da9ca4e452909822fe4a0151915377f"
+      },
+      "why": "Header login-status initializer that fetches login_bar/logout UI state. It contains Passport-looking URLs but is not the password hashing login flow.",
+      "answer_function": "login_bar_init",
+      "source_function": "login_bar_init"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The exact anchor is the token success callback that has both the server nonce/ts and the raw password available and constructs the final `password` field.",
+      "The outer submit click handler is target-specific but too broad: it includes validation and callback setup in addition to the anchor.",
+      "Sha1.hash and its helpers are generic primitives and should stay at 0.5 even though the hash bytes determine the final value.",
+      "jQuery get/post/ajax wrappers send or schedule already prepared data and should not outrank the callback that constructs `pwd`.",
+      "Response callbacks, header login-bar code and page-search helpers are not constructors for the requested password field."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention.",
+    "audit_notes": [
+      "Answer match check: 1.json case 17 code begins at the same $.get token request and anonymous success callback represented by oracle.primary_anchor.",
+      "Question direction check: the visible question asks for the function whose own body combines fetched nonce/ts with the hashed password and posts it, so it points to the anonymous token callback."
+    ]
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to the token success callback that computes `pwd = Sha1.hash(nonce + ts + Sha1.hash(rawPassword))` and posts it."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to the enclosing login submit handler that contains the anchor but also includes validation and token-fetch setup."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to the reusable SHA-1/UTF-8 primitive used by the anchor."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to the Enter-key trigger, jQuery request wrapper, ajax sink, or post-response callback on the target path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to search helpers, header login-status code, unrelated analytics, or cannot be uniquely mapped."
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "case_id": "real08_xiaomi_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "POST",
+      "url_contains": "/serviceLogin",
+      "field": "hash",
+      "plaintext_sample": "13819912565",
+      "value_sample": "9E2BFBE3D7050EDF876679FE5CE6E5AA"
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the login request param-builder (a regenerator state machine) whose body computes the password hash and binds it to the request: it calls the md5 routine on the password and uppercases it, placing the result in the hash field of the login params. The bundle is string-array obfuscated (field names via Qe([...])) and the md5 routine itself is a reassigned local that cannot be isolated as its own function, so this param-builder is the shallowest localizable function that constructs the hash value. The Qe string-decoder is a deobfuscation helper, not the answer.",
+  "primary_anchor": {
+    "answer_function": "_",
+    "source_function": "loginParamsBuilder",
+    "source_file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+    "captured_file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+    "captured_span": {
+      "file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+      "start_line": 1,
+      "end_line": 1,
+      "start_column": 17808,
+      "end_column": 18323,
+      "start_offset": 17808,
+      "end_offset": 18323,
+      "sha256": "0f3c9f64dc311b19ab7d956eac29b3907517855ff76554c384181ffdaf451348",
+      "normalized_sha256": "0f3c9f64dc311b19ab7d956eac29b3907517855ff76554c384181ffdaf451348"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "The regenerator that assembles the account-login request params; its case-0 builds the params object including hash: <md5>(i.password).toUpperCase(), i.e. the observed uppercase MD5 password hash bound to the request."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "_",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+      "captured_span": {
+        "file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 17808,
+        "end_column": 18323,
+        "start_offset": 17808,
+        "end_offset": 18323,
+        "sha256": "0f3c9f64dc311b19ab7d956eac29b3907517855ff76554c384181ffdaf451348",
+        "normalized_sha256": "0f3c9f64dc311b19ab7d956eac29b3907517855ff76554c384181ffdaf451348"
+      },
+      "why": "The regenerator that assembles the account-login request params; its case-0 builds the params object including hash: <md5>(i.password).toUpperCase(), i.e. the observed uppercase MD5 password hash bound to the request.",
+      "answer_function": "_",
+      "source_function": "loginParamsBuilder"
+    },
+    {
+      "function": "Qe",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+      "captured_span": {
+        "file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 7226,
+        "end_column": 7312,
+        "start_offset": 7226,
+        "end_offset": 7312,
+        "sha256": "93c2db3bf60dba9bf69d230890fe1bdd0f11d4def89a84a3f207aeec6016fe5f",
+        "normalized_sha256": "93c2db3bf60dba9bf69d230890fe1bdd0f11d4def89a84a3f207aeec6016fe5f"
+      },
+      "why": "The string-array decoder used to obfuscate property names; a deobfuscation helper, not the password-hash constructor.",
+      "answer_function": "Qe",
+      "source_function": "Qe"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The network sink / request-sending service emits an already constructed value and is not the constructor.",
+      "Thin forwarding wrappers and submit handlers that merely call the value constructor should not outrank the anchor.",
+      "Generic crypto/encoding primitives (md5/AES/RSA/SM/base64/uuid libraries) are Core utilities, below the field-binding anchor.",
+      "Same-request OTHER fields (a second encrypted parameter, signatures, fingerprints) are off-chain decoys for this observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention."
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to primary_anchor.captured_span (the field-binding/value-constructing function)."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to a target-specific helper nested below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to a generic crypto/encoding primitive used by the construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to a path-critical step, a forwarding wrapper or the submit handler."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Span maps to a generic low-level helper (BigInt math, DOM read) on the upstream path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to an off-chain decoy / same-request other field, or cannot be uniquely mapped."
+    }
+  ]
+}

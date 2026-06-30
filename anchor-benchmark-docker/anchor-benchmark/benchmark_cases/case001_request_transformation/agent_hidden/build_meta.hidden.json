@@ -1,0 +1,184 @@
+{
+  "case_id": "case001_request_transformation",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3072,
+    "async_level": 6,
+    "distractor_count": 44,
+    "semantic_decoy_count": 26,
+    "submit_path_decoy_count": 18,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#accountId",
+            "value": "tenant_8315"
+          },
+          {
+            "action": "type",
+            "selector": "#secretCode",
+            "value": "cipher2947"
+          },
+          {
+            "action": "check",
+            "selector": "#acceptPolicy"
+          },
+          {
+            "action": "click",
+            "selector": "#confirmSubmit"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log + fetch",
+        "argument_type": "object",
+        "action": "account.submit",
+        "field": "transform_key",
+        "value_pattern": "^[a-z0-9]{16}$",
+        "fetch_header": "X-Transform-Key",
+        "fetch_url": "/api/account/submit"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after routing and input preparation, whose own body constructs the target observable value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink or fetch call."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_hidden/dist/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/account.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4191/assets/account.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 1690770,
+    "bundle_lines": 35115
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name is assembled from adjusted character-code arrays at the sink, so direct literal search is insufficient.",
+        "The target transform value is carried through runtime-derived transport keys and recovered shortly before console output and fetch header assignment.",
+        "The submit route selects its live configuration only after click-time DOM, form-order, style and dataset state are captured.",
+        "The fetch URL and X-Transform-Key header name are assembled from character-code arrays, obscuring the network request destination."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1690770,
+        "captured_bundle_lines": 35115,
+        "route_table_rows": 44,
+        "state_machine_steps": 3072
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The click path crosses delegated event handling, action routing, gate checks, tuple construction, asynchronous scheduling, local event dispatch, runtime slot materialization, request transform encoding, dynamic transport, fetch header assignment and sink wrapping.",
+        "The same submit interaction emits non-target request.prepare/request.audit objects carrying transform_key-like values before the target account.submit object.",
+        "The deployed bundle also contains request-signing-like and vendor-like decoys that execute or remain reachable-looking without feeding the target transform_key field."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 24,
+        "off_chain_decoy_modules": 44,
+        "same_field_non_target_console_objects": 2
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from the click by Promise, microtask, timer, animation-frame, MutationObserver and DOM CustomEvent boundaries.",
+        "The selected runtime configuration is cloned and mutated in a WeakMap-backed materialization step before the encoder receives it.",
+        "The final sink receives an already transformed value after dynamic cell and lane recovery, so sink inspection or fetch interception alone does not identify the construction site."
+      ],
+      "async_boundaries": [
+        "queueMicrotask continuation",
+        "Promise.resolve continuation",
+        "setTimeout(..., 0)",
+        "requestAnimationFrame callback",
+        "MutationObserver callback",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_transformation",
+    "case_category": "fetch_request_header_field_assignment",
+    "subtype": "click-time form and configuration transform value written to request header",
+    "network_request_present": true,
+    "reason": "The observable value is a deterministic transform of form fields, route/config state and click-time runtime state, written to the X-Transform-Key header of a fetch request. It is not a state-only code, browser fingerprint or static signature.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "The output is not console-only; the same value is also assigned to a fetch request header field, making this a request transformation case."
+      },
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The output has no cryptographic proof/seal semantics; request-signing-like code in the bundle is decoy material and does not feed the target field."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The chain uses local DOM/form state, not browser/device capability collection as the target behavior."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "primary_anchor": {
+    "answer_function": "buildRequestTransform",
+    "source_function": "buildRequestTransform",
+    "source_file": "src/z0/k7/q3/t9.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4191/assets/account.app.bundle.js",
+    "captured_span": {
+      "start_line": 508,
+      "end_line": 515,
+      "start_offset": 41042,
+      "end_offset": 41526
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

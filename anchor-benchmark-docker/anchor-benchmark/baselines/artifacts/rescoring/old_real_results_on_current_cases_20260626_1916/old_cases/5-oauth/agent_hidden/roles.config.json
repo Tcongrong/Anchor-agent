@@ -1,0 +1,29 @@
+{
+  "case_id": "real05_oauth_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is `rsa` (inline in goLogin.html): it binds the site's specific RSA public exponent/modulus into an RSAKeyPair and returns the encrypted password token. It is not pwdFormLogin (the form handler that reads the inputs and calls it) nor encryptedString (the generic RSA string-encryption primitive in RSA.js). PLAN §8.14 rules 1+2: the function that binds the fixed public key and is dedicated to producing this token outranks the reusable RSA primitive and the call-site wrapper.",
+  "anchor": {
+    "file": "oauth.d.cn/auth/goLogin.html",
+    "locator": "setMaxDigits(130)",
+    "answer_function": "rsa",
+    "source_function": "rsa",
+    "source_file": "oauth.d.cn/auth/goLogin.html",
+    "why": "Sets the RSA digit size, hardcodes PublicExponent '10001' and the site modulus 'be44...', builds the RSAKeyPair, and returns encryptedString(key, arg) — the password's RSA token observed as `pwd` in the login request."
+  },
+  "roles": [
+    {
+      "file": "oauth.d.cn/auth/goLogin.html",
+      "locator": "rsaPwd = rsa(passwordVal)",
+      "role": "Path/Wrapper",
+      "answer_function": "pwdFormLogin",
+      "why": "The password login submit handler: reads account/password inputs, runs captcha validation, calls rsa(passwordVal), and assembles the submitData. A call-site wrapper, not the encryptor."
+    },
+    {
+      "file": "raw.d.cn/membersystem/2016/static/js/RSA.js",
+      "locator": "function encryptedString",
+      "role": "Core utility",
+      "answer_function": "encryptedString",
+      "why": "The generic RSA string-encryption routine (block-splits the input and exponentiates with the given key). Reusable primitive invoked by rsa; not bound to this site's key."
+    }
+  ]
+}

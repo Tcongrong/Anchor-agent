@@ -1,0 +1,113 @@
+{
+  "case_id": "case005_state_encoding",
+  "page": "captures/devtools-source-dump/127.0.0.1_4195/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#notifyFrequency",
+      "value": "daily"
+    },
+    {
+      "action": "select",
+      "selector": "#notifyFormat",
+      "value": "digest"
+    },
+    {
+      "action": "check",
+      "selector": "#enableDigest"
+    },
+    {
+      "action": "click",
+      "selector": "#saveSettingsBtn"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "method": "log",
+    "action": "notify.save",
+    "field": "state_code",
+    "format": "^[a-z0-9]{12}$"
+  },
+  "question": "Locate the anchor function for the state_code field in the console.log object whose action is notify.save after selecting daily frequency, digest format, enabling digest roll-up, and clicking Save Settings. The anchor is the first target-specific value-construction function on the dynamic behavior chain: it appears after routing, notification action-table resolution, scope-field selection, and input preparation, and its own function body constructs the target notification state-encoding hash value instead of merely collecting preference parameters, forwarding control, wrapping a return value, or emitting to the sink. Return exactly one complete JavaScript function and its location in the captured corpus. Do not return a generic utility, event handler, action-table dispatcher, scope resolver, full call chain, or final console sink.",
+  "anchor_definition_general": "A function is target-specific for the observable above if at least one statement in its body constructs or binds the target value, writes the target field, or dispatches the target action, and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility, control-flow dispatcher, scheduler, event bus, validation routine, input collector, lifecycle hook, or preparation routine whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the trigger-to-sink chain whose immediate caller is generic, equivalently the shallowest target-specific function on that path.",
+  "anchor_worked_example": "Worked example from a different scenario: a checkout page emits body.order_sig_v2 after Submit Order. The chain prepares an order draft, encodes checkout state, collects an async profile receipt, composes a request envelope, enters a generic interceptor pipeline, selects a sealing interceptor, canonicalizes payload fields, folds payload data with a receipt and pepper, computes a digest, writes body.order_sig_v2, and sends the request. The sealing interceptor is the anchor because its immediate caller is the generic pipeline dispatcher and its own body is the highest point on the chain whose code explains why order_sig_v2 is produced. The canonicalizer and folder are nested target-specific helpers, the digest routine is a reusable core utility, the dispatcher and sender are wrappers, and same-click values such as analytics_sig or retry_fingerprint are off-chain decoys. Apply the same reasoning to this page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleFunctionName",
+      "file": "captures/devtools-source-dump/127.0.0.1_4195/assets/notify.state.bundle.js",
+      "slice": {
+        "start_line": 10,
+        "end_line": 25,
+        "start_offset": 100,
+        "end_offset": 900,
+        "code": "function exampleFunctionName(input, context) { return input; }"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Return one top-1 JSON object, not a list of candidate chains.",
+    "The slice must be exactly one complete function from the captured bundle.",
+    "The function_name must be the name shown in the captured bundle, not a private source-side name.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, action-table dispatcher, scope resolver, notification parameter collector, tuple builder, or wrapper when a more target-specific value constructor is present.",
+    "Constrain the observable by both action notify.save and field state_code.",
+    "Changing the notification frequency changes the target value.",
+    "Changing the notification format changes the target value.",
+    "Changing digest roll-up changes the target value."
+  ],
+  "notes": [
+    "Use the page behavior and the console output as the starting point.",
+    "Only the value printed by console.log with action notify.save is the target.",
+    "Similar values printed by console.debug or console.info are distractors.",
+    "A full call-chain explanation is not required."
+  ]
+}

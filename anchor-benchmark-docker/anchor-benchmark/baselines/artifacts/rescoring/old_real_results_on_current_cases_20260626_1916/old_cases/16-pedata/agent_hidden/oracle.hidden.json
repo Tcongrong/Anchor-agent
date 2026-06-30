@@ -1,0 +1,167 @@
+{
+  "case_id": "real16_pedata_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "GET",
+      "url_contains": "/api/sso/loginmobile",
+      "field": "rast",
+      "plaintext_sample": "(none; generated per request)",
+      "value_sample": "1775912601246"
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the GET request wrapper A: its body generates rast = (new Date).getTime() and appends &rast=/?rast= to the URL before issuing the GET. PLAN §5.1: the function that actually constructs and attaches the value is the anchor — not the sibling POST helper (no rast), the login action that calls A, or store getters.",
+  "primary_anchor": {
+    "answer_function": "A",
+    "source_function": "A",
+    "source_file": "max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+    "captured_file": "captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+    "captured_span": {
+      "file": "captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+      "start_line": 1,
+      "end_line": 1,
+      "start_column": 14851,
+      "end_column": 15380,
+      "start_offset": 14851,
+      "end_offset": 15380,
+      "sha256": "9d8de9e47bbe791600438a6c9a0d4bb25fd40680b5c2beaccd1073cf2a608f52",
+      "normalized_sha256": "9d8de9e47bbe791600438a6c9a0d4bb25fd40680b5c2beaccd1073cf2a608f52"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "GET helper that, unless an override is provided, appends rast=(new Date).getTime().toString() to the URL and then calls o.a.get(t,...). This is where the observed rast query parameter is produced and attached."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "A",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+      "captured_span": {
+        "file": "captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 14851,
+        "end_column": 15380,
+        "start_offset": 14851,
+        "end_offset": 15380,
+        "sha256": "9d8de9e47bbe791600438a6c9a0d4bb25fd40680b5c2beaccd1073cf2a608f52",
+        "normalized_sha256": "9d8de9e47bbe791600438a6c9a0d4bb25fd40680b5c2beaccd1073cf2a608f52"
+      },
+      "why": "GET helper that, unless an override is provided, appends rast=(new Date).getTime().toString() to the URL and then calls o.a.get(t,...). This is where the observed rast query parameter is produced and attached.",
+      "answer_function": "A",
+      "source_function": "A"
+    },
+    {
+      "function": "m",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+      "captured_span": {
+        "file": "captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 14674,
+        "end_column": 14848,
+        "start_offset": 14674,
+        "end_offset": 14848,
+        "sha256": "76a22968b08f80670ac57d6c455244c301050f83325f86087a74b9f10cdf4674",
+        "normalized_sha256": "76a22968b08f80670ac57d6c455244c301050f83325f86087a74b9f10cdf4674"
+      },
+      "why": "A sibling multipart POST helper in the same http module. It issues a request but never adds rast; tempting but wrong.",
+      "answer_function": "m",
+      "source_function": "m"
+    },
+    {
+      "function": "userid",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+      "captured_span": {
+        "file": "captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 37598,
+        "end_column": 37638,
+        "start_offset": 37598,
+        "end_offset": 37638,
+        "sha256": "ebd7cb913a6542848c6b02d552dcdf422d8dd70e228f0047dad27a902fa9b82b",
+        "normalized_sha256": "ebd7cb913a6542848c6b02d552dcdf422d8dd70e228f0047dad27a902fa9b82b"
+      },
+      "why": "An unrelated Vuex getter returning the user id; not on the request path.",
+      "answer_function": "userid",
+      "source_function": "userid"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The network sink / request-sending service emits an already constructed value and is not the constructor.",
+      "Thin forwarding wrappers and submit handlers that merely call the value constructor should not outrank the anchor.",
+      "Generic crypto/encoding primitives (md5/AES/RSA/SM/base64/uuid libraries) are Core utilities, below the field-binding anchor.",
+      "Same-request OTHER fields (a second encrypted parameter, signatures, fingerprints) are off-chain decoys for this observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention."
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to primary_anchor.captured_span (the field-binding/value-constructing function)."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to a target-specific helper nested below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to a generic crypto/encoding primitive used by the construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to a path-critical step, a forwarding wrapper or the submit handler."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Span maps to a generic low-level helper (BigInt math, DOM read) on the upstream path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to an off-chain decoy / same-request other field, or cannot be uniquely mapped."
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+import { u } from "../k7/q3/t9.js";
+
+const cfg = {
+  slot: 3,
+  salt: "d:03:catalog-local",
+  order: [7, 5, 2, 4, 1, 6, 3, 0],
+  sep: "\u2062",
+  shift: 5,
+  mask: 3450571044,
+  branch: 8
+};
+
+function makeTuple(ctx) {
+  const tuple = ctx && Array.isArray(ctx.tuple) ? ctx.tuple : [];
+  if (tuple.length) return tuple;
+  return [
+    { k: "q", i: 0, v: "shadow jacket", y: "shadow", n: 13 },
+    { k: "s", i: 1, v: "price_desc", y: "sort", n: 10 },
+    { k: "o", i: 2, v: "1", y: "one", n: 1 },
+    { k: "n", i: 3, v: "northline.catalog.search", y: "ns", n: 24 },
+    { k: "v", i: 4, v: "v2", y: "v2", n: 2 },
+    { k: "l", i: 5, v: "13:10:1", y: "lens", n: 7 },
+    { k: "c", i: 6, v: "catalog.search", y: "cmd", n: 14 },
+    { k: "t", i: 7, v: "shadow,jacket", y: "tok", n: 13 }
+  ];
+}
+
+function mutate(value, ctx) {
+  const tail = ((cfg.slot + (ctx.index || 0) + 3) % 36).toString(36);
+  return value.slice(0, -1) + tail;
+}
+
+export function d(ctx = {}) {
+  const fn = u(cfg);
+  const value = fn(makeTuple(ctx), {
+    machine: ((ctx.machine || 0) ^ cfg.mask ^ (ctx.vendorScore || 0)) >>> 0,
+    route: ctx.route || [3, 3],
+    runtimeTicket: (ctx.runtimeTicket || 0) ^ 104,
+    salt: cfg.salt
+  });
+  return mutate(value, ctx);
+}
+const x03_0 = "viewer-pane:x03.js:000";
+const x03_1 = "text-layer:x03.js:001";
+const x03_2 = "outline-row:x03.js:002";
+const x03_3 = "toolbar-slot:x03.js:003";
+const x03_4 = "page-label:x03.js:004";
+const x03_5 = "form-field:x03.js:005";
+const x03_6 = "history-entry:x03.js:006";
+const x03_7 = "thumbnail-item:x03.js:007";
+const x03_8 = "viewer-pane:x03.js:008";
+const x03_9 = "text-layer:x03.js:009";
+const x03_10 = "outline-row:x03.js:010";
+const x03_11 = "toolbar-slot:x03.js:011";
+const x03_12 = "page-label:x03.js:012";
+const x03_13 = "form-field:x03.js:013";
+const x03_14 = "history-entry:x03.js:014";
+const x03_15 = "thumbnail-item:x03.js:015";
+const x03_16 = "viewer-pane:x03.js:016";
+const x03_17 = "text-layer:x03.js:017";
+const x03_18 = "outline-row:x03.js:018";
+const x03_19 = "toolbar-slot:x03.js:019";
+const x03_20 = "page-label:x03.js:020";
+const x03_21 = "form-field:x03.js:021";
+const x03_22 = "history-entry:x03.js:022";
+const x03_23 = "thumbnail-item:x03.js:023";
+const x03_24 = "viewer-pane:x03.js:024";
+const x03_25 = "text-layer:x03.js:025";
+const x03_26 = "outline-row:x03.js:026";
+const x03_27 = "toolbar-slot:x03.js:027";
+const x03_28 = "page-label:x03.js:028";
+const x03_29 = "form-field:x03.js:029";
+const x03_30 = "history-entry:x03.js:030";
+const x03_31 = "thumbnail-item:x03.js:031";
+const x03_32 = "viewer-pane:x03.js:032";
+const x03_33 = "text-layer:x03.js:033";
+const x03_34 = "outline-row:x03.js:034";
+const x03_35 = "toolbar-slot:x03.js:035";
+const x03_36 = "page-label:x03.js:036";
+const x03_37 = "form-field:x03.js:037";
+const x03_38 = "history-entry:x03.js:038";
+const x03_39 = "thumbnail-item:x03.js:039";
+const x03_40 = "viewer-pane:x03.js:040";
+const x03_41 = "text-layer:x03.js:041";
+const x03_42 = "outline-row:x03.js:042";
+const x03_43 = "toolbar-slot:x03.js:043";
+const x03_44 = "page-label:x03.js:044";
+const x03_45 = "form-field:x03.js:045";
+const x03_46 = "history-entry:x03.js:046";
+const x03_47 = "thumbnail-item:x03.js:047";
+const x03_48 = "viewer-pane:x03.js:048";
+const x03_49 = "text-layer:x03.js:049";
+const x03_50 = "outline-row:x03.js:050";
+const x03_51 = "toolbar-slot:x03.js:051";
+const x03_52 = "page-label:x03.js:052";
+const x03_53 = "form-field:x03.js:053";
+const x03_54 = "history-entry:x03.js:054";
+const x03_55 = "thumbnail-item:x03.js:055";
+const x03_56 = "viewer-pane:x03.js:056";
+const x03_57 = "text-layer:x03.js:057";
+const x03_58 = "outline-row:x03.js:058";
+const x03_59 = "toolbar-slot:x03.js:059";
+const x03_60 = "page-label:x03.js:060";
+const x03_61 = "form-field:x03.js:061";
+const x03_62 = "history-entry:x03.js:062";
+const x03_63 = "thumbnail-item:x03.js:063";
+const x03_64 = "viewer-pane:x03.js:064";
+const x03_65 = "text-layer:x03.js:065";
+const x03_66 = "outline-row:x03.js:066";
+const x03_67 = "toolbar-slot:x03.js:067";
+const x03_68 = "page-label:x03.js:068";
+const x03_69 = "form-field:x03.js:069";
+const x03_70 = "history-entry:x03.js:070";
+const x03_71 = "thumbnail-item:x03.js:071";
+const x03_72 = "viewer-pane:x03.js:072";
+const x03_73 = "text-layer:x03.js:073";
+const x03_74 = "outline-row:x03.js:074";
+const x03_75 = "toolbar-slot:x03.js:075";
+const x03_76 = "page-label:x03.js:076";
+const x03_77 = "form-field:x03.js:077";
+const x03_78 = "history-entry:x03.js:078";
+const x03_79 = "thumbnail-item:x03.js:079";
+const x03_80 = "viewer-pane:x03.js:080";
+const x03_81 = "text-layer:x03.js:081";
+const x03_82 = "outline-row:x03.js:082";
+const x03_83 = "toolbar-slot:x03.js:083";
+const x03_84 = "page-label:x03.js:084";
+const x03_85 = "form-field:x03.js:085";
+const x03_86 = "history-entry:x03.js:086";
+const x03_87 = "thumbnail-item:x03.js:087";
+const x03_88 = "viewer-pane:x03.js:088";
+const x03_89 = "text-layer:x03.js:089";
+const x03_90 = "outline-row:x03.js:090";
+const x03_91 = "toolbar-slot:x03.js:091";
+const x03_92 = "page-label:x03.js:092";
+const x03_93 = "form-field:x03.js:093";
+const x03_94 = "history-entry:x03.js:094";
+const x03_95 = "thumbnail-item:x03.js:095";
+const x03_96 = "viewer-pane:x03.js:096";
+const x03_97 = "text-layer:x03.js:097";
+const x03_98 = "outline-row:x03.js:098";
+const x03_99 = "toolbar-slot:x03.js:099";
+const x03_100 = "page-label:x03.js:100";
+const x03_101 = "form-field:x03.js:101";
+const x03_102 = "history-entry:x03.js:102";
+const x03_103 = "thumbnail-item:x03.js:103";
+const x03_104 = "viewer-pane:x03.js:104";
+const x03_105 = "text-layer:x03.js:105";
+const x03_106 = "outline-row:x03.js:106";
+const x03_107 = "toolbar-slot:x03.js:107";
+const x03_108 = "page-label:x03.js:108";
+const x03_109 = "form-field:x03.js:109";
+const x03_110 = "history-entry:x03.js:110";
+const x03_111 = "thumbnail-item:x03.js:111";
+const x03_112 = "viewer-pane:x03.js:112";
+const x03_113 = "text-layer:x03.js:113";
+const x03_114 = "outline-row:x03.js:114";
+const x03_115 = "toolbar-slot:x03.js:115";
+const x03_116 = "page-label:x03.js:116";
+const x03_117 = "form-field:x03.js:117";
+const x03_118 = "history-entry:x03.js:118";
+const x03_119 = "thumbnail-item:x03.js:119";
+const x03_120 = "viewer-pane:x03.js:120";
+const x03_121 = "text-layer:x03.js:121";
+const x03_122 = "outline-row:x03.js:122";
+const x03_123 = "toolbar-slot:x03.js:123";
+const x03_124 = "page-label:x03.js:124";
+const x03_125 = "form-field:x03.js:125";
+const x03_126 = "history-entry:x03.js:126";
+const x03_127 = "thumbnail-item:x03.js:127";
+const x03_128 = "viewer-pane:x03.js:128";
+const x03_129 = "text-layer:x03.js:129";
+const x03_130 = "outline-row:x03.js:130";
+const x03_131 = "toolbar-slot:x03.js:131";
+const x03_132 = "page-label:x03.js:132";
+const x03_133 = "form-field:x03.js:133";
+const x03_134 = "history-entry:x03.js:134";
+const x03_135 = "thumbnail-item:x03.js:135";
+const x03_136 = "viewer-pane:x03.js:136";

@@ -1,0 +1,1544 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request whose password is sent as an uppercase MD5 `hash` field (e.g. 13819912565 becomes 9E2BFBE3D7050EDF876679FE5CE6E5AA). The bundle is string-array obfuscated (object keys appear as Qe([...]) decoder calls). Locate the anchor function for that hash field. The anchor function is the target-specific login param-builder on the submit->request chain: the single complete function whose own body assembles the account-login parameters object and binds the password hash into it \u2014 it runs the password through the md5 routine, uppercases the result and places it under the (decoded) hash key \u2014 rather than the md5 primitive it invokes to compute the digest (a generic crypto utility reached cross-file via module interop, not defined in this file), the string-array decoder that only reveals the obfuscated key names (an off-chain helper), or the request-sending sink. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the md5 routine, the string-array decoder, or unrelated utilities \u2014 return the param-builder that binds the uppercase-MD5 hash into the login request. Only code under captures is in scope.  network_request POST /serviceLogin hash 13819912565 9E2BFBE3D7050EDF876679FE5CE6E5AA\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/serviceLogin', 'field': 'hash', 'plaintext_sample': '13819912565', 'value_sample': '9E2BFBE3D7050EDF876679FE5CE6E5AA'}\nCandidate seed nodes (lexical prior, not a ranking): ['6a3a23effd219d2e', '8c7499447e0aa318', '0358c9862f21edfe', '03f2024c2a3d3779', '2515b0bd20fe2cf4', '8848a014db94944b', '96c2d2373f67e040', 'e0a67af98d927b43']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I'll start by examining the candidate seed nodes to find the param-builder function that assembles login parameters with the uppercase MD5 hash."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_3c2edda2377d42f3aeab8097",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "6a3a23effd219d2e"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_bfef85c3fa144c4d967252f8",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "8c7499447e0aa318"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_1abf2192d9cb44e8a667f3ce",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "0358c9862f21edfe"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_0846904ac49f494c8b5d6e96",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "03f2024c2a3d3779"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ac8ebeb2b611482391589975",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "2515b0bd20fe2cf4"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_71c5e9cda66c47e198401c2f",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "8848a014db94944b"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_f38f693a30f04dcf9e69b9da",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "96c2d2373f67e040"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_3e3dc277f68e4b68a9aecdf5",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e0a67af98d927b43"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_3c2edda2377d42f3aeab8097",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 10049, \"end_offset\": 11910}, \"_best_guess_score\": 0, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 10049, \"end_offset\": 11910, \"code\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_bfef85c3fa144c4d967252f8",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9967, \"end_offset\": 11935}, \"_best_guess_score\": -1, \"name\": \"e\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9967, \"end_offset\": 11935, \"code\": \"function e(t,i){var d,p,l,f,g,w,v,y,A,U,J,N,$,W,q,B,D,z,K,Q;return(0,s.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}),e,null,[[1,40,45,48]])}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_1abf2192d9cb44e8a667f3ce",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9926, \"end_offset\": 11992}, \"_best_guess_score\": -2, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9926, \"end_offset\": 11992, \"code\": \"function(){var e=(0,i.Z)((0,s.Z)().mark((function e(t,i){var d,p,l,f,g,w,v,y,A,U,J,N,$,W,q,B,D,z,K,Q;return(0,s.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}),e,null,[[1,40,45,48]])})));return function(t,r){return e.apply(this,arguments)}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_0846904ac49f494c8b5d6e96",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9152, \"end_offset\": 12014}, \"_best_guess_score\": -3, \"name\": \"O\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9152, \"end_offset\": 12014, \"code\": \"function O(){var e,t,r=(0,d.Z)(),a=r.searchParams,o=null!==(e=U(a.get(\\\"_callingCode\\\"),/^\\\\+\\\\d+$/))&&void 0!==e?e:\\\"\\\",u=null!==(t=U(a.get(\\\"_user\\\"),/^\\\\d+$/))&&void 0!==t?t:\\\"\\\",l=a.get(\\\"_maskedPhone\\\")||u||\\\"\\\",k=r.uRegion,b=\\\"true\\\"===a.get(\\\"_agreementChecked\\\")||!1,S=a.get(\\\"_originSetPwd\\\")||\\\"\\\",C=a.get(\\\"_snsConfirm\\\")||\\\"\\\",F=(0,h.Y3)(b),R=(0,c.rb)(),A=(0,f.f)(),O=y(),I=(0,v.Sl)(),H=(0,w.Z)();(0,g.useEffect)((function(){S&&I(\\\"expose\\\",{tip:T.J.expose_setpwd_page,origin:S})}),[I,S]);var L=(0,g.useCallback)((function(e){I(\\\"click\\\",{tip:T.J.click_set_complete,result:e,origin:S})}),[I,S]),J=(0,p.TA)({initialValues:{callingCode:o,phone:u,maskedPhone:l,region:k,password:\\\"\\\",repassword:\\\"\\\"},validate:function(e){var t=e.password,r=e.repassword;return A({password:t,repassword:r})},onSubmit:function(){var e=(0,i.Z)((0,s.Z)().mark((function e(t,i){var d,p,l,f,g,w,v,y,A,U,J,N,$,W,q,B,D,z,K,Q;return(0,s.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}),e,null,[[1,40,45,48]])})));return function(t,r){return e.apply(this,arguments)}}()});return{formik:J}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ac8ebeb2b611482391589975",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js\", \"start_offset\": 80140, \"end_offset\": 81412}, \"_best_guess_score\": -4, \"name\": \"$\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js\", \"start_offset\": 80140, \"end_offset\": 81412, \"code\": \"function $(){return{default:\\\"Validation error on field %s\\\",required:\\\"%s is required\\\",enum:\\\"%s must be one of %s\\\",whitespace:\\\"%s cannot be empty\\\",date:{format:\\\"%s date %s is invalid for format %s\\\",parse:\\\"%s date could not be parsed, %s is invalid \\\",invalid:\\\"%s date %s is invalid\\\"},types:{string:\\\"%s is not a %s\\\",method:\\\"%s is not a %s (function)\\\",array:\\\"%s is not an %s\\\",object:\\\"%s is not an %s\\\",number:\\\"%s is not a %s\\\",date:\\\"%s is not a %s\\\",boolean:\\\"%s is not a %s\\\",integer:\\\"%s is not an %s\\\",float:\\\"%s is not a %s\\\",regexp:\\\"%s is not a valid %s\\\",email:\\\"%s is not a valid %s\\\",url:\\\"%s is not a valid %s\\\",hex:\\\"%s is not a valid %s\\\"},string:{len:\\\"%s must be exactly %s characters\\\",min:\\\"%s must be at least %s characters\\\",max:\\\"%s cannot be longer than %s characters\\\",range:\\\"%s must be between %s and %s characters\\\"},number:{len:\\\"%s must equal %s\\\",min:\\\"%s cannot be less than %s\\\",max:\\\"%s cannot be greater than %s\\\",range:\\\"%s must be between %s and %s\\\"},array:{len:\\\"%s must be exactly %s in length\\\",min:\\\"%s cannot be less than %s in length\\\",max:\\\"%s cannot be greater than %s in length\\\",range:\\\"%s must be between %s and %s in length\\\"},pattern:{mismatch:\\\"%s value %s does not match pattern %s\\\"},clone:function(){var e=JSON.parse(JSON.stringify(this));return e.clone=this.clone,e}}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_71c5e9cda66c47e198401c2f",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11849, \"end_offset\": 15482}, \"_best_guess_score\": -5, \"name\": \"99030\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11849, \"end_offset\": 15482, \"code\": \"function(e,n,t){\\\"use strict\\\";t.d(n,{$Q:function(){return w},B7:function(){return j},Bt:function(){return C},CV:function(){return _},IN:function(){return P},Iy:function(){return m},Lm:function(){return O},Mr:function(){return d},Mv:function(){return l},So:function(){return y},Uw:function(){return T},VO:function(){return a},X9:function(){return v},Yw:function(){return D},Zd:function(){return M},_B:function(){return F},dA:function(){return b},gN:function(){return k},gP:function(){return f},ij:function(){return E},l$:function(){return L},m0:function(){return R},qP:function(){return S},qs:function(){return A},xk:function(){return x},yh:function(){return p}});t(39275),t(10853),t(33290),t(21496),t(38472);var r,o,i,u=t(72791),c=t(38222),a=window.PASSPORT_JSB_METHOD_INVOKER,s=a&&a.isMethodSupported,f=s&&a.isMethodSupported(\\\"showDialog\\\"),l=s&&a.isMethodSupported(\\\"closePage\\\"),d=s&&a.isMethodSupported(\\\"skipProvision\\\"),p=s&&a.isMethodSupported(\\\"listenInboxSms\\\"),h=s&&a.isMethodSupported(\\\"getConfig\\\"),m=(s&&a.isMethodSupported(\\\"startPage\\\"),s&&a.isMethodSupported(\\\"goBack\\\")),v=(s&&a.isMethodSupported(\\\"removeAccount\\\"),s&&a.isMethodSupported(\\\"showToast\\\")),g=s&&a.isMethodSupported(\\\"getServiceData\\\"),_=s&&a.isMethodSupported(\\\"setAccountInfo\\\"),w=s&&a.isMethodSupported(\\\"isRegisteredFido2\\\"),y=s&&a.isMethodSupported(\\\"fido2Auth\\\"),b=a,S=!!(null===(r=window)||void 0===r||null===(o=r.webkit)||void 0===o||null===(i=o.messageHandlers)||void 0===i?void 0:i.PASSPORT_JSB_METHOD_INVOKER),I=s&&a.isMethodSupported(\\\"invalidateAccount\\\"),E=s&&a.isMethodSupported(\\\"goForwardAndSetResult\\\"),k=s&&a.isMethodSupported(\\\"getAccountInfo\\\"),O=s&&a.isMethodSupported(\\\"isLastPage\\\"),x=s&&a.isMethodSupported(\\\"onlyLoginEnd\\\"),C=s&&a.isMethodSupported(\\\"notifyWebLoadFinish\\\"),M=function(){return(0,u.useMemo)((function(){var e=\\\"\\\";try{if(g){var n=JSON.parse(a.invokeMethod(\\\"getServiceData\\\"));0===(null===n||void 0===n?void 0:n.code)&&(e=JSON.stringify(JSON.parse(n.result)))}}catch(t){}return e}),[])},P=function(e,n){if(b&&function(e){return!(!s||!a.isMethodSupported(e))}(e)){\\\"string\\\"!==typeof n&&(n=JSON.stringify(n)||\\\"{}\\\");try{return JSON.parse(a.invokeMethod(e,n))}catch(t){return null}}if(S){n=n||{};try{\\\"string\\\"===typeof n&&(n=JSON.parse(n))}catch(t){n={}}window.webkit.messageHandlers.PASSPORT_JSB_METHOD_INVOKER.postMessage({methodName:e,callbackId:n.callbackId,params:n})}return null},T=function(){l?(0,c.Uw)():S&&P(\\\"closePage\\\")},N=function(){var e=null;if(h){var n=P(\\\"getConfig\\\");0===(null===n||void 0===n?void 0:n.code)&&(e=n.result)}return e},A=function(){return(0,u.useMemo)((function(){return N()}),[])},R=function(){I&&P(\\\"invalidateAccount\\\")},j={callbackIds:{login:\\\"login\\\",notLogin:\\\"notLogin\\\",getSms:\\\"getSms\\\",getSmsRegister:\\\"getSmsRegister\\\",getRegisteredFido:\\\"getRegisteredFido\\\",fido2Auth:\\\"fido2Auth\\\",snsVerify:\\\"snsVerify\\\",getSmsTrustMobile:\\\"getSmsTrustMobile\\\",getHiddenTitleBar:\\\"getHiddenTitleBar\\\",getIsSupportWXLogin:\\\"getIsSupportWXLogin\\\",onlyLoginEnd:\\\"onlyLoginEnd\\\",getAccountInfo:\\\"getAccountInfo\\\",customBackAction:\\\"customBackAction\\\"},callbackMap:{},addCallback:function(e,n){var t=!(arguments.length>2&&void 0!==arguments[2])||arguments[2];if(this.callbackMap[e]&&!t)throw new Error(\\\"callbackId\\\\u4e0d\\\\u80fd\\\\u91cd\\\\u590d\\\");this.callbackMap[e]=n}},D=function(){var e=navigator.userAgent,n=A();return(0,u.useMemo)((function(){var t=n&&\\\"Harmony\\\"===n.system;return/Harmony/.test(e)||t}),[e,n])},L=function(){var e=N();if(e&&e.inMiuiProvisionStep&&e.appVersionCode){var n=e.appVersionCode,t=n.toString().substring(1);return t.startsWith(\\\"241105\\\")?parseInt(t)>=24110517:n>325062400}return!1},F=function(){return(0,u.useMemo)((function(){return L()}),[])}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_f38f693a30f04dcf9e69b9da",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11843, \"end_offset\": 15482}, \"_best_guess_score\": -6, \"name\": \"99030\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11843, \"end_offset\": 15482, \"code\": \"99030:function(e,n,t){\\\"use strict\\\";t.d(n,{$Q:function(){return w},B7:function(){return j},Bt:function(){return C},CV:function(){return _},IN:function(){return P},Iy:function(){return m},Lm:function(){return O},Mr:function(){return d},Mv:function(){return l},So:function(){return y},Uw:function(){return T},VO:function(){return a},X9:function(){return v},Yw:function(){return D},Zd:function(){return M},_B:function(){return F},dA:function(){return b},gN:function(){return k},gP:function(){return f},ij:function(){return E},l$:function(){return L},m0:function(){return R},qP:function(){return S},qs:function(){return A},xk:function(){return x},yh:function(){return p}});t(39275),t(10853),t(33290),t(21496),t(38472);var r,o,i,u=t(72791),c=t(38222),a=window.PASSPORT_JSB_METHOD_INVOKER,s=a&&a.isMethodSupported,f=s&&a.isMethodSupported(\\\"showDialog\\\"),l=s&&a.isMethodSupported(\\\"closePage\\\"),d=s&&a.isMethodSupported(\\\"skipProvision\\\"),p=s&&a.isMethodSupported(\\\"listenInboxSms\\\"),h=s&&a.isMethodSupported(\\\"getConfig\\\"),m=(s&&a.isMethodSupported(\\\"startPage\\\"),s&&a.isMethodSupported(\\\"goBack\\\")),v=(s&&a.isMethodSupported(\\\"removeAccount\\\"),s&&a.isMethodSupported(\\\"showToast\\\")),g=s&&a.isMethodSupported(\\\"getServiceData\\\"),_=s&&a.isMethodSupported(\\\"setAccountInfo\\\"),w=s&&a.isMethodSupported(\\\"isRegisteredFido2\\\"),y=s&&a.isMethodSupported(\\\"fido2Auth\\\"),b=a,S=!!(null===(r=window)||void 0===r||null===(o=r.webkit)||void 0===o||null===(i=o.messageHandlers)||void 0===i?void 0:i.PASSPORT_JSB_METHOD_INVOKER),I=s&&a.isMethodSupported(\\\"invalidateAccount\\\"),E=s&&a.isMethodSupported(\\\"goForwardAndSetResult\\\"),k=s&&a.isMethodSupported(\\\"getAccountInfo\\\"),O=s&&a.isMethodSupported(\\\"isLastPage\\\"),x=s&&a.isMethodSupported(\\\"onlyLoginEnd\\\"),C=s&&a.isMethodSupported(\\\"notifyWebLoadFinish\\\"),M=function(){return(0,u.useMemo)((function(){var e=\\\"\\\";try{if(g){var n=JSON.parse(a.invokeMethod(\\\"getServiceData\\\"));0===(null===n||void 0===n?void 0:n.code)&&(e=JSON.stringify(JSON.parse(n.result)))}}catch(t){}return e}),[])},P=function(e,n){if(b&&function(e){return!(!s||!a.isMethodSupported(e))}(e)){\\\"string\\\"!==typeof n&&(n=JSON.stringify(n)||\\\"{}\\\");try{return JSON.parse(a.invokeMethod(e,n))}catch(t){return null}}if(S){n=n||{};try{\\\"string\\\"===typeof n&&(n=JSON.parse(n))}catch(t){n={}}window.webkit.messageHandlers.PASSPORT_JSB_METHOD_INVOKER.postMessage({methodName:e,callbackId:n.callbackId,params:n})}return null},T=function(){l?(0,c.Uw)():S&&P(\\\"closePage\\\")},N=function(){var e=null;if(h){var n=P(\\\"getConfig\\\");0===(null===n||void 0===n?void 0:n.code)&&(e=n.result)}return e},A=function(){return(0,u.useMemo)((function(){return N()}),[])},R=function(){I&&P(\\\"invalidateAccount\\\")},j={callbackIds:{login:\\\"login\\\",notLogin:\\\"notLogin\\\",getSms:\\\"getSms\\\",getSmsRegister:\\\"getSmsRegister\\\",getRegisteredFido:\\\"getRegisteredFido\\\",fido2Auth:\\\"fido2Auth\\\",snsVerify:\\\"snsVerify\\\",getSmsTrustMobile:\\\"getSmsTrustMobile\\\",getHiddenTitleBar:\\\"getHiddenTitleBar\\\",getIsSupportWXLogin:\\\"getIsSupportWXLogin\\\",onlyLoginEnd:\\\"onlyLoginEnd\\\",getAccountInfo:\\\"getAccountInfo\\\",customBackAction:\\\"customBackAction\\\"},callbackMap:{},addCallback:function(e,n){var t=!(arguments.length>2&&void 0!==arguments[2])||arguments[2];if(this.callbackMap[e]&&!t)throw new Error(\\\"callbackId\\\\u4e0d\\\\u80fd\\\\u91cd\\\\u590d\\\");this.callbackMap[e]=n}},D=function(){var e=navigator.userAgent,n=A();return(0,u.useMemo)((function(){var t=n&&\\\"Harmony\\\"===n.system;return/Harmony/.test(e)||t}),[e,n])},L=function(){var e=N();if(e&&e.inMiuiProvisionStep&&e.appVersionCode){var n=e.appVersionCode,t=n.toString().substring(1);return t.startsWith(\\\"241105\\\")?parseInt(t)>=24110517:n>325062400}return!1},F=function(){return(0,u.useMemo)((function(){return L()}),[])}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_3e3dc277f68e4b68a9aecdf5",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519}, \"_best_guess_score\": -7, \"name\": \"Pe\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519, \"code\": \"function Pe(e){var t=(0,b.Z)(),n=(0,g._8)(),i=(0,ce.nZ)(),c=(0,m.UQ)(),s=u.useCallback(function(){var s=(0,o.Z)((0,a.Z)().mark((function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:return p=u.setSubmitting,s.prev=1,d=e.callback,h=e.sid,g=e.qs,b=e._sign,v=e.serviceParam,w=e.user,s.next=5,Promise.all([r.e(2605),r.e(8132),r.e(695),r.e(7634)]).then(r.bind(r,23963));case 5:return y=s.sent,O=y.encryptAes,x=O({user:w}),_=x.encryptedParams,E=function(){var e=(0,o.Z)((0,a.Z)().mark((function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"true\\\",callback:d,sid:h,qs:g,_sign:b,serviceParam:v,user:_.user,hash:he()(l.password).toUpperCase(),policyName:i?\\\"miaccount\\\":\\\"globalmiaccount\\\",captCode:t.icode||\\\"\\\"},{EUI:x.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(t){return e.apply(this,arguments)}}(),j=\\\"\\\".concat(null!==(f=Ee[t.dataCenterZone])&&void 0!==f?f:\\\"en\\\",\\\"-pwd-login\\\"),s.next=13,n(E,{icodeType:\\\"login\\\",action:j});case 13:k=s.sent,(0,ae.Gt)(k),s.next=20;break;case 17:s.prev=17,s.t0=s.catch(1),c(s.t0,u);case 20:return s.prev=20,p(!1),s.finish(20);case 23:case\\\"end\\\":return s.stop()}}),s,null,[[1,17,20,23]])})));return function(e,t){return s.apply(this,arguments)}}(),[t,n,e,i,c]),l=u.useMemo((function(){return(0,re.Ry)().shape({password:(0,re.Z_)().required((function(){return(0,we.jsx)(p.Z,{id:\\\"EmptyErrorPwd\\\"})}))})}),[]);return{formik:(0,ne.TA)({initialValues:{password:\\\"\\\"},validationSchema:l,onSubmit:s})}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I found the key function. The last candidate (`e0a67af98d927b43`) is the `Pe` function in `7381.5e160cb4.chunk.js`. It contains the inner function `E` that builds the login parameters object with `hash: he()(l.password).toUpperCase()` \u2014 this is the param-builder that runs the password through the MD5 routine (`he()`), uppercases the result, and places it under the `hash` key. The POST goes to `/serviceLogin` via `(0,m.Js)(...)`.\n\nLet me verify the inner function `E` more closely to confirm it's the param-builder:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_3a43993d9b6a44a18d0e585a",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e0a67af98d927b43"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_3a43993d9b6a44a18d0e585a",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519}, \"_best_guess_score\": -7, \"name\": \"Pe\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519, \"code\": \"function Pe(e){var t=(0,b.Z)(),n=(0,g._8)(),i=(0,ce.nZ)(),c=(0,m.UQ)(),s=u.useCallback(function(){var s=(0,o.Z)((0,a.Z)().mark((function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:return p=u.setSubmitting,s.prev=1,d=e.callback,h=e.sid,g=e.qs,b=e._sign,v=e.serviceParam,w=e.user,s.next=5,Promise.all([r.e(2605),r.e(8132),r.e(695),r.e(7634)]).then(r.bind(r,23963));case 5:return y=s.sent,O=y.encryptAes,x=O({user:w}),_=x.encryptedParams,E=function(){var e=(0,o.Z)((0,a.Z)().mark((function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"true\\\",callback:d,sid:h,qs:g,_sign:b,serviceParam:v,user:_.user,hash:he()(l.password).toUpperCase(),policyName:i?\\\"miaccount\\\":\\\"globalmiaccount\\\",captCode:t.icode||\\\"\\\"},{EUI:x.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(t){return e.apply(this,arguments)}}(),j=\\\"\\\".concat(null!==(f=Ee[t.dataCenterZone])&&void 0!==f?f:\\\"en\\\",\\\"-pwd-login\\\"),s.next=13,n(E,{icodeType:\\\"login\\\",action:j});case 13:k=s.sent,(0,ae.Gt)(k),s.next=20;break;case 17:s.prev=17,s.t0=s.catch(1),c(s.t0,u);case 20:return s.prev=20,p(!1),s.finish(20);case 23:case\\\"end\\\":return s.stop()}}),s,null,[[1,17,20,23]])})));return function(e,t){return s.apply(this,arguments)}}(),[t,n,e,i,c]),l=u.useMemo((function(){return(0,re.Ry)().shape({password:(0,re.Z_)().required((function(){return(0,we.jsx)(p.Z,{id:\\\"EmptyErrorPwd\\\"})}))})}),[]);return{formik:(0,ne.TA)({initialValues:{password:\\\"\\\"},validationSchema:l,onSubmit:s})}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now let me search for the `m.Js` function to confirm it's the request-sending sink (not the param-builder), and also look for the `he` function to confirm it's the md5 primitive:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_b0f4e2eeafb749e6b0aeb1a7",
+     "name": "search_entity",
+     "input": {
+      "query": "serviceLogin hash md5 toUpperCase"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c798cefe3eba49549ae032c9",
+     "name": "search_entity",
+     "input": {
+      "query": "Js serviceLogin POST request"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_b0f4e2eeafb749e6b0aeb1a7",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_c798cefe3eba49549ae032c9",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_5931ee49f7cc4c40a3b65307",
+     "name": "search_entity",
+     "input": {
+      "query": "hash he password toUpperCase serviceLogin"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_280a6d08acc04c43b442a35d",
+     "name": "search_entity",
+     "input": {
+      "query": "Qe decoder string array obfuscated"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_5931ee49f7cc4c40a3b65307",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_280a6d08acc04c43b442a35d",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me search for the obfuscated version with `Qe` and `hash`:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_71b9fb7b90c54182b9a1c7cb",
+     "name": "search_entity",
+     "input": {
+      "query": "hash toUpperCase pwd login param"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_061bb92e76b3412a901d5826",
+     "name": "search_entity",
+     "input": {
+      "query": "serviceLogin"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_71b9fb7b90c54182b9a1c7cb",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_061bb92e76b3412a901d5826",
+     "content": "{\"nodes\": [\"98f71af102634fb2\", \"79debd97b3fde239\", \"f84e45b6c33ce612\", \"48b61c506f8a2efb\", \"c197866920f074e0\", \"bc0e7f0bc9c5b519\", \"c0a476adc86c0307\", \"95b3fb252e4e8738\", \"bcfe94849d234c00\", \"de5520ca8ee38620\", \"ace02490ed78e478\", \"55337c0c48b5ed15\", \"f8566283827470e9\", \"0617814666549c06\", \"62214d8b5e57526d\", \"442e4c67ce4d0e5a\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me check some of these serviceLogin-related nodes to find the obfuscated param-builder:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_0ac1025fde8a42c7b97c8bf1",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "98f71af102634fb2"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_b66436a09ead40ee8800f3bd",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "79debd97b3fde239"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7ec22b3965184a0e9c12d9fb",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "f84e45b6c33ce612"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_85b5ddd78be44aeda969ba65",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "48b61c506f8a2efb"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_0ac1025fde8a42c7b97c8bf1",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 73138, \"end_offset\": 90749}, \"_best_guess_score\": -73, \"name\": \"73329\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 73138, \"end_offset\": 90749, \"code\": \"function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:function(){return E},Gu:function(){return J},H2:function(){return Pe},HH:function(){return V},HP:function(){return b},Js:function(){return N},K9:function(){return z},Li:function(){return ve},Lu:function(){return l.Lu},M_:function(){return ke},Mg:function(){return H},Mk:function(){return l.Mk},O:function(){return ie},OA:function(){return te},Q2:function(){return P},Rw:function(){return _e},S3:function(){return y},SG:function(){return G},UQ:function(){return l.UQ},V8:function(){return B},Xq:function(){return Ne},Yl:function(){return k},Z7:function(){return U},ZX:function(){return l.ZX},d0:function(){return ce},e1:function(){return $},e7:function(){return Me},fZ:function(){return we},hi:function(){return v},m7:function(){return m},n2:function(){return re},ng:function(){return x},o9:function(){return ge},ou:function(){return Ce},pD:function(){return pe},pH:function(){return C},q7:function(){return ye},rW:function(){return Y},rb:function(){return l.rb},se:function(){return Ue},v_:function(){return Ee},yx:function(){return de}});var t,n=s(45987),p=s(1413),o=s(74165),i=s(15861),a=(s(21496),s(10853),s(35054),s(26364),s(86632),s(38472),s(55862),s(39275),s(22321),s(74569)),_=s.n(a),u=s(32808),c=s.n(u),l=(s(79127),s(12752)),d=s(60374),f=s(12673),g=[\\\"info\\\"],h=[\\\"info\\\"],v=_().create({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded; charset=UTF-8\\\"}});function m(e){var r=e.data,s=\\\"&&&START&&&\\\";if(\\\"string\\\"===typeof r&&r.startsWith(s))return JSON.parse(r.substr(s.length));var t=\\\"@json:\\\";return\\\"string\\\"===typeof r&&r.startsWith(t)?JSON.parse(r.substr(t.length)):e.data}function w(e){return new Promise((function(r){if(0!==e.code&&70016!==e.code){var s,t;if(302===e.code)return void(window.location.href=(0,d.a)(e.data.location));throw new l.Lu(e.code,null!==(s=null!==(t=e.desc)&&void 0!==t?t:e.description)&&void 0!==s?s:\\\"\\\",e.tips)}r(e)}))}function b(e){return new Promise((function(r){if(0!==e.code){var s,t;if(302===e.code)return void(window.location.href=(0,d.a)(e.data.location));throw new l.Lu(e.code,null!==(s=null!==(t=e.desc)&&void 0!==t?t:e.description)&&void 0!==s?s:\\\"\\\",e.tips,null===e||void 0===e?void 0:e.data,e.location)}r(e)}))}function k(e){var r=e||encodeURIComponent(window.location.href);return\\\"/api/user/login?followUp=\\\".concat(r)}function j(e){var r=k(e);return v.get(r).then(m).then(b)}function y(e,r){return Z.apply(this,arguments)}function Z(){return(Z=(0,i.Z)((0,o.Z)().mark((function e(r,s){var t,n,p,i,a;return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(401!==(null===r||void 0===r||null===(t=r.response)||void 0===t?void 0:t.status)){e.next=15;break}return e.prev=1,e.next=4,j();case 4:n=e.sent,p=n.code,i=n.data,a=(void 0===i?{}:i).loginUrl,0===p&&a?window.location.href=(0,d.a)(a):s(new l.Lu(p,\\\"\\\")),e.next=13;break;case 10:e.prev=10,e.t0=e.catch(1),s(e.t0);case 13:e.next=16;break;case 15:s(r);case 16:case\\\"end\\\":return e.stop()}}),e,null,[[1,10]])})))).apply(this,arguments)}function N(e,r){return v.post(\\\"/pass/serviceLoginAuth2\\\",c().stringify(e),{headers:r}).then(m).then(b)}function I(e,r){return S.apply(this,arguments)}function S(){return(S=(0,i.Z)((0,o.Z)().mark((function e(r,s){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.abrupt(\\\"return\\\",v.post(\\\"/pass/sendServiceLoginTicket\\\",c().stringify(r),{headers:(0,p.Z)({\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded; charset=UTF-8\\\"},s)}).then(m).then(b));case 1:case\\\"end\\\":return e.stop()}}),e)})))).apply(this,arguments)}function x(e){return v.post(\\\"/pass/serviceLoginTicketAuth\\\",c().stringify(e)).then(m).then(b)}function E(e){return L.apply(this,arguments)}function L(){return(L=(0,i.Z)((0,o.Z)().mark((function e(r){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,v.post(\\\"/pass/phoneInfo\\\",c().stringify(r)).then(m).then(b);case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_b66436a09ead40ee8800f3bd",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 73132, \"end_offset\": 90749}, \"_best_guess_score\": -74, \"name\": \"73329\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 73132, \"end_offset\": 90749, \"code\": \"73329:function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:function(){return E},Gu:function(){return J},H2:function(){return Pe},HH:function(){return V},HP:function(){return b},Js:function(){return N},K9:function(){return z},Li:function(){return ve},Lu:function(){return l.Lu},M_:function(){return ke},Mg:function(){return H},Mk:function(){return l.Mk},O:function(){return ie},OA:function(){return te},Q2:function(){return P},Rw:function(){return _e},S3:function(){return y},SG:function(){return G},UQ:function(){return l.UQ},V8:function(){return B},Xq:function(){return Ne},Yl:function(){return k},Z7:function(){return U},ZX:function(){return l.ZX},d0:function(){return ce},e1:function(){return $},e7:function(){return Me},fZ:function(){return we},hi:function(){return v},m7:function(){return m},n2:function(){return re},ng:function(){return x},o9:function(){return ge},ou:function(){return Ce},pD:function(){return pe},pH:function(){return C},q7:function(){return ye},rW:function(){return Y},rb:function(){return l.rb},se:function(){return Ue},v_:function(){return Ee},yx:function(){return de}});var t,n=s(45987),p=s(1413),o=s(74165),i=s(15861),a=(s(21496),s(10853),s(35054),s(26364),s(86632),s(38472),s(55862),s(39275),s(22321),s(74569)),_=s.n(a),u=s(32808),c=s.n(u),l=(s(79127),s(12752)),d=s(60374),f=s(12673),g=[\\\"info\\\"],h=[\\\"info\\\"],v=_().create({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded; charset=UTF-8\\\"}});function m(e){var r=e.data,s=\\\"&&&START&&&\\\";if(\\\"string\\\"===typeof r&&r.startsWith(s))return JSON.parse(r.substr(s.length));var t=\\\"@json:\\\";return\\\"string\\\"===typeof r&&r.startsWith(t)?JSON.parse(r.substr(t.length)):e.data}function w(e){return new Promise((function(r){if(0!==e.code&&70016!==e.code){var s,t;if(302===e.code)return void(window.location.href=(0,d.a)(e.data.location));throw new l.Lu(e.code,null!==(s=null!==(t=e.desc)&&void 0!==t?t:e.description)&&void 0!==s?s:\\\"\\\",e.tips)}r(e)}))}function b(e){return new Promise((function(r){if(0!==e.code){var s,t;if(302===e.code)return void(window.location.href=(0,d.a)(e.data.location));throw new l.Lu(e.code,null!==(s=null!==(t=e.desc)&&void 0!==t?t:e.description)&&void 0!==s?s:\\\"\\\",e.tips,null===e||void 0===e?void 0:e.data,e.location)}r(e)}))}function k(e){var r=e||encodeURIComponent(window.location.href);return\\\"/api/user/login?followUp=\\\".concat(r)}function j(e){var r=k(e);return v.get(r).then(m).then(b)}function y(e,r){return Z.apply(this,arguments)}function Z(){return(Z=(0,i.Z)((0,o.Z)().mark((function e(r,s){var t,n,p,i,a;return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(401!==(null===r||void 0===r||null===(t=r.response)||void 0===t?void 0:t.status)){e.next=15;break}return e.prev=1,e.next=4,j();case 4:n=e.sent,p=n.code,i=n.data,a=(void 0===i?{}:i).loginUrl,0===p&&a?window.location.href=(0,d.a)(a):s(new l.Lu(p,\\\"\\\")),e.next=13;break;case 10:e.prev=10,e.t0=e.catch(1),s(e.t0);case 13:e.next=16;break;case 15:s(r);case 16:case\\\"end\\\":return e.stop()}}),e,null,[[1,10]])})))).apply(this,arguments)}function N(e,r){return v.post(\\\"/pass/serviceLoginAuth2\\\",c().stringify(e),{headers:r}).then(m).then(b)}function I(e,r){return S.apply(this,arguments)}function S(){return(S=(0,i.Z)((0,o.Z)().mark((function e(r,s){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.abrupt(\\\"return\\\",v.post(\\\"/pass/sendServiceLoginTicket\\\",c().stringify(r),{headers:(0,p.Z)({\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded; charset=UTF-8\\\"},s)}).then(m).then(b));case 1:case\\\"end\\\":return e.stop()}}),e)})))).apply(this,arguments)}function x(e){return v.post(\\\"/pass/serviceLoginTicketAuth\\\",c().stringify(e)).then(m).then(b)}function E(e){return L.apply(this,arguments)}function L(){return(L=(0,i.Z)((0,o.Z)().mark((function e(r){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,v.post(\\\"/pass/phoneInfo\\\",c().stringify(r)).then(m).then(b);case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":ret\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7ec22b3965184a0e9c12d9fb",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76195, \"end_offset\": 76297}, \"_best_guess_score\": -64, \"name\": \"N\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76195, \"end_offset\": 76297, \"code\": \"function N(e,r){return v.post(\\\"/pass/serviceLoginAuth2\\\",c().stringify(e),{headers:r}).then(m).then(b)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_85b5ddd78be44aeda969ba65",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76344, \"end_offset\": 76729}, \"_best_guess_score\": -174, \"name\": \"S\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76344, \"end_offset\": 76729, \"code\": \"function S(){return(S=(0,i.Z)((0,o.Z)().mark((function e(r,s){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.abrupt(\\\"return\\\",v.post(\\\"/pass/sendServiceLoginTicket\\\",c().stringify(r),{headers:(0,p.Z)({\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded; charset=UTF-8\\\"},s)}).then(m).then(b));case 1:case\\\"end\\\":return e.stop()}}),e)})))).apply(this,arguments)}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I can see the full picture. The `N` function (exported as `Js`) is the request-sending sink that POSTs to `/pass/serviceLoginAuth2`. The `Pe` function in `7381.5e160cb4.chunk.js` is the one that builds the login parameters object with `hash: he()(l.password).toUpperCase()`.\n\nBut wait \u2014 the task mentions the POST goes to `/serviceLogin` and the bundle is \"string-array obfuscated (object keys appear as Qe([...]) decoder calls)\". The `Pe` function uses plain key names like `hash`, not `Qe([...])` decoder calls. Let me search for the obfuscated version:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_8ac5c2aa24c04b54a565db3a",
+     "name": "search_entity",
+     "input": {
+      "query": "Qe hash password toUpperCase"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_9e51a92ad8e94f958a53f70c",
+     "name": "search_entity",
+     "input": {
+      "query": "Qe decoder obfuscated keys login"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_8ac5c2aa24c04b54a565db3a",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_9e51a92ad8e94f958a53f70c",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_5e79cb91b5f0403cbc57c341",
+     "name": "search_entity",
+     "input": {
+      "query": "Qe(["
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_515b4c81a7d14ab79ab4debe",
+     "name": "search_entity",
+     "input": {
+      "query": "hash md5 uppercase obfuscated"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_5e79cb91b5f0403cbc57c341",
+     "content": "{\"nodes\": [\"d69f474e8d6e777c\", \"b30cfc2ae344ab57\", \"ed085c446d80bc65\", \"4f4c35ad96e486e4\", \"8505a8150141a1c4\", \"e757463caedeca4a\", \"e1a0c31eeb3d3139\", \"f429b62001de220c\", \"6bff8ae2373ac9ae\", \"a6e4a979121b398c\", \"1db55d8bf8593862\", \"39de4f9532157234\", \"b2e3994c0c69045c\", \"68fc84ac4d9d1343\", \"6ba7dfe1572a185d\", \"512924864d362387\", \"b5ffa783de2b684a\", \"048b9c894b87d641\", \"5e3b993aa0c9d45f\", \"980f604952468ae1\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_515b4c81a7d14ab79ab4debe",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me check some of these Qe-related nodes to find the obfuscated param-builder:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_5f99e13c6d754b6cbd3580e5",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "d69f474e8d6e777c"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ffa867c8a4564d458d91e205",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "b30cfc2ae344ab57"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_62a9f8c1bdfc42e9b2a7c9db",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ed085c446d80bc65"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_0f2da1d91448413cb7a507ba",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "4f4c35ad96e486e4"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_5f99e13c6d754b6cbd3580e5",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6213, \"end_offset\": 29045}, \"_best_guess_score\": -75, \"name\": \"22395\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6213, \"end_offset\": 29045, \"code\": \"function (e, t, n) { \\\"use strict\\\"; n.d(t, { GG: function () { return K }, Gt: function () { return W }, IK: function () { return z }, OP: function () { return Q }, Yb: function () { return H }, Z1: function () { return G }, cj: function () { return J }, jZ: function () { return X }, lj: function () { return Y } }); n(85284); var r = n(7889), a = n(1413), i = n(29439), o = n(74165), c = n(15861), s = (n(54883), n(10853), n(35054), n(45007), n(68995), n(56650), n(39275), n(23528), n(29897), n(80174), n(55862), n(33290), n(73329)), u = n(78214), l = n(26658), d = n(94091), p = n(38222), f = n(79127), m = n((166658>>1)+0), v = n.n(m), h = n(72791), g = n(93539), k = n(4349), w = n(64880), b = n(34421), _ = n(91888), x = n(42422), Z = n(23662), y = n(1995), C = n(60374), P = n(81706), E = n(13497), S = n(24299), M = n(32789), T = n.n(M), A = n(99894), j = n(77370), U = n(5590), I = n(87724), N = n(22808), R = n(99030), L = n(12854), O = n(54148), V = n(80184), $ = R.B7.callbackIds.onlyLoginEnd, D = \\\"\\\"; function Qe(e){return e.map((function(e){return String.fromCharCode(13^e)})).join(\\\"\\\")} function F() { var e = (0, h.useCallback)((function (e) { var t, n; window.location.href = D || (null === (t = window) || void 0 === t || null === (n = t.location) || void 0 === n ? void 0 : n.origin) }), []); (0, h.useEffect)((function () { R.B7.addCallback($, e) }), [e]) } function H(e, t, n, r) { return q.apply(this, arguments) } function q() { return (q = (0, c.Z)((0, o.Z)().mark((function e(t, n, r, a) { var i, c, s; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: if (i = t.submitParams, c = t.searchParams, s = \\\"ticket\\\" !== c.get(\\\"_loginSign\\\") ? Qe([125,122,105]) : \\\"ticket\\\", !(i._sign && s === n || r)) { e.next = 4; break } return e.abrupt(\\\"return\\\", i); case 4: return f.Z.remove(\\\"userId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"userId\\\", { domain: \\\"xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"xiaomi.com\\\" }), e.abrupt(\\\"return\\\", i); case 9: case \\\"end\\\": return e.stop() } }), e) })))).apply(this, arguments) } function B() { var e = (0, l.Z)(), t = (0, u._8)(); return h.useCallback(function () { var r = (0, c.Z)((0, o.Z)().mark((function r(a, i) { var u, l, d, p, f, m, v, h, g = arguments; return (0, o.Z)().wrap((function (r) { for (; ;)switch (r.prev = r.next) { case 0: return l = g.length > 2 && void 0 !== g[2] ? g[2] : {}, r.next = 3, Promise.all([n.e(2605), n.e(8132), n.e(695), n.e(7634)]).then(n.bind(n, 23963)); case 3: return d = r.sent, p = d[Qe([104,99,110,127,116,125,121,76,104,126])], f = p({ user: a }), m = f.encryptedParams, v = l.sendType, h = void 0 === v ? \\\"\\\" : v, r.next = 10, t(function () { var t = (0, c.Z)((0, o.Z)().mark((function t(n) { var r, a, c; return (0, o.Z)().wrap((function (t) { for (; ;)switch (t.prev = t.next) { case 0: return r = { sid: e.submitParams.sid, user: m.user, [Qe([110,108,125,121,78,98,105,104])]: (null === n || void 0 === n ? void 0 : n.icode) || \\\"\\\" }, h && (r.type = h), t.next = 4, (0, s.By)(r, { EUI: f.EUI }); case 4: return a = t.sent, t.next = 7, a; case 7: return (c = t.sent).data.vCodeLen && (i.vCodeLen = c.data.vCodeLen, i.wt = c.data.wt), t.abrupt(\\\"return\\\", a); case 10: case \\\"end\\\": return t.stop() } }), t) }))); return function (e) { return t.apply(this, arguments) } }(), { type: \\\"verify\\\", action: \\\"\\\".concat(null !== (u = z[e.dataCenterZone]) && void 0 !== u ? u : \\\"en\\\", \\\"-ticket-login\\\"), uid: a, icodeType: \\\"login\\\" }); case 10: case \\\"end\\\": return r.stop() } }), r) }))); return function (e, t) { return r.apply(this, arguments) } }(), [e, t]) } function G() { var e, t, n, u = (0, Z.Sl)(), f = (0, l.Z)(), m = (0, w.k6)(), v = B(), b = (0, s.UQ)(), x = (0, y.ZP)(), P = (0, s.rb)(), E = f.searchParams, M = E.get(\\\"_user\\\"), U = (0, j.$H)().hasBlock, I = (0, N.P)(), R = (0, h.useState)(!1), $ = (0, i.Z)(R, 2), q = $[0], G = $[1], z = (0, g.Z)(), K = (0, h.useState)(0), Y = (0, i.Z)(K, 2), Q = Y[0], J = Y[1]\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ffa867c8a4564d458d91e205",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6206, \"end_offset\": 29045}, \"_best_guess_score\": -76, \"name\": \"22395\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6206, \"end_offset\": 29045, \"code\": \"22395: function (e, t, n) { \\\"use strict\\\"; n.d(t, { GG: function () { return K }, Gt: function () { return W }, IK: function () { return z }, OP: function () { return Q }, Yb: function () { return H }, Z1: function () { return G }, cj: function () { return J }, jZ: function () { return X }, lj: function () { return Y } }); n(85284); var r = n(7889), a = n(1413), i = n(29439), o = n(74165), c = n(15861), s = (n(54883), n(10853), n(35054), n(45007), n(68995), n(56650), n(39275), n(23528), n(29897), n(80174), n(55862), n(33290), n(73329)), u = n(78214), l = n(26658), d = n(94091), p = n(38222), f = n(79127), m = n((166658>>1)+0), v = n.n(m), h = n(72791), g = n(93539), k = n(4349), w = n(64880), b = n(34421), _ = n(91888), x = n(42422), Z = n(23662), y = n(1995), C = n(60374), P = n(81706), E = n(13497), S = n(24299), M = n(32789), T = n.n(M), A = n(99894), j = n(77370), U = n(5590), I = n(87724), N = n(22808), R = n(99030), L = n(12854), O = n(54148), V = n(80184), $ = R.B7.callbackIds.onlyLoginEnd, D = \\\"\\\"; function Qe(e){return e.map((function(e){return String.fromCharCode(13^e)})).join(\\\"\\\")} function F() { var e = (0, h.useCallback)((function (e) { var t, n; window.location.href = D || (null === (t = window) || void 0 === t || null === (n = t.location) || void 0 === n ? void 0 : n.origin) }), []); (0, h.useEffect)((function () { R.B7.addCallback($, e) }), [e]) } function H(e, t, n, r) { return q.apply(this, arguments) } function q() { return (q = (0, c.Z)((0, o.Z)().mark((function e(t, n, r, a) { var i, c, s; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: if (i = t.submitParams, c = t.searchParams, s = \\\"ticket\\\" !== c.get(\\\"_loginSign\\\") ? Qe([125,122,105]) : \\\"ticket\\\", !(i._sign && s === n || r)) { e.next = 4; break } return e.abrupt(\\\"return\\\", i); case 4: return f.Z.remove(\\\"userId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"userId\\\", { domain: \\\"xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"xiaomi.com\\\" }), e.abrupt(\\\"return\\\", i); case 9: case \\\"end\\\": return e.stop() } }), e) })))).apply(this, arguments) } function B() { var e = (0, l.Z)(), t = (0, u._8)(); return h.useCallback(function () { var r = (0, c.Z)((0, o.Z)().mark((function r(a, i) { var u, l, d, p, f, m, v, h, g = arguments; return (0, o.Z)().wrap((function (r) { for (; ;)switch (r.prev = r.next) { case 0: return l = g.length > 2 && void 0 !== g[2] ? g[2] : {}, r.next = 3, Promise.all([n.e(2605), n.e(8132), n.e(695), n.e(7634)]).then(n.bind(n, 23963)); case 3: return d = r.sent, p = d[Qe([104,99,110,127,116,125,121,76,104,126])], f = p({ user: a }), m = f.encryptedParams, v = l.sendType, h = void 0 === v ? \\\"\\\" : v, r.next = 10, t(function () { var t = (0, c.Z)((0, o.Z)().mark((function t(n) { var r, a, c; return (0, o.Z)().wrap((function (t) { for (; ;)switch (t.prev = t.next) { case 0: return r = { sid: e.submitParams.sid, user: m.user, [Qe([110,108,125,121,78,98,105,104])]: (null === n || void 0 === n ? void 0 : n.icode) || \\\"\\\" }, h && (r.type = h), t.next = 4, (0, s.By)(r, { EUI: f.EUI }); case 4: return a = t.sent, t.next = 7, a; case 7: return (c = t.sent).data.vCodeLen && (i.vCodeLen = c.data.vCodeLen, i.wt = c.data.wt), t.abrupt(\\\"return\\\", a); case 10: case \\\"end\\\": return t.stop() } }), t) }))); return function (e) { return t.apply(this, arguments) } }(), { type: \\\"verify\\\", action: \\\"\\\".concat(null !== (u = z[e.dataCenterZone]) && void 0 !== u ? u : \\\"en\\\", \\\"-ticket-login\\\"), uid: a, icodeType: \\\"login\\\" }); case 10: case \\\"end\\\": return r.stop() } }), r) }))); return function (e, t) { return r.apply(this, arguments) } }(), [e, t]) } function G() { var e, t, n, u = (0, Z.Sl)(), f = (0, l.Z)(), m = (0, w.k6)(), v = B(), b = (0, s.UQ)(), x = (0, y.ZP)(), P = (0, s.rb)(), E = f.searchParams, M = E.get(\\\"_user\\\"), U = (0, j.$H)().hasBlock, I = (0, N.P)(), R = (0, h.useState)(!1), $ = (0, i.Z)(R, 2), q = $[0], G = $[1], z = (0, g.Z)(), K = (0, h.useState)(0), Y = (0, i.Z)(K, 2), Q = Y[0], J\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_62a9f8c1bdfc42e9b2a7c9db",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7648, \"end_offset\": 8338}, \"_best_guess_score\": -13, \"name\": \"q\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7648, \"end_offset\": 8338, \"code\": \"function q() { return (q = (0, c.Z)((0, o.Z)().mark((function e(t, n, r, a) { var i, c, s; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: if (i = t.submitParams, c = t.searchParams, s = \\\"ticket\\\" !== c.get(\\\"_loginSign\\\") ? Qe([125,122,105]) : \\\"ticket\\\", !(i._sign && s === n || r)) { e.next = 4; break } return e.abrupt(\\\"return\\\", i); case 4: return f.Z.remove(\\\"userId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"userId\\\", { domain: \\\"xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"xiaomi.com\\\" }), e.abrupt(\\\"return\\\", i); case 9: case \\\"end\\\": return e.stop() } }), e) })))).apply(this, arguments) }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_0f2da1d91448413cb7a507ba",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7701, \"end_offset\": 8309}, \"_best_guess_score\": -11, \"name\": \"e\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7701, \"end_offset\": 8309, \"code\": \"function e(t, n, r, a) { var i, c, s; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: if (i = t.submitParams, c = t.searchParams, s = \\\"ticket\\\" !== c.get(\\\"_loginSign\\\") ? Qe([125,122,105]) : \\\"ticket\\\", !(i._sign && s === n || r)) { e.next = 4; break } return e.abrupt(\\\"return\\\", i); case 4: return f.Z.remove(\\\"userId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"userId\\\", { domain: \\\"xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"account.xiaomi.com\\\" }), f.Z.remove(\\\"cUserId\\\", { domain: \\\"xiaomi.com\\\" }), e.abrupt(\\\"return\\\", i); case 9: case \\\"end\\\": return e.stop() } }), e) }\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I can see the `Qe` decoder function and the obfuscated code in `2395.988a36fc.chunk.js`. The `Qe` function decodes arrays by XORing each element with 13 and converting to a character. I can see `Qe([125,122,105])` decodes to \"pwd\" (125^13=112='p', 122^13=119='w', 105^13=100='d'). \n\nNow I need to find the function in this file that builds the login parameters with the `hash` field using `Qe` for the key name. Let me search more in this file:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_0aab1d5fb058484d9694156d",
+     "name": "search_entity",
+     "input": {
+      "query": "Qe hash password md5 toUpperCase serviceLogin login param"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_f2cd3520b3764b3981fab6f4",
+     "name": "search_entity",
+     "input": {
+      "query": "Qe uppercase hash login submit"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_0aab1d5fb058484d9694156d",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_f2cd3520b3764b3981fab6f4",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_355dbd0c46a249d69e19f0a7",
+     "name": "search_entity",
+     "input": {
+      "query": "toUpperCase Qe hash"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c6e8e33cb0aa487abf99f5be",
+     "name": "search_entity",
+     "input": {
+      "query": "md5 toUpperCase password login param builder"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_355dbd0c46a249d69e19f0a7",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_c6e8e33cb0aa487abf99f5be",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at more of the `2395.988a36fc.chunk.js` file to find the login param-builder with the hash field. Let me search for functions that use `Js` (the serviceLogin request function) along with `Qe`:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_9effc69dc71546198d311021",
+     "name": "search_entity",
+     "input": {
+      "query": "Js Qe hash toUpperCase"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_f917096594d3478aa8c1f04d",
+     "name": "search_entity",
+     "input": {
+      "query": "s.Js serviceLogin hash password"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_9effc69dc71546198d311021",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_f917096594d3478aa8c1f04d",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at the remaining nodes from the serviceLogin search and also search for the obfuscated hash key pattern:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_5f79454e58b64390bc8dba64",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "c197866920f074e0"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_1d0b38f3e8f840e48a3a6301",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "bc0e7f0bc9c5b519"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_99341fdfa11d498b9bc7e0ac",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "c0a476adc86c0307"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_48da8eab155046bda2cf1c78",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "95b3fb252e4e8738"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_5f79454e58b64390bc8dba64",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76390, \"end_offset\": 76702}, \"_best_guess_score\": -158, \"name\": \"e\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76390, \"end_offset\": 76702, \"code\": \"function e(r,s){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.abrupt(\\\"return\\\",v.post(\\\"/pass/sendServiceLoginTicket\\\",c().stringify(r),{headers:(0,p.Z)({\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded; charset=UTF-8\\\"},s)}).then(m).then(b));case 1:case\\\"end\\\":return e.stop()}}),e)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_1d0b38f3e8f840e48a3a6301",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76428, \"end_offset\": 76697}, \"_best_guess_score\": -153, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76428, \"end_offset\": 76697, \"code\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return e.abrupt(\\\"return\\\",v.post(\\\"/pass/sendServiceLoginTicket\\\",c().stringify(r),{headers:(0,p.Z)({\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded; charset=UTF-8\\\"},s)}).then(m).then(b));case 1:case\\\"end\\\":return e.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_99341fdfa11d498b9bc7e0ac",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76729, \"end_offset\": 76822}, \"_best_guess_score\": -65, \"name\": \"x\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"start_offset\": 76729, \"end_offset\": 76822, \"code\": \"function x(e){return v.post(\\\"/pass/serviceLoginTicketAuth\\\",c().stringify(e)).then(m).then(b)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_48da8eab155046bda2cf1c78",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 15477, \"end_offset\": 55870}, \"_best_guess_score\": -53, \"name\": \"7332\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 15477, \"end_offset\": 55870, \"code\": \"function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(4942),o=(t(55862),t(54883),t(10853),t(45007),t(68995),t(56650),t(39275),t(23528),t(33290),t(31807),t(6208),t(60842),t(12842),t(70457)),l=t(45987),c=t(64946),d=t(28182),p=t(72791),m=t(93539),u=(t(88785),[\\\"title\\\",\\\"titleId\\\"]);function h(){return h=Object.assign?Object.assign.bind():function(e){for(var n=1;n<arguments.length;n++){var t=arguments[n];for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r])}return e},h.apply(this,arguments)}function g(e,n){if(null==e)return{};var t,r,s=function(e,n){if(null==e)return{};var t,r,s={},a=Object.keys(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||(s[t]=e[t]);return s}(e,n);if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||Object.prototype.propertyIsEnumerable.call(e,t)&&(s[t]=e[t])}return s}var f,x=function(e,n){var t=e.title,s=e.titleId,a=g(e,u);return p.createElement(\\\"svg\\\",h({width:36,height:37,xmlns:\\\"http://www.w3.org/2000/svg\\\",ref:n,\\\"aria-labelledby\\\":s},a),t?p.createElement(\\\"title\\\",{id:s},t):null,r||(r=p.createElement(\\\"g\\\",{fill:\\\"#FFF\\\",fillRule:\\\"nonzero\\\"},p.createElement(\\\"path\\\",{d:\\\"M2.44 13.4L0 10.79V3.164S0 .5 2.542.5h30.915s2.593 0 2.542 2.664v23.293s0 2.611-2.542 2.611H22.932l.101 5.432-7.88-8.043h18.304V3.164H2.44V13.4z\\\"}),p.createElement(\\\"path\\\",{d:\\\"M8 18.082V7.5h20.513v14.754H11.797L8 18.082zm15.286 15.976h6.903s1.825 1.22 0 2.442h-4.536l-2.367-2.442z\\\"}))))},v=(0,p.forwardRef)(x),j=(t.p,[\\\"title\\\",\\\"titleId\\\"]);function _(){return _=Object.assign?Object.assign.bind():function(e){for(var n=1;n<arguments.length;n++){var t=arguments[n];for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r])}return e},_.apply(this,arguments)}function b(e,n){if(null==e)return{};var t,r,s=function(e,n){if(null==e)return{};var t,r,s={},a=Object.keys(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||(s[t]=e[t]);return s}(e,n);if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||Object.prototype.propertyIsEnumerable.call(e,t)&&(s[t]=e[t])}return s}var Z=function(e,n){var t=e.title,r=e.titleId,s=b(e,j);return p.createElement(\\\"svg\\\",_({width:36,height:37,xmlns:\\\"http://www.w3.org/2000/svg\\\",ref:n,\\\"aria-labelledby\\\":r},s),t?p.createElement(\\\"title\\\",{id:r},t):null,f||(f=p.createElement(\\\"path\\\",{d:\\\"M0 16.977H16.94V.036H0v16.941zM4.235 4.271h8.47v8.47h-8.47v-8.47zM19.06.036v16.941h16.94V.036H19.06zm12.706 12.706h-8.471v-8.47h8.47v8.47zM6.353 10.624h4.235V6.39H6.353v4.235zM0 36.036H16.94V19.095H0v16.94zM4.235 23.33h8.47v8.47h-8.47v-8.47zM29.647 6.389h-4.235v4.235h4.235V6.39zM19.059 36.036h4.235V31.8h-4.235v4.235zm4.235-12.706v8.47h4.235v-8.47h-4.235zm8.47 8.47H27.53v4.236H36v-8.47h-4.234V31.8zm0-8.47H36v-4.235h-4.235v4.235zM19.06 19.095v4.235h4.235v-4.235h-4.235zM6.353 29.683h4.235v-4.235H6.353v4.235z\\\",fill:\\\"#FFF\\\",fillRule:\\\"nonzero\\\"})))},k=(0,p.forwardRef)(Z),w=(t.p,t(1995)),y=t(38222),S=t(1736),C=t(80184),N=[\\\"className\\\",\\\"value\\\",\\\"onClick\\\"];function M(e){var n=e.className,t=e.value,r=e.onClick,s=(0,l.Z)(e,N),i=(0,m.Z)(),p=(0,w.ZP)(),u=(0,y.v0)(p);return(0,C.jsx)(\\\"div\\\",{className:\\\"qr-switch-wrap\\\",children:(0,C.jsx)(o.Z,{overlayClassName:\\\"mi-qr-login-switch__popover\\\",placement:u?\\\"right\\\":\\\"left\\\",align:{targetOffset:[-7,6]},content:t?i.formatMessage({id:\\\"PWD_LOGIN\\\"}):i.formatMessage({id:\\\"NAVTAB_QR_TITLE\\\"}),getPopupContainer:function(e){return e.parentElement||document.body},trigger:[\\\"hover\\\",\\\"focus\\\"],children:(0,C.jsx)(S.Z,{onClick:r,\\\"aria-label\\\":t?i.formatMessage({id:\\\"PWD_LOGIN\\\"}):i.formatMessage({id:\\\"NAVTAB_QR_TITLE\\\"}),children:(0,C.jsx)(\\\"div\\\",(0,a.Z)((0,a.Z)({},s),{},{className:(0,d.Z)(n,\\\"mi-qr-login-switch\\\"),children:(0,C.jsx)(c.Z,{className:\\\"mi-qr-login-switch__icon\\\",component:t?v:k,\\\"aria-hidden\\\":\\\"true\\\"})}))})})})}var P=t(39691),T=t(77370),L=t(15553),O=t(23662),E=t(4349),A=t(64880),I=t(40668),R=t(97069),W=t(29439),F=t(70069),B=t(48211),V=t(14542),U=(t(\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at the remaining serviceLogin nodes and also search for the specific obfuscated pattern that would produce \"hash\" when decoded with Qe:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_2f3bef3225ed4647a69a859d",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "bcfe94849d234c00"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_32b5b844a33a43f190ce8cb5",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "de5520ca8ee38620"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4e03594024be4fa0bf5c4f5e",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ace02490ed78e478"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_232fe61e41404b7d975bc254",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "55337c0c48b5ed15"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_2f3bef3225ed4647a69a859d",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 15472, \"end_offset\": 55870}, \"_best_guess_score\": -54, \"name\": \"7332\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 15472, \"end_offset\": 55870, \"code\": \"7332:function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(4942),o=(t(55862),t(54883),t(10853),t(45007),t(68995),t(56650),t(39275),t(23528),t(33290),t(31807),t(6208),t(60842),t(12842),t(70457)),l=t(45987),c=t(64946),d=t(28182),p=t(72791),m=t(93539),u=(t(88785),[\\\"title\\\",\\\"titleId\\\"]);function h(){return h=Object.assign?Object.assign.bind():function(e){for(var n=1;n<arguments.length;n++){var t=arguments[n];for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r])}return e},h.apply(this,arguments)}function g(e,n){if(null==e)return{};var t,r,s=function(e,n){if(null==e)return{};var t,r,s={},a=Object.keys(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||(s[t]=e[t]);return s}(e,n);if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||Object.prototype.propertyIsEnumerable.call(e,t)&&(s[t]=e[t])}return s}var f,x=function(e,n){var t=e.title,s=e.titleId,a=g(e,u);return p.createElement(\\\"svg\\\",h({width:36,height:37,xmlns:\\\"http://www.w3.org/2000/svg\\\",ref:n,\\\"aria-labelledby\\\":s},a),t?p.createElement(\\\"title\\\",{id:s},t):null,r||(r=p.createElement(\\\"g\\\",{fill:\\\"#FFF\\\",fillRule:\\\"nonzero\\\"},p.createElement(\\\"path\\\",{d:\\\"M2.44 13.4L0 10.79V3.164S0 .5 2.542.5h30.915s2.593 0 2.542 2.664v23.293s0 2.611-2.542 2.611H22.932l.101 5.432-7.88-8.043h18.304V3.164H2.44V13.4z\\\"}),p.createElement(\\\"path\\\",{d:\\\"M8 18.082V7.5h20.513v14.754H11.797L8 18.082zm15.286 15.976h6.903s1.825 1.22 0 2.442h-4.536l-2.367-2.442z\\\"}))))},v=(0,p.forwardRef)(x),j=(t.p,[\\\"title\\\",\\\"titleId\\\"]);function _(){return _=Object.assign?Object.assign.bind():function(e){for(var n=1;n<arguments.length;n++){var t=arguments[n];for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r])}return e},_.apply(this,arguments)}function b(e,n){if(null==e)return{};var t,r,s=function(e,n){if(null==e)return{};var t,r,s={},a=Object.keys(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||(s[t]=e[t]);return s}(e,n);if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(r=0;r<a.length;r++)t=a[r],n.indexOf(t)>=0||Object.prototype.propertyIsEnumerable.call(e,t)&&(s[t]=e[t])}return s}var Z=function(e,n){var t=e.title,r=e.titleId,s=b(e,j);return p.createElement(\\\"svg\\\",_({width:36,height:37,xmlns:\\\"http://www.w3.org/2000/svg\\\",ref:n,\\\"aria-labelledby\\\":r},s),t?p.createElement(\\\"title\\\",{id:r},t):null,f||(f=p.createElement(\\\"path\\\",{d:\\\"M0 16.977H16.94V.036H0v16.941zM4.235 4.271h8.47v8.47h-8.47v-8.47zM19.06.036v16.941h16.94V.036H19.06zm12.706 12.706h-8.471v-8.47h8.47v8.47zM6.353 10.624h4.235V6.39H6.353v4.235zM0 36.036H16.94V19.095H0v16.94zM4.235 23.33h8.47v8.47h-8.47v-8.47zM29.647 6.389h-4.235v4.235h4.235V6.39zM19.059 36.036h4.235V31.8h-4.235v4.235zm4.235-12.706v8.47h4.235v-8.47h-4.235zm8.47 8.47H27.53v4.236H36v-8.47h-4.234V31.8zm0-8.47H36v-4.235h-4.235v4.235zM19.06 19.095v4.235h4.235v-4.235h-4.235zM6.353 29.683h4.235v-4.235H6.353v4.235z\\\",fill:\\\"#FFF\\\",fillRule:\\\"nonzero\\\"})))},k=(0,p.forwardRef)(Z),w=(t.p,t(1995)),y=t(38222),S=t(1736),C=t(80184),N=[\\\"className\\\",\\\"value\\\",\\\"onClick\\\"];function M(e){var n=e.className,t=e.value,r=e.onClick,s=(0,l.Z)(e,N),i=(0,m.Z)(),p=(0,w.ZP)(),u=(0,y.v0)(p);return(0,C.jsx)(\\\"div\\\",{className:\\\"qr-switch-wrap\\\",children:(0,C.jsx)(o.Z,{overlayClassName:\\\"mi-qr-login-switch__popover\\\",placement:u?\\\"right\\\":\\\"left\\\",align:{targetOffset:[-7,6]},content:t?i.formatMessage({id:\\\"PWD_LOGIN\\\"}):i.formatMessage({id:\\\"NAVTAB_QR_TITLE\\\"}),getPopupContainer:function(e){return e.parentElement||document.body},trigger:[\\\"hover\\\",\\\"focus\\\"],children:(0,C.jsx)(S.Z,{onClick:r,\\\"aria-label\\\":t?i.formatMessage({id:\\\"PWD_LOGIN\\\"}):i.formatMessage({id:\\\"NAVTAB_QR_TITLE\\\"}),children:(0,C.jsx)(\\\"div\\\",(0,a.Z)((0,a.Z)({},s),{},{className:(0,d.Z)(n,\\\"mi-qr-login-switch\\\"),children:(0,C.jsx)(c.Z,{className:\\\"mi-qr-login-switch__icon\\\",component:t?v:k,\\\"aria-hidden\\\":\\\"true\\\"})}))})})})}var P=t(39691),T=t(77370),L=t(15553),O=t(23662),E=t(4349),A=t(64880),I=t(40668),R=t(97069),W=t(29439),F=t(70069),B=t(48211),V=t(14542),\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_32b5b844a33a43f190ce8cb5",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 23228, \"end_offset\": 24370}, \"_best_guess_score\": -1258, \"name\": \"fe\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 23228, \"end_offset\": 24370, \"code\": \"function fe(){var e=(0,A.TH)().search,n=(0,se.Z)().searchParams.get(\\\"_bannerBiz\\\")||\\\"\\\",t=p.useMemo((function(){return ue().parse(e.substr(1))}),[e]),r=(0,he.Z)((0,le.Z)((0,oe.Z)().mark((function e(){return(0,oe.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,pe.Gu)(t);case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)}))),[t]),s=r.error,a=r.value,i=r.loading;if(s)return(0,C.jsx)(C.Fragment,{children:(0,C.jsx)(de,{children:(0,C.jsx)(re,{children:ge(s)})})});if(i)return(0,C.jsx)(C.Fragment,{children:(0,C.jsx)(de,{})});if(!a)return null;var o=a.qs||\\\"\\\";return(0,C.jsxs)(de,{children:[(0,C.jsx)(re,{children:(0,C.jsx)(E.Z,{id:\\\"jsp_reg_suctips\\\"})}),(0,C.jsxs)(\\\"div\\\",{className:ee().content,children:[(0,C.jsx)(E.Z,{id:\\\"jsp_mi_id\\\"}),a.userId,(0,C.jsx)(\\\"br\\\",{}),(0,C.jsx)(E.Z,{id:\\\"web_login_email_colon\\\"}),a.address]}),(0,C.jsx)(V.z,{style:{marginTop:50},component:\\\"a\\\",fullWidth:!0,target:\\\"_blank\\\",rel:\\\"\\\",href:\\\"/pass/serviceLogin\\\".concat(0===o.indexOf(encodeURIComponent(\\\"?\\\"))?decodeURIComponent(o):\\\"?\\\".concat(o),\\\"&_bannerBiz=\\\").concat(n),children:(0,C.jsx)(E.Z,{id:\\\"jsp_ss_over\\\"})})]})}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4e03594024be4fa0bf5c4f5e",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 59863, \"end_offset\": 66008}, \"_best_guess_score\": -200, \"name\": \"90075\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 59863, \"end_offset\": 66008, \"code\": \"function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(74165),i=t(15861),o=(t(54883),t(10853),t(35054),t(45007),t(68995),t(56650),t(33290),t(31807),t(72791)),l=t(4349),c=t(64880),d=t(91523),p=t(91888),m=t(73329),u=t(78214),h=t(26658),g=t(94091),f=t(60682),x=t(83350),v=t(38222),j=t(83741),_=t(12854),b=t(80184);function Z(){var e=(0,u._8)();return(0,o.useCallback)(function(){var n=(0,i.Z)((0,a.Z)().mark((function n(t){var r,s;return(0,a.Z)().wrap((function(n){for(;;)switch(n.prev=n.next){case 0:return r=function(e){return t(e)},n.next=3,e(function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,r({icode:(null===n||void 0===n?void 0:n.icode)||\\\"\\\"});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(n){return e.apply(this,arguments)}}(),{icodeType:\\\"register\\\",action:\\\"register\\\"});case 3:return s=n.sent,n.abrupt(\\\"return\\\",s);case 5:case\\\"end\\\":return n.stop()}}),n)})));return function(e){return n.apply(this,arguments)}}(),[e])}function k(){var e=(0,h.Z)(),n=(0,c.k6)(),u=(0,c.TH)(),v=(0,f.d)(\\\"/register\\\"),j=(0,m.UQ)(),_=Z(),k=e.searchParams.get(\\\"sid\\\")||\\\"\\\",w=(0,o.useState)(!1),y=(0,s.Z)(w,2),S=y[0],C=y[1],N=(0,x.f)(),M=(0,p.Ry)().shape({email:(0,p.Z_)().email((function(){return(0,b.jsx)(l.Z,{id:\\\"jsp_regst_error_emailtips1\\\"})})).required((function(){return(0,b.jsx)(l.Z,{id:\\\"jsp_regst_error_emailtips2\\\"})}))}),P=(0,g.TA)({validateOnBlur:!1,initialValues:{region:e.uRegion,email:\\\"\\\",password:\\\"\\\",repassword:\\\"\\\",agreementChecked:!1},validationSchema:M,validate:function(e){var n=e.password,t=e.repassword;return N({password:n,repassword:t})},onSubmit:function(){var s=(0,i.Z)((0,a.Z)().mark((function s(i,o){var c,p,h,g,f,x,v,Z,w,y,S,N,M,P,T,L,O,E;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:if(c=o.setSubmitting,p=o.setFieldError,h=o.setFormError,!e.forceManualSelectAgreement){s.next=6;break}if(i.agreementChecked){s.next=6;break}return C(!0),c(!1),s.abrupt(\\\"return\\\");case 6:return g=i.email,f=void 0===g?\\\"\\\":g,x=i.password,v=void 0===x?\\\"\\\":x,Z=i.region,w=void 0===Z?\\\"\\\":Z,s.next=9,Promise.all([t.e(2605),t.e(8132),t.e(695),t.e(7634)]).then(t.bind(t,23963));case 9:return y=s.sent,S=y.encryptAes,N=S({email:f,password:v}),M=N.encryptedParams,P=M.email,T=M.password,L=m.$i.bind(null,{email:P,password:T,region:w,sid:k},{EUI:N.EUI}),s.prev=15,s.next=18,_(L);case 18:(O=new URLSearchParams(e.searchParams)).set(\\\"_user\\\",i.email),O.set(\\\"_uRegion\\\",i.region),O.set(\\\"_agreementChecked\\\",String(i.agreementChecked)),n.push({pathname:\\\"/register/email/verify\\\",search:O.toString(),state:{encryptedPwd:T,encryptedEmail:P,encryptedEUI:N.EUI}}),s.next=38;break;case 25:if(s.prev=25,s.t0=s.catch(15),88205!==(E=s.t0.code)){s.next=31;break}return p(\\\"email\\\",(0,b.jsx)(l.Z,{id:\\\"jsp_bid_error_emailtips1\\\"})),s.abrupt(\\\"return\\\");case 31:if(10017!==E){s.next=34;break}return h((0,b.jsx)(l.Z,{id:\\\"jsp_2014_bad_param\\\"})),s.abrupt(\\\"return\\\");case 34:if(25001!==E){s.next=37;break}return p(\\\"email\\\",(0,b.jsx)(l.Z,{id:\\\"web_register_email_is_occupied\\\",values:{login:function(e){return(0,b.jsx)(d.rU,{to:(0,r.Z)((0,r.Z)({},u),{},{pathname:\\\"/login\\\"}),children:e})}}})),s.abrupt(\\\"return\\\");case 37:j(s.t0,o);case 38:return s.prev=38,c(!1),s.finish(38);case 41:case\\\"end\\\":return s.stop()}}),s,null,[[15,25,38,41]])})));return function(e,n){return s.apply(this,arguments)}}(),onFieldValueChange:function(e,n){\\\"region\\\"===e&&v(n)}});return{formik:P,termsDialogVisible:S,setTermsDialogVisible:C}}function w(){var e,n,t=(0,h.Z)(),s=(0,c.k6)().location.state||{},d=s.encryptedPwd,u=void 0===d?\\\"\\\":d,f=s.encryptedEmail,x=void 0===f?\\\"\\\":f,k=s.encryptedEUI,w=void 0===k?\\\"\\\":k,y=t.uRegion,S=decodeURIComponent(null!==(e=t.searchParams.get(\\\"_user\\\"))&&void 0!==e?e:\\\"\\\"),C=\\\"true\\\"===t.searchParams.get(\\\"_agreementChecked\\\")||!1,N=null!==(n=t.searchParams.get(\\\"callback\\\"))&&void 0!==n?n:\\\"\\\",M=t.searchParams.get(\\\"sid\\\")||\\\"\\\",P=(0,v.Y3)(C),T=(0,m.\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_232fe61e41404b7d975bc254",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 59857, \"end_offset\": 66008}, \"_best_guess_score\": -201, \"name\": \"90075\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 59857, \"end_offset\": 66008, \"code\": \"90075:function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(74165),i=t(15861),o=(t(54883),t(10853),t(35054),t(45007),t(68995),t(56650),t(33290),t(31807),t(72791)),l=t(4349),c=t(64880),d=t(91523),p=t(91888),m=t(73329),u=t(78214),h=t(26658),g=t(94091),f=t(60682),x=t(83350),v=t(38222),j=t(83741),_=t(12854),b=t(80184);function Z(){var e=(0,u._8)();return(0,o.useCallback)(function(){var n=(0,i.Z)((0,a.Z)().mark((function n(t){var r,s;return(0,a.Z)().wrap((function(n){for(;;)switch(n.prev=n.next){case 0:return r=function(e){return t(e)},n.next=3,e(function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,r({icode:(null===n||void 0===n?void 0:n.icode)||\\\"\\\"});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(n){return e.apply(this,arguments)}}(),{icodeType:\\\"register\\\",action:\\\"register\\\"});case 3:return s=n.sent,n.abrupt(\\\"return\\\",s);case 5:case\\\"end\\\":return n.stop()}}),n)})));return function(e){return n.apply(this,arguments)}}(),[e])}function k(){var e=(0,h.Z)(),n=(0,c.k6)(),u=(0,c.TH)(),v=(0,f.d)(\\\"/register\\\"),j=(0,m.UQ)(),_=Z(),k=e.searchParams.get(\\\"sid\\\")||\\\"\\\",w=(0,o.useState)(!1),y=(0,s.Z)(w,2),S=y[0],C=y[1],N=(0,x.f)(),M=(0,p.Ry)().shape({email:(0,p.Z_)().email((function(){return(0,b.jsx)(l.Z,{id:\\\"jsp_regst_error_emailtips1\\\"})})).required((function(){return(0,b.jsx)(l.Z,{id:\\\"jsp_regst_error_emailtips2\\\"})}))}),P=(0,g.TA)({validateOnBlur:!1,initialValues:{region:e.uRegion,email:\\\"\\\",password:\\\"\\\",repassword:\\\"\\\",agreementChecked:!1},validationSchema:M,validate:function(e){var n=e.password,t=e.repassword;return N({password:n,repassword:t})},onSubmit:function(){var s=(0,i.Z)((0,a.Z)().mark((function s(i,o){var c,p,h,g,f,x,v,Z,w,y,S,N,M,P,T,L,O,E;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:if(c=o.setSubmitting,p=o.setFieldError,h=o.setFormError,!e.forceManualSelectAgreement){s.next=6;break}if(i.agreementChecked){s.next=6;break}return C(!0),c(!1),s.abrupt(\\\"return\\\");case 6:return g=i.email,f=void 0===g?\\\"\\\":g,x=i.password,v=void 0===x?\\\"\\\":x,Z=i.region,w=void 0===Z?\\\"\\\":Z,s.next=9,Promise.all([t.e(2605),t.e(8132),t.e(695),t.e(7634)]).then(t.bind(t,23963));case 9:return y=s.sent,S=y.encryptAes,N=S({email:f,password:v}),M=N.encryptedParams,P=M.email,T=M.password,L=m.$i.bind(null,{email:P,password:T,region:w,sid:k},{EUI:N.EUI}),s.prev=15,s.next=18,_(L);case 18:(O=new URLSearchParams(e.searchParams)).set(\\\"_user\\\",i.email),O.set(\\\"_uRegion\\\",i.region),O.set(\\\"_agreementChecked\\\",String(i.agreementChecked)),n.push({pathname:\\\"/register/email/verify\\\",search:O.toString(),state:{encryptedPwd:T,encryptedEmail:P,encryptedEUI:N.EUI}}),s.next=38;break;case 25:if(s.prev=25,s.t0=s.catch(15),88205!==(E=s.t0.code)){s.next=31;break}return p(\\\"email\\\",(0,b.jsx)(l.Z,{id:\\\"jsp_bid_error_emailtips1\\\"})),s.abrupt(\\\"return\\\");case 31:if(10017!==E){s.next=34;break}return h((0,b.jsx)(l.Z,{id:\\\"jsp_2014_bad_param\\\"})),s.abrupt(\\\"return\\\");case 34:if(25001!==E){s.next=37;break}return p(\\\"email\\\",(0,b.jsx)(l.Z,{id:\\\"web_register_email_is_occupied\\\",values:{login:function(e){return(0,b.jsx)(d.rU,{to:(0,r.Z)((0,r.Z)({},u),{},{pathname:\\\"/login\\\"}),children:e})}}})),s.abrupt(\\\"return\\\");case 37:j(s.t0,o);case 38:return s.prev=38,c(!1),s.finish(38);case 41:case\\\"end\\\":return s.stop()}}),s,null,[[15,25,38,41]])})));return function(e,n){return s.apply(this,arguments)}}(),onFieldValueChange:function(e,n){\\\"region\\\"===e&&v(n)}});return{formik:P,termsDialogVisible:S,setTermsDialogVisible:C}}function w(){var e,n,t=(0,h.Z)(),s=(0,c.k6)().location.state||{},d=s.encryptedPwd,u=void 0===d?\\\"\\\":d,f=s.encryptedEmail,x=void 0===f?\\\"\\\":f,k=s.encryptedEUI,w=void 0===k?\\\"\\\":k,y=t.uRegion,S=decodeURIComponent(null!==(e=t.searchParams.get(\\\"_user\\\"))&&void 0!==e?e:\\\"\\\"),C=\\\"true\\\"===t.searchParams.get(\\\"_agreementChecked\\\")||!1,N=null!==(n=t.searchParams.get(\\\"callback\\\"))&&void 0!==n?n:\\\"\\\",M=t.searchParams.get(\\\"sid\\\")||\\\"\\\",P=(0,v.Y3)(C),T\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I need to find the obfuscated version in the `2395.988a36fc.chunk.js` file. The `Qe` decoder uses XOR with 13. \"hash\" would be: h=104, a=97, s=115, h=104 \u2192 encoded as [104^13, 97^13, 115^13, 104^13] = [101, 108, 126, 101]. Let me search for this pattern or look at more of the file:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c3499b8a45f64b5eb1eb52a9",
+     "name": "search_entity",
+     "input": {
+      "query": "(101, 108, 126, 101)"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_50400183f10a426a83226310",
+     "name": "search_entity",
+     "input": {
+      "query": "Qe password toUpperCase login onSubmit"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_c3499b8a45f64b5eb1eb52a9",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_50400183f10a426a83226310",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at the remaining serviceLogin search nodes and also search for the login form in the obfuscated file:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_9d99c3d9340042979b097c2a",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "f8566283827470e9"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_1812cdf4ac6c4e91a22a7cb7",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "0617814666549c06"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_09789fabd20247cca33c3039",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "62214d8b5e57526d"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_40d3f82625e74831a6832acb",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "442e4c67ce4d0e5a"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_9d99c3d9340042979b097c2a",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 63432, \"end_offset\": 66007}, \"_best_guess_score\": -392, \"name\": \"w\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 63432, \"end_offset\": 66007, \"code\": \"function w(){var e,n,t=(0,h.Z)(),s=(0,c.k6)().location.state||{},d=s.encryptedPwd,u=void 0===d?\\\"\\\":d,f=s.encryptedEmail,x=void 0===f?\\\"\\\":f,k=s.encryptedEUI,w=void 0===k?\\\"\\\":k,y=t.uRegion,S=decodeURIComponent(null!==(e=t.searchParams.get(\\\"_user\\\"))&&void 0!==e?e:\\\"\\\"),C=\\\"true\\\"===t.searchParams.get(\\\"_agreementChecked\\\")||!1,N=null!==(n=t.searchParams.get(\\\"callback\\\"))&&void 0!==n?n:\\\"\\\",M=t.searchParams.get(\\\"sid\\\")||\\\"\\\",P=(0,v.Y3)(C),T=(0,m.UQ)(),L=Z(),O=(0,m.rb)(),E=(0,p.Ry)().shape({ticket:(0,p.Z_)().required((function(){return(0,b.jsx)(l.Z,{id:\\\"jsp_regst_check_error2\\\"})}))}),A=(0,g.TA)({validateOnBlur:!0,initialValues:{ticket:\\\"\\\"},validationSchema:E,onSubmit:function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSubmitting,o=s.setFormError,e.next=3,_.a.getFingerprint();case 3:return l=e.sent,c=l.visitorId,d=m.Z7.bind(null,(0,r.Z)((0,r.Z)({},n),{},{region:y,email:x,env:\\\"web\\\",qs:t.submitParams.qs,isAcceptLicense:\\\"true\\\",sid:M,password:u,policyName:P,callback:N,deviceFingerprint:c}),{EUI:w}),e.prev=6,e.next=9,L(d);case 9:p=-1!==(p=t.submitParams.qs).indexOf(encodeURIComponent(\\\"callback=\\\"))?\\\"\\\".concat(decodeURIComponent(p)):\\\"?\\\".concat(p.substring(3)),window.location.href=\\\"/pass/serviceLogin\\\".concat(p),e.next=18;break;case 14:e.prev=14,e.t0=e.catch(6),h=O(e.t0),o(h);case 18:return e.prev=18,i(!1),e.finish(18);case 21:case\\\"end\\\":return e.stop()}}),e,null,[[6,14,18,21]])})));return function(n,t){return e.apply(this,arguments)}}()}),I=(0,o.useCallback)(function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n){var t;return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return t=m.$i.bind(null,{email:x,password:u,region:y,sid:M},{EUI:w}),e.prev=1,e.next=4,L(t);case 4:n&&n(),A.resetForm(),e.next=14;break;case 8:if(e.prev=8,e.t0=e.catch(1),70022!==(null===e.t0||void 0===e.t0?void 0:e.t0.code)){e.next=13;break}return A.setFormError((0,b.jsx)(l.Z,{id:\\\"NoChance-Email\\\"})),e.abrupt(\\\"return\\\");case 13:T(e.t0,A);case 14:case\\\"end\\\":return e.stop()}}),e,null,[[1,8]])})));return function(n){return e.apply(this,arguments)}}(),[T,A,y,L,u,x,w,M]),R=function(){var e=(0,i.Z)((0,a.Z)().mark((function e(){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.se)({address:S,templateId:j.pR.EMAIL_REGISTER}).then((function(e){return e.info}));case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(){return e.apply(this,arguments)}}();return{formik:A,handleSendEmail:I,checkSMSQuota:R}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_1812cdf4ac6c4e91a22a7cb7",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 64087, \"end_offset\": 64965}, \"_best_guess_score\": -209, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 64087, \"end_offset\": 64965, \"code\": \"function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSubmitting,o=s.setFormError,e.next=3,_.a.getFingerprint();case 3:return l=e.sent,c=l.visitorId,d=m.Z7.bind(null,(0,r.Z)((0,r.Z)({},n),{},{region:y,email:x,env:\\\"web\\\",qs:t.submitParams.qs,isAcceptLicense:\\\"true\\\",sid:M,password:u,policyName:P,callback:N,deviceFingerprint:c}),{EUI:w}),e.prev=6,e.next=9,L(d);case 9:p=-1!==(p=t.submitParams.qs).indexOf(encodeURIComponent(\\\"callback=\\\"))?\\\"\\\".concat(decodeURIComponent(p)):\\\"?\\\".concat(p.substring(3)),window.location.href=\\\"/pass/serviceLogin\\\".concat(p),e.next=18;break;case 14:e.prev=14,e.t0=e.catch(6),h=O(e.t0),o(h);case 18:return e.prev=18,i(!1),e.finish(18);case 21:case\\\"end\\\":return e.stop()}}),e,null,[[6,14,18,21]])})));return function(n,t){return e.apply(this,arguments)}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_09789fabd20247cca33c3039",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 64128, \"end_offset\": 64908}, \"_best_guess_score\": -183, \"name\": \"e\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 64128, \"end_offset\": 64908, \"code\": \"function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSubmitting,o=s.setFormError,e.next=3,_.a.getFingerprint();case 3:return l=e.sent,c=l.visitorId,d=m.Z7.bind(null,(0,r.Z)((0,r.Z)({},n),{},{region:y,email:x,env:\\\"web\\\",qs:t.submitParams.qs,isAcceptLicense:\\\"true\\\",sid:M,password:u,policyName:P,callback:N,deviceFingerprint:c}),{EUI:w}),e.prev=6,e.next=9,L(d);case 9:p=-1!==(p=t.submitParams.qs).indexOf(encodeURIComponent(\\\"callback=\\\"))?\\\"\\\".concat(decodeURIComponent(p)):\\\"?\\\".concat(p.substring(3)),window.location.href=\\\"/pass/serviceLogin\\\".concat(p),e.next=18;break;case 14:e.prev=14,e.t0=e.catch(6),h=O(e.t0),o(h);case 18:return e.prev=18,i(!1),e.finish(18);case 21:case\\\"end\\\":return e.stop()}}),e,null,[[6,14,18,21]])}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_40d3f82625e74831a6832acb",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 64184, \"end_offset\": 64883}, \"_best_guess_score\": -163, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 64184, \"end_offset\": 64883, \"code\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSubmitting,o=s.setFormError,e.next=3,_.a.getFingerprint();case 3:return l=e.sent,c=l.visitorId,d=m.Z7.bind(null,(0,r.Z)((0,r.Z)({},n),{},{region:y,email:x,env:\\\"web\\\",qs:t.submitParams.qs,isAcceptLicense:\\\"true\\\",sid:M,password:u,policyName:P,callback:N,deviceFingerprint:c}),{EUI:w}),e.prev=6,e.next=9,L(d);case 9:p=-1!==(p=t.submitParams.qs).indexOf(encodeURIComponent(\\\"callback=\\\"))?\\\"\\\".concat(decodeURIComponent(p)):\\\"?\\\".concat(p.substring(3)),window.location.href=\\\"/pass/serviceLogin\\\".concat(p),e.next=18;break;case 14:e.prev=14,e.t0=e.catch(6),h=O(e.t0),o(h);case 18:return e.prev=18,i(!1),e.finish(18);case 21:case\\\"end\\\":return e.stop()}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I need to find the obfuscated login param-builder in the `2395.988a36fc.chunk.js` file. The `Qe` function decodes by XORing with 13. \"hash\" = [104, 97, 115, 104] \u2192 encoded as [104^13, 97^13, 115^13, 104^13] = [101, 108, 126, 101]. Let me search for this and also look at the `G` function which seems to be the login form component:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_6a263feb9bbd4ec694ce077c",
+     "name": "search_entity",
+     "input": {
+      "query": "(101, 108, 126, 101)"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_1633a70dd9a74f0ca5e464ea",
+     "name": "search_entity",
+     "input": {
+      "query": "onSubmit password Qe encryptAes serviceLogin"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_6a263feb9bbd4ec694ce077c",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_1633a70dd9a74f0ca5e464ea",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at the `G` function in the `2395` chunk more closely - it was cut off. Let me also search for the login form's onSubmit in that file:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_81e4121cb86143ce8269d63b",
+     "name": "search_entity",
+     "input": {
+      "query": "G function login form onSubmit password hash Qe 2395"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_547642236ebd49dda60051ae",
+     "name": "search_entity",
+     "input": {
+      "query": "encryptAes hash toUpperCase Qe login password"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_81e4121cb86143ce8269d63b",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_547642236ebd49dda60051ae",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me try to find the function that calls `s.Js` (which is the serviceLogin POST function) in the obfuscated file:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_42cbbb080e034630a6a2045a",
+     "name": "search_entity",
+     "input": {
+      "query": "s.Js Qe hash"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_87f47be61ddf4773a1e21f1d",
+     "name": "search_entity",
+     "input": {
+      "query": "Js hash toUpperCase password login"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_42cbbb080e034630a6a2045a",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_87f47be61ddf4773a1e21f1d",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at the `G` function from the `2395` chunk more carefully. It was the login form. Let me search for more of its content:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_eeb2881a4222479f9fc0eeef",
+     "name": "search_entity",
+     "input": {
+      "query": "function G login form onSubmit password 2395 chunk"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ae0f14b9bc7c4698b2966015",
+     "name": "search_entity",
+     "input": {
+      "query": "onSubmit password hash Qe login param builder"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_eeb2881a4222479f9fc0eeef",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ae0f14b9bc7c4698b2966015",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me try traversing the graph from the `Qe` function node to find what invokes it in the context of login:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_d8816e125a9e4e1bb4c694f0",
+     "name": "traverse_graph",
+     "input": {
+      "node": "d69f474e8d6e777c",
+      "edge": "child"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_d8816e125a9e4e1bb4c694f0",
+     "content": "{\"neighbours\": [\"902b44e25bad6769\", \"3754276facf47f0c\", \"eb30df29706ee67b\", \"24df856bd17867cb\", \"ec2c721cc525a57d\", \"e242fe1808d8116b\", \"2244c871e5fbfb5d\", \"784a036f05ce55f7\", \"632157a0795b2790\", \"954217c1e733561d\", \"38e6b634e1a8696e\", \"b50324442c807653\", \"998c0988fa271d5a\", \"5165e80b2749df42\", \"ed085c446d80bc65\", \"e757463caedeca4a\", \"b2e3994c0c69045c\", \"5e3b993aa0c9d45f\", \"9fb19a727b8e6a66\", \"363a763de2ecbe0f\", \"82d7cf543225e229\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_36ca0288ffb842d5a15023d2",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "902b44e25bad6769"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_490af967f50c4d0cb4dc606b",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "3754276facf47f0c"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_83223a0d3a0a4dadbf1e4417",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "eb30df29706ee67b"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_52ccfcdce14748389ffab538",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "24df856bd17867cb"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_36ca0288ffb842d5a15023d2",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 24501, \"end_offset\": 25757}, \"_best_guess_score\": -393, \"name\": \"J\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 24501, \"end_offset\": 25757, \"code\": \"function J() { var e, t, n = (0, l.Z)(), r = Y(K()), a = (0, s.UQ)(); F(); var i = h.useCallback(function () { var e = (0, c.Z)((0, o.Z)().mark((function e(t, n) { var i; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: return i = n.setSubmitting, e.prev = 1, e.next = 4, r(t); case 4: e.next = 9; break; case 6: e.prev = 6, e.t0 = e.catch(1), a(e.t0, n); case 9: return e.prev = 9, i(!1), e.finish(9); case 12: case \\\"end\\\": return e.stop() } }), e, null, [[1, 6, 9, 12]]) }))); return function (t, n) { return e.apply(this, arguments) } }(), [r, a]), u = h.useMemo((function () { return (0, _.Ry)().shape({ callingCode: (0, _.Z_)(), account: (0, _.Z_)().required((function () { return (0, V.jsx)(k.Z, { id: \\\"INPUT_USER_NAME_HINT\\\" }) })), [Qe([125,108,126,126,122,98,127,105])]: (0, _.Z_)().required((function () { return (0, V.jsx)(k.Z, { id: \\\"EmptyErrorPwd\\\" }) })) }) }), []), p = { account: null !== (e = n.searchParams.get(\\\"_user\\\")) && void 0 !== e ? e : \\\"\\\", callingCode: null !== (t = n.searchParams.get(\\\"_callingCode\\\")) && void 0 !== t ? t : n.callingCode(), [Qe([125,108,126,126,122,98,127,105])]: \\\"\\\", agreementChecked: void 0 }; return { formik: (0, d.TA)({ initialValues: p, validationSchema: u, onSubmit: i }) } }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_490af967f50c4d0cb4dc606b",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 25758, \"end_offset\": 29043}, \"_best_guess_score\": -262, \"name\": \"X\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 25758, \"end_offset\": 29043, \"code\": \"function X() { var e, t, n = (0, Z.Sl)(), r = (0, l.Z)(), a = h.useState(0), u = (0, i.Z)(a, 2), p = u[0], f = u[1], m = (0, s.UQ)(), v = (0, x.e)(), g = (0, i.Z)(v, 2), w = g[0], C = g[1], P = (0, y.ZP)(), E = (0, h.useState)(!1), S = (0, i.Z)(E, 2), M = S[0], R = S[1], L = (0, j.$H)().hasBlock, O = (0, N.P)(), $ = (0, U.cW)(); h.useEffect((function () { n(\\\"view\\\", { tip: \\\"593.6.0.1.18906\\\" }) }), [n]), F(); var D = function () { var e = (0, c.Z)((0, o.Z)().mark((function e(t, r) { var a, i, c, s; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: if (a = r.setSubmitting, !$(t.agreementChecked)) { e.next = 5; break } return R(!0), a(!1), e.abrupt(\\\"return\\\"); case 5: return i = (0, A.o9)(), c = T()({ tablet: !0 }) ? \\\"mobile \\\".concat(i) : \\\"pc \\\".concat(i), n(\\\"click\\\", { tip: \\\"593.6.0.1.19209\\\", deviceType: c }), window.logGAEvent(Qe([97,98,106,100,99,82,125,122,105]), { deviceType: c }), (s = navigator.credentials) && s.create && s.get && window.PublicKeyCredential && (n(\\\"click\\\", { tip: \\\"593.110.0.1.33268\\\", deviceType: c }), window.logGAEvent(Qe([97,98,106,100,99,82,125,122,105,82,107,100,105,98,82,108,97,97]), { deviceType: c }), window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable && window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then((function (e) { e && (n(\\\"click\\\", { tip: \\\"593.110.0.1.32097\\\", deviceType: c }), window.logGAEvent(Qe([97,98,106,100,99,82,125,122,105,82,107,100,105,98]), { deviceType: c })) }))), e.prev = 11, e.next = 14, ie(t); case 14: e.next = 20; break; case 16: e.prev = 16, e.t0 = e.catch(11), 70016 === e.t0.code && p < 3 && f((function (e) { return e + 1 })), m(e.t0, r); case 20: return e.prev = 20, a(!1), e.finish(20); case 23: case \\\"end\\\": return e.stop() } }), e, null, [[11, 16, 20, 23]]) }))); return function (t, n) { return e.apply(this, arguments) } }(), H = h.useMemo((function () { return (0, _.Ry)().shape({ callingCode: (0, _.Z_)(), account: (0, _.Z_)().required((function () { return (0, V.jsx)(k.Z, { id: \\\"INPUT_USER_NAME_HINT\\\" }) })), [Qe([125,108,126,126,122,98,127,105])]: (0, _.Z_)().required((function () { return (0, V.jsx)(k.Z, { id: \\\"EmptyErrorPwd\\\" }) })) }) }), []), q = r.searchParams, B = q.get(\\\"_userId\\\"), G = q.get(\\\"_user\\\"), z = (0, N.T)(), W = { account: null !== (e = null !== B && void 0 !== B ? B : G) && void 0 !== e ? e : w, callingCode: null !== (t = r.searchParams.get(\\\"_callingCode\\\")) && void 0 !== t ? t : r.callingCode(), [Qe([125,108,126,126,122,98,127,105])]: \\\"\\\", agreementChecked: !1, displayPhone: z ? (0, I.$)(G) : \\\"\\\" }, Q = (0, d.TA)({ initialValues: W, validationSchema: H, onSubmit: D, onFieldValueChange: function (e, t) { \\\"account\\\" === e && C(t) } }), J = h.useState(!!B), X = (0, i.Z)(J, 2), ee = X[0], te = X[1], ne = O(Q.values.account), re = (0, b.Z)(O); h.useEffect((function () { !ne || re || B || te(!1) }), [ne, re, B]); var ae = !ee && ne && (r.isForeign || r.fromTw || \\\"zh_CN\\\" !== P), ie = Y(K(ae)); return { formik: Q, callingCodeEditable: ae, onCallingCodeRemove: function () { te(!0) }, readOnly: !!B || !(!G || L(j.gO.NOT_ALLOW_USER_CLEAR)), [Qe([125,108,126,126,122,98,127,105,72,127,127,98,127,78,98,120,99,121])]: p, termsDialogVisible: M, setTermsDialogVisible: R, needPhoneDesensitization: z } }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_83223a0d3a0a4dadbf1e4417",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6257, \"end_offset\": 6285}, \"_best_guess_score\": -5466, \"name\": \"GG\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6257, \"end_offset\": 6285, \"code\": \"GG: function () { return K }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_52ccfcdce14748389ffab538",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6287, \"end_offset\": 6315}, \"_best_guess_score\": -5468, \"name\": \"Gt\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6287, \"end_offset\": 6315, \"code\": \"Gt: function () { return W }\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I can see the obfuscated code. The `Qe([125,108,126,126,122,98,127,105])` decodes to \"password\" (125^13=112='p', 108^13=97='a', 126^13=115='s', 126^13=115='s', 122^13=119='w', 98^13=111='o', 127^13=114='r', 105^13=100='d'). \n\nNow I need to find the function `K` (which is returned by `GG`) and `Y` which is used in the `J` function as `r = Y(K())`. The `K` function likely creates the login param-builder, and `Y` wraps it. Let me find `K` and `Y`:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4e5efcd091db4860b9951e69",
+     "name": "search_entity",
+     "input": {
+      "query": "function K login param hash Qe 2395"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_663e5be3c46b4decbd328e39",
+     "name": "search_entity",
+     "input": {
+      "query": "function Y login hash password toUpperCase Qe"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4e5efcd091db4860b9951e69",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_663e5be3c46b4decbd328e39",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_8b3e765710734fb3bf7acf0a",
+     "name": "search_entity",
+     "input": {
+      "query": "K function 2395 chunk login"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_0a0a3fa5ccf54688bbefb246",
+     "name": "search_entity",
+     "input": {
+      "query": "Y function 2395 chunk login param"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_8b3e765710734fb3bf7acf0a",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_0a0a3fa5ccf54688bbefb246",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at more child nodes of the module to find K and Y:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4edb447a90984e678628d94c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ec2c721cc525a57d"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_23ea6a9824724797bf8de4e8",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e242fe1808d8116b"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_3651dd8942bb40d0b763d4ea",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "2244c871e5fbfb5d"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_eb10b08a85ff40c0b67f3587",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "784a036f05ce55f7"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4edb447a90984e678628d94c",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6317, \"end_offset\": 6345}, \"_best_guess_score\": -5470, \"name\": \"IK\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6317, \"end_offset\": 6345, \"code\": \"IK: function () { return z }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_23ea6a9824724797bf8de4e8",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6347, \"end_offset\": 6375}, \"_best_guess_score\": -5472, \"name\": \"OP\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6347, \"end_offset\": 6375, \"code\": \"OP: function () { return Q }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_3651dd8942bb40d0b763d4ea",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6377, \"end_offset\": 6405}, \"_best_guess_score\": -5474, \"name\": \"Yb\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6377, \"end_offset\": 6405, \"code\": \"Yb: function () { return H }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_eb10b08a85ff40c0b67f3587",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6407, \"end_offset\": 6435}, \"_best_guess_score\": -5476, \"name\": \"Z1\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6407, \"end_offset\": 6435, \"code\": \"Z1: function () { return G }\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_ddfe336ee5094a4c8d9ad9b1",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "632157a0795b2790"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7298faade1a04b03b860a765",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "954217c1e733561d"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_9b8dbd5f58ee4dc990551107",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "38e6b634e1a8696e"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ca881aacb6fb4c74b5452751",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "b50324442c807653"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ddfe336ee5094a4c8d9ad9b1",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6437, \"end_offset\": 6465}, \"_best_guess_score\": -5478, \"name\": \"cj\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6437, \"end_offset\": 6465, \"code\": \"cj: function () { return J }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7298faade1a04b03b860a765",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6467, \"end_offset\": 6495}, \"_best_guess_score\": -5480, \"name\": \"jZ\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6467, \"end_offset\": 6495, \"code\": \"jZ: function () { return X }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_9b8dbd5f58ee4dc990551107",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6497, \"end_offset\": 6525}, \"_best_guess_score\": -5482, \"name\": \"lj\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6497, \"end_offset\": 6525, \"code\": \"lj: function () { return Y }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ca881aacb6fb4c74b5452751",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7226, \"end_offset\": 7312}, \"_best_guess_score\": -701, \"name\": \"Qe\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7226, \"end_offset\": 7312, \"code\": \"function Qe(e){return e.map((function(e){return String.fromCharCode(13^e)})).join(\\\"\\\")}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I see that `Y` is exported as `lj`. Let me find the `Y` function and the `K` function:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_e8d49f95f3114c9c82d8fae4",
+     "name": "search_entity",
+     "input": {
+      "query": "function Y() login hash password Qe toUpperCase 2395"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_07283b356b344aa0b9510485",
+     "name": "search_entity",
+     "input": {
+      "query": "function K() login param builder 2395"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_e8d49f95f3114c9c82d8fae4",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_07283b356b344aa0b9510485",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at more child nodes of the module:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7579630055a342ed860b692e",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "998c0988fa271d5a"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_5229e04f741f4738956cc4e1",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "5165e80b2749df42"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7ae32a899c2046779f68960d",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e757463caedeca4a"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_3fd09415be8b4bb48d14155c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "b2e3994c0c69045c"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7579630055a342ed860b692e",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7313, \"end_offset\": 7588}, \"_best_guess_score\": -19158, \"name\": \"F\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7313, \"end_offset\": 7588, \"code\": \"function F() { var e = (0, h.useCallback)((function (e) { var t, n; window.location.href = D || (null === (t = window) || void 0 === t || null === (n = t.location) || void 0 === n ? void 0 : n.origin) }), []); (0, h.useEffect)((function () { R.B7.addCallback($, e) }), [e]) }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_5229e04f741f4738956cc4e1",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7589, \"end_offset\": 7647}, \"_best_guess_score\": -10379, \"name\": \"H\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 7589, \"end_offset\": 7647, \"code\": \"function H(e, t, n, r) { return q.apply(this, arguments) }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7ae32a899c2046779f68960d",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 8339, \"end_offset\": 9849}, \"_best_guess_score\": -161, \"name\": \"B\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 8339, \"end_offset\": 9849, \"code\": \"function B() { var e = (0, l.Z)(), t = (0, u._8)(); return h.useCallback(function () { var r = (0, c.Z)((0, o.Z)().mark((function r(a, i) { var u, l, d, p, f, m, v, h, g = arguments; return (0, o.Z)().wrap((function (r) { for (; ;)switch (r.prev = r.next) { case 0: return l = g.length > 2 && void 0 !== g[2] ? g[2] : {}, r.next = 3, Promise.all([n.e(2605), n.e(8132), n.e(695), n.e(7634)]).then(n.bind(n, 23963)); case 3: return d = r.sent, p = d[Qe([104,99,110,127,116,125,121,76,104,126])], f = p({ user: a }), m = f.encryptedParams, v = l.sendType, h = void 0 === v ? \\\"\\\" : v, r.next = 10, t(function () { var t = (0, c.Z)((0, o.Z)().mark((function t(n) { var r, a, c; return (0, o.Z)().wrap((function (t) { for (; ;)switch (t.prev = t.next) { case 0: return r = { sid: e.submitParams.sid, user: m.user, [Qe([110,108,125,121,78,98,105,104])]: (null === n || void 0 === n ? void 0 : n.icode) || \\\"\\\" }, h && (r.type = h), t.next = 4, (0, s.By)(r, { EUI: f.EUI }); case 4: return a = t.sent, t.next = 7, a; case 7: return (c = t.sent).data.vCodeLen && (i.vCodeLen = c.data.vCodeLen, i.wt = c.data.wt), t.abrupt(\\\"return\\\", a); case 10: case \\\"end\\\": return t.stop() } }), t) }))); return function (e) { return t.apply(this, arguments) } }(), { type: \\\"verify\\\", action: \\\"\\\".concat(null !== (u = z[e.dataCenterZone]) && void 0 !== u ? u : \\\"en\\\", \\\"-ticket-login\\\"), uid: a, icodeType: \\\"login\\\" }); case 10: case \\\"end\\\": return r.stop() } }), r) }))); return function (e, t) { return r.apply(this, arguments) } }(), [e, t]) }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_3fd09415be8b4bb48d14155c",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 9850, \"end_offset\": 16823}, \"_best_guess_score\": -152, \"name\": \"G\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 9850, \"end_offset\": 16823, \"code\": \"function G() { var e, t, n, u = (0, Z.Sl)(), f = (0, l.Z)(), m = (0, w.k6)(), v = B(), b = (0, s.UQ)(), x = (0, y.ZP)(), P = (0, s.rb)(), E = f.searchParams, M = E.get(\\\"_user\\\"), U = (0, j.$H)().hasBlock, I = (0, N.P)(), R = (0, h.useState)(!1), $ = (0, i.Z)(R, 2), q = $[0], G = $[1], z = (0, g.Z)(), K = (0, h.useState)(0), Y = (0, i.Z)(K, 2), Q = Y[0], J = Y[1], X = (0, h.useState)(0), ee = (0, i.Z)(X, 2), te = ee[0], ne = ee[1], re = (0, S.w)(), ae = (0, h.useState)((function () { return \\\"true\\\" === new URLSearchParams(window.location.search).get(\\\"_immediate\\\") })), ie = (0, i.Z)(ae, 1)[0]; h.useEffect((function () { u(\\\"view\\\", { tip: \\\"593.7.0.1.18908\\\" }) }), [u]), F(); var oe = { callingCode: null !== (e = f.searchParams.get(\\\"_callingCode\\\")) && void 0 !== e ? e : f.callingCode(), phone: null !== (t = f.searchParams.get(\\\"_user\\\")) && void 0 !== t ? t : \\\"\\\", ticket: \\\"\\\", agreementChecked: \\\"true\\\" === f.searchParams.get(\\\"_agreementChecked\\\") || !1, sendType: null !== (n = f.searchParams.get(\\\"_sendType\\\")) && void 0 !== n ? n : \\\"\\\" }, ce = (0, _.Ry)().shape({ phone: (0, _.Z_)().required((function () { return (0, V.jsx)(k.Z, { id: \\\"INPUT_PHONE_HINT\\\" }) })), ticket: (0, _.Z_)().required((function () { return (0, V.jsx)(k.Z, { id: \\\"jsp_regst_check_error2\\\" }) })) }), se = h.useCallback(function () { var e = (0, c.Z)((0, o.Z)().mark((function e(t, n) { var r, i, c, l, d, m, v, h, g, k, w, _, Z, y, C, P, E; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: return r = t.callingCode, i = t.phone, c = t.ticket, l = t.agreementChecked, d = t.sendType, m = n.setSubmitting, v = (0, A.o9)(), h = T()({ tablet: !0 }) ? \\\"mobile \\\".concat(v) : \\\"pc \\\".concat(v), u(\\\"click\\\", { tip: \\\"593.7.0.1.19206\\\", deviceType: h }), window.logGAEvent(\\\"login_phone\\\", { deviceType: h }), (g = navigator.credentials) && g.create && g.get && window.PublicKeyCredential && (u(\\\"click\\\", { tip: \\\"593.109.0.1.33267\\\", deviceType: h }), window.logGAEvent(\\\"login_phone_fido_all\\\", { deviceType: h }), window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable && window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then((function (e) { e && (u(\\\"click\\\", { tip: \\\"593.109.0.1.32096\\\", deviceType: h }), window.logGAEvent(\\\"login_phone_fido\\\", { deviceType: h })) }))), e.prev = 8, k = (0, p.jM)({ callingCode: r, phone: i }), w = (0, p.Y3)(!!l), _ = f.submitParams, Z = { sid: f.submitParams.sid, user: k, ticket: c.trim(), policyName: w }, d && (Z.type = d), e.next = 16, (0, s.GU)(Z); case 16: if (y = e.sent, J(y.data.registerPwd), 2 !== y.data.status) { e.next = 41; break } return e.next = 21, L.a[Qe([106,104,121,75,100,99,106,104,127,125,127,100,99,121])](); case 21: return C = e.sent, P = C.visitorId, e.t0 = s.ng, e.t1 = f, e.t2 = a.Z, e.t3 = a.Z, e.t4 = {}, e.next = 30, H(f, \\\"ticket\\\"); case 30: return e.t5 = e.sent, e.t6 = (0, e.t3)(e.t4, e.t5), e.t7 = {}, e.t8 = { user: k, ticket: c, _json: \\\"true\\\", _locale: x, callback: _.callback || \\\"\\\", sid: _.sid || \\\"\\\", [Qe([105,104,123,100,110,104,75,100,99,106,104,127,125,127,100,99,121])]: P }, e.t9 = (0, e.t2)(e.t6, e.t7, e.t8), e.t10 = e.t1.withSearchParams.call(e.t1, e.t9), e.next = 38, (0, e.t0)(e.t10); case 38: E = e.sent, D = null === E || void 0 === E ? void 0 : E.location, W(E); case 41: 0 === y.data.status && G(!0), e.next = 47; break; case 44: e.prev = 44, e.t11 = e.catch(8), b(e.t11, n, \\\"ticket\\\"); case 47: return e.prev = 47, m(!1), e.finish(47); case 50: case \\\"end\\\": return e.stop() } }), e, null, [[8, 44, 47, 50]]) }))); return function (t, n) { return e.apply(this, arguments) } }(), [b, f, u, x]), ue = (0, d.TA)({ initialValues: oe, validationSchema: ce, onSubmit: se }); (0, h.useEffect)((function () { if (ie) { var e = E.get(\\\"_code\\\"), t = E.get(\\\"_wt\\\"); \\\"20024\\\" === e && ue.setFieldError(\\\"ticket\\\", z.formatMessage({ id: \\\"FrequentError\\\" })), t && ne(Number(t)), re([\\\"_immediate\\\", \\\"_code\\\", \\\"_wt\\\"], !0) } }), [m, ie, z, E]); var le = function () { var e = (0, c.Z)((0, o.Z)().mark((functio\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I can see the `G` function is for phone/ticket login. Now I need to find the `K` and `Y` functions. The `J` function uses `r = Y(K())` where `K` is the login param-builder factory and `Y` wraps it. Let me look at more child nodes:"
+    },
+    {
+     "type": "tool_use",
+     "id": "call_b9e1fdc0bc4b49deb025c279",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "5e3b993aa0c9d45f"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_d434870237854c82a621b160",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "9fb19a727b8e6a66"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_d3a1496850cd44d4807e5ee4",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "363a763de2ecbe0f"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_5ba494a5f64b4a56a57bccf3",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "82d7cf543225e229"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_b9e1fdc0bc4b49deb025c279",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 16863, \"end_offset\": 18582}, \"_best_guess_score\": -93, \"name\": \"K\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 16863, \"end_offset\": 18582, \"code\": \"function K() { var e = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0], t = (0, l.Z)(); return h.useCallback(function () { var r = (0, c.Z)((0, o.Z)().mark((function r(i, u) { var l, d, f, m, h, g, k, w, b, _; return (0, o.Z)().wrap((function (r) { for (; ;)switch (r.prev = r.next) { case 0: return r.next = 2, H(t, Qe([125,122,105])); case 2: return l = r.sent, d = e ? (0, p.jM)({ callingCode: i.callingCode || \\\"\\\", phone: i.account }) : i.account.trim(), r.next = 6, Promise.all([n.e(2605), n.e(8132), n.e(695), n.e(7634)]).then(n.bind(n, 23963)); case 6: return f = r.sent, m = f[Qe([104,99,110,127,116,125,121,76,104,126])], r.next = 10, L.a[Qe([106,104,121,75,100,99,106,104,127,125,127,100,99,121])](); case 10: return h = r.sent, g = h.visitorId, k = m({ user: d }), w = k.encryptedParams, b = (0, p.Y3)(!!i.agreementChecked), _ = function () { var e = (0, c.Z)((0, o.Z)().mark((function e() { return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: return e.next = 2, (0, s.Js)(t.withSearchParams((0, a.Z)((0, a.Z)({}, l), {}, { user: w.user, cc: i.callingCode, [Qe([101,108,126,101])]: v()(i[Qe([125,108,126,126,122,98,127,105])]).toUpperCase(), _json: \\\"true\\\", policyName: b, [Qe([110,108,125,121,78,98,105,104])]: u || \\\"\\\", [Qe([105,104,123,100,110,104,75,100,99,106,104,127,125,127,100,99,121])]: g })), { EUI: k.EUI }); case 2: return e.abrupt(\\\"return\\\", e.sent); case 3: case \\\"end\\\": return e.stop() } }), e) }))); return function () { return e.apply(this, arguments) } }(), r.next = 18, _(); case 18: return r.abrupt(\\\"return\\\", r.sent); case 19: case \\\"end\\\": return r.stop() } }), r) }))); return function (e, t) { return r.apply(this, arguments) } }(), [t, e]) }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_d434870237854c82a621b160",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 18583, \"end_offset\": 19175}, \"_best_guess_score\": -144, \"name\": \"W\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 18583, \"end_offset\": 19175, \"code\": \"function W(e) { var t = e[Qe([126,104,110,120,127,100,121,116,94,121,108,121,120,126])], n = void 0 === t ? 0 : t, r = e.location, a = e.notificationUrl, i = e[Qe([125,108,126,126,89,98,102,104,99])], o = e.userId, c = e.cUserId, s = e[Qe([125,126,104,110,120,127,100,121,116])]; 0 === n ? R.xk ? 0 !== ((0, R.IN)(\\\"onlyLoginEnd\\\", { [Qe([125,108,126,126,89,98,102,104,99])]: i, userId: o, [Qe([125,126,104,110,120,127,100,121,116])]: s, cUserId: c, callbackId: $ }) || {}).code && (window.location.href = (0, C.a)(r)) : window.location.href = (0, C.a)(r) : window.location.href = (0, C.a)(a) }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_d3a1496850cd44d4807e5ee4",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 19176, \"end_offset\": 19886}, \"_best_guess_score\": -403, \"name\": \"Y\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 19176, \"end_offset\": 19886, \"code\": \"function Y(e) { var t = (0, l.Z)(), n = (0, u._8)(); return h.useCallback(function () { var r = (0, c.Z)((0, o.Z)().mark((function r(a) { var i, c, s, u; return (0, o.Z)().wrap((function (r) { for (; ;)switch (r.prev = r.next) { case 0: return c = \\\"\\\".concat(null !== (i = z[t.dataCenterZone]) && void 0 !== i ? i : \\\"en\\\", Qe([32,125,122,105,32,97,98,106,100,99])), s = function (t) { return e(a, (null === t || void 0 === t ? void 0 : t.icode) || \\\"\\\") }, r.next = 4, n(s, { action: c, icodeType: \\\"login\\\" }); case 4: u = r.sent, D = null === u || void 0 === u ? void 0 : u.location, W(u); case 7: case \\\"end\\\": return r.stop() } }), r) }))); return function (e) { return r.apply(this, arguments) } }(), [t, n, e]) }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_5ba494a5f64b4a56a57bccf3",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 19887, \"end_offset\": 24500}, \"_best_guess_score\": -967, \"name\": \"Q\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 19887, \"end_offset\": 24500, \"code\": \"function Q() { var e = (0, Z.Sl)(), t = (0, w.k6)(), r = (0, l.Z)(), a = B(), u = (0, s.UQ)(), f = (0, x.e)(), m = (0, i.Z)(f, 2), v = m[0], g = m[1], b = (0, P.V2)(), y = (0, h.useState)(!1), C = (0, i.Z)(y, 2), S = C[0], M = C[1], T = (0, h.useState)(!1), A = (0, i.Z)(T, 2), R = A[0], L = A[1], O = (0, h.useState)(\\\"\\\"), $ = (0, i.Z)(O, 2), D = $[0], F = $[1], H = (0, h.useState)(!1), q = (0, i.Z)(H, 2), G = q[0], z = q[1], K = (0, j.$H)().hasBlock, W = r.searchParams.get(\\\"_user\\\"), Y = (0, N.P)(), Q = (0, N.T)(), J = (0, U.cW)(); h.useEffect((function () { e(\\\"view\\\", { tip: \\\"593.5.0.1.18907\\\" }) }), [e]); var X = (0, E.Z)((function (e) { var n = ae.values, r = e.type, a = e.sendType, i = e.code, o = e.wt, c = new URLSearchParams(t.location.search); c.set(\\\"_callingCode\\\", n.callingCode), c.set(\\\"_user\\\", n.phone.trim()), c.set(\\\"_agreementChecked\\\", String(n.agreementChecked)), c.set(\\\"_immediate\\\", \\\"true\\\"), a && c.set(\\\"_sendType\\\", a), i && c.set(\\\"_code\\\", String(i)), o && c.set(\\\"_wt\\\", String(o)), t.push({ pathname: \\\"/login/challenge/\\\".concat(r), search: c.toString() }) }), []), ee = h.useCallback(function () { var t = (0, c.Z)((0, o.Z)().mark((function t(r, i) { var c, l, d, f, m, v, h, g, k, w; return (0, o.Z)().wrap((function (t) { for (; ;)switch (t.prev = t.next) { case 0: if (c = i.setSubmitting, !J(r.agreementChecked)) { t.next = 5; break } return z(!0), c(!1), t.abrupt(\\\"return\\\"); case 5: return l = (0, p.jM)(r), t.next = 8, Promise.all([n.e(2605), n.e(8132), n.e(695), n.e(7634)]).then(n.bind(n, 23963)); case 8: return d = t.sent, f = d[Qe([104,99,110,127,116,125,121,76,104,126])], m = f({ phone: l }), v = m.encryptedParams, t.prev = 12, t.next = 15, (0, s.HH)({ phone: v.phone }, { EUI: m.EUI }); case 15: if (h = t.sent, g = h.data, k = { vCodeLen: 6, wt: 60 }, \\\"ticket\\\" !== g.type) { t.next = 21; break } return t.next = 21, a(l, k); case 21: e(\\\"click\\\", { tip: \\\"593.5.0.1.19200\\\" }), X({ type: g.type, wt: k.wt }), t.next = 39; break; case 25: if (t.prev = 25, t.t0 = t.catch(12), 20338 !== t.t0.code) { t.next = 30; break } return M(!0), t.abrupt(\\\"return\\\"); case 30: if (20024 !== t.t0.code) { t.next = 33; break } return X({ type: \\\"ticket\\\", code: 20024, wt: t.t0.values.wt }), t.abrupt(\\\"return\\\"); case 33: if (70083 !== t.t0.code) { t.next = 38; break } return w = t.t0.values.address, F(void 0 === w ? \\\"\\\" : w), L(!0), t.abrupt(\\\"return\\\"); case 38: u(t.t0, i, Q ? \\\"displayPhone\\\" : \\\"phone\\\"); case 39: return t.prev = 39, c(!1), t.finish(39); case 42: case \\\"end\\\": return t.stop() } }), t, null, [[12, 25, 39, 42]]) }))); return function (e, n) { return t.apply(this, arguments) } }(), [a, u, e, X, Q, J]), te = h.useMemo((function () { return (0, _.Ry)().shape({ callingCode: (0, _.Z_)(), phone: (0, _.Z_)().test(\\\"phone\\\", (function () { return (0, V.jsx)(k.Z, { id: \\\"jsp_regst_phone_errortips2\\\" }) }), (function (e) { var t; e = null === (t = e) || void 0 === t ? void 0 : t.trim(); var n = this.parent.callingCode, r = b(n).PH; return e ? !(!r.reg || !r.reg.test(e)) || this.createError({ message: r.resError }) : this.createError({ message: r.emptyError }) })) }) }), [b]), ne = h.useMemo((function () { var e; return { callingCode: null !== (e = r.searchParams.get(\\\"_callingCode\\\")) && void 0 !== e ? e : r.callingCode(), phone: null !== W && void 0 !== W ? W : /^\\\\d+$/.test(v) ? v : \\\"\\\", agreementChecked: !1, displayPhone: Q ? (0, I.$)(W) : \\\"\\\" } }), [r]), re = h.useMemo((function () { try { te.validateSync(ne) } catch (e) { return (0, d.wq)(e) } }), [te, ne]), ae = (0, d.TA)({ initialErrors: re, initialValues: ne, validationSchema: te, onSubmit: ee, onFieldValueChange: function (e, t) { \\\"phone\\\" === e && g(t) } }), ie = (0, h.useCallback)(function () { var e = (0, c.Z)((0, o.Z)().mark((function e(t) { var n, r, i; return (0, o.Z)().wrap((function (e) { for (; ;)switch (e.prev = e.next) { case 0: return n = ae.values, r = ae.setSubmitting, i = (0, p.jM)(n), r(!0), L(!1), e.prev = 4, e.next = 7, a(i, {}, { sendType: t }); case 7: X({ type: \\\"ticket\\\", sendType: t }\"}"
+    }
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "name": "search_entity",
+   "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ]
+   }
+  },
+  {
+   "name": "traverse_graph",
+   "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     },
+     "edge": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node",
+     "edge"
+    ]
+   }
+  },
+  {
+   "name": "retrieve_entity",
+   "description": "Return the full source and location of a function node id.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node"
+    ]
+   }
+  },
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782564380.6260035
+}

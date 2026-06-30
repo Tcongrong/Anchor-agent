@@ -1,0 +1,86 @@
+{
+  "case_id": "real01_tzxm_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the LEx command `execute` method, whose body constructs the s, t and o signature parameters (when isApiV2) and appends them to the request URL before sending the ajax request. The signature is built inline (no separate helper); execute is the function that produces the observed s/t/o. Generic param/data setters are decoys.",
+  "anchor": {
+    "file": "icity/public/scripts/a",
+    "locator": "var chars = \"0123456789abcdef\"",
+    "answer_function": "execute",
+    "source_function": "execute",
+    "source_file": "icity/public/scripts/a",
+    "why": "Builds curUrl, and under this.isApiV2 derives sig (s), the keyed timestamp (t) and tkey (o) from chars/Math.random/Date.parse, appends ?s=&t=&o= to the URL, and issues the ajax request. This is where the observed s/t/o signature parameters are generated."
+  },
+  "roles": [
+    {
+      "file": "icity/ipro/open/publicity.html",
+      "locator": "cmd.setParameter(\"projectType\", \"A00001,A00002\")",
+      "role": "Path/Wrapper",
+      "answer_function": "onQueryHezhun",
+      "why": "Hezhun (approval) paging submit handler (the qrCheck().then callback): builds the LEx.Command, sets page/rows/projectType params and calls cmd.execute(\"getBusinessListByProjectCode\") — the call site that triggers the observed request. A path/wrapper that dispatches the anchor; it does not itself construct s/t/o."
+    },
+    {
+      "file": "icity/ipro/open/publicity.html",
+      "locator": "cmd.setParameter(\"projectType\", \"A00003\")",
+      "role": "Path/Wrapper",
+      "answer_function": "onQueryBeian",
+      "why": "Beian (record-filing) paging submit handler (the qrCheck().then callback): equivalent call site to onQueryHezhun — builds the command, sets params and calls cmd.execute(\"getBusinessListByProjectCode\"). A path/wrapper that dispatches the anchor; it does not itself construct s/t/o."
+    },
+    {
+      "file": "icity/public/scripts/a",
+      "locator": "this.isApiV2 = true;",
+      "role": "Path-critical",
+      "answer_function": "LEx.Command",
+      "source_function": "LEx.Command",
+      "why": "The Command constructor: sets this.isApiV2 = true (the exact flag whose truthiness gates the s/t/o branch inside execute) and builds this.url/this.action/this.paramsObj — the request scaffolding execute reads when constructing curUrl. Path-critical setup, but it does not itself derive s/t/o."
+    },
+    {
+      "file": "icity/public/scripts/a",
+      "locator": "obj == \"null\" || obj === \"\"",
+      "role": "Path-generic-helper",
+      "answer_function": "LEx.isNotNull",
+      "source_function": "isNotNull",
+      "why": "Generic null/empty predicate invoked inside the s/t/o branch (if(!LEx.isNotNull(__signature))) and by the Command constructor. A reusable low-level helper on the path, not specific to signature construction."
+    },
+    {
+      "file": "icity/public/scripts/a",
+      "locator": "this.paramsObj[name] = value",
+      "role": "Off-chain",
+      "answer_function": "setParameter",
+      "why": "Stores a request parameter on the command object; trims strings. Not on the s/t/o signature path."
+    },
+    {
+      "file": "icity/public/scripts/a",
+      "locator": "setData: function (obj)",
+      "role": "Off-chain",
+      "answer_function": "setData",
+      "why": "Copies a data object onto the command; not involved in signature generation."
+    },
+    {
+      "file": "icity/public/scripts/a",
+      "locator": "executeAsync: function (type)",
+      "role": "Off-chain",
+      "answer_function": "executeAsync",
+      "why": "Promise wrapper that forwards to this.execute(type,false,cb). It would relay an s/t/o request, but it has zero call sites in the capture (the observed paging uses synchronous cmd.execute) — a tempting same-name decoy that is not on this observable's path."
+    },
+    {
+      "file": "icity/public/scripts/md5.js",
+      "locator": "function rstr_md5(s)",
+      "role": "Off-chain",
+      "answer_function": "rstr_md5",
+      "source_function": "rstr_md5",
+      "why": "Generic MD5 primitive from the bundled md5.js. The s/t/o signature is built from Math.random/Date.parse, not hashed — this is the strongest 'is the signature a digest?' decoy, off-chain for this observable."
+    }
+  ],
+  "empty_roles": [
+    {
+      "role": "Nested target-specific helper",
+      "score": 0.7,
+      "reason": "No helper is dedicated to building part of s/t/o. The signature (sig, the key/tkey derivation loops, the keyed timestamp) is constructed entirely inline inside execute as straight-line statements — there is no nested function below the anchor to award 0.7. (The original azdg.encrypt helper for t is present but commented out: `t = timestamp;//LEx.azdg.encrypt(...)`, so it is off-path.)"
+    },
+    {
+      "role": "Core utility",
+      "score": 0.5,
+      "reason": "The s/t/o construction uses only Math.random, Date.parse and String methods (builtins) — no crypto/encoding primitive (md5/AES/RSA/SM/base64/uuid) is on the construction path, so there is no Core-utility tier to award. The bundled md5/crypto-js primitives are off-chain decoys (score 0), not 0.5, because the signature is random/time-derived rather than hashed. Matches README §'Coarse score gradient' for real captures."
+    }
+  ]
+}

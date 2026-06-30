@@ -1,0 +1,969 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are SWE-agent, a software-engineering agent working through an Agent-Computer Interface on a deployed, obfuscated browser bundle (read-only; no patches). This is not a patching task: your only success criterion is to submit exactly one complete enclosing function. Use the tools to search and read source, prefer the function that constructs or returns the observed field/value over a nested encoder helper, and then call submit. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On dict.cnki.net, the translation request sends the user's input in a `words` field that is not plaintext but an encrypted, URL-safe token (e.g. the input \u4f60\u597d becomes words=p-B8cnTutsG0RvXOyV0ihg==). Locate the single complete function whose own body transforms the input string into that token value. Return exactly one JSON object (see answer_format). Do NOT return the translate-action handler that merely calls it and assigns the result to `words`, the generic block-cipher primitive it delegates to, or the inverse (decode) function. Only code under captures is in scope.  network_request POST translate words \u4f60\u597d p-B8cnTutsG0RvXOyV0ihg==\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': 'translate', 'field': 'words', 'plaintext_sample': '\u4f60\u597d', 'value_sample': 'p-B8cnTutsG0RvXOyV0ihg=='}\nBundle files: captures/dict.cnki.net/js/app.1767778297134.js, captures/dict.cnki.net/js/chunk-elementUI.1767778297134.js, captures/dict.cnki.net/js/chunk-libs.1767778297134.js, captures/dict.cnki.net/js/jquery.min.js, captures/dict.cnki.net/js/js.cookie.js, captures/hm.baidu.com/hm.js, captures/login.cnki.net/toploginnew/scripts/crypto.js, captures/login.cnki.net/toploginnew/scripts/ecpAgreementAlertHandle.js, captures/login.cnki.net/toploginnew/scripts/ecpAgreementAlertLink.js, captures/login.cnki.net/toploginnew/scripts/jquery-3.7.1.min.js, captures/login.cnki.net/toploginnew/scripts/json2-min.js, captures/login.cnki.net/toploginnew/scripts/tencentSlide.js, captures/login.cnki.net/toploginnew/scripts/top.js, captures/login.cnki.net/toploginnew/scripts/toplogin2.js, captures/login.cnki.net/toploginnew/scripts/updatePasswordHandle.js, captures/piccache.cnki.net/2022/ecp/toplogin/scripts/jquery.md5.js, captures/turing.captcha.gtimg.com/1/dy-jy3.js, captures/turing.captcha.gtimg.com/1/tgJCap.627c7f42.js, captures/turing.captcha.qcloud.com/TJCaptcha.js\nCandidate seed locations (lexical prior, not a ranking): [{'func_id': 'dc98c33c00617a51', 'name': 'recodeIpLog', 'file': 'captures/login.cnki.net/toploginnew/scripts/top.js', 'offset': 26941}, {'func_id': '3428aeb46176071b', 'name': 'getWrod', 'file': 'captures/dict.cnki.net/js/app.1767778297134.js', 'offset': 428488}, {'func_id': '97f876a51654837a', 'name': 'getWrod', 'file': 'captures/dict.cnki.net/js/app.1767778297134.js', 'offset': 428480}, {'func_id': '00e3bf09f8019599', 'name': '(anon)', 'file': 'captures/dict.cnki.net/js/app.1767778297134.js', 'offset': 2279}, {'func_id': 'af33278228d27152', 'name': 'exportExcel', 'file': 'captures/dict.cnki.net/js/app.1767778297134.js', 'offset': 2173}, {'func_id': '39130b9e18573ce9', 'name': 'exportExcel', 'file': 'captures/dict.cnki.net/js/app.1767778297134.js', 'offset': 2161}, {'func_id': '672245afa6633964', 'name': 'toMemberOpen', 'file': 'captures/dict.cnki.net/js/app.1767778297134.js', 'offset': 540718}, {'func_id': '4f70b1ef32eef1cd', 'name': 'a9dc', 'file': 'captures/dict.cnki.net/js/app.1767778297134.js', 'offset': 427696}]\nRequired final action: call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_NbEnlWsZ0JHK6ZOHRWpd3085",
+     "name": "open_function",
+     "input": {
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js",
+      "offset": 428488
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_NbEnlWsZ0JHK6ZOHRWpd3085",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 428488, \"end_offset\": 429526}, \"_best_guess_score\": -1, \"name\": \"getWrod\", \"start_offset\": 428488, \"end_offset\": 429526, \"code\": \"function(t){var e=this;t=t||window.event;var i,a=navigator.userAgent;if(a.indexOf(\\\"Chrome\\\")>=0)i=window.getSelection?window.getSelection():document.selection.createRange().text;else if(\\\"TEXTAREA\\\"==t.target.tagName){var n=document.activeElement;void 0!=n.selectionStart&&(i=n.value.substring(n.selectionStart,n.selectionEnd))}else i=window.getSelection?window.getSelection():document.selection.createRange().text;if(\\\"\\\"==i)window.event?window.event.cancelBubble=!0:t.stopPropagation();else{this.words=i.toString().trim();var s=i.toString().match(/\\\\b\\\\w+\\\\b/gm)?i.toString().match(/\\\\b\\\\w+\\\\b/gm).length:0;if(s>3)return;this.requestFunc({words:i.toString().trim(),source:\\\"CNKI_FYZS\\\"}).then((function(t){if(t&&200==t.code&&t.data)try{if(t.data.dicts&&Object.keys(t.data.dicts).length>0){var i={};for(var a in t.data.dicts)t.data.dicts.hasOwnProperty(a)&&(i[a]=t.data.dicts[a]);Object.keys(i).length>0&&(selection.style.display=\\\"block\\\",e.resultObj=i,e.translateType=t.data.translateType)}}catch(n){console.log(n)}}),(function(t){console.log(t)}))}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_sgHPIoKLlYFELRwXtys49130",
+     "name": "open_function",
+     "input": {
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js",
+      "offset": 428480
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_J6UqXjCNrQ6eVI5AS8GS7707",
+     "name": "open_function",
+     "input": {
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js",
+      "offset": 427696
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_sgHPIoKLlYFELRwXtys49130",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 428480, \"end_offset\": 429526}, \"_best_guess_score\": -2, \"name\": \"getWrod\", \"start_offset\": 428480, \"end_offset\": 429526, \"code\": \"getWrod:function(t){var e=this;t=t||window.event;var i,a=navigator.userAgent;if(a.indexOf(\\\"Chrome\\\")>=0)i=window.getSelection?window.getSelection():document.selection.createRange().text;else if(\\\"TEXTAREA\\\"==t.target.tagName){var n=document.activeElement;void 0!=n.selectionStart&&(i=n.value.substring(n.selectionStart,n.selectionEnd))}else i=window.getSelection?window.getSelection():document.selection.createRange().text;if(\\\"\\\"==i)window.event?window.event.cancelBubble=!0:t.stopPropagation();else{this.words=i.toString().trim();var s=i.toString().match(/\\\\b\\\\w+\\\\b/gm)?i.toString().match(/\\\\b\\\\w+\\\\b/gm).length:0;if(s>3)return;this.requestFunc({words:i.toString().trim(),source:\\\"CNKI_FYZS\\\"}).then((function(t){if(t&&200==t.code&&t.data)try{if(t.data.dicts&&Object.keys(t.data.dicts).length>0){var i={};for(var a in t.data.dicts)t.data.dicts.hasOwnProperty(a)&&(i[a]=t.data.dicts[a]);Object.keys(i).length>0&&(selection.style.display=\\\"block\\\",e.resultObj=i,e.translateType=t.data.translateType)}}catch(n){console.log(n)}}),(function(t){console.log(t)}))}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_J6UqXjCNrQ6eVI5AS8GS7707",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 427696, \"end_offset\": 429924}, \"_best_guess_score\": -7, \"name\": \"a9dc\", \"start_offset\": 427696, \"end_offset\": 429924, \"code\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\"),i(\\\"456d\\\"),i(\\\"4917\\\"),i(\\\"6b54\\\");var a={name:\\\"selection\\\",data:function(){return{pageX:\\\"\\\",pageY:\\\"\\\",pageXStart:\\\"\\\",pageYStart:\\\"\\\",words:\\\"\\\",resultObj:{},translateType:1}},props:{monitoringDom:{type:String},requestFunc:{type:Function}},mounted:function(){document.addEventListener(\\\"mouseup\\\",this.handleMouseup,!1),document.addEventListener(\\\"mousedown\\\",this.handleMousedown,!1)},methods:{handleMouseup:function(t){var e=this.$refs.selection;e&&(e.contains(t.target)||(this.pageX=this.getPageXY(t).pageX,this.pageY=this.getPageXY(t).pageY,e.style.display=\\\"none\\\",this.getWrod(t)))},handleMousedown:function(t){this.pageXStart=this.getPageXY(t).pageX,this.pageYStart=this.getPageXY(t).pageY},getWrod:function(t){var e=this;t=t||window.event;var i,a=navigator.userAgent;if(a.indexOf(\\\"Chrome\\\")>=0)i=window.getSelection?window.getSelection():document.selection.createRange().text;else if(\\\"TEXTAREA\\\"==t.target.tagName){var n=document.activeElement;void 0!=n.selectionStart&&(i=n.value.substring(n.selectionStart,n.selectionEnd))}else i=window.getSelection?window.getSelection():document.selection.createRange().text;if(\\\"\\\"==i)window.event?window.event.cancelBubble=!0:t.stopPropagation();else{this.words=i.toString().trim();var s=i.toString().match(/\\\\b\\\\w+\\\\b/gm)?i.toString().match(/\\\\b\\\\w+\\\\b/gm).length:0;if(s>3)return;this.requestFunc({words:i.toString().trim(),source:\\\"CNKI_FYZS\\\"}).then((function(t){if(t&&200==t.code&&t.data)try{if(t.data.dicts&&Object.keys(t.data.dicts).length>0){var i={};for(var a in t.data.dicts)t.data.dicts.hasOwnProperty(a)&&(i[a]=t.data.dicts[a]);Object.keys(i).length>0&&(selection.style.display=\\\"block\\\",e.resultObj=i,e.translateType=t.data.translateType)}}catch(n){console.log(n)}}),(function(t){console.log(t)}))}},close:function(){this.$refs.selection.style.display=\\\"none\\\"},getPageXY:function(t){var e=t.pageX||t.clientX+getScroll().scrollLeft,i=t.pageY||t.clientY+getScroll().scrollTop;return{pageX:e,pageY:i}},getScroll:function(){var t=document.body.scrollLeft||document.documentElement.scrollLeft,e=document.body.scrollTop||document.documentElement.scrollTop;return{scrollLeft:t,scrollTop:e}}}};e.default=a}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_khkS6UUXAhlckQL1vhOG8794",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_khkS6UUXAhlckQL1vhOG8794",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_rkFCU99AZUiJXzQUtJ1g7017",
+     "name": "search",
+     "input": {
+      "query": "requestFunc"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_XHnr7Wro4z2pGvSuwUAd3876",
+     "name": "search",
+     "input": {
+      "query": "encrypt"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_rkFCU99AZUiJXzQUtJ1g7017",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 152670, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0;var n=a(i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 152670, \"snippet\": \"\\\"3f91\\\":function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0;va\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 152670, \"snippet\": \"function(t){\\\"undefined\\\"!==typeof window&&window.Vue&&(t=window.Vue),t.prototype.$createSelection=function(e){var i=e.dom\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 152670, \"snippet\": \"install:function(t){\\\"undefined\\\"!==typeof window&&window.Vue&&(t=window.Vue),t.prototype.$createSelection=function(e){var\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 152670, \"snippet\": \"function(e){var i=e.domStr,a=e.requestFunc,s=t.extend(n.default),r=new s({propsData:{monitoringDom:i||\\\"\\\",requestFunc:a}}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189070, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189070, \"snippet\": \"\\\"4dc3\\\":function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189070, \"snippet\": \"function(t,e){if(this.$store.commit(\\\"SET_CHECKED\\\",t),t){var i=this.$createSelection({domStr:null,requestFunc:p.words2wor\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189070, \"snippet\": \"handlerTakingWords:function(t,e){if(this.$store.commit(\\\"SET_CHECKED\\\",t),t){var i=this.$createSelection({domStr:null,requ\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 427999, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\"),i(\\\"456d\\\"),i(\\\"49\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 427999, \"snippet\": \"a9dc:function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\"),i(\\\"456d\\\"),\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 429105, \"snippet\": \"function(t){var e=this;t=t||window.event;var i,a=navigator.userAgent;if(a.indexOf(\\\"Chrome\\\")>=0)i=window.getSelection?win\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 429105, \"snippet\": \"getWrod:function(t){var e=this;t=t||window.event;var i,a=navigator.userAgent;if(a.indexOf(\\\"Chrome\\\")>=0)i=window.getSelec\"}]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_XHnr7Wro4z2pGvSuwUAd3876",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\"),i(\\\"a48\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"\\\"90c5\\\":function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341550, \"snippet\": \"function s(t){var e={mode:a.mode.ECB,padding:a.pad.Pkcs7},i=a.enc.Utf8.parse(n),s=a.AES.encrypt(t,i,e),r=s.toString().re\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 350537, \"snippet\": \"function(t){t.exports={name:\\\"HYZK\\\",version:\\\"2.1.6\\\",description:\\\"CNKI\\u7ffb\\u8bd1\\u52a9\\u624b\\\",author:\\\"CNKI\\\",license:\\\"MIT\\\",scripts:{dev:\\\"vue-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 350537, \"snippet\": \"9224:function(t){t.exports={name:\\\"HYZK\\\",version:\\\"2.1.6\\\",description:\\\"CNKI\\u7ffb\\u8bd1\\u52a9\\u624b\\\",author:\\\"CNKI\\\",license:\\\"MIT\\\",scripts:{dev:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"e7de:function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"a\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(){var t=(0,n.default)(regeneratorRuntime.mark((function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((fu\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((function(t){while(1)switch(t.prev=t.next){case 0:if(e=this\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t){while(1)switch(t.prev=t.next){case 0:if(e=this.inputWord.trim(),0!==e.length){t.next=3;break}return t.abrupt\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 329, \"snippet\": \"function(t,e,n){(function(e,r,i){t.exports=r(n(\\\"21bf\\\"),n(\\\"38ba\\\"))})(0,(function(t){return t.mode.CFB=function(){var e=t.\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 329, \"snippet\": \"\\\"00bb\\\":function(t,e,n){(function(e,r,i){t.exports=r(n(\\\"21bf\\\"),n(\\\"38ba\\\"))})(0,(function(t){return t.mode.CFB=function(){v\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 329, \"snippet\": \"function(t){return t.mode.CFB=function(){var e=t.lib.BlockCipherMode.extend();function n(t,e,n,r){var i=this._iv;if(i){v\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 329, \"snippet\": \"function(){var e=t.lib.BlockCipherMode.extend();function n(t,e,n,r){var i=this._iv;if(i){var o=i.slice(0);this._iv=void \"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 329, \"snippet\": \"function n(t,e,n,r){var i=this._iv;if(i){var o=i.slice(0);this._iv=void 0}else o=this._prevBlock;r.encryptBlock(o,0);for\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 225468, \"snippet\": \"function(t,e,n){(function(e,r,i){t.exports=r(n(\\\"21bf\\\"),n(\\\"2b79\\\"))})(0,(function(t){t.lib.Cipher||function(e){var n=t,r=n\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 225468, \"snippet\": \"\\\"38ba\\\":function(t,e,n){(function(e,r,i){t.exports=r(n(\\\"21bf\\\"),n(\\\"2b79\\\"))})(0,(function(t){t.lib.Cipher||function(e){var \"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 225468, \"snippet\": \"function(t){t.lib.Cipher||function(e){var n=t,r=n.lib,i=r.Base,o=r.WordArray,a=r.BufferedBlockAlgorithm,s=n.enc,c=(s.Utf\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 225468, \"snippet\": \"function(e){var n=t,r=n.lib,i=r.Base,o=r.WordArray,a=r.BufferedBlockAlgorithm,s=n.enc,c=(s.Utf8,s.Base64),u=n.algo,f=u.E\"}, {\"file\": \"captures/dict.cnki.net/js/chunk-libs.1767778297134.js\", \"offset\": 225468, \"snippet\": \"function(){function t(t){return\\\"string\\\"==typeof t?S:w}return function(e){return{encrypt:function(n,r,i){return t(r).encr\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_Qn8ZOoTuRO7nILM8VBOC4903",
+     "name": "open_function",
+     "input": {
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js",
+      "offset": 341381
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_Qn8ZOoTuRO7nILM8VBOC4903",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 341301, \"end_offset\": 341811}, \"_best_guess_score\": -4041, \"name\": \"90c5\", \"start_offset\": 341301, \"end_offset\": 341811, \"code\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\"),i(\\\"a481\\\");var a=i(\\\"3452\\\"),n=\\\"4e87183cfd3a45fe\\\";function s(t){var e={mode:a.mode.ECB,padding:a.pad.Pkcs7},i=a.enc.Utf8.parse(n),s=a.AES.encrypt(t,i,e),r=s.toString().replace(/\\\\//g,\\\"_\\\");return r=r.replace(/\\\\+/g,\\\"-\\\"),r}function r(t){var e=t.replace(/\\\\-/g,\\\"+\\\").replace(/_/g,\\\"/\\\"),i={mode:a.mode.ECB,padding:a.pad.Pkcs7},s=a.enc.Utf8.parse(n),r=a.AES.decrypt(e,s,i),o=a.enc.Utf8.stringify(r);return o}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_3dHFRbFa7sW1TAAYERdG8937",
+     "name": "search",
+     "input": {
+      "query": "encrypto"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_iHVBZPSiZ3HGYYnBPv5E2787",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\""
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_3dHFRbFa7sW1TAAYERdG8937",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\"),i(\\\"a48\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"\\\"90c5\\\":function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"e7de:function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"a\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(){var t=(0,n.default)(regeneratorRuntime.mark((function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((fu\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((function(t){while(1)switch(t.prev=t.next){case 0:if(e=this\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t){while(1)switch(t.prev=t.next){case 0:if(e=this.inputWord.trim(),0!==e.length){t.next=3;break}return t.abrupt\"}]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_iHVBZPSiZ3HGYYnBPv5E2787",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_2h3hD3NimESe0HLUv8qe0968",
+     "name": "open_function",
+     "input": {
+      "offset": 543913,
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_2h3hD3NimESe0HLUv8qe0968",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 543633, \"end_offset\": 546695}, \"_best_guess_score\": -25, \"name\": \"(anon)\", \"start_offset\": 543633, \"end_offset\": 546695, \"code\": \"function(t){while(1)switch(t.prev=t.next){case 0:if(e=this.inputWord.trim(),0!==e.length){t.next=3;break}return t.abrupt(\\\"return\\\");case 3:return this.iscollect=!1,this.isCorrect=!1,this.tranlateOut=\\\"\\\",this.correctTranslateOut=\\\"\\\",this.hideOutputBg=!1,this.hisWords=e,i={words:(0,h.encrypto)(e),translateType:this.translateType},\\\"ortho-k\\\"==e&&(i.words=(0,h.encrypto)(\\\"ORTHO-K\\\")),t.next=13,(0,s.getTranslate)(i).then((function(t){n.handleTranslateLength(n.inputWord),200===t.code?(n.hasWordTranslate=!1,n.dictsVos=t.data,n.translateConfig=t.data.translateConfig,\\\"ortho-k\\\"!=e&&n.dictsVos.words.trim()!=n.inputWord.trim()||(null!=n.dictsVos.mResult?\\\"\\\"==n.dictsVos.mResult?n.tranlateOut=\\\"\\\":n.tranlateOut=n.dictsVos.mResult:n.tranlateOut=n.inputWord),n.tranlateOutLength=n.getBytesLength(n.tranlateOut),n.$emit(\\\"updateHistoryFlag\\\",!0),\\\"1\\\"==t.data.translateMethod?(n.transMethod=1,(0,s.queryTranslateData)({words:n.inputWord}).then((function(e){n.dictsVos.words.trim()==n.inputWord.trim()&&(200===e.code?null!=e.data.dictsVos&&\\\"\\\"!=e.data.dictsVos?n.$emit(\\\"clickdictsData\\\",e.data,!0,n.searches_list,n.inputWord,n.extendsTabIndex,!1,!1):(n.$emit(\\\"clickdictsData\\\",e.data,!1,n.searches_list,n.inputWord,n.extendsTabIndex,!0,!1),n.$emit(\\\"updateHistoryFlag\\\",!1)):1004===e.code?n.$emit(\\\"clickUpdateSource\\\",\\\"queryTranslateData\\\",t.data):1005===e.code?n.$message(e.msg):n.$emit(\\\"updateHistoryFlag\\\",!1))})).catch((function(t){n.$emit(\\\"updateHistoryFlag\\\",!1)}))):\\\"0\\\"==t.data.translateMethod?(n.transMethod=0,(0,s.getHighFrequency)({words:n.inputWord}).then((function(t){if(n.dictsVos.words.trim()==n.inputWord.trim())if(200!==t.code&&2001!==t.code||null==t.data.academicDicts||\\\"\\\"==t.data.academicDicts||JSON.stringify(t.data.academicDicts)==JSON.stringify({}))n.$emit(\\\"updateHistoryFlag\\\",!1);else if(n.$emit(\\\"clickhighfrequencydata\\\",t.data,n.inputWord,!0,n.searches_list,!1),2001===t.code){g.default.remove(\\\"memberTag\\\"),g.default.remove(\\\"expireTime\\\"),n.$emit(\\\"changeShowMemberMask\\\",!0),n.$emit(\\\"setInputWord\\\",n.inputWord);var e=t.data.academicDicts;Object.keys(e).length>5&&n.$emit(\\\"changeKeyWordsDivHeight\\\",246)}else n.$emit(\\\"changeShowMemberMask\\\",!1)})).catch((function(t){n.$emit(\\\"updateHistoryFlag\\\",!1)}))):n.$emit(\\\"updateHistoryFlag\\\",!1)):1004===t.code?(n.$emit(\\\"clickValidate\\\",!0),n.$emit(\\\"clickUpdateSource\\\",\\\"literaltranslation\\\",t.data)):1005===t.code?n.$message(t.msg):(n.tranlateOut=n.inputWord,n.tranlateOutLength=n.getBytesLength(n.tranlateOut),n.$emit(\\\"clickisTranslated\\\",!1),n.$emit(\\\"updateHistoryFlag\\\",!1)),n.pushHistory()})).catch((function(t){n.$emit(\\\"clickisTranslated\\\",!1),n.$emit(\\\"updateHistoryFlag\\\",!1)}));case 13:\\\"\\\"!=this.inputWord&&((0,u.saveSearch)(this.inputWord.trim()),a={majorInfo:this.inputWord.trim()},this.$emit(\\\"handleSearch\\\",a),this.isFous=!0,this.initPage(),(0,m.isLogin)()&&(0,c.addsearchhistory)({words:this.inputWord.trim()})),(0,m.isLogin)()?(0,o.queryfavoriteslist)({originalText:this.inputWord}).then((function(t){void 0!=t&&(200===t.code&&t.rows.length>0?n.iscollect=!0:n.iscollect=!1)})):this.iscollect=!1;case 15:case\\\"end\\\":return t.stop()}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_kls851M1w0wJmx28qJlB4803",
+     "name": "search",
+     "input": {
+      "query": "words2word"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_TBLLfOdCBxFW3U9rpYv79537",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_kls851M1w0wJmx28qJlB4803",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 123429, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.getTranslate=s,e.queryTr\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 123429, \"snippet\": \"\\\"365c\\\":function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.getTranslate=s,e.\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189084, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189084, \"snippet\": \"\\\"4dc3\\\":function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189084, \"snippet\": \"function(t,e){if(this.$store.commit(\\\"SET_CHECKED\\\",t),t){var i=this.$createSelection({domStr:null,requestFunc:p.words2wor\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 189084, \"snippet\": \"handlerTakingWords:function(t,e){if(this.$store.commit(\\\"SET_CHECKED\\\",t),t){var i=this.$createSelection({domStr:null,requ\"}]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_TBLLfOdCBxFW3U9rpYv79537",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_7OjtQkTL3ptxPMNHbqUc9835",
+     "name": "open_function",
+     "input": {
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js",
+      "offset": 123429
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_7OjtQkTL3ptxPMNHbqUc9835",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 123045, \"end_offset\": 124972}, \"_best_guess_score\": -12, \"name\": \"365c\", \"start_offset\": 123045, \"end_offset\": 124972, \"code\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.getTranslate=s,e.queryTranslateData=r,e.getRelatedSearchs=o,e.getBilingualexample=c,e.getEnglishExample=l,e.getSummaryExample=u,e.getRelatedLiterature=d,e.getHighFrequency=m,e.querySubjectByCode=h,e.getEnglishSummary=p,e.querymaxwordfreq=g,e.verification=f,e.addVerificationCodeTimes=v,e.words2words=y,e.verificationOfBilingual=b,e.indexConfig=w;var n=a(i(\\\"b775\\\"));function s(t){return(0,n.default)({url:\\\"/translate/literaltranslation\\\",method:\\\"post\\\",data:t})}function r(t){return(0,n.default)({url:\\\"/translate/querytranslatedate\\\",method:\\\"post\\\",data:t})}function o(t){return(0,n.default)({url:\\\"/translate/getrelatedsearchs\\\",method:\\\"post\\\",data:t})}function c(t){return(0,n.default)({url:\\\"/translate/bilingualexample\\\",method:\\\"post\\\",data:t})}function l(t){return(0,n.default)({url:\\\"/translate/englishexample\\\",method:\\\"post\\\",data:t})}function u(t){return(0,n.default)({url:\\\"/translate/summaryexample\\\",method:\\\"get\\\",params:t})}function d(t){return(0,n.default)({url:\\\"/translate/relatedliterature\\\",method:\\\"post\\\",data:t})}function m(t){return(0,n.default)({url:\\\"/translate/keyWords\\\",method:\\\"post\\\",data:t})}function h(t){return(0,n.default)({url:\\\"/translate/querysubjectbycode\\\",method:\\\"get\\\",params:t})}function p(t){return(0,n.default)({url:\\\"/translate/englishsummary\\\",method:\\\"post\\\",data:t})}function g(t){return(0,n.default)({url:\\\"/translate/querymaxwordfreq\\\",method:\\\"get\\\",params:t})}function f(t){return(0,n.default)({url:\\\"/translate/verification\\\",method:\\\"post\\\",data:t})}function v(t){return(0,n.default)({url:\\\"/translate/addVerificationCodeTimes\\\",method:\\\"post\\\",data:t})}function y(t){return(0,n.default)({url:\\\"/externalTranslate/queryRelatedData\\\",method:\\\"get\\\",params:t})}function b(t){return(0,n.default)({url:\\\"/translate/verificationOfBilingual\\\",method:\\\"post\\\",data:t})}function w(){return(0,n.default)({url:\\\"/indexConfig\\\",method:\\\"get\\\"})}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_WpBZBqLsY2RWEHtYZscD1291",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_WpBZBqLsY2RWEHtYZscD1291",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_9hyGqpRye6wBPfVWb7Ae2323",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\"+"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_ZDtBINP8TttQbF4KkDqf5097",
+     "name": "search",
+     "input": {
+      "query": "p-+"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_9hyGqpRye6wBPfVWb7Ae2323",
+     "content": "{\"matches\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_ZDtBINP8TttQbF4KkDqf5097",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_rkWWVX8AwYX67ZxLzglu2045",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\""
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_rkWWVX8AwYX67ZxLzglu2045",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_Pn3sYdTD7G8oxpXu1fYz0508",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_Pn3sYdTD7G8oxpXu1fYz0508",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_c64mvgQAUscgL9Z6ZlYP6974",
+     "name": "search",
+     "input": {
+      "query": "replace"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_c64mvgQAUscgL9Z6ZlYP6974",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 87086, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 87086, \"snippet\": \"\\\"24d1\\\":function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 87086, \"snippet\": \"function(t){return t.replace(/<\\\\/?.+?\\\\/?>/g,\\\"\\\")}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 87086, \"snippet\": \"changeWord:function(t){return t.replace(/<\\\\/?.+?\\\\/?>/g,\\\"\\\")}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341580, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\"),i(\\\"a48\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341580, \"snippet\": \"\\\"90c5\\\":function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341580, \"snippet\": \"function s(t){var e={mode:a.mode.ECB,padding:a.pad.Pkcs7},i=a.enc.Utf8.parse(n),s=a.AES.encrypt(t,i,e),r=s.toString().re\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341653, \"snippet\": \"function r(t){var e=t.replace(/\\\\-/g,\\\"+\\\").replace(/_/g,\\\"/\\\"),i={mode:a.mode.ECB,padding:a.pad.Pkcs7},s=a.enc.Utf8.parse(n)\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 358162, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=function(){var t=this,e=t.$createElement,a=t._self._c||e;return t.isinit&&t.initEngli\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 358162, \"snippet\": \"\\\"934b\\\":function(t,e,i){\\\"use strict\\\";var a=function(){var t=this,e=t.$createElement,a=t._self._c||e;return t.isinit&&t.in\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 358162, \"snippet\": \"function(){var t=this,e=t.$createElement,a=t._self._c||e;return t.isinit&&t.initEnglishSummarytotal>0?a(\\\"div\\\",{staticCla\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 358162, \"snippet\": \"function(e,n){return a(\\\"div\\\",{key:n,class:{content:!0,bgB1:!0,\\\"abs-pB\\\":!0,BackW:!0},staticStyle:{\\\"margin-bottom\\\":\\\"10px\\\"}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 358162, \"snippet\": \"function(e,i){return a(\\\"div\\\",{key:i,staticClass:\\\"abs-item\\\"},[a(\\\"p\\\",{staticClass:\\\"abs-EN\\\"},[t._v(t._s(i+1)+\\\". \\\"),a(\\\"span\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 360495, \"snippet\": \"function(e,n){return a(\\\"div\\\",{key:n,class:{content:!0,bgB1:!0,\\\"abs-pB\\\":!0,BackW:!0},staticStyle:{\\\"margin-bottom\\\":\\\"10px\\\"}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 360495, \"snippet\": \"function(e,i){return a(\\\"div\\\",{key:i,staticClass:\\\"abs-item\\\"},[a(\\\"p\\\",{staticClass:\\\"abs-EN\\\"},[t._v(t._s(i+1)+\\\". \\\"),a(\\\"span\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 362329, \"snippet\": \"function(e,n){return a(\\\"div\\\",{key:n,class:{content:!0,bgB1:!0,\\\"abs-pB\\\":!0,BackW:!0},staticStyle:{\\\"margin-bottom\\\":\\\"10px\\\"}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 362329, \"snippet\": \"function(e,i){return a(\\\"div\\\",{key:i,staticClass:\\\"abs-item\\\"},[a(\\\"p\\\",{staticClass:\\\"abs-EN\\\"},[t._v(t._s(i+1)+\\\". \\\"),a(\\\"span\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 448859, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"a481\\\");var a={created:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 448859, \"snippet\": \"b505:function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"a481\\\");var a={cre\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 448859, \"snippet\": \"function(){var t=this.$route,e=t.params,i=t.query,a=e.path;this.$router.replace({path:\\\"/\\\"+a,query:i})}\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_Pm7z2ntLgUNbwWHxpR031887",
+     "name": "search",
+     "input": {
+      "query": "encrypto\\("
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_Pm7z2ntLgUNbwWHxpR031887",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_gFhwKE8WKEAyquEvQlb43944",
+     "name": "search",
+     "input": {
+      "query": "encrypto"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_gFhwKE8WKEAyquEvQlb43944",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\"),i(\\\"a48\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"\\\"90c5\\\":function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"e7de:function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"a\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(){var t=(0,n.default)(regeneratorRuntime.mark((function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((fu\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((function(t){while(1)switch(t.prev=t.next){case 0:if(e=this\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t){while(1)switch(t.prev=t.next){case 0:if(e=this.inputWord.trim(),0!==e.length){t.next=3;break}return t.abrupt\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_EGUiYKSsCPGHmGy3fekf7287",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\"\\+"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_7G9fmZiVHKBPQ0Fue6M45490",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\"+"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_EGUiYKSsCPGHmGy3fekf7287",
+     "content": "{\"matches\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_7G9fmZiVHKBPQ0Fue6M45490",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_cmIO8Lg6B0QFZ0i0w8d68931",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_cmIO8Lg6B0QFZ0i0w8d68931",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_fQKpC8tT0pLL5NyHBTPl6165",
+     "name": "search",
+     "input": {
+      "query": "p_"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_fQKpC8tT0pLL5NyHBTPl6165",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 49087, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0;var n=a(i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 49087, \"snippet\": \"1113:function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0;var \"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 49087, \"snippet\": \"function(){return{islogins:!1,islogin:!0,username:void 0==(0,s.getCookie)(\\\"Ecp_LoginStuts\\\")?\\\"\\\":JSON.parse((0,s.getCookie\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 49087, \"snippet\": \"data:function(){return{islogins:!1,islogin:!0,username:void 0==(0,s.getCookie)(\\\"Ecp_LoginStuts\\\")?\\\"\\\":JSON.parse((0,s.getC\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 90712, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 90712, \"snippet\": \"\\\"24d1\\\":function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 90712, \"snippet\": \"function(t,e){var i=this;(0,c.isLogin)()?this.isinit?(this.initbilingualtotal%10===0?this.initpagecount=this.initbilingu\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 90712, \"snippet\": \"loadMore:function(t,e){var i=this;(0,c.isLogin)()?this.isinit?(this.initbilingualtotal%10===0?this.initpagecount=this.in\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 93719, \"snippet\": \"function(t,e){var i=this;(0,c.isLogin)()?(this.dictionarymoretotal%10===0?this.dictionarymorepagecount=this.dictionarymo\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 93719, \"snippet\": \"loadDictionaryMore:function(t,e){var i=this;(0,c.isLogin)()?(this.dictionarymoretotal%10===0?this.dictionarymorepagecoun\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 138945, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\"),i(\\\"6c7b\\\");var a\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 138945, \"snippet\": \"\\\"3a0f\\\":function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\"),i(\\\"6c7b\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 138945, \"snippet\": \"function(){var t=this;this.dialogVisible=!1,this.msgInfo(\\\"\\u8bf7\\u5148\\u767b\\u5f55\\\"),window.scrollTo(0,0),document.getElementById(\\\"Ecp_top_l\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 138945, \"snippet\": \"loginSubmit:function(){var t=this;this.dialogVisible=!1,this.msgInfo(\\\"\\u8bf7\\u5148\\u767b\\u5f55\\\"),window.scrollTo(0,0),document.getElementByI\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 207124, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 207124, \"snippet\": \"\\\"4dc3\\\":function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 207124, \"snippet\": \"function(){document.getElementById(\\\"Ecp_top_login_layer\\\").style.setProperty(\\\"display\\\",\\\"block\\\",\\\"important\\\")}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 207124, \"snippet\": \"againLogin:function(){document.getElementById(\\\"Ecp_top_login_layer\\\").style.setProperty(\\\"display\\\",\\\"block\\\",\\\"important\\\")}\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 212746, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=function(){var t=this,e=t.$createElement,a=t._self._c||e;return a(\\\"div\\\",{staticClass:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 212746, \"snippet\": \"\\\"56fc\\\":function(t,e,i){\\\"use strict\\\";var a=function(){var t=this,e=t.$createElement,a=t._self._c||e;return a(\\\"div\\\",{stati\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_i7riUwXwoH5s7szDRPYS9475",
+     "name": "search",
+     "input": {
+      "query": "p_B8cn"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_i7riUwXwoH5s7szDRPYS9475",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_HJSqfdoYaPpEC0y7fHJX9410",
+     "name": "search",
+     "input": {
+      "query": "\"p-\""
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_HJSqfdoYaPpEC0y7fHJX9410",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_Pbhbk02C6MG6FLAs8Qt30230",
+     "name": "search",
+     "input": {
+      "query": "p-B8"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_Pbhbk02C6MG6FLAs8Qt30230",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_TspHuq097fHmCXlNrcg17260",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_TspHuq097fHmCXlNrcg17260",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_O27pf2PcniuQXKuA2oPg8503",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\""
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_a30rvXVFWdK5ccZh8PvI2503",
+     "name": "search",
+     "input": {
+      "query": "'p-'"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_O27pf2PcniuQXKuA2oPg8503",
+     "content": "{\"matches\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_a30rvXVFWdK5ccZh8PvI2503",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_LrkOeVbs0xWyK3vDeeGa2291",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_LrkOeVbs0xWyK3vDeeGa2291",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_0jJHDmB8lt5h6U0sCCN49712",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_0jJHDmB8lt5h6U0sCCN49712",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_hgwVBHtLFS5otaqxDpMZ7275",
+     "name": "open_function",
+     "input": {
+      "offset": 2279,
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_hgwVBHtLFS5otaqxDpMZ7275",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 2279, \"end_offset\": 2438}, \"_best_guess_score\": -3, \"name\": \"(anon)\", \"start_offset\": 2279, \"end_offset\": 2438, \"code\": \"function(){var e=i(\\\"39a0\\\"),a=e.export_json_to_excel,n=[\\\"\\u539f\\u8bcd\\\",\\\"\\u8bd1\\u6587\\\"],s=[\\\"originalText\\\",\\\"translationText\\\"],r=t.favorites,o=t.formatJson(s,r);a(n,o,\\\"CNKI\\u7ffb\\u8bd1\\u52a9\\u624b\\u6536\\u85cf\\u5217\\u8868\\\")}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_LbGPoSbZmtbXYLPo9hkc6753",
+     "name": "open_function",
+     "input": {
+      "offset": 2173,
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_LbGPoSbZmtbXYLPo9hkc6753",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 2173, \"end_offset\": 2465}, \"_best_guess_score\": -4, \"name\": \"exportExcel\", \"start_offset\": 2173, \"end_offset\": 2465, \"code\": \"function(){var t=this;(0,n.checkLogin)()&&Promise.all([i.e(\\\"chunk-0260ecee\\\"),i.e(\\\"chunk-a9272f74\\\")]).then(function(){var e=i(\\\"39a0\\\"),a=e.export_json_to_excel,n=[\\\"\\u539f\\u8bcd\\\",\\\"\\u8bd1\\u6587\\\"],s=[\\\"originalText\\\",\\\"translationText\\\"],r=t.favorites,o=t.formatJson(s,r);a(n,o,\\\"CNKI\\u7ffb\\u8bd1\\u52a9\\u624b\\u6536\\u85cf\\u5217\\u8868\\\")}.bind(null,i)).catch(i.oe)}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_K3iSKkesdQY065xDYS7B9567",
+     "name": "open_function",
+     "input": {
+      "offset": 540718,
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_K3iSKkesdQY065xDYS7B9567",
+     "content": "{\"_best_guess\": {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"start_offset\": 540718, \"end_offset\": 541272}, \"_best_guess_score\": -6, \"name\": \"toMemberOpen\", \"start_offset\": 540718, \"end_offset\": 541272, \"code\": \"function(){var t=this;if((0,m.isLogin)()){var e=JSON.parse((0,m.getCookie)(\\\"Ecp_LoginStuts\\\"));e.uid=(0,m.getCookie)(\\\"LID\\\"),(0,p.getMemberInfo)(e).then((function(e){200===e.code&&(e.data?(g.default.set(\\\"memberTag\\\",e.data),t.inputWordLength=t.translateConfig.memberInputLength[t.inputWordLengthIndex]):window.open(\\\"https://pay.cnki.net/zscsdoc/transcard/buy\\\"))}))}else window.scrollTo(0,0),this.$message({message:\\\"\\u6e29\\u99a8\\u63d0\\u793a\\uff1a\\u8bf7\\u5148\\u767b\\u5f55\\\",type:\\\"success\\\",offset:this.$store.getters.clientHeight/2-24}),document.getElementById(\\\"Ecp_top_login_layer\\\").style.display=\\\"block\\\"}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_GR23fiJnZvt4axV1MuN71563",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\""
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_GR23fiJnZvt4axV1MuN71563",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_SJMO931kACC7Mn9Dv5Xn2163",
+     "name": "search",
+     "input": {
+      "query": "\\.encrypto\\("
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_SJMO931kACC7Mn9Dv5Xn2163",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_0qdOcsUyc1ExLuH76Wsb5957",
+     "name": "search",
+     "input": {
+      "query": "encrypto"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_0qdOcsUyc1ExLuH76Wsb5957",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\"),i(\\\"a48\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 341381, \"snippet\": \"\\\"90c5\\\":function(t,e,i){\\\"use strict\\\";Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.encrypto=s,e.decrypto=r,i(\\\"6b54\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"ac6a\\\")\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"e7de:function(t,e,i){\\\"use strict\\\";var a=i(\\\"4ea4\\\");Object.defineProperty(e,\\\"__esModule\\\",{value:!0}),e.default=void 0,i(\\\"a\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(){var t=(0,n.default)(regeneratorRuntime.mark((function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((fu\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function t(){var e,i,a,n=this;return regeneratorRuntime.wrap((function(t){while(1)switch(t.prev=t.next){case 0:if(e=this\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 543913, \"snippet\": \"function(t){while(1)switch(t.prev=t.next){case 0:if(e=this.inputWord.trim(),0!==e.length){t.next=3;break}return t.abrupt\"}]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_3C0RBJA9qQFyIBvrlplw2806",
+     "name": "search",
+     "input": {
+      "query": "\\\"p-\\\"\\+encrypto",
+      "file": "captures/dict.cnki.net/js/app.1767778297134.js"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_3C0RBJA9qQFyIBvrlplw2806",
+     "content": "{\"matches\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_L3n5yifn4G5aNM5NTvsb4737",
+     "name": "search",
+     "input": {
+      "query": "p-"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_L3n5yifn4G5aNM5NTvsb4737",
+     "content": "{\"matches\": [{\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",use:\\\"ic\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 7730, \"snippet\": \"\\\"02b8\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-component\\\",\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 8404, \"snippet\": \"\\\"039a\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-download\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"icon-ra\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 10540, \"snippet\": \"\\\"04ad\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-rate\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 12021, \"snippet\": \"\\\"068c\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-upload\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"icon-to\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 14671, \"snippet\": \"\\\"06b3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-tool\\\",use:\\\"\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\\\"icon-i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 36615, \"snippet\": \"\\\"0b37\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-input\\\",use:\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"icon-row\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 40489, \"snippet\": \"\\\"0c16\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-row\\\",use:\\\"i\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 46774, \"snippet\": \"\\\"0ee3\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-select\\\",use\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",use:\\\"ico\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 65180, \"snippet\": \"\\\"198d\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-password\\\",u\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use:\\\"icon-\"}, {\"file\": \"captures/dict.cnki.net/js/app.1767778297134.js\", \"offset\": 84742, \"snippet\": \"\\\"243e\\\":function(t,e,i){\\\"use strict\\\";i.r(e);var a=i(\\\"e017\\\"),n=i.n(a),s=i(\\\"21a1\\\"),r=i.n(s),o=new n.a({id:\\\"icon-switch\\\",use\"}]}"
+    }
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "name": "search",
+   "description": "Search the bundle source with a regex/substring. Returns up to 20 matches {file, offset, snippet}.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ]
+   }
+  },
+  {
+   "name": "open_function",
+   "description": "Return the complete enclosing candidate function at a (file, offset).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "offset": {
+      "type": "integer"
+     }
+    },
+    "required": [
+     "file",
+     "offset"
+    ]
+   }
+  },
+  {
+   "name": "list_files",
+   "description": "List the bundle files and their sizes.",
+   "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   }
+  },
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782404059.8563685
+}

@@ -1,0 +1,60 @@
+{
+  "case_id": "real10_ewt360_request_signature",
+  "page": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+  "interaction": [],
+  "observable": {
+    "type": "network_request",
+    "method": "POST",
+    "url_contains": "/api/authcenter/v2/oauth/login/account",
+    "field": "password",
+    "plaintext_sample": "13819912565",
+    "value_sample": "A987B688ACCCDB600F78FE657DF98627"
+  },
+  "question": "On the ewt360 account login page, submitting the login form sends a POST to the account-login API whose `password` field is an AES-encrypted token (e.g. the password 13819912565 is sent as A987B688ACCCDB600F78FE657DF98627). Locate the single complete login-path password encryption entry function that the submit handler calls to transform the request `password` field. Return exactly one JSON object (see answer_format). Do NOT return the login submit handler that calls it, the lower-level AES helper it delegates to, the generic CryptoJS AES primitive, or a byte-identical encryptor in another chunk that is not invoked on the login request. Only code under captures is in scope.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "Identifier on the function as it appears in the captured bundle (the name after `function`, or the variable/property it is assigned to)."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "captures-relative path to the file containing the function; must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "fields": {
+          "start_line": { "type": "integer", "required": true },
+          "end_line": { "type": "integer", "required": true },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based UTF-16 code-unit offset (BOM stripped)." },
+          "end_offset": { "type": "integer", "required": true, "description": "Exclusive end offset." },
+          "code": { "type": "string", "required": true, "description": "Exact text [start_offset,end_offset); one complete function (balanced braces)." }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleEncryptor",
+      "file": "captures/cdn.example.com/main.js",
+      "slice": { "start_line": 1, "end_line": 5, "start_offset": 1000, "end_offset": 1200, "code": "function exampleEncryptor(word){\n  return AES(word, key, iv).toUpperCase();\n}" }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; no markdown fences unless the harness requires it.",
+    "function_name and slice.code must refer to the same function in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a fragment or multiple functions.",
+    "Return one top-1 function, not a list.",
+    "Return the app-level password encryption entry function that is actually invoked on the login submit path, not a byte-identical duplicate in another (lazily-loaded) chunk.",
+    "Do not return the login submit handler, the lower-level AES helper, or the generic CryptoJS AES primitive."
+  ],
+  "_answer_leak_allow": ["passwordEncrypt"],
+  "anchor_definition_general": "For this case, the anchor is the app-level password encryption entry function recorded by the metadata anchor in 1.json. It is the complete function directly reached from the login submit handler for the request `password` field, including any input guards and delegation used by that entry. A lower-level AES helper that the entry calls is a high-value helper, but it is not the top-1 metadata anchor. A function is generic when it is a reusable utility (hash/encode/encrypt/serialize/normalize/collect-features), a control-flow dispatcher, or a preparation routine whose body would look the same regardless of this behavior. The request-sending service that merely emits an already-built value is a wrapper rather than the anchor.",
+  "anchor_worked_example": "Worked example (a different site, for illustration only): a login page sends POST /user/login whose `password` field is an AES ciphertext. On submit the chain is: read form values -> submit handler assigns request.password = passwordEntry(request.password) -> passwordEntry handles empty values and calls a site AES helper -> the helper binds key/iv and returns ciphertext -> the ajax service sends the body. If the metadata anchor is passwordEntry, return that complete entry function. The lower-level AES helper is close but below the anchor; the submit handler and ajax sender are wrappers; a duplicate encryptor in an unrelated chunk is off-chain."
+}

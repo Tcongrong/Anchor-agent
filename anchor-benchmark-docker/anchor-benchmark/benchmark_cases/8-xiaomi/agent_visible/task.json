@@ -1,0 +1,45 @@
+{
+  "case_id": "real08_xiaomi_request_signature",
+  "page": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+  "interaction": [],
+  "observable": {
+    "type": "network_request",
+    "method": "POST",
+    "url_contains": "/serviceLogin",
+    "field": "hash",
+    "plaintext_sample": "13819912565",
+    "value_sample": "9E2BFBE3D7050EDF876679FE5CE6E5AA"
+  },
+  "question": "On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request whose password is sent as an uppercase MD5 `hash` field (e.g. 13819912565 becomes 9E2BFBE3D7050EDF876679FE5CE6E5AA). The bundle is string-array obfuscated (object keys appear as Qe([...]) decoder calls). Locate the anchor function for that hash field. The anchor function is the target-specific login param-builder on the submit->request chain: the single complete function whose own body assembles the account-login parameters object and binds the password hash into it — it runs the password through the md5 routine, uppercases the result and places it under the (decoded) hash key — rather than the md5 primitive it invokes to compute the digest (a generic crypto utility reached cross-file via module interop, not defined in this file), the string-array decoder that only reveals the obfuscated key names (an off-chain helper), or the request-sending sink. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the md5 routine, the string-array decoder, or unrelated utilities — return the param-builder that binds the uppercase-MD5 hash into the login request. Only code under captures is in scope.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": { "type": "string", "required": true, "description": "Identifier of the function as it appears in the captured bundle (a minified/anonymous name is fine)." },
+      "file": { "type": "string", "required": true, "description": "captures-relative path; must match visible_corpus." },
+      "slice": {
+        "type": "object", "required": true,
+        "fields": {
+          "start_line": { "type": "integer", "required": true },
+          "end_line": { "type": "integer", "required": true },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based UTF-16 offset (BOM stripped)." },
+          "end_offset": { "type": "integer", "required": true, "description": "Exclusive end offset." },
+          "code": { "type": "string", "required": true, "description": "Exact text [start_offset,end_offset); one complete function." }
+        }
+      }
+    },
+    "example": { "function_name": "exampleBuilder", "file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js", "slice": { "start_line": 1, "end_line": 1, "start_offset": 1000, "end_offset": 1500, "code": "function(){ /* assembles params, binds hash: md5(password).toUpperCase() */ }" } }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema.",
+    "function_name and slice.code must refer to the same function in the captured bundle.",
+    "slice.code must be one complete function (balanced braces).",
+    "Return one top-1 function, not a list.",
+    "Do not return the md5 primitive, the string-array decoder, or unrelated helpers — return the param-builder that binds the uppercase-MD5 hash into the login request."
+  ],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested request field, or dispatches the requested action, and removing that statement would break the observed value carried in the network request. A function is generic when it is a reusable utility (hash/encode/encrypt/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the shallowest target-specific function on the path from the user trigger to the network sink: upstream dispatchers are too generic, downstream reusable crypto/encoding primitives are too low-level, and the request-sending service that merely emits an already-built value is a wrapper rather than the anchor. When the function that owns the target field-binding assembles the request and routes the value through a generic, reusable primitive (a stock md5/hash/base64/encode with no site-specific binding), that primitive is a core utility and the anchor is the target-specific param-builder/handler that binds the produced value into the request field. (Only when the value is produced by a dedicated app-specific, key-bound constructor is that constructor itself the anchor.) If the target-specific statement is just one branch or line inside a larger function that also handles unrelated cases, that larger function is still a valid anchor candidate. Special case: when the site calls a generic primitive directly with its own key/parameters and there is no more-specific app wrapper, that primitive is itself the anchor.",
+  "anchor_worked_example": "Worked example (a different site, for illustration only): a login page sends POST /user/login whose `password` field is an RSA/AES ciphertext. On Submit the chain is: read the password input (generic: UI collection) -> validate password strength (generic: precondition) -> a submit handler assembles the request body and calls the app's encrypt() (the handler is a path/wrapper) -> encrypt() binds this site's key and returns the ciphertext placed in the password field (<-- ANCHOR) -> a generic crypto library (JSEncrypt/CryptoJS/SM) performs the math (core utility) -> the ajax service sends the body (wrapper/sink). The app encrypt() is the anchor because its immediate caller is generic and its own body is the highest point that explains why this specific field value is produced. The crypto library below it is a core utility (0.5); the submit handler and the ajax sender are path/wrapper (0.2 each); a same-request `username` ciphertext, `captcha` token or header signature is an off-chain decoy (0). Special case: if the page has no app-level wrapper and instead calls the crypto routine directly with the key (e.g. encryptString(siteKey, password)), that routine is itself the anchor. Contrast (this case): when the field value is a stock hash (e.g. hash: md5(password).toUpperCase()) and the md5 routine is a generic library reached cross-file, the anchor is the param-builder/handler that runs the hash and binds it into the request object — the md5 primitive is a core utility (here cross-file, so unscored), and the string-array key decoder is an off-chain helper. Apply the same reasoning to the captured bundle below."
+}

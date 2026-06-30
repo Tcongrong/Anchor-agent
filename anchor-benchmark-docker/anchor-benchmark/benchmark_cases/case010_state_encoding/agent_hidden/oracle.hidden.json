@@ -1,0 +1,491 @@
+{
+  "case_id": "case010_state_encoding",
+  "oracle_schema_version": "1.0",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "observable_action": "media.apply",
+    "observable_field": "state_code",
+    "value_pattern": "^[a-z0-9]{12}$",
+    "mapping_note": "source_function paths are the private evaluator mapping into agent_hidden/src/**; they are not part of the agent-visible answer space. The agent only sees the captured bundle, so the standard answer is captured_span plus answer_function."
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after routing and input preparation, whose own body constructs the target observable value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink.",
+  "primary_anchor": {
+    "answer_function": "b",
+    "source_function": "r",
+    "source_file": "src/z0/k7/q3/t9.js",
+    "source_export": "closure r returned by makeReducer(config) for the slot selected by o0() (slot 29); invoked as the reducer inside produce() in src/z0/m0.js",
+    "answer_basis": "Agent-visible corpus only: the canonical anchor answer is captured_span plus answer_function as declared in the captured bundle slice. source_function is a private maintainer mapping into src/.",
+    "captured_file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "Builds the state source from the media preview tuple via createSource, runs the Math.imul/r32 state-mixing loop over each character, and formats the two accumulator words into the final 12-char base36 state_code. It is the first function whose own body constructs the observable state value.",
+    "captured_span": {
+      "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+      "start_line": 71731,
+      "end_line": 71740,
+      "start_column": 11,
+      "end_column": 5,
+      "start_offset": 1933071,
+      "end_offset": 1933933,
+      "sha256": "12767a0a1dd46e4ecd44a8d18b8486f0fcb1977d0d60f7fe16991bcad9cc252d",
+      "normalized_sha256": "e8bffff5eb7ccfaa4cb3bb0e5f103b374b38a3b4ab9e52dd946c460208b33cf6"
+    },
+    "source_bundle_name_aligned": false,
+    "naming_note": "source_function differs from answer_function after obfuscation; graders must match captured_span (hash/offset), not the source-side identifier string."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span in the captured bundle (hash/offset/complete function body). Agents only see captures, so the standard answer identifier is primary_anchor.answer_function (the mangled closure returned by makeReducer), not source_function.",
+    "A returned function name is scored against answer_function in the captured corpus. source_function is a private maintainer label and is not the default agent answer space.",
+    "Agent identifies the makeReducer factory or the produce/m0 dispatcher only at path/wrapper score, unless the explanation clarifies that the actual value construction happens in the reducer closure they dispatch to.",
+    "Agent's explanation distinguishes the anchor from routing, input preparation, config selection, wrapper, sink, core utility and off-chain decoy functions.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function in the captured corpus."
+  ],
+  "role_oracle": [
+    {
+      "function": "r (reducer closure returned by makeReducer)",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "src/z0/k7/q3/t9.js",
+      "source_function": "r",
+      "why": "Constructs the target state_code by mixing the assembled state source and formatting the accumulator words into the observable 12-char compact code.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 71731,
+        "end_line": 71740,
+        "start_column": 11,
+        "end_column": 5,
+        "start_offset": 1933071,
+        "end_offset": 1933933,
+        "sha256": "12767a0a1dd46e4ecd44a8d18b8486f0fcb1977d0d60f7fe16991bcad9cc252d",
+        "normalized_sha256": "e8bffff5eb7ccfaa4cb3bb0e5f103b374b38a3b4ab9e52dd946c460208b33cf6"
+      },
+      "answer_function": "b"
+    },
+    {
+      "function": "createSource",
+      "role": "Nested target-specific helper",
+      "score": 0.7,
+      "source_file": "src/z0/k7/q3/t9.js",
+      "source_function": "createSource",
+      "why": "Assembles the canonical state source string from the media preview tuple plain fields and the transit/shadow/mid runtime state consumed directly by the anchor mixing loop.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 71714,
+        "end_line": 71726,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1932187,
+        "end_offset": 1932937,
+        "sha256": "da46284f94232b71310d64883f0c6480de43ecb4dfdcad9da893583d7592b1e9",
+        "normalized_sha256": "08aa504fd4761b98e65206277e13f6d987842eb3664521de0c4087ee9680b011"
+      },
+      "answer_function": "createSource"
+    },
+    {
+      "function": "segmentCode",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "src/z0/k7/q3/t9.js",
+      "source_function": "segmentCode",
+      "why": "Generic base36 fixed-width formatter used by the anchor to render each accumulator word into state-code characters.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 71727,
+        "end_line": 71729,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1932938,
+        "end_offset": 1933033,
+        "sha256": "1365282026e11c7ccadca2119314162d2b12f8dfa233997e80fc4802a5005370",
+        "normalized_sha256": "cfa0419b3da0ef96f157a8e03f618d869c949e64acc4ce16639bc21a540620f0"
+      },
+      "answer_function": "segmentCode"
+    },
+    {
+      "function": "r32",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "src/z0/k7/q3/t9.js",
+      "source_function": "r32",
+      "why": "Generic 32-bit rotate utility used inside the anchor mixing loop.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 71697,
+        "end_line": 71699,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1931624,
+        "end_offset": 1931692,
+        "sha256": "aa6f7073902dc5e8356d1f29703128e17a128439a6cd5b458eb37015cdb3b071",
+        "normalized_sha256": "3beb20db2f3bcee1ff7d85eb3cbdbcbef3118d3f9b3600c9ef8ea1310a394eb9"
+      },
+      "answer_function": "r32"
+    },
+    {
+      "function": "makePlainMap",
+      "role": "Path-generic-helper",
+      "score": 0.1,
+      "source_file": "src/z0/k7/q3/t9.js",
+      "source_function": "makePlainMap",
+      "why": "Generic key-to-plain map builder consumed by createSource before the state source is built.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 71708,
+        "end_line": 71713,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1932042,
+        "end_offset": 1932186,
+        "sha256": "d1d6e0339783cf2a4993d6319a8442cb190b15f32343668b100595d833842f1c",
+        "normalized_sha256": "d87a6dc85700be50d3fa224084ace4677cd413c63ff1c73934cde818876dd659"
+      },
+      "answer_function": "makePlainMap"
+    },
+    {
+      "function": "normalizeTuple",
+      "role": "Path-generic-helper",
+      "score": 0.1,
+      "source_file": "src/z0/k7/q3/t9.js",
+      "source_function": "normalizeTuple",
+      "why": "Generic tuple normalizer used by makePlainMap upstream of the state source.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 71700,
+        "end_line": 71707,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1931693,
+        "end_offset": 1932041,
+        "sha256": "0dcb61ce78e8f9252d64e88bbb13343d93f8f230b8e569c64bcac2a03acb78cb",
+        "normalized_sha256": "46ae79cc07e95b3d3502ebdceedb29f564b1723726d3189bd3538ccda0f33e81"
+      },
+      "answer_function": "normalizeTuple"
+    },
+    {
+      "function": "makeReducer",
+      "role": "Path/Wrapper",
+      "score": 0.2,
+      "source_file": "src/z0/k7/q3/t9.js",
+      "source_function": "makeReducer",
+      "why": "Factory that returns the reducer closure bound to the selected config; it does not itself construct the state_code.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 71730,
+        "end_line": 71741,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1933034,
+        "end_offset": 1933936,
+        "sha256": "adeb7e99e8de37811b95f8ed9487ba686d66476bdfb4fcff0bf680d29c9c01f5",
+        "normalized_sha256": "86e33fc9feccb681cea48cec98dca517f2c1b9095cff2eb2bebab6ff1718536d"
+      },
+      "answer_function": "makeReducer"
+    },
+    {
+      "function": "produce",
+      "role": "Path/Wrapper",
+      "score": 0.2,
+      "source_file": "src/z0/m0.js",
+      "source_function": "produce",
+      "why": "Selects the config table via o0, picks the live slot config and invokes the reducer; orchestrates the anchor call without building the value itself.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 75464,
+        "end_line": 75471,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 2019761,
+        "end_offset": 2019976,
+        "sha256": "713e8de4a08d3a76644ddc5ca42016a2574c38d95cae023e40e00e17526a1369",
+        "normalized_sha256": "5ce4d6fb71714d2ca9f5d583649539cec4b907d136a7a5791bb56c75eaf4bae9"
+      },
+      "answer_function": "produce"
+    },
+    {
+      "function": "chooseConfig",
+      "role": "Path-critical",
+      "score": 0.2,
+      "source_file": "src/z0/m0.js",
+      "source_function": "chooseConfig",
+      "why": "Resolves the selected slot into the reducer config consumed by the anchor.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 75461,
+        "end_line": 75463,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 2019678,
+        "end_offset": 2019760,
+        "sha256": "0cdd85d582f39741460f9f87835023961349b142c637641cd7b4761178324240",
+        "normalized_sha256": "7e7e95090201551799fba5bb352ede7b01d6d5ea6f7f8deaf487778baa106b9d"
+      },
+      "answer_function": "chooseConfig"
+    },
+    {
+      "function": "m0",
+      "role": "Path-critical",
+      "score": 0.2,
+      "source_file": "src/z0/m0.js",
+      "source_function": "m0",
+      "why": "Repacks the tuple, runs the shadow decoy, drives produce and forwards the encoded value into the sink.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 75472,
+        "end_line": 75486,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 2019977,
+        "end_offset": 2020394,
+        "sha256": "ad92e4d69dd487310b7948dbc90d5142776afd5f4afb5366ff2f9f23585357be",
+        "normalized_sha256": "2924c02b6359d65841a5f34917ef850db7e37545748018ede071b916a9901bd4"
+      },
+      "answer_function": "m0"
+    },
+    {
+      "function": "o0",
+      "role": "Path-critical",
+      "score": 0.2,
+      "source_file": "src/z0/o0.js",
+      "source_function": "o0",
+      "why": "Builds the base config table and selected slot from which the live encoder config is chosen.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 31803,
+        "end_line": 31811,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 849897,
+        "end_offset": 850137,
+        "sha256": "dee85ac872cddc2af6ce56110e8687087f6a04a09b7cdfc94344291eecba2318",
+        "normalized_sha256": "1d771d68a39a6123589fc2a9811af4cb089d6d3657d1e332257a25faada882cb"
+      },
+      "answer_function": "o0"
+    },
+    {
+      "function": "n0",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "src/z0/n0.js",
+      "source_function": "n0",
+      "why": "Packages the already encoded value into the console payload under the target action and emits it.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 29245,
+        "end_line": 29248,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 786480,
+        "end_offset": 786604,
+        "sha256": "f21c3a00d901d69a7ab007f508390059d2d7131c6578650d8584472520e20a41",
+        "normalized_sha256": "28eb40a4ac29084043835b8857f3b767563cde2d48f7f43264a6c516ff576954"
+      },
+      "answer_function": "n0"
+    },
+    {
+      "function": "buildPayload",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "src/z0/n0.js",
+      "source_function": "buildPayload",
+      "why": "Assembles the console object rows around the already encoded state value; does not construct the value.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 29200,
+        "end_line": 29234,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 784998,
+        "end_offset": 785989,
+        "sha256": "73618899f908a1a5f36b970183f5d1da220fa26e3421f746b08c558c5ea7d30e",
+        "normalized_sha256": "766c2bbe9daf1e3b609f2ef48ba7bca96938a50506ee1a80c7536918c3595e45"
+      },
+      "answer_function": "buildPayload"
+    },
+    {
+      "function": "paintMarkers",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "src/z0/n0.js",
+      "source_function": "paintMarkers",
+      "why": "Writes the already encoded value into DOM markers; a side wrapper, not the constructor.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 29235,
+        "end_line": 29244,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 785990,
+        "end_offset": 786479,
+        "sha256": "d52c09f2d66d82063c2bb76ab763a9cab4ff6d751293ffae356ba14645b1d080",
+        "normalized_sha256": "6df0fdcb2539acd9e7107d8f59ec7099002f7a7c8907a6a0fe59ab6fe38c8f70"
+      },
+      "answer_function": "paintMarkers"
+    },
+    {
+      "function": "targetField",
+      "role": "Path-generic-helper",
+      "score": 0.1,
+      "source_file": "src/z0/n0.js",
+      "source_function": "targetField",
+      "why": "Builds the observable field name from a character-code array but not the field value.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 29154,
+        "end_line": 29167,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 784345,
+        "end_offset": 784543,
+        "sha256": "50ef0641990fb248cca01f7ddf833eb04dab462d0e2b930dc67786a0d92dc980",
+        "normalized_sha256": "401e22d3ed7441b26378303dc5326dc80ae7b6297a61a3fd127db768082623f0"
+      },
+      "answer_function": "targetField"
+    },
+    {
+      "function": "actionValue",
+      "role": "Path-generic-helper",
+      "score": 0.1,
+      "source_file": "src/z0/n0.js",
+      "source_function": "actionValue",
+      "why": "Builds the observable action string from a character-code array but not the state_code value.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 29185,
+        "end_line": 29199,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 784785,
+        "end_offset": 784997,
+        "sha256": "fbb461f0e6af6eb5ff00e7cd7655266f196e828c2b9917f69f78d30a3194dce1",
+        "normalized_sha256": "6bf060228452097a38e5173c3005e9fdea4e32b30651978aaaad70583c362892"
+      },
+      "answer_function": "actionValue"
+    },
+    {
+      "function": "p0",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "src/z0/p0.js",
+      "source_function": "p0",
+      "why": "Emits non-target media.shadow.action decoy rows during apply handling; does not feed the target state_code.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 70610,
+        "end_line": 70632,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1903039,
+        "end_offset": 1903724,
+        "sha256": "9d4d741d6d3bd5cd029dcdc551794fabc886d8667a25f21bb36d3e8cd1d55dcc",
+        "normalized_sha256": "fb8b3dae1c70b267d89cbea585b758af62aa0f8db8ebc00d75e4158ed20b8d5b"
+      },
+      "answer_function": "p0"
+    },
+    {
+      "function": "x00",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "src/z0/x/x00.js",
+      "source_function": "x00",
+      "why": "Representative high-similarity near-miss decoy reducer for a non-selected slot; reachable-looking but never selected by the encode route.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 34086,
+        "end_line": 34094,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 910304,
+        "end_offset": 910973,
+        "sha256": "c07a6aac68e64467abf2394dcf8f4209e7817637c2d67e1c600471365dad927e",
+        "normalized_sha256": "a82865671c6ea5aad08f976947604fff19daebef43a866f0e799996632fcc714"
+      },
+      "answer_function": "x00"
+    },
+    {
+      "function": "v00",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "src/z0/v/v00.js",
+      "source_function": "v00",
+      "why": "Representative vendor-like executable noise module unrelated to the state_code path.",
+      "captured_span": {
+        "file": "captures/devtools-source-dump/127.0.0.1_4211/assets/media.app.bundle.js",
+        "start_line": 22,
+        "end_line": 36,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 797,
+        "end_offset": 1259,
+        "sha256": "0bd18fcf5599bfb39de25493ea3211203c035d84f47b58873dc096c1a8d2f909",
+        "normalized_sha256": "0e21e39894ecd991624392ab7c4f8e375d82d469d4f513659522bab39f46893f"
+      },
+      "answer_function": "v00"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_default_agent_corpus; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "span_overlap_policy": "An exact captured_span offset match wins. Otherwise score by the smallest role_oracle row whose captured_span fully contains the submitted span, or the unique role_oracle row whose captured_span is fully contained by a uniquely submitted enclosing function span. Note: the anchor reducer closure span is nested inside the makeReducer factory span; an exact makeReducer submission scores 0.2 (Path/Wrapper), while an exact reducer-closure submission scores 1 (Anchor).",
+    "unmapped_source_path": "score_zero"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The final console sink (n0) and payload wrappers (buildPayload, paintMarkers) emit an already encoded state_code value and must not outrank the anchor.",
+      "The factory makeReducer only wraps the reducer closure anchor and should not outrank the anchor itself.",
+      "Config selection (o0, chooseConfig), tuple building (m0, produce) and the media.shadow.action decoy (p0) are path-critical preparation or off-chain, not the target value constructor.",
+      "The decoy reducers (x00-x43) and vendor modules (v00-v24) are non-selected or off-chain and do not feed the state_code field."
+    ],
+    "debug_hints_private": [
+      "Canonical anchor answer id: primary_anchor.answer_function at primary_anchor.captured_span in the captured bundle (the reducer closure returned by makeReducer).",
+      "The active config slot is chosen by o0() at runtime (slot 29); the reducer for that slot is built by makeReducer and invoked inside produce.",
+      "The observable field name state_code and action media.apply are assembled at the sink from character-code arrays.",
+      "Source paths are private evaluator mapping aids, not the default answer space.",
+      "captured_span offsets and hashes are regenerated by scripts/gen_oracle_spans.mjs from the agent_visible captures bundle; do not hand-edit them."
+    ]
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Returned span maps uniquely to the reducer closure returned by makeReducer (primary_anchor.captured_span); the state_code constructor."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Returned span maps to createSource, the target-specific state source builder below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Returned span maps to a generic utility (segmentCode or r32) directly used by the state-code construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Returned span maps to a path-critical routing/selection function (makeReducer, produce, chooseConfig, m0, o0) or the final output wrapper (n0, buildPayload, paintMarkers)."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Returned span maps to a generic tuple/map helper (makePlainMap, normalizeTuple) or a sink field/action string builder (targetField, actionValue) used in preparation or wrapping."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Returned span maps to an off-chain decoy (p0 shadow, a decoy reducer x00-x43, or a vendor module v00-v24) or cannot be uniquely mapped to a captured function."
+    }
+  ]
+}

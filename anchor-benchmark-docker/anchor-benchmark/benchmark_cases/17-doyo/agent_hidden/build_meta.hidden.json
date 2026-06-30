@@ -1,0 +1,130 @@
+{
+  "case_id": "real17_doyo_request_signature",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 5,
+    "captured_js_total_bytes": 139372,
+    "anchor_bundle_lines": 1,
+    "minified": false,
+    "bundler": "none",
+    "obfuscation_level": 0,
+    "vendor_noise_level": "low",
+    "call_depth_estimate": 2,
+    "cross_file_anchor": false,
+    "same_request_decoy_fields": 0,
+    "notes": "Readable (non-minified) inline login script in login.html. Anchor is the anonymous $.get token success callback that double-SHA1s the password with a server nonce/ts. The SHA-1 primitive lives in a separate, fully-commented sha1.js (Sha1.hash) — conceptually the 0.5 utility but not pinned as a role row. Decoys are page search-bar helpers in the same file. doyo/cnzz/baidu analytics are vendor noise."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "fill account and password",
+          "click login"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "POST",
+        "url_contains": "/User/Passport/login",
+        "field": "password",
+        "plaintext_sample": "13819912565",
+        "value_sample": "16119784763b3e501cc8eae56190fb0993517cfe"
+      }
+    },
+    "anchor_definition": "The $.get token success callback that computes pwd=Sha1.hash(nonce+ts+Sha1.hash(raw)) and posts it; not the generic Sha1.hash primitive or page/search helpers."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.{js,html}"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "salted_password_hash",
+    "subtype": "double SHA-1 of password salted with server nonce+ts",
+    "network_request_present": true,
+    "recomputable_offline": false,
+    "recompute_check": "The salt (nonce, ts) is issued by the server per attempt; the final hash is not reproducible offline to a fixed value.",
+    "near_categories": [
+      {
+        "category": "request_transformation",
+        "why_not": "Only the single password field is hashed; the request body is not otherwise transformed."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The token derives from the password + server nonce, not from device/browser signals."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": false,
+      "evidence": []
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The callback also reads nonce/ts and assembles the full $.post payload (username, remember, etc.); only the password derivation is the target."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The password value is finalized inside a nested $.get success callback, two callbacks deep from the submit click, using a SHA-1 routine in a separate file."
+      ]
+    }
+  },
+  "audit_review": {
+    "answer_match": {
+      "status": "match",
+      "notes": "1.json case 17 begins at the same $.get('/User/Passport/token') call and anonymous success callback represented by oracle.primary_anchor. The oracle uses explicit offsets for that complete callback."
+    },
+    "question_direction": {
+      "status": "good",
+      "notes": "The visible question asks for the function whose own body combines fetched nonce/ts with the hashed password and posts it. It also excludes the generic SHA-1 primitive and unrelated page/search helpers, so it points to the anonymous token callback."
+    },
+    "role_diversity": {
+      "scores_present": [
+        1,
+        0.7,
+        0.5,
+        0.2,
+        0
+      ],
+      "notes": "0.7 covers the enclosing login submit handler; 0.5 covers Sha1.hash and supporting SHA-1/UTF-8 primitives; 0.2 covers jQuery get/post/ajax wrappers, Enter-key trigger and login post response callback; 0 covers search/header decoys."
+    }
+  },
+  "provenance": {
+    "source_url": "https://www.doyo.cn/passport/login",
+    "label_in_1json": "login:97:3",
+    "label_is_stale": false,
+    "located_by": "explicit_offsets",
+    "anchor_locate_method": "explicit"
+  },
+  "primary_anchor": {
+    "answer_function": "loginTokenCallback",
+    "source_function": "loginTokenCallback",
+    "source_file": "www.doyo.cn/passport/login.html",
+    "captured_file": "captures/www.doyo.cn/passport/login.html",
+    "captured_span": {
+      "start_line": 97,
+      "end_line": 122,
+      "start_offset": 3841,
+      "end_offset": 4630
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "case_id": "real19_yhd_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is double_submit: the login submit handler whose body reads #pwd/#un, constructs a JSEncrypt, sets the public key, RSA-encrypts password (and username) inline, and assembles the credentials.* payload it posts. PLAN section 4.3: the password ciphertext is constructed inline inside this function (no dedicated encrypt function), so this enclosing function is the anchor; PLAN section 5.1: not the validation precondition it calls, a cookie util, or the JSEncrypt library primitive. There is no separate 0.7 target-specific helper because the target-specific construction is inline in double_submit.",
+  "anchor": {
+    "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+    "locator": "var k=$(\"#un\").val();var j=$(\"#pwd\").val();var i=new JSEncrypt()",
+    "answer_function": "double_submit",
+    "source_function": "double_submit",
+    "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+    "why": "Builds the login request: new JSEncrypt + setPublicKey(pubkey), j=i.encrypt(password), then h={'credentials.password':j,...} which is posted to /publicPassport/login.do. This constructs the exact credentials.password value observed."
+  },
+  "roles": [
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "ea.prototype.encrypt=function(a){try{return cF(this.getKey().encrypt(a))}",
+      "role": "Core utility",
+      "answer_function": "JSEncrypt.encrypt",
+      "source_function": "JSEncrypt.prototype.encrypt",
+      "why": "Generic JSEncrypt public API used by the anchor for both password and username. It delegates to the RSA key and base64-encodes the ciphertext, but does not bind the result to credentials.password."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "ea.prototype.setPublicKey=function(a){this.setKey(a)}",
+      "role": "Core utility",
+      "answer_function": "JSEncrypt.setPublicKey",
+      "source_function": "JSEncrypt.prototype.setPublicKey",
+      "why": "Generic key-loading wrapper called by the anchor before encryption. It binds a key object for the library, not the target request field."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function cx(a){var c=d3(a,(this.n.bitLength()+7)>>3)",
+      "role": "Core utility",
+      "answer_function": "RSAKey.encrypt",
+      "source_function": "RSA key encrypt",
+      "why": "Generic RSA encrypt routine below JSEncrypt.encrypt. It applies PKCS#1 padding and public-key exponentiation but is reusable library code."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function d3(c,f){if(f<c.length+11)",
+      "role": "Core utility",
+      "answer_function": "pkcs1pad2",
+      "source_function": "PKCS#1 padding helper",
+      "why": "Generic PKCS#1 v1.5 padding helper that introduces random padding before RSA. It explains non-determinism but not the credentials.password binding."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function bT(a){return a.modPowInt(this.e,this.n)}",
+      "role": "Core utility",
+      "answer_function": "RSA.doPublic",
+      "source_function": "RSA public exponentiation",
+      "why": "Generic public-key modular exponentiation called by the RSA encrypt path."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function cF",
+      "role": "Core utility",
+      "answer_function": "hex2b64",
+      "source_function": "hex to base64 encoder",
+      "why": "Generic hex-to-base64 formatter used by JSEncrypt.encrypt to return the ciphertext string."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function checkAccountAndPwdForLogin(",
+      "role": "Path-critical",
+      "answer_function": "checkAccountAndPwdForLogin",
+      "source_function": "checkAccountAndPwdForLogin",
+      "why": "Validation gate called by the submit handler before encryption (checks the account and password fields). On the path but does not construct the encrypted value."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "doEnter:function(){$(\"#pwd,#vcd,#login_button\").keydown(function(b)",
+      "role": "Path-critical",
+      "answer_function": "doEnter keydown handler",
+      "source_function": "jsLoginFed.doEnter anonymous keydown handler",
+      "why": "Enter-key handler that clicks #login_button and reaches the submit flow. It is an upstream trigger, not the encryption constructor."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "initSlideCaptcha:function(){var b={env:\"pc-login\"",
+      "role": "Path-critical",
+      "answer_function": "initSlideCaptcha",
+      "source_function": "jsLoginValidatCode.initSlideCaptcha",
+      "why": "Configures the slide captcha and calls double_submit on validation success. It is path-critical for the slider branch but does not derive credentials.password."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "b8.each([\"get\",\"post\"],function(a,b){b8[b]=function(c,f,d,g)",
+      "role": "Wrapper",
+      "answer_function": "jQuery.get/post wrapper",
+      "source_function": "jQuery get/post shorthand",
+      "why": "Generic jQuery shorthand used by the login request. It forwards already prepared data to ajax and does not encrypt the password."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "ajax:function(d,h){if(typeof d===\"object\")",
+      "role": "Wrapper",
+      "answer_function": "jQuery.ajax",
+      "source_function": "jQuery.ajax",
+      "why": "Generic network sink reached after double_submit has already constructed the encrypted credentials.password field."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function(d){if(d){if(d.errorCode!=0)",
+      "role": "Wrapper",
+      "answer_function": "loginPostCallback",
+      "source_function": "login response callback",
+      "why": "Response callback for /publicPassport/login.do. It handles errors/redirects after the request has already been sent."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "function getCookie(",
+      "role": "Off-chain",
+      "answer_function": "getCookie",
+      "source_function": "getCookie",
+      "why": "A generic cookie reader utility; unrelated to the password encryption path."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "getCookie:function(h)",
+      "role": "Off-chain",
+      "answer_function": "jsLoginValidatCode.getCookie",
+      "source_function": "jsLoginValidatCode.getCookie",
+      "why": "A second cookie reader used by validation-code initialization. Cookie-looking helper but off the RSA password construction path."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "checkUserType:function(f){if(f.length!=11)",
+      "role": "Off-chain",
+      "answer_function": "checkUserType",
+      "source_function": "jsLoginFed.checkUserType",
+      "why": "Checks whether a username/mobile account needs password completion. It posts credentials.username only and is not the login password encryption path."
+    },
+    {
+      "file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "locator": "refreshFunc:function(){$(\".shade\").hide();$(\".meg_error\").hide()",
+      "role": "Off-chain",
+      "answer_function": "codeScan.refreshFunc",
+      "source_function": "codeScan.refreshFunc",
+      "why": "QR-code login flow helper. It uses passport endpoints but does not construct credentials.password."
+    }
+  ],
+  "empty_roles": [
+    {
+      "role": "Nested target-specific helper",
+      "score": 0.7,
+      "why": "No separate complete target-specific helper exists: double_submit itself reads #pwd, sets the RSA public key, encrypts the password, and writes credentials.password inline. Downstream helpers are generic RSA/JSEncrypt utilities (0.5), and upstream triggers are path-critical (0.2)."
+    }
+  ],
+  "oracle_notes": {
+    "do_not_promote": [
+      "The exact anchor is double_submit because the target-specific password read, key binding, RSA encrypt call and credentials.password payload assignment are all inline there.",
+      "There is no legitimate 0.7 nested target-specific helper; JSEncrypt/RSA functions are generic primitives and stay at 0.5.",
+      "checkAccountAndPwdForLogin, doEnter and initSlideCaptcha are on the path but do not construct the encrypted password.",
+      "jQuery get/post/ajax and the login response callback emit or process an already prepared request.",
+      "The username ciphertext is a same-request sibling field and should not be treated as the requested credentials.password observable.",
+      "Cookie readers, account-type checks, QR-code login and captcha helpers are off-chain decoys."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention.",
+    "audit_notes": [
+      "Answer match check: 1.json case 19 code is a contiguous snippet inside double_submit, and oracle.primary_anchor is double_submit.",
+      "Question direction check: the visible question asks for the complete function whose own body reads #pwd, RSA-encrypts it with the public key and assembles credentials.password; this points to double_submit."
+    ]
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to double_submit, which reads #pwd, calls JSEncrypt with pubkey, and assigns credentials.password."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "No valid role in this case; the target-specific construction is inline in double_submit."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to JSEncrypt/RSA/PKCS#1/base64 primitives used by the anchor."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to validation, submit-trigger/captcha path, jQuery request wrapper, ajax sink, or the login response callback."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to cookie readers, account pre-checks, QR-code login/captcha helpers, same-request sibling-field logic, or cannot be uniquely mapped."
+    }
+  ]
+}

@@ -1,0 +1,562 @@
+[
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 1 (file/chunk localization, Agentless). Select the bundle chunks most likely to contain the behaviour anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nBundle chunks:\n- chunk_000 (80 functions): (anon), (anon), (anon), bytes, format, parse, (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_001 (80 functions): link, (anon), add, add, (anon), (anon), link, link, (anon), controller, controller, showUplod\n- chunk_002 (80 functions): onclick, (anon), show, (anon), (anon), (anon), (anon), controller, controller, loadFile, (anon), (anon)\n- chunk_003 (80 functions): (anon), $iq_httpError, loginUrl, remHistory, (anon), errorAlert, askLogin, ask403, controller, controller, toLogin, back\n- chunk_004 (80 functions): (anon), (anon), (anon), base64Encode, base64Decode, removeRepeat, removeElement, removeElementByIndex, getLength, getInnerStr, parseDate, namespace\n- chunk_005 (80 functions): (anon), (anon), (anon), (anon), (anon), resourceFactory, extractParams, (anon), defaultResponseInterceptor, Resource, toJSON, (anon)\n- chunk_006 (80 functions): isUndefined, isDefined, isObject, isBlankObject, isString, isNumber, isDate, isFunction, isRegExp, isWindow, isScope, isFile\n- chunk_007 (80 functions): setupModuleLoader, ensure, (anon), module, assertNotHasOwnProperty, (anon), run, run, invokeLater, (anon), invokeLaterAndSetModuleName, (anon)\n- chunk_008 (80 functions): (anon), getText, val, val, (anon), html, html, (anon), name, createEventHandler, eventHandler, isDefaultPrevented\n- chunk_009 (80 functions): (anon), (anon), stringifyFn, extractArgs, anonFn, annotate, (anon), (anon), createInjector, (anon), (anon), (anon)\n- chunk_010 (80 functions): removeClass, setClass, setClass, animate, animate, $$AnimateAsyncRunFactoryProvider, (anon), waitForTick, (anon), (anon), (anon), (anon)\n- chunk_011 (80 functions): put, put, get, get, remove, remove, removeAll, removeAll, destroy, destroy, info, info\n- chunk_012 (80 functions): groupScan, groupElementsLinkFnWrapper, groupedElementsLink, compilationGenerator, lazyCompilation, applyDirectivesToNode, (anon), (anon), (anon), addLinkFns, nodeLinkFn, isSlotFilled\n- chunk_013 (80 functions): $ExceptionHandlerProvider, (anon), (anon), $$ForceReflowProvider, (anon), (anon), $httpMinErrLegacyFn, (anon), serializeValue, $HttpParamSerializerProvider, $get, ngParamSerializer\n- chunk_014 (80 functions): timeoutRequest, completeRequest, jsonpReq, callback, throwNoconcat, interr, $InterpolateProvider, startSymbol, endSymbol, (anon), escape, unescapeText\n- chunk_015 (80 functions): hashPrefix, html5Mode, (anon), setBrowserUrlWithFallback, (anon), (anon), (anon), $locationWatch, (anon), afterLocationChange, $LogProvider, debugEnabled\n- chunk_016 (80 functions): relational, relational, additive, additive, multiplicative, multiplicative, unary, unary, primary, primary, filter, filter\n- chunk_017 (80 functions): (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), getHasOwnProperty, getHasOwnProperty, assign\n- chunk_018 (80 functions): (anon), (anon), (anon), (anon), (anon), (anon), unary+, unary+, (anon), unary-, unary-, (anon)\n- chunk_019 (80 functions): parse, isPossiblyDangerousMemberName, getValueOf, $ParseProvider, addLiteral, setIdentifierFns, (anon), $$runningExpensiveChecks, $parse, expensiveChecksInterceptor, expensiveCheckFn, expressionInputDirtyCheck\n- chunk_020 (80 functions): (anon), (anon), (anon), (anon), (anon), $RootScopeProvider, digestTtl, createChildScopeClass, ChildScope, (anon), destroyChildScope, cleanUpScope\n- chunk_021 (80 functions): (anon), htmlSanitizer, matchUrl, isResourceUrlAllowedByPolicy, generateHolderType, TrustedValueHolderType, $$unwrapTrustedValue, sceValueOf, sceToString, trustAs, valueOf, getTrusted\n- chunk_022 (80 functions): (anon), dateStrGetter, (anon), timeZoneGetter, getFirstThursdayOfYear, getThursdayThisWeek, weekGetter, (anon), ampmGetter, eraGetter, longEraGetter, dateFilter\n- chunk_023 (80 functions): ngFormPreLink, handleFormSubmission, (anon), (anon), (anon), (anon), (anon), getSetter, (anon), stringBasedInputType, (anon), textInputType\n- chunk_024 (80 functions): compile, compile, ngValueConstantLink, ngValueLink, valueWatchAction, (anon), ngBindCompile, ngBindCompile, ngBindLink, ngBindWatchAction, (anon), ngBindTemplateCompile\n- chunk_025 (80 functions): (anon), (anon), $isEmpty, (anon), $$setOptions, ngModelGet, ngModelSet, $isEmpty, $$updateEmptyClasses, set, set, unset\n- chunk_026 (80 functions): getViewValueFromOption, getViewValueFromOption, ngOptionsPostLink, renderEmptyOption, removeEmptyOption, renderUnknownOption, removeUnknownOption, writeNgOptionsValue, readNgOptionsValue, (anon), (anon), $isEmpty\n- chunk_027 (80 functions): (anon), (anon), compile, compile, chromeHack, (anon), renderUnknownOption, (anon), removeUnknownOption, readSingleValue, writeSingleValue, addOption\n- chunk_028 (80 functions): x, E, xc, D, ba, ja, C, Za, Ya, ab, Ka, me\n- chunk_029 (80 functions): (anon), Sc, Tc, (anon), Uc, W, Zb, yb, Wc, g, (anon), ib\n- chunk_030 (80 functions): e, g, (anon), (anon), (anon), kb, lg, (anon), Ca, mg, f, e\n- chunk_031 (80 functions): (anon), Ma, g, G, d, cc, (anon), Ta, cd, dd, (anon), dc\n- chunk_032 (80 functions): $observe, (anon), (anon), (anon), (anon), (anon), (anon), (anon), $$createComment, Hb, Da, fd\n- chunk_033 (80 functions): (anon), (anon), a, Df, $get, (anon), Cf, (anon), tg, e, m, (anon)\n- chunk_034 (80 functions): (anon), (anon), (anon), (anon), (anon), Ua, wg, Ea, td, Jb, Eg, Bd\n- chunk_035 (80 functions): (anon), resolve, resolve, $$resolve, $$resolve, c, d, reject, reject, $$reject, $$reject, notify\n- chunk_036 (80 functions): $emit, stopPropagation, stopPropagation, preventDefault, preventDefault, $broadcast, $broadcast, preventDefault, preventDefault, Be, aHrefSanitizationWhitelist, imgSrcSanitizationWhitelist\n- chunk_037 (80 functions): b, (anon), Wf, Rc, b, (anon), (anon), (anon), Ig, (anon), Ng, b\n- chunk_038 (80 functions): (anon), l, m, (anon), (anon), (anon), (anon), $render, Pb, (anon), (anon), ob\n- chunk_039 (80 functions): injector, removeAttr, removeAttr, css, css, attr, attr, prop, prop, (anon), a, val\n- chunk_040 (80 functions): (anon), e, (anon), (anon), (anon), push, push, (anon), register, classNameFilter, (anon), b\n- chunk_041 (80 functions): isFirstChange, wf, (anon), (anon), nd, (anon), throwNoconcat, interr, Ef, (anon), b, b\n- chunk_042 (80 functions): logicalOR, logicalOR, logicalAND, logicalAND, equality, equality, relational, relational, additive, additive, multiplicative, multiplicative\n- chunk_043 (80 functions): (anon), getHasOwnProperty, getHasOwnProperty, assign, assign, filter, filter, ifDefined, ifDefined, plus, plus, return_\n- chunk_044 (80 functions): unary-, unary-, (anon), unary!, unary!, (anon), binary+, binary+, (anon), binary-, binary-, (anon)\n- chunk_045 (80 functions): (anon), (anon), (anon), d, (anon), f, c, (anon), b, link, link, (anon)\n- chunk_046 (80 functions): (anon), (anon), compile, compile, (anon), (anon), (anon), compile, compile, (anon), (anon), (anon)\n- chunk_047 (80 functions): d, (anon), (anon), e, (anon), (anon), (anon), (anon), f, g, (anon), (anon)\n- chunk_048 (80 functions): (anon), (anon), (anon), (anon), f, compile, compile, A, v, (anon), x, (anon)\n- chunk_049 (80 functions): (anon), Nc, link, link, required, (anon), Mc, link, link, (anon), pattern, Pc\n- chunk_050 (80 functions): getParent, (anon), addAriaAndCollapsedClass, getTargetFromTrigger, Plugin, (anon), noConflict, (anon), (anon), Dropdown, getParent, clearMenus\n- chunk_051 (80 functions): getUID, tip, arrow, enable, disable, toggleEnabled, toggle, destroy, (anon), Plugin, (anon), noConflict\n- chunk_052 (80 functions): removeGroup, (anon), (anon), controller, controller, setHeading, link, link, (anon), toggleOpen, (anon), link\n- chunk_053 (80 functions): apply, apply, apply, apply, apply, apply, apply, apply, apply, createParser, (anon), parse\n- chunk_054 (80 functions): link, getText, (anon), cameltoDash, (anon), (anon), (anon), (anon), (anon), parseDate, dateSelection, (anon)\n- chunk_055 (80 functions): (anon), link, link, (anon), (anon), backdropIndex, (anon), removeModalWindow, (anon), checkRemoveBackdrop, (anon), removeAfterAnimate\n- chunk_056 (80 functions): makePage, getPages, render, (anon), link, link, (anon), options, setTriggers, snake_case, (anon), (anon)\n- chunk_057 (80 functions): (anon), (anon), select, (anon), (anon), link, link, updateHeadingElement, (anon), link, link, (anon)\n- chunk_058 (80 functions): link, link, (anon), (anon), escapeRegexp, (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_059 (80 functions): complete, complete, onMenuShareQQ, onMenuShareQQ, complete, complete, onMenuShareWeibo, onMenuShareWeibo, complete, complete, onMenuShareQZone, onMenuShareQZone\n- chunk_060 (80 functions): chooseCard, (anon), _complete, openCard, openCard, chooseWXPay, chooseWXPay, (anon), (anon), (anon), n, r\n- chunk_061 (80 functions): (anon), fb, gb, b, hb, ib, jb, kb, lb, (anon), mb, (anon)\n- chunk_062 (80 functions): target, root, root, focus, focus, enabled, enabled, disabled, disabled, checked, checked, selected\n- chunk_063 (80 functions): has, (anon), closest, closest, index, index, add, add, addBack, addBack, D, parent\n- chunk_064 (80 functions): (anon), (anon), when, when, h, (anon), ready, holdReady, holdReady, ready, ready, I\n- chunk_065 (80 functions): remove, trigger, trigger, dispatch, dispatch, handlers, handlers, filter, filter, filter, filter, fix\n- chunk_066 (80 functions): before, (anon), after, after, (anon), remove, remove, empty, empty, clone, clone, (anon)\n- chunk_067 (80 functions): get, set, set, set, set, linear, linear, swing, swing, (anon), Sb, (anon)\n- chunk_068 (80 functions): prop, get, get, get, get, (anon), addClass, addClass, (anon), removeClass, removeClass, (anon)\n- chunk_069 (80 functions): _evalUrl, wrapAll, wrapAll, (anon), (anon), wrapInner, wrapInner, (anon), (anon), wrap, wrap, (anon)\n- chunk_070 (80 functions): size, (anon), noConflict, (anon), i, s, (anon), (anon), (anon), (anon), (anon), scrollParent\n- chunk_071 (80 functions): _setOption, _setOption, enable, enable, disable, disable, _on, _on, (anon), h, _off, _off\n- chunk_072 (80 functions): left, left, top, top, left, left, top, top, (anon), (anon), _create, _create\n- chunk_073 (80 functions): (anon), drag, drag, start, start, (anon), (anon), start, start, stop, stop, (anon)\n- chunk_074 (80 functions): _renderProxy, _renderProxy, e, e, w, w, n, n, s, s, se, se\n- chunk_075 (80 functions): _setOption, _mouseCapture, _mouseCapture, (anon), (anon), _mouseStart, _mouseStart, _mouseDrag, _mouseDrag, _mouseStop, _mouseStop, (anon)\n- chunk_076 (80 functions): (anon), (anon), (anon), (anon), (anon), _trigger, _trigger, _uiHash, _uiHash, (anon), (anon), setPrefix\n- chunk_077 (80 functions): success, success, local, text, data, text, (anon), process, (anon), (anon), tags, (anon)\n- chunk_078 (80 functions): positionDropdown, positionDropdown, shouldOpen, shouldOpen, clearDropdownAlignmentPreference, clearDropdownAlignmentPreference, open, open, opening, opening, (anon), (anon)\n- chunk_079 (80 functions): cancel, cancel, destroy, destroy, initContainer, initContainer, (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_080 (80 functions): enableInterface, enableInterface, initSelection, initSelection, (anon), clearSearch, clearSearch, clearPlaceholder, clearPlaceholder, opening, opening, close\n- chunk_081 (80 functions): formatSelectionTooBig, formatSelectionTooBig, formatLoadMore, formatLoadMore, formatSearching, formatSearching, id, id, matcher, matcher, adaptContainerCssClass, adaptContainerCssClass\n- chunk_082 (80 functions): w, x, y, z, A, B, b, h, C, D, E, F\n- chunk_083 (80 functions): w, W, W, YY, YY, YYYY, YYYY, YYYYY, YYYYY, YYYYYY, YYYYYY, gg\n- chunk_084 (80 functions): isPM, isPM, meridiem, meridiem, calendar, calendar, relativeTime, relativeTime, pastFuture, pastFuture, ordinal, ordinal\n- chunk_085 (80 functions): calendar, calendar, isLeapYear, isLeapYear, isDST, isDST, day, day, startOf, startOf, endOf, endOf\n- chunk_086 (80 functions): humanize, humanize, add, add, subtract, subtract, get, get, as, as, (anon), toISOString\n- chunk_087 (80 functions): (anon), (anon), success, success, error, error, config, (anon), (anon), compile, compile, (anon)\n- chunk_088 (80 functions): a, b, c, (anon), decode, decode, is, is, encode, encode, decode, decode\n- chunk_089 (80 functions): (anon), (anon), (anon), (anon), reload, go, transitionTo, (anon), (anon), is, includes, href\n- chunk_090 (80 functions): y, z, link, link, (anon), q, (anon), (anon), (anon), preventDefault, A, (anon)\n- chunk_091 (80 functions): (anon), (anon), (anon), registerJoin, loginJoin, registerJoinCtrl, sendTimeClock, (anon), sendRegisterAndJoinOrgValidateCode, (anon), (anon), (anon)\n- chunk_092 (80 functions): (anon), ok, cancel, gotoForgetPassword, wechatSelectOrgCtrl, (anon), loginToOrg, (anon), gotoCreateCompany, gotoJoinCompany, wechatBindingSelectCtrl, registerBinding\n- chunk_093 (80 functions): sendPasswordValidateCode, (anon), (anon), next, (anon), (anon), gotoLogin, forgetPasswordStep2Ctrl, checkStrong, checkSame, next, (anon)\n- chunk_094 (1 functions): weiShare\n\nReturn JSON {\"chunks\": [\"<chunk_id>\", ...]} (most-relevant first)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557527.8074138
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"chunks\": [\"chunk_003\", \"chunk_091\", \"chunk_092\", \"chunk_004\", \"chunk_093\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 4504,
+    "output_tokens": 33
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-c518401f-125c-92e8-b48a-5641bb6848fc",
+    "object": "chat.completion",
+    "created": 1782557526,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 4504,
+     "completion_tokens": 33,
+     "total_tokens": 4537,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 4504,
+     "output_tokens": 33
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"chunks\": [\"chunk_003\", \"chunk_091\", \"chunk_092\", \"chunk_004\", \"chunk_093\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 4504,
+   "output_tokens": 33
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nFunctions:\n- caa2fc53a3c8b25e ((anon)): function()\n- 37292f74e3822f73 ($iq_httpError): function()\n- 0a8e5f683d953880 (loginUrl): function(url)\n- 03af04cd9beb6bc9 (remHistory): function(tmp)\n- bb1e79c07fc1e069 ((anon)): function($iq_config, $injector, $q, $location, localStorageService, $iq_loading,$templateCache)\n- cbb4178bd5e92c52 (errorAlert): function()\n- b4792b4354a91bee (askLogin): function()\n- ec74a84c019b4bb6 (ask403): function()\n- bdbe178f99074185 (controller): controller: function($scope, $modalInstance, $timeout, $iq_http)\n- be2f490d2acc7906 (controller): function($scope, $modalInstance, $timeout, $iq_http)\n- d4a4af68ca6670d4 (toLogin): function()\n- 72a95c9f4be73bea (back): function()\n- 14e1d6c2c65b2ec4 (redirectToDataNotFoundPage): function()\n- ed6212da148d9f03 (logined): logined: function()\n- f1156156f309e911 (logined): function()\n- 2b682f1e1446a6be (intercept): intercept: function()\n- 92795ea2f87e2fbd (intercept): function()\n- e636290a20955c63 (loginUrl): loginUrl : function(url)\n- 7c5fc97cd3af1716 (loginUrl): function(url)\n- b0516ce2ea5a8594 (dealError): dealError: function(error)\n- 6b0cc2c4e812d1d0 (dealError): function(error)\n- cbdaa3a849a6721c ($iq_httpInterceptor): function($q, $iq_config, $iq_httpError, $templateCache)\n- 239b31f55aef89b4 (request): \"request\": function(config)\n- fd85746b75548cbd (request): function(config)\n- badd25beb560142e (response): \"response\": function(response)\n- 0c960374e4f62c21 (response): function(response)\n- cd9f87f0a8be3935 (responseError): 'responseError': function(rejection)\n- 72a0fb52f3a12e64 (responseError): function(rejection)\n- a1fa66104b6929d4 ($iq_cities): function($iq_http, $q)\n- 6ea5885ac3040be6 (getCityConfig): function()\n- 05849ef8e309ba26 ((anon)): function(re)\n- f1de68cffcde88b3 ((anon)): function(e)\n- 3e1eacc6df5f01bf (returnCityConfig): returnCityConfig: function()\n- 2be369d4f343f718 (returnCityConfig): function()\n- 5d91e9fe37f3933f ($iq_server): function($location, $iq_config)\n- 96af59c85a8a12d0 (server): server: function()\n- 7c69d03bf2b77192 (server): function()\n- 60d43c00a22caedc (management_server): management_server: function()\n- d7e53ba3ad14cde7 (management_server): function()\n- df11f757c0ca0fa3 (client): client: function()\n- 8ba25e586107e5b5 (client): function()\n- 2bf6ea4ed493c858 ($iq_http): function($http, $q, $iq_httpError)\n- bd352e19a19c0b37 (http): function(p_param, funcs)\n- c13e39296a998b12 ((anon)): function(obj)\n- 0b2a6457d95fb882 ((anon)): function(obj)\n- 224204150e71cbc9 ((anon)): function(obj)\n- a7dce6b3ff555cbf ((anon)): function(error)\n- f286492c6c9d7302 ($iq_window): function($iqmodal, $templateCache, $timeout)\n- 4e494fda1c1ac89d (alert): alert: function(_option)\n- 94cb7504c327fb3b (alert): function(_option)\n- 61733b62a77fba4a (options): options: function()\n- c21b56172d92f5e3 (options): function()\n- c942da815a78b48b (controller): controller: function($scope, $modalInstance, $timeout, options)\n- 7d2e8192999827a1 (controller): function($scope, $modalInstance, $timeout, options)\n- 11163b41cc2feb25 ((anon)): function()\n- 448b8892ffda9162 (ok): function()\n- c17a0693087276f4 ((anon)): function()\n- 202714f4857af3f9 ((anon)): function()\n- 849a91631166936d ((anon)): function($event)\n- 571dbabf5d449b08 (confirm): confirm: function(_option)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557528.6091285
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\":[\"bdbe178f99074185\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1750,
+    "output_tokens": 13
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-224ec8e2-1ed9-9b6b-93ae-e2be591802d8",
+    "object": "chat.completion",
+    "created": 1782557527,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1750,
+     "completion_tokens": 13,
+     "total_tokens": 1763,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1750,
+     "output_tokens": 13
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\":[\"bdbe178f99074185\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1750,
+   "output_tokens": 13
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nFunctions:\n- 6ce3043a9f1e90db (confirm): function(_option)\n- 48b71733d39db46c (options): options: function()\n- e92ed0737c1cc65c (options): function()\n- 3f024f518c512ca5 (controller): controller: function($scope, $modalInstance, options)\n- bdd001a69e4ac592 (controller): function($scope, $modalInstance, options)\n- 83194ea673c2247f (ok): function()\n- fe073b342bc32be9 (cancel): function()\n- 0f40dd95bc15e20d ((anon)): function()\n- 6d3aa856ff8cc132 ((anon)): function()\n- 2e7b9281809029e6 ((anon)): function($event)\n- 51ab0d61639ddbfc (select): select: function(obj)\n- d84c8916efff5d3e (select): function(obj)\n- 5e9efaf1ed3768ba ((anon)): function($templateCache)\n- 028a13f1a614fbae (log): log:function()\n- 21223fb9a61846ff (log): function()\n- 414ea835b65b6d4d (debug): debug:function()\n- 40895ad179b77c80 (debug): function()\n- f541718701962061 (error): error:function()\n- 9b5a0c1eb2b8a133 (error): function()\n- 625c1af5b280aa90 ((anon)): function()\n- 20b33c2b366c8dc8 ((anon)): function(re)\n- 3536a60fc457d93c ((anon)): function(re)\n- f384767334622358 ((anon)): function()\n- 86fd2b2839080a0a (registerJoin): function()\n- f0629fdbf7b4e96a (loginJoin): function()\n- f6c9d8d063d75e7d (registerJoinCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService, $iqa_login_loginService)\n- f0bbda732b2e7f35 (sendTimeClock): function()\n- 4ac54de9a9789d41 ((anon)): function()\n- 0cd07986a9d5b28b (sendRegisterAndJoinOrgValidateCode): function()\n- b62e1517844fbbc0 ((anon)): function(data)\n- e899982a1b762cd3 ((anon)): function()\n- 853a1cc27ee4fa81 ((anon)): function()\n- 843577f8c7323d42 (checkStrong): function()\n- 3bc9beee59c7f392 (checkSame): function()\n- 83ba967d2c220a90 (next): function()\n- 91b32f096ca19712 ((anon)): function(data)\n- 709f1a9089655c16 ((anon)): function(data)\n- a4e24e546b2a40b3 (gotoLogin): function()\n- 2a621db0acc06a87 (loginSpecialCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_server, $iq_window, $iqa_login_loginService)\n- c1e21db717a121a3 (goToUrl): function()\n- b8b3fe808516ac8f (checkNeedValidate): function(mobile, everyTime)\n- de85e4a3f64a65ed ((anon)): function(data)\n- fe00f500baa992d6 ((anon)): function()\n- ea314479d214f801 (clearPassword): function()\n- c04b2f94b7ff5cb9 (clearVcode): function()\n- cdf90aa242ae1afd (getValidate): function(fource)\n- 16f54dde6f1b9d97 (doLogin): function()\n- 2bc3310c18628d95 ((anon)): function(data)\n- dfea7d0ced9c82f4 ((anon)): function(d)\n- 59169c2a003c9edb ((anon)): function()\n- aa7378ec92978552 (gotoRegister): function()\n- ae4f5b3041beef68 (gotoForgetPassword): function()\n- b769a6788b4e699a (joinCompanySpecialCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService)\n- da46f104e5c767ca (joinCompany): function()\n- aacf7e4ce8151cc8 ((anon)): function(data)\n- a31455885234446a ((anon)): function()\n- a51fc5899032b70c (registerStep1Ctrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService)\n- 756ec4d918214917 (sendTimeClock): function()\n- 11f7e25d99133abd ((anon)): function()\n- ffa523cd64ee1204 (sendRegisterValidateCodeFirstTime): function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557529.528857
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"16f54dde6f1b9d97\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1715,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-1c488d9d-1e87-9d05-b6b5-ac9ac63a4a69",
+    "object": "chat.completion",
+    "created": 1782557528,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1715,
+     "completion_tokens": 16,
+     "total_tokens": 1731,
+     "prompt_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens": 1715,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"16f54dde6f1b9d97\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1715,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nFunctions:\n- a08265cdc2dd325a ((anon)): function(data)\n- edff328f78a05d82 ((anon)): function()\n- 0d97ad10ddf94655 (sendRegisterValidateCode): function()\n- 6562d293562cfd4a ((anon)): function(data)\n- d62ed6fb746fdb58 ((anon)): function()\n- c4d2bdcc44736037 (next): function()\n- 012b23f2f7f4dd8d ((anon)): function()\n- b9b762169847ae96 ((anon)): function(data)\n- ac834ee33b60a78c ((anon)): function()\n- 29d1d42452488825 (gotoLogin): function()\n- 30e4258bc57e9272 (registerStep2Ctrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService)\n- 310298879ecbba33 ((anon)): function(n,o)\n- 511985da1097495b (checkStrong): function()\n- 1c692922d0ad0ecf (checkSame): function()\n- 539cec33ba64b287 (next): function()\n- 8178743c9ca5e4c0 ((anon)): function()\n- be879fa65fbd0f84 ((anon)): function()\n- 6693bb676527d298 ((anon)): function(data)\n- 64f147765d44ba3f ((anon)): function()\n- f28f8722387f3248 ((anon)): function()\n- f927e4d928c9117f (gotoLogin): function()\n- 9b1141f90f7bf0e9 (registerStep3Ctrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iq_server, $iqa_login_registerService, $iqa_login_loginService,$location,$ocLazyLoad)\n- 012f32ead40f7eb9 ((anon)): function(data)\n- 45a716c67ab5391b ((anon)): function()\n- ea78c63b82ca01dd (gotoLogin): function()\n- 7d56d212c4073c17 (gotoCreateCompany): function()\n- 90cf6147d8c95a43 (gotoJoinCompany): function()\n- 605f7c5024f43f8a (loginToOrg): function(orgId)\n- 5c4793bd6c4bf732 ((anon)): function(a, b, c)\n- 72d6e26dc2e0222d ((anon)): function()\n- 1806e6c115ffe05a ((anon)): function()\n- a8c986dd1b03baec (modalInstanceCtrl): function($scope, $modalInstance)\n- 26623d28a148d8f6 (checkNeedValidate): function(mobile, everyTime)\n- 2102f1ffa4b1bf5a ((anon)): function(data)\n- e9ba5a1b7bb7712e ((anon)): function()\n- 2d019d66c7860531 (clearPassword): function()\n- cff082d988f4f596 (clearVcode): function()\n- 700d61ca65944595 (getValidate): function(fource)\n- 2bc1c782916fc6c0 (login): function(form)\n- 83fb3486334a14e4 ((anon)): function(data)\n- 3dc9c3241bc82a33 ((anon)): function()\n- 8fc0a6beb48a7c1c (ok): function()\n- 38a5420c74aa27b9 (cancel): function()\n- 026be9cde60f4295 (gotoForgetPassword): function()\n- 6deb96d05ca8b414 (wechatSelectOrgCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iq_server, $iqa_login_registerService, $iqa_login_loginService)\n- 5edb74f867a841f2 ((anon)): function(data)\n- bc52f18e2f668a1c (loginToOrg): function(id)\n- 26d42c0416fc3e14 ((anon)): function(data)\n- 4961b0cc41d4db01 (gotoCreateCompany): function()\n- 0393da287bf5bbae (gotoJoinCompany): function()\n- 528e66982468f594 (wechatBindingSelectCtrl): function($scope, $modal, $state, $stateParams)\n- 46cef0a8f8b3b3e0 (registerBinding): function()\n- ffde2d37a97b9e40 (loginBinding): function()\n- 66c12c815d3d3718 (wechatRegisterBindingCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iq_server, $iqa_login_registerService, $iqa_login_loginService)\n- 6a48820c208b1020 (sendTimeClock): function()\n- 1db11a0b08c2b585 ((anon)): function()\n- 99252ad452fed014 (sendRegisterAndJoinOrgValidateCode): function()\n- 3977278991c31654 ((anon)): function(data)\n- 70f206b02be985fb ((anon)): function()\n- c19e6c9b3782600b ((anon)): function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557530.5388014
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"2bc1c782916fc6c0\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1764,
+    "output_tokens": 17
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-116dc245-ffa7-98b5-8af3-9349c68289c5",
+    "object": "chat.completion",
+    "created": 1782557529,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1764,
+     "completion_tokens": 17,
+     "total_tokens": 1781,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1764,
+     "output_tokens": 17
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"2bc1c782916fc6c0\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1764,
+   "output_tokens": 17
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nFunctions:\n- 60bc7eed541f6137 (checkStrong): function()\n- ed92567cfa3b8ec8 (checkSame): function()\n- 4d25d7c9a7a94f91 (next): function()\n- 68c199eb11c69787 ((anon)): function(data)\n- 2fa7e2e3a86f4df3 (wechatLoginBindingCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iq_server, $iqa_login_registerService, $iqa_login_loginService)\n- 3dcaa8f0941d9417 (checkNeedValidate): function(mobile, everyTime)\n- b12321bb56d18014 ((anon)): function(data)\n- f9bd10e8945c8671 ((anon)): function()\n- ceb203f775bbeef3 (clearPassword): function()\n- 6ab9055df680814d (clearVcode): function()\n- e118a9efc042ece5 (getValidate): function(fource)\n- e6b29ade1fa5717c (doLogin): function()\n- bb787f5fa0d7a349 ((anon)): function(data)\n- 8e44f6f76521cf35 ((anon)): function(rdata)\n- 5049c9341a2fd6a0 (joinOrCreateOrgCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iq_server, $iqa_login_registerService, $iqa_login_loginService,$location)\n- c5f0e3088199f7d6 ((anon)): function(data)\n- c6adb4bc9b0af5b0 ((anon)): function()\n- 45ffa7895641f1b7 (gotoHome): function()\n- b7bc549073fa5289 (gotoCreateCompany): function()\n- 80cf3897bea5d23b (gotoJoinCompany): function()\n- 6480851205f60023 (createCompanyCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService)\n- 8c8af5c39162436d (getName): function()\n- 4cbda8a06f839adb ((anon)): function(data)\n- b55085efce8d8de1 ((anon)): function()\n- d3182349c4849f7f (createCompany): function(form)\n- 32aa1ef753afebc8 ((anon)): function(data)\n- 9340645cbdd60554 ((anon)): function()\n- 3579d64bf5f659f3 (gotoLogin): function()\n- ee759e386b91c6db (createCompanyOkCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window,$iqa_login_registerService)\n- 80740e013d6c0e4a ((anon)): function(data)\n- e39c2429e9a50bbb ((anon)): function()\n- afa660555f9bd82d (getProbationLicense): function()\n- 0298efe92f0a9a1f ((anon)): function(data)\n- 49dd51f8c50b5309 ((anon)): function()\n- 860c82e66bf137d6 (gotoHome): function()\n- d1227ba8d15ce488 (gotoLogin): function()\n- 17fb71ff4a74aebd (joinCompanyCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService)\n- 472de669cb373433 (getName): function()\n- df21c23be7f8882e ((anon)): function(data)\n- 4f0aa44d9e7e77d6 ((anon)): function()\n- 6762d6481eef22b0 (joinCompany): function(form)\n- f245fb6b56218713 ((anon)): function(data)\n- 8bdec764fa634915 ((anon)): function()\n- ebdec19c8b605f94 (gotoLogin): function()\n- 354d38a8dedf9166 (joinCompanyWaitCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window,$iqa_login_registerService,$ocLazyLoad)\n- cc0ac375423d0ba1 ((anon)): function(data)\n- 9dc35ec9f4d4db2e ((anon)): function()\n- 4b3afe1f85a17d7b (gotoHome): function()\n- f5f005ff11ccfe53 (gotoLogin): function()\n- 2dd75ffaa9830698 (forgetPasswordCtrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService)\n- 2d7be552040b1c0f (next): function()\n- 1e7f5304edcbcae7 ((anon)): function(data)\n- 87bf8f4e1aac1249 ((anon)): function()\n- 8a3d7917a7b88068 (gotoLogin): function()\n- e530f12119ab527b (forgetPasswordStep1Ctrl): function($scope, $modal, $state, $stateParams, $timeout, $iq_window, $iqa_login_registerService)\n- 48980a65217e705b (sendTimeClock): function()\n- 7d09f39535893aba ((anon)): function()\n- 585687cfbc7b75d1 (sendPasswordValidateCodeFirstTime): function()\n- 233c5d1137b8b8a0 ((anon)): function(data)\n- 966807b65c51ad2b ((anon)): function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557531.7820165
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"e6b29ade1fa5717c\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1830,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-f4d69672-2f3c-92cd-ad8d-07d8757bffd4",
+    "object": "chat.completion",
+    "created": 1782557530,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1830,
+     "completion_tokens": 16,
+     "total_tokens": 1846,
+     "prompt_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens": 1830,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"e6b29ade1fa5717c\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1830,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nFunctions:\n- f0474e66fe968d76 ((anon)): function()\n- 68b5e3715335bf2b ((anon)): function()\n- c00f8b66ee98f7e5 ((anon)): function (event)\n- 9a4b32a813709a42 (base64Encode): function base64Encode(toEncode)\n- 8909b00d266b78a9 (base64Decode): function base64Decode(toDecode)\n- b59018510a7877f1 (removeRepeat): function removeRepeat(list)\n- 4023faa2f70f16a2 (removeElement): function removeElement(list, obj)\n- b8dcf40899002af2 (removeElementByIndex): function removeElementByIndex(list, i)\n- 45641849f9e96f41 (getLength): function getLength(str)\n- 6256680bdc4e9b4c (getInnerStr): function getInnerStr(sourceStr, startStr, endStr)\n- 9947309030a0ecb8 (parseDate): function parseDate(_input)\n- 85857b8ea0e58009 (namespace): function (ns_string)\n- a8c03a54ed7c171d ((anon)): function()\n- 337d2208a543fcd5 (traversal): function(children)\n- 41c928253d29bedf (init): function(classname, class_chg, str)\n- dd69d1c2c55d9141 ((anon)): function(window, angular)\n- 4b18eb18691f973e ($CookiesProvider): function $CookiesProvider()\n- 7932053c3361560f (calcOptions): function calcOptions(options)\n- b379e29706547f98 ((anon)): function($$cookieReader, $$cookieWriter)\n- adcf805a6941cf5f (get): get: function(key)\n- cf0a4a17684c7ee1 (get): function(key)\n- 2240ac1a8361659d (getObject): getObject: function(key)\n- 87d04955376e1c61 (getObject): function(key)\n- 3dcdf1d2b1594f91 (getAll): getAll: function()\n- e1bbe41ea274d8c0 (getAll): function()\n- a650f482b1a9ba71 (put): put: function(key, value, options)\n- 6f84ca0258ef55d3 (put): function(key, value, options)\n- 555f402cd944816b (putObject): putObject: function(key, value, options)\n- 1e561d8f205a289d (putObject): function(key, value, options)\n- 6f81708fea4b3020 (remove): remove: function(key, options)\n- 2f9adf9e95185b95 (remove): function(key, options)\n- bc162c2102c54347 ((anon)): function($cookies)\n- e4c94714e71e4325 (get): get: function(key)\n- 952ea2108615062f (get): function(key)\n- cddca86352514f70 (put): put: function(key, value)\n- 6d84cb0f9edacddd (put): function(key, value)\n- c7fe24c65e65d0ab (remove): remove: function(key)\n- a0b11edbbe7e68a3 (remove): function(key)\n- 63336cd49ff5f8b4 ($$CookieWriter): function $$CookieWriter($document, $log, $browser)\n- 8b3d29f39d469f5e (buildCookieString): function buildCookieString(name, value, options)\n- 6040b6047b309a20 ((anon)): function(name, value, options)\n- a04c738a73605640 ($$CookieWriterProvider): function $$CookieWriterProvider()\n- 901a40d75119b1cf ((anon)): function(n,c)\n- e96075da956310eb (l): function l(b,a,g)\n- bd2bd23a2c67d5c4 ((anon)): function(b,e,f)\n- b46f2cfec5725a5c ((anon)): function()\n- c1bffdaea81ee2c0 ((anon)): function(a,g)\n- 65d092c208c94782 (get): get:function(d)\n- ebf28ae141553236 (get): function(d)\n- 09e3ee4724709af5 (getObject): getObject:function(d)\n- 8e7f150a6ac8b067 (getObject): function(d)\n- 96030b0f991bf804 (getAll): getAll:function()\n- 782ac43e9ce8971c (getAll): function()\n- 01fb736415937bf1 (put): put:function(d,a,m)\n- 023450b4e1716b62 (put): function(d,a,m)\n- f061f5774a76373b (putObject): putObject:function(d,b,a)\n- 683bc070941d6456 (putObject): function(d,b,a)\n- c1e29acaad6b8e4c (remove): remove:function(a,k)\n- 94c6d17481975d1f (remove): function(a,k)\n- c75cd4039a3a655b ((anon)): function(b)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557532.8168073
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"c00f8b66ee98f7e5\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1754,
+    "output_tokens": 17
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-fab68007-2199-930e-93f7-7284e8889b9e",
+    "object": "chat.completion",
+    "created": 1782557531,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1754,
+     "completion_tokens": 17,
+     "total_tokens": 1771,
+     "prompt_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens": 1754,
+     "output_tokens": 17
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"c00f8b66ee98f7e5\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1754,
+   "output_tokens": 17
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nFunctions:\n- f578101942699f0f (get): get:function(a)\n- 4d7d113524686071 (get): function(a)\n- 433310ba9f54d4fc (put): put:function(a,c)\n- 36ee2aca6c83248c (put): function(a,c)\n- f7ea97e3e4fb62d1 (remove): remove:function(a)\n- 66a7b9ad43c43520 (remove): function(a)\n- 88a9709590714aa1 ((anon)): function()\n- 818a33e00ad12e63 ((anon)): function(window, angular)\n- 51a7787aba60d39f (isValidDottedPath): function isValidDottedPath(path)\n- e02dd5aff8b6702c (lookupDottedPath): function lookupDottedPath(obj, path)\n- 1a9948ab100a8660 (shallowClearAndCopy): function shallowClearAndCopy(src, dst)\n- 8492b1a7e044174c ((anon)): function(value, key)\n- 1c519585896a7014 (ResourceProvider): function ResourceProvider()\n- 5e009eb141371b39 ((anon)): function($http, $log, $q, $timeout)\n- 270725d1f1cff00e (encodeUriSegment): function encodeUriSegment(val)\n- 5b0603b6b5ae7caa (encodeUriQuery): function encodeUriQuery(val, pctEncodeSpaces)\n- c8e82c812208d3ca (Route): function Route(template, defaults)\n- b9aa0f06d11d05e6 (setUrlParams): setUrlParams: function(config, params, actionUrl)\n- 3e34145826b598a5 (setUrlParams): function(config, params, actionUrl)\n- dd556e7d99aaa5a3 ((anon)): function(param)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557533.5846727
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": []}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 922,
+    "output_tokens": 5
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-d41f9824-b43f-9895-93cb-7c263144106b",
+    "object": "chat.completion",
+    "created": 1782557532,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 922,
+     "completion_tokens": 5,
+     "total_tokens": 927,
+     "prompt_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens": 922,
+     "output_tokens": 5
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": []}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 922,
+   "output_tokens": 5
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the iQuicker login page, clicking login sends a POST to /login whose `password` field is a base64 token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the anchor function for that login request. The anchor function is the target-specific login-submission handler on the click->request chain: the single function whose own body reads the account and password inputs, binds the password into the request by base64-encoding it, assembles the credential payload object and initiates the POST /login \u2014 rather than the generic base64 encoder it calls to transform the bytes (a reusable encoding primitive / core utility), the login-service method or $http transport that only wraps and emits the already-built request (request builder / sink), or the unrelated input-validation and response/UI handlers it also invokes. The app defines several near-identical login-submission handlers for different flows (login, trial, register, wechat); return only the one whose request is the captured POST /login, not a sibling handler. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the generic base64 encoder/decoder primitive, the login-service or transport wrapper, or a sibling login handler from another flow. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nSuspicious functions:\n### bdbe178f99074185 (controller)\n```js\ncontroller: function($scope, $modalInstance, $timeout, $iq_http) {\r\n\t                        $scope.toLogin = function() {\r\n\t                            location.href = loginUrl; //\u8df3\u8f6c\u5230\u767b\u5f55\u9875\u9762\r\n\t                            opend = false;\r\n\t                            $modalInstance.close('ok');\r\n\t                        }\r\n\t                        $scope.back = function() {\r\n\t                            //$location.replace();\r\n\t                            history.back();\r\n\t                            opend = false;\r\n\t                            $modalInstance.close('ok');\r\n\t                            //location.href = _loginUrl; //\u8df3\u8f6c\u5230\u767b\u5f55\u9875\u9762\r\n\t                        }\r\n\t                    }\n```\n### 16f54dde6f1b9d97 (doLogin)\n```js\nfunction() {\r\n\t\t\t$scope.rerror = \"\";\r\n\r\n\t\t\tvar username=$scope.login?$scope.login.username:undefined;\r\n\t\t\tif(!username){\r\n\t\t\t\tusername=$(\".form-input[ng-model='login.username']\").val();\r\n\t\t\t}\r\n\t\t\tvar password=$scope.login?$scope.login.password:undefined;\r\n\t\t\tif(!password){\r\n\t\t\t\tpassword=$(\".form-input[ng-model='login.password']\").val();\r\n\t\t\t}\r\n\t\t\tif (!$scope.login||!username||!password) {\r\n\t\t\t\t$scope.uperror = \"\u8bf7\u586b\u5199\u8d26\u53f7\u548c\u5bc6\u7801\";\r\n\t\t\t\treturn false;\r\n\t\t\t} else {\r\n\t\t\t\t$scope.uperror = \"\";\r\n\t\t\t}\r\n\t\t\tif ($scope.needValidate == true && ($scope.login.validate == undefined || $scope.login.validate == \"\")) {\r\n\t\t\t\t$scope.validateerror = \"\u8bf7\u586b\u5199\u9a8c\u8bc1\u7801\";\r\n\t\t\t\treturn false;\r\n\t\t\t} else {\r\n\t\t\t\t$scope.validateerror = \"\";\r\n\t\t\t}\r\n\r\n\t\t\tvar data = {\r\n\t\t\t\t\"username\" : $scope.login.username,\r\n\t\t\t\t\"password\" : base64Encode($scope.login.password),\r\n\t\t\t\t\"org\" : $scope.orgcode,\r\n\t\t\t\t\"rememberMe\" : $scope.login.rememberMe,\r\n\t\t\t\t\"validate\" : $scope.login.validate\r\n\t\t\t}\r\n\t\t\t$iqa_login_loginService.slogin(data).then(function(data) {\r\n\t\t\t\tif(data.data.status == 200) {\r\n\t\t\t\t\tif(data.data.data.initialised==false){\r\n\t\t\t\t\t\t$iqa_login_loginService.isPermitted(\"companySetting:systemSetting\").then(function(d){\r\n\t\t\t\t\t\t\tif(d.data==true){\r\n\t\t\t\t\t\t\t\tlocation.href = \"/home/setting-guide/step1\";\r\n\t\t\t\t\t\t\t}else{\r\n\t\t\t\t\t\t\t\t$scope.goToUrl();\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t},function(){\r\n\t\t\t\t\t\t\t$scope.goToUrl();\r\n\t\t\t\t\t\t})\r\n\t\t\t\t\t}else{\r\n\t\t\t\t\t\t$scope.goToUrl();\r\n\t\t\t\t\t}\r\n\t\t\t\t} else if (data.data.data.personstatus != undefined && data.data.data.personstatus != null) {\r\n\t\t\t\t\tif(data.data.data.personstatus < 0) {\r\n\t\t\t\t\t\tlocation.href = \"/login/join-company-special/\" + $scope.login.username + \"/\" + $scope.orgcode;\r\n\t\t\t\t\t} else {\r\n\t\t\t\t\t\tlocation.href = \"/login/register/step3/\" + $scope.login.username;\r\n\t\t\t\t\t}\r\n\t\t\t\t} else {\r\n\t\t\t\t\t$scope.rerror = data.data\n```\n### 2bc1c782916fc6c0 (login)\n```js\nfunction(form) {\r\n\t\t\t\t$scope.check = true;\r\n\t\t\t\tif(form.$invalid){\r\n\t\t\t\t\treturn false;\r\n\t\t\t\t}\r\n\t\t\t\tif ($scope.needValidate == true\t&& ($scope.validate == undefined || $scope.validate == \"\")) {\r\n\t\t\t\t\treturn false;\r\n\t\t\t\t} else {\r\n\r\n\t\t\t\t\tvar data = {\r\n\t\t\t\t\t\t\"username\" : $scope.loginUsername,\r\n\t\t\t\t\t\t\"password\" : base64Encode($scope.password),\r\n\t\t\t\t\t\t\"org\" : $scope.orgId,\r\n\t\t\t\t\t\t\"rememberMe\" : $scope.rememberMe,\r\n\t\t\t\t\t\t\"validate\" : $scope.validate\r\n\t\t\t\t\t}\r\n\t\t\t\t\t$iqa_login_loginService.login(data).then(function(data) {\r\n\t\t\t\t\t\tif (data.data.status == 200) {\r\n\t\t\t\t\t\t\tlocation.href = \"/home\";\r\n\t\t\t\t\t\t} else if (data.data.status == 2003) {\r\n\t\t\t\t\t\t\t$scope.clearVcode();\r\n\t\t\t\t\t\t\t$scope.checkNeedValidate($scope.loginUsername, true);\r\n\t\t\t\t\t\t\t$iq_window.alert(data.data.message + \",\u8bf7\u68c0\u67e5\u8f93\u5165\u662f\u5426\u6b63\u786e\uff01\",3,\"warn\");\r\n\t\t\t\t\t\t}else {\r\n\t\t\t\t\t\t\t$scope.clearPassword();\r\n\t\t\t\t\t\t\t$scope.clearVcode();\r\n\t\t\t\t\t\t\t$scope.checkNeedValidate($scope.loginUsername, true);\r\n\t\t\t\t\t\t\t$iq_window.alert({message:data.data.message,type:\"warn\"});\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t\t$scope.check = false;\r\n\t\t\t\t\t},function(){$scope.cancel();});\r\n\t\t\t\t}\r\n\t\t\t}\n```\n### e6b29ade1fa5717c (doLogin)\n```js\nfunction() {\r\n\t\t\t$scope.rerror = \"\";\r\n\r\n\t\t\tvar username=$scope.login?$scope.login.username:undefined;\r\n\t\t\tif(!username){\r\n\t\t\t\tusername=$(\".form-input[ng-model='login.username']\").val();\r\n\t\t\t}\r\n\t\t\tvar password=$scope.login?$scope.login.password:undefined;\r\n\t\t\tif(!password){\r\n\t\t\t\tpassword=$(\".form-input[ng-model='login.password']\").val();\r\n\t\t\t}\r\n\t\t\tif (!$scope.login||!username||!password) {\r\n\t\t\t\t$scope.uperror = \"\u8bf7\u586b\u5199\u8d26\u53f7\u548c\u5bc6\u7801\";\r\n\t\t\t\treturn false;\r\n\t\t\t} else {\r\n\t\t\t\t$scope.uperror = \"\";\r\n\t\t\t}\r\n\t\t\tif ($scope.needValidate == true && ($scope.login.validate == undefined || $scope.login.validate == \"\")) {\r\n\t\t\t\t$scope.validateerror = \"\u8bf7\u586b\u5199\u9a8c\u8bc1\u7801\";\r\n\t\t\t\treturn false;\r\n\t\t\t} else {\r\n\t\t\t\t$scope.validateerror = \"\";\r\n\t\t\t}\r\n\r\n\t\t\tvar data = {\r\n\t\t\t\t\"username\" : $scope.login.username,\r\n\t\t\t\t\"password\" : base64Encode($scope.login.password),\r\n\t\t\t\t\"validate\" : $scope.login.validate\r\n\t\t\t}\r\n\t\t\t$iqa_login_loginService.loginValidate(data).then(function(data) {\r\n\t\t\t\tif(data.data.status == 200) {\r\n\t\t\t\t\t$iqa_login_loginService.createWeChatBinding().then(function(rdata) {\r\n\t\t\t\t\t\tif(rdata.data.status == 200) {\r\n\t\t\t\t\t\t\t$state.go(\"wechat-login-binding.wait\", {\r\n\t\t\t\t\t\t\t\tmobile : angular.copy(rdata.data.item)\r\n\t\t\t\t\t\t\t});\r\n\t\t\t\t\t\t} else {\r\n\t\t\t\t\t\t\t$scope.rerror = rdata.data.message;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t});\r\n\t\t\t\t} else {\r\n\t\t\t\t\t$scope.rerror = data.data.message;\r\n\t\t\t\t\t$scope.clearPassword();\r\n\t\t\t\t\t$scope.clearVcode();\r\n\t\t\t\t\t$scope.checkNeedValidate($scope.login.username, true);\r\n\t\t\t\t}\r\n\t\t\t});\r\n\t\t}\n```\n### c00f8b66ee98f7e5 ((anon))\n```js\nfunction (event) {\r\n\t\tif($(event.target).closest('.modal-dialog').length) {\r\n\t      event.stopPropagation();\r\n\t    } else {\r\n\t      if ($(event.target).closest('.mymodal').length) {\r\n\t    \t  event.preventDefault();\r\n\t      }\r\n\t    }\r\n\t}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+    }
+   ],
+   "tools": null,
+   "ts": 1782557535.3273568
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"top1\":\"2bc1c782916fc6c0\",\"ranking\":[\"2bc1c782916fc6c0\",\"16f54dde6f1b9d97\",\"e6b29ade1fa5717c\",\"bdbe178f99074185\",\"c00f8b66ee98f7e5\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1861,
+    "output_tokens": 79
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-f9b194b4-da07-9f3a-8670-25b8e651f607",
+    "object": "chat.completion",
+    "created": 1782557533,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1861,
+     "completion_tokens": 79,
+     "total_tokens": 1940,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1861,
+     "output_tokens": 79
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"top1\":\"2bc1c782916fc6c0\",\"ranking\":[\"2bc1c782916fc6c0\",\"16f54dde6f1b9d97\",\"e6b29ade1fa5717c\",\"bdbe178f99074185\",\"c00f8b66ee98f7e5\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1861,
+   "output_tokens": 79
+  }
+ }
+]

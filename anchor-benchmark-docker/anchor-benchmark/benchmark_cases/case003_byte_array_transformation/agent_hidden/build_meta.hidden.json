@@ -1,0 +1,276 @@
+{
+  "case_id": "case003_byte_array_transformation",
+  "schema_version": "1.1",
+  "metadata_role": "case_metadata_and_analysis",
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "click",
+            "selector": "input[name=\"streamFormat\"][value=\"binary\"]"
+          },
+          {
+            "action": "click",
+            "selector": "input[name=\"streamMode\"][value=\"encoded\"]"
+          },
+          {
+            "action": "fill",
+            "selector": "#streamData",
+            "value": "deadbeef01020304"
+          },
+          {
+            "action": "click",
+            "selector": "#runQueryButton"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log + fetch",
+        "argument_type": "object",
+        "action": "stream.push",
+        "field": "byte_payload",
+        "value_pattern": "^bx_[0-9a-f]+:[0-9a-f]{2}$",
+        "fetch_header": "X-Byte-Pack",
+        "fetch_url": "/api/stream/push"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific byte payload value-construction function on the dynamic behavior chain: after form routing and input preparation, its own body constructs the bx_<hex>:<check> value rather than merely collecting inputs, dispatching control, wrapping a return value, or emitting the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "source files outside captures",
+      "worker scripts",
+      "browser internals"
+    ]
+  },
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3104,
+    "async_level": 3,
+    "distractor_count": 44,
+    "semantic_decoy_count": 26,
+    "submit_path_decoy_count": 12,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "build_artifacts": {
+    "page": "agent_visible/captures/devtools-source-dump/127.0.0.1_4173/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/note.app.bundle.js",
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4173/assets/note.app.bundle.js",
+    "capture_manifest": "captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 2330054,
+    "bundle_lines": 86445,
+    "captured_bundle_lines": 86445
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The visible JavaScript corpus is one obfuscated bundle and no source map is exposed.",
+        "The target value is carried through async relay, middleware compose, state-machine transit, and a slot-selected transformer before console output and fetch header assignment.",
+        "The transformer table exposes inactive closures and decoy modules, so the target slot must be distinguished from similar-looking paths."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_bundle_lines": 86445,
+        "route_table_rows": 44,
+        "transformer_slots": 32,
+        "active_slot": 17,
+        "state_machine_steps": 3104
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The path crosses click handling, tuple construction, async relay, middleware compose, state-machine trampoline, transformer selection, byte_payload construction, fetch header assignment, and sink wrapping.",
+        "The deployed bundle contains 44 structural x-module decoys and 25 vendor-noise v-modules that do not feed the target byte_payload field."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 20,
+        "off_chain_decoy_modules": 44,
+        "inactive_transformer_slots": 31
+      }
+    },
+    "construct_validity_note": "Because answer_function must be visible in captures, the intended difficulty is semantic disambiguation among visible functions and decoys, not hiding every identifier."
+  },
+  "behavior_category": {
+    "paper_category": "byte_array_transformation",
+    "case_category": "fetch_request_header_field_assignment",
+    "subtype": "button-click-time byte-stream field transformation value written to request header",
+    "network_request_present": true,
+    "reason": "The observable value is a deterministic byte-array transformation of local form state and state-machine transit, written to the X-Byte-Pack header and console object."
+  },
+  "source_files": [
+    "src/host/favicon.svg",
+    "src/host/index.html",
+    "src/host/styles.css",
+    "src/z0/a0.js",
+    "src/z0/b1.js",
+    "src/z0/c2.js",
+    "src/z0/d3.js",
+    "src/z0/e4.js",
+    "src/z0/f5.js",
+    "src/z0/g6.js",
+    "src/z0/h7.js",
+    "src/z0/i8.js",
+    "src/z0/j9.js",
+    "src/z0/k0.js",
+    "src/z0/k1.js",
+    "src/z0/k2.js",
+    "src/z0/k7/q3/t9.js",
+    "src/z0/l0.js",
+    "src/z0/m0.js",
+    "src/z0/n0.js",
+    "src/z0/o0.js",
+    "src/z0/p0.js",
+    "src/z0/r0.js",
+    "src/z0/s0.js",
+    "src/z0/t0.js",
+    "src/z0/v/v00.js",
+    "src/z0/v/v01.js",
+    "src/z0/v/v02.js",
+    "src/z0/v/v03.js",
+    "src/z0/v/v04.js",
+    "src/z0/v/v05.js",
+    "src/z0/v/v06.js",
+    "src/z0/v/v07.js",
+    "src/z0/v/v08.js",
+    "src/z0/v/v09.js",
+    "src/z0/v/v10.js",
+    "src/z0/v/v11.js",
+    "src/z0/v/v12.js",
+    "src/z0/v/v13.js",
+    "src/z0/v/v14.js",
+    "src/z0/v/v15.js",
+    "src/z0/v/v16.js",
+    "src/z0/v/v17.js",
+    "src/z0/v/v18.js",
+    "src/z0/v/v19.js",
+    "src/z0/v/v20.js",
+    "src/z0/v/v21.js",
+    "src/z0/v/v22.js",
+    "src/z0/v/v23.js",
+    "src/z0/v/v24.js",
+    "src/z0/x/x00.js",
+    "src/z0/x/x01.js",
+    "src/z0/x/x02.js",
+    "src/z0/x/x03.js",
+    "src/z0/x/x04.js",
+    "src/z0/x/x05.js",
+    "src/z0/x/x06.js",
+    "src/z0/x/x07.js",
+    "src/z0/x/x08.js",
+    "src/z0/x/x09.js",
+    "src/z0/x/x10.js",
+    "src/z0/x/x11.js",
+    "src/z0/x/x12.js",
+    "src/z0/x/x13.js",
+    "src/z0/x/x14.js",
+    "src/z0/x/x15.js",
+    "src/z0/x/x16.js",
+    "src/z0/x/x17.js",
+    "src/z0/x/x18.js",
+    "src/z0/x/x19.js",
+    "src/z0/x/x20.js",
+    "src/z0/x/x21.js",
+    "src/z0/x/x22.js",
+    "src/z0/x/x23.js",
+    "src/z0/x/x24.js",
+    "src/z0/x/x25.js",
+    "src/z0/x/x26.js",
+    "src/z0/x/x27.js",
+    "src/z0/x/x28.js",
+    "src/z0/x/x29.js",
+    "src/z0/x/x30.js",
+    "src/z0/x/x31.js",
+    "src/z0/x/x32.js",
+    "src/z0/x/x33.js",
+    "src/z0/x/x34.js",
+    "src/z0/x/x35.js",
+    "src/z0/x/x36.js",
+    "src/z0/x/x37.js",
+    "src/z0/x/x38.js",
+    "src/z0/x/x39.js",
+    "src/z0/x/x40.js",
+    "src/z0/x/x41.js",
+    "src/z0/x/x42.js",
+    "src/z0/x/x43.js"
+  ],
+  "dist_files": [
+    "dist/assets/note.app.bundle.js",
+    "dist/favicon.svg",
+    "dist/index.html",
+    "dist/styles.css"
+  ],
+  "line_count_summary": {
+    "pre": {
+      "src_lines": 21094,
+      "z0_lines": 20506,
+      "file_count": 94
+    },
+    "post": {
+      "src_lines": 21094,
+      "z0_lines": 20506,
+      "file_count": 94
+    }
+  },
+  "decoy_file_count": 44,
+  "vendor_file_count": 25,
+  "core_file_line_count": 551,
+  "obfuscation_config": {
+    "compact": false,
+    "sourceMap": false,
+    "selfDefending": false,
+    "debugProtection": false,
+    "debugProtectionInterval": 0,
+    "disableConsoleOutput": false,
+    "simplify": true,
+    "identifierNamesGenerator": "mangled",
+    "stringArray": false,
+    "transformObjectKeys": false,
+    "controlFlowFlattening": false,
+    "deadCodeInjection": false,
+    "renameGlobals": false,
+    "seed": 3003
+  },
+  "forbidden_token_scan_result": {
+    "passed": true,
+    "files": [
+      "assets/note.app.bundle.js",
+      "favicon.svg",
+      "index.html",
+      "styles.css"
+    ]
+  },
+  "sourcemap_scan_result": {
+    "passed": true,
+    "exposed": false
+  },
+  "hidden_oracle_digest": "case003_byte_array_transformation:src-z0-k7-q3-t9:buildTransform:slot-17",
+  "hidden_core_source_file": "src/z0/k7/q3/t9.js",
+  "hidden_core_export_name": "u",
+  "hidden_core_slot": 17
+}

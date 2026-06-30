@@ -1,0 +1,944 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: Locate the anchor function for the state_code field in the console.log object whose action is note.add after typing a note body and tag, selecting priority High, focusing the note editor, and pressing Control+Enter. The anchor function is the first target-specific state encoding value constructor on the dynamic behavior chain: after keyboard shortcut recognition, intent queuing, custom event dispatch, flow execution, draft reading, normalization and input preparation, its function body itself constructs the target observable state encoding value rather than merely collecting inputs, dispatching control, wrapping a return value, or writing to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.\n\nExample value: sc_dzqpt45t20xq2c\nObservable: {'type': 'console', 'action': 'note.add', 'field': 'state_code'}\nCandidate seed nodes (lexical prior, not a ranking): ['f0dc5a51f1b9b8f2', '292acb5ff326879e', '50f2739d38233877', '71ddfda52ef2f950', 'a45be3fb6ed36c8b', '03d4af6a7ffb9cec', 'a742453d5654a303', '249d9085bb819193']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_L7yj6ssjSPWiD4JQ5stt5317",
+     "name": "search_entity",
+     "input": {
+      "query": "state_code"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_GqIuHE2BYH03PGXs92Wh2285",
+     "name": "search_entity",
+     "input": {
+      "query": "note.add"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_L7yj6ssjSPWiD4JQ5stt5317",
+     "content": "{\"nodes\": [\"cd4c90b97323c3ff\", \"f1d5d2042c827cbc\", \"b0e6c4edf7d1c7df\", \"b51269018f3bf83b\", \"7b5fd46e9970e59c\", \"3db9d9042988caf7\", \"22cbd5b70bd71813\", \"89dec36e87bade00\", \"1103b3c3572d5fd9\", \"bbbb805a3e82b5aa\", \"72df16bec90c4a1b\", \"61930dadc9fce4fd\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_GqIuHE2BYH03PGXs92Wh2285",
+     "content": "{\"nodes\": [\"f0dc5a51f1b9b8f2\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_KFY0VMIFRnjrWhydwpAu0528",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "f0dc5a51f1b9b8f2"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_FMzMQvIGfwDZCnCAnnHm8340",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "cd4c90b97323c3ff"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_I1KRBAe1cdG3tsxSkcW61103",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "f1d5d2042c827cbc"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_KFY0VMIFRnjrWhydwpAu0528",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 10110, \"end_offset\": 10257}, \"_best_guess_score\": 0, \"name\": \"emitNoteResult\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 10110, \"end_offset\": 10257, \"code\": \"function emitNoteResult(a) {\\n    const b = {\\n        'action': 'note.add',\\n        ['state_' + 'code']: a\\n    };\\n    return console['log'](b), b;\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_FMzMQvIGfwDZCnCAnnHm8340",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 1721703, \"end_offset\": 1722312}, \"_best_guess_score\": -57, \"name\": \"encodeShadowNoteState00\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 1721703, \"end_offset\": 1722312, \"code\": \"function encodeShadowNoteState00(a = {}) {\\n    const b = shadowTape$b(a);\\n    let c = (0x811c9dc5 ^ shadowSlot$b) >>> 0x0, d = 0x45d9f3b + shadowSlot$b * 0x61 >>> 0x0;\\n    for (let e = 0x0; e < b['length']; e += 0x1) {\\n        c = Math['imul'](c ^ b['charCodeAt'](e) ^ e, 0x1000193) >>> 0x0, c = rotateShadow$b(c, e % 0xb + 0x3), d = Math['imul'](d + c + e + shadowSlot$b, 0x27d4eb2d) >>> 0x0;\\n    }\\n    return {\\n        'slot': shadowSlot$b,\\n        'branch': 'shadow-' + String(shadowSlot$b)['padStart'](0x2, '0'),\\n        'state_code': 'sc_' + shadowBody$b(c, d),\\n        'weight': (c ^ d) >>> 0x0\\n    };\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_I1KRBAe1cdG3tsxSkcW61103",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 1723064, \"end_offset\": 1723673}, \"_best_guess_score\": -58, \"name\": \"encodeShadowNoteState01\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 1723064, \"end_offset\": 1723673, \"code\": \"function encodeShadowNoteState01(a = {}) {\\n    const b = shadowTape$a(a);\\n    let c = (0x811c9dc5 ^ shadowSlot$a) >>> 0x0, d = 0x45d9f3b + shadowSlot$a * 0x61 >>> 0x0;\\n    for (let e = 0x0; e < b['length']; e += 0x1) {\\n        c = Math['imul'](c ^ b['charCodeAt'](e) ^ e, 0x1000193) >>> 0x0, c = rotateShadow$a(c, e % 0xb + 0x3), d = Math['imul'](d + c + e + shadowSlot$a, 0x27d4eb2d) >>> 0x0;\\n    }\\n    return {\\n        'slot': shadowSlot$a,\\n        'branch': 'shadow-' + String(shadowSlot$a)['padStart'](0x2, '0'),\\n        'state_code': 'sc_' + shadowBody$a(c, d),\\n        'weight': (c ^ d) >>> 0x0\\n    };\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_ArbwkEjw2NQeLmMp9tOT7280",
+     "name": "traverse_graph",
+     "input": {
+      "node": "f0dc5a51f1b9b8f2",
+      "edge": "invoked_by"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_jCLV9NOeNF9pqJrqxlhr6928",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "292acb5ff326879e"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_KqHBP6ZvPBl7osf3AnWe7007",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "50f2739d38233877"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_03_bqPW51pqHYUCAtzZNmfn9453",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "71ddfda52ef2f950"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_ArbwkEjw2NQeLmMp9tOT7280",
+     "content": "{\"neighbours\": [\"893e249e86cb3161\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_jCLV9NOeNF9pqJrqxlhr6928",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 321, \"end_offset\": 452}, \"_best_guess_score\": -1, \"name\": \"dispatchDraftIntent\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 321, \"end_offset\": 452, \"code\": \"function dispatchDraftIntent(a) {\\n    return document['dispatchEvent'](new CustomEvent('note:draft-intent', { 'detail': a })), a;\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_KqHBP6ZvPBl7osf3AnWe7007",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 15204, \"end_offset\": 15539}, \"_best_guess_score\": -2, \"name\": \"bindDraftIntentBus\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 15204, \"end_offset\": 15539, \"code\": \"function bindDraftIntentBus() {\\n    document['addEventListener']('note:draft-intent', a => {\\n        const b = a['detail'] || {}, c = resolveDraftFlow(b);\\n        if (!c)\\n            return;\\n        runDraftFlow(c, {\\n            'intent': b,\\n            'source': 'intent-bus',\\n            'command': b['command']\\n        });\\n    });\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_03_bqPW51pqHYUCAtzZNmfn9453",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 12415, \"end_offset\": 12789}, \"_best_guess_score\": -3, \"name\": \"decorateShortcutState\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 12415, \"end_offset\": 12789, \"code\": \"async function decorateShortcutState(a) {\\n    const b = addShortcutState(a['normalized'], a['intent'] || {});\\n    return {\\n        ...withFlowStep(a, 'decorate-shortcut-state'),\\n        'decorated': b,\\n        'previewHints': {\\n            'bodyLength': b['body']['length'],\\n            'tagView': b['tag'],\\n            'statusKey': makeEditorStatusKey(b)\\n        }\\n    };\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_KXV6HDawrc34qXdNnttK3681",
+     "name": "traverse_graph",
+     "input": {
+      "node": "f0dc5a51f1b9b8f2",
+      "edge": "invokes"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_dqgASNNhAOf0CP1nfUmv6728",
+     "name": "traverse_graph",
+     "input": {
+      "node": "893e249e86cb3161",
+      "edge": "invokes"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_KXV6HDawrc34qXdNnttK3681",
+     "content": "{\"neighbours\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_dqgASNNhAOf0CP1nfUmv6728",
+     "content": "{\"neighbours\": [\"dc03f0410086a275\", \"f0dc5a51f1b9b8f2\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_xMidAEkwq4VTjcJuHP1A0493",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "893e249e86cb3161"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_bMFsC5Vmsj4nGjTbJpm92222",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "dc03f0410086a275"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_xMidAEkwq4VTjcJuHP1A0493",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 13688, \"end_offset\": 13805}, \"_best_guess_score\": -23, \"name\": \"publishStateCode\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 13688, \"end_offset\": 13805, \"code\": \"async function publishStateCode(a) {\\n    return emitNoteResult(a['packed']), withFlowStep(a, 'publish-state-code');\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_bMFsC5Vmsj4nGjTbJpm92222",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 11384, \"end_offset\": 11581}, \"_best_guess_score\": -42, \"name\": \"withFlowStep\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 11384, \"end_offset\": 11581, \"code\": \"function withFlowStep(a, b) {\\n    const c = Array['isArray'](a['flowPath']) ? a['flowPath'] : [];\\n    return {\\n        ...a,\\n        'flowPath': [\\n            ...c,\\n            b\\n        ]\\n    };\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_wm9BtvvPAwX6KvfCnVCN9936",
+     "name": "traverse_graph",
+     "input": {
+      "node": "893e249e86cb3161",
+      "edge": "invoked_by"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_wm9BtvvPAwX6KvfCnVCN9936",
+     "content": "{\"neighbours\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_DDS60ZJxSBXh5REO1heQ0728",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "a45be3fb6ed36c8b"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_qKhoOIUhJqslGF4N5f9c0022",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "03d4af6a7ffb9cec"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_BpnBcCEmVXQkPQr22EBn4826",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "a742453d5654a303"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_03_orA2nVCITdsu2KzSeCCq3006",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "249d9085bb819193"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_DDS60ZJxSBXh5REO1heQ0728",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 17457, \"end_offset\": 17840}, \"_best_guess_score\": -4, \"name\": \"bindPassivePreview\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 17457, \"end_offset\": 17840, \"code\": \"function bindPassivePreview() {\\n    const a = [\\n        '#noteText',\\n        '#tagInput',\\n        '#prioritySelect'\\n    ]['map'](b => document['querySelector'](b))['filter'](Boolean);\\n    for (const b of a) {\\n        b['addEventListener']('input', () => queueMicroPreview(updatePassivePreview)), b['addEventListener']('change', () => queueMicroPreview(updatePassivePreview));\\n    }\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_qKhoOIUhJqslGF4N5f9c0022",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 927, \"end_offset\": 1409}, \"_best_guess_score\": -5, \"name\": \"buildShortcutIntent\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 927, \"end_offset\": 1409, \"code\": \"function buildShortcutIntent(a, b) {\\n    const c = a['target']?.['id'] || a['target']?.['name'] || a['target']?.['tagName'] || 'unknown', d = a['metaKey'] ? 'meta-enter' : 'ctrl-enter';\\n    return {\\n        'command': b['getAttribute']('data-shortcut-command') || 'note.shortcut.commit',\\n        'source': 'keyboard',\\n        'focus': c,\\n        'keyChord': d,\\n        'lane': b['getAttribute']('data-state-lane') || 'composer',\\n        'formId': b['id'] || 'draftComposer'\\n    };\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_BpnBcCEmVXQkPQr22EBn4826",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 1410, \"end_offset\": 1721}, \"_best_guess_score\": -6, \"name\": \"bindShortcutGate\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 1410, \"end_offset\": 1721, \"code\": \"function bindShortcutGate() {\\n    document['addEventListener']('keydown', a => {\\n        if (!isCommitChord(a))\\n            return;\\n        const b = findShortcutScope(a['target']);\\n        if (!b)\\n            return;\\n        a['preventDefault'](), enqueueDraftIntent(buildShortcutIntent(a, b));\\n    }, !![]);\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_03_orA2nVCITdsu2KzSeCCq3006",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 14830, \"end_offset\": 15203}, \"_best_guess_score\": -7, \"name\": \"runDraftFlow\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 14830, \"end_offset\": 15203, \"code\": \"async function runDraftFlow(a, b) {\\n    let c = {\\n        ...b,\\n        'flowName': a['name'],\\n        'started': 'shortcut_case003_state_encoding',\\n        'trace': makeFlowTrace(a, b)\\n    };\\n    for (const d of a['steps']) {\\n        const e = flowStepRegistry[d];\\n        if (typeof e !== 'function')\\n            return null;\\n        c = await e(c);\\n    }\\n    return c;\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_Qopt3M8RL7ikqyaK8CIu0621",
+     "name": "traverse_graph",
+     "input": {
+      "node": "cd4c90b97323c3ff",
+      "edge": "invoked_by"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_ol2oCYTVQDS8ocrIYl2i5595",
+     "name": "traverse_graph",
+     "input": {
+      "node": "f1d5d2042c827cbc",
+      "edge": "invoked_by"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_Qopt3M8RL7ikqyaK8CIu0621",
+     "content": "{\"neighbours\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_ol2oCYTVQDS8ocrIYl2i5595",
+     "content": "{\"neighbours\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_BYJ9R1iFdQ0nd63Mgiid7039",
+     "name": "search_entity",
+     "input": {
+      "query": "packed state_code"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_a0W27hcNum28tGOoE2w12808",
+     "name": "search_entity",
+     "input": {
+      "query": "flowStepRegistry"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_BYJ9R1iFdQ0nd63Mgiid7039",
+     "content": "{\"nodes\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_a0W27hcNum28tGOoE2w12808",
+     "content": "{\"nodes\": [\"249d9085bb819193\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_UwrcLmQPFpa97lCnLFN82867",
+     "name": "search_entity",
+     "input": {
+      "query": "packed"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_UwrcLmQPFpa97lCnLFN82867",
+     "content": "{\"nodes\": [\"0aceb3f12217edd9\", \"893e249e86cb3161\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_9uvCkh4F8tkDqbE57jvW1723",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "0aceb3f12217edd9"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_9uvCkh4F8tkDqbE57jvW1723",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 13370, \"end_offset\": 13541}, \"_best_guess_score\": -22, \"name\": \"encodeShortcutState\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 13370, \"end_offset\": 13541, \"code\": \"async function encodeShortcutState(a) {\\n    return {\\n        ...withFlowStep(a, 'encode-state-frame'),\\n        'packed': encodeShortcutStateFrame(a['stateFrame'])\\n    };\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_ShD3HIczVkeWcAYEUftE2433",
+     "name": "search_entity",
+     "input": {
+      "query": "encodeShortcutStateFrame"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_ShD3HIczVkeWcAYEUftE2433",
+     "content": "{\"nodes\": [\"e86e788ec647ed93\", \"0aceb3f12217edd9\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_ET_EYZdhAYjQLR5dNc7ub514947",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e86e788ec647ed93"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_ET_EYZdhAYjQLR5dNc7ub514947",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 8783, \"end_offset\": 8924}, \"_best_guess_score\": -21, \"name\": \"encodeShortcutStateFrame\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 8783, \"end_offset\": 8924, \"code\": \"function encodeShortcutStateFrame(a) {\\n    if (a?.['type'] !== 'shortcut-draft-state')\\n        return '';\\n    return sealDraftFrameCode(a);\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_ET_7sK0EHocxbC4gLyPT04y4888",
+     "name": "search_entity",
+     "input": {
+      "query": "sealDraftFrameCode"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_ET_7sK0EHocxbC4gLyPT04y4888",
+     "content": "{\"nodes\": [\"38a44b46ab2cb03d\", \"e86e788ec647ed93\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_LUmTbTwiKRzgGOXhBjFW3044",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "38a44b46ab2cb03d"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_LUmTbTwiKRzgGOXhBjFW3044",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 7429, \"end_offset\": 7914}, \"_best_guess_score\": -39, \"name\": \"sealDraftFrameCode\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 7429, \"end_offset\": 7914, \"code\": \"function sealDraftFrameCode(a) {\\n    const b = {\\n            ...a?.['fields'] || {},\\n            'slotId': a?.['slotId'] || ''\\n        }, c = makeStateRows(b), d = c['reduce']((h, i) => {\\n            return h + i['key']['length'] * 0x11 + i['value']['length'] * 0x1f + i['index'] >>> 0x0;\\n        }, 0x9e3779b9), e = foldStateRows(c, d), f = toFixedBase36(e['left'], 0x6) + toFixedBase36(e['right'], 0x6), g = stateCheck(e['left'], e['right'], e['length']);\\n    return 'sc_' + f + g;\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_pNnVEro27dUMGhjE3Unw1698",
+     "name": "search_entity",
+     "input": {
+      "query": "resolveDraftFlow"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_t8l3up1xMl0Jb09NyfAn3894",
+     "name": "search_entity",
+     "input": {
+      "query": "shortcut_case003"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_pNnVEro27dUMGhjE3Unw1698",
+     "content": "{\"nodes\": [\"2a5f3b662237b7b9\", \"50f2739d38233877\", \"c78efa9c4503f2f6\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_t8l3up1xMl0Jb09NyfAn3894",
+     "content": "{\"nodes\": [\"249d9085bb819193\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_fR9pHpaSrtsRDIyk8wEB2992",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "2a5f3b662237b7b9"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_IKdVka7mM6txA8zZ1tls1104",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "c78efa9c4503f2f6"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_fR9pHpaSrtsRDIyk8wEB2992",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 2942, \"end_offset\": 3070}, \"_best_guess_score\": -35, \"name\": \"resolveDraftFlow\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 2942, \"end_offset\": 3070, \"code\": \"function resolveDraftFlow(a) {\\n    const b = flowAliases[a?.['command']] || a?.['command'];\\n    return flowCatalog[b] || null;\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_IKdVka7mM6txA8zZ1tls1104",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 15290, \"end_offset\": 15535}, \"_best_guess_score\": -16, \"name\": \"(anon)\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 15290, \"end_offset\": 15535, \"code\": \"a => {\\n        const b = a['detail'] || {}, c = resolveDraftFlow(b);\\n        if (!c)\\n            return;\\n        runDraftFlow(c, {\\n            'intent': b,\\n            'source': 'intent-bus',\\n            'command': b['command']\\n        });\\n    }\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_e0tcaAyayDpRUjz7Lxve0345",
+     "name": "search_entity",
+     "input": {
+      "query": "flowCatalog"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_jYywEHsJrVyGE3x20aJo3207",
+     "name": "search_entity",
+     "input": {
+      "query": "addShortcutState"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_e0tcaAyayDpRUjz7Lxve0345",
+     "content": "{\"nodes\": [\"2a5f3b662237b7b9\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_jYywEHsJrVyGE3x20aJo3207",
+     "content": "{\"nodes\": [\"143969e1ab0f9f7e\", \"71ddfda52ef2f950\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_IHD9vNDCowwRfTzLKp7N1627",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "143969e1ab0f9f7e"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_IHD9vNDCowwRfTzLKp7N1627",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 11582, \"end_offset\": 11784}, \"_best_guess_score\": -9, \"name\": \"addShortcutState\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 11582, \"end_offset\": 11784, \"code\": \"function addShortcutState(a, b) {\\n    return {\\n        ...a,\\n        'lane': b['lane'] || 'composer',\\n        'gesture': b['keyChord'] || 'ctrl-enter',\\n        'focus': b['focus'] || 'noteText'\\n    };\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_5CBplC7iV3UoDqVHKYQz2578",
+     "name": "traverse_graph",
+     "input": {
+      "node": "cd4c90b97323c3ff",
+      "edge": "invokes"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_PsGwNBTp7DhgvADinrEq8385",
+     "name": "traverse_graph",
+     "input": {
+      "node": "cd4c90b97323c3ff",
+      "edge": "parent"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_VPvcZTH2JaAXqVIQxmWW4335",
+     "name": "traverse_graph",
+     "input": {
+      "node": "38a44b46ab2cb03d",
+      "edge": "invoked_by"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_5CBplC7iV3UoDqVHKYQz2578",
+     "content": "{\"neighbours\": [\"c3dcdafa27c7ab83\", \"ae367b375a66ee50\", \"4e29e29359f55c5d\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_PsGwNBTp7DhgvADinrEq8385",
+     "content": "{\"neighbours\": []}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_VPvcZTH2JaAXqVIQxmWW4335",
+     "content": "{\"neighbours\": [\"e86e788ec647ed93\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_YIDvFHq1JMgqB9KKg49l7097",
+     "name": "search_entity",
+     "input": {
+      "query": "stateFrame"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_Ut5Q6i2c5VWq36wDI0m21681",
+     "name": "search_entity",
+     "input": {
+      "query": "makeStateRows"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_YIDvFHq1JMgqB9KKg49l7097",
+     "content": "{\"nodes\": [\"90d3e2d4b74aaa51\", \"e86e788ec647ed93\", \"677b3a19e523a3ce\", \"0aceb3f12217edd9\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_Ut5Q6i2c5VWq36wDI0m21681",
+     "content": "{\"nodes\": [\"840c4d98dc7c9f19\", \"38a44b46ab2cb03d\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_oR5SBx0EmiJp7IjlFUUD9082",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "90d3e2d4b74aaa51"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_hke0B1bIMRzPF9pUgVIV2605",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "677b3a19e523a3ce"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_oR5SBx0EmiJp7IjlFUUD9082",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 8390, \"end_offset\": 8782}, \"_best_guess_score\": -12, \"name\": \"buildShortcutStateFrame\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 8390, \"end_offset\": 8782, \"code\": \"function buildShortcutStateFrame(a, b = {}) {\\n    const c = readDraftSlot(a);\\n    if (!c)\\n        return {\\n            'type': 'empty',\\n            'source': 'shortcut-slot',\\n            'fields': {}\\n        };\\n    return {\\n        'type': 'shortcut-draft-state',\\n        'source': 'keyboard-shortcut',\\n        'slotId': a['slotId'],\\n        'fields': selectShortcutFrameFields(c, b)\\n    };\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_hke0B1bIMRzPF9pUgVIV2605",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 13181, \"end_offset\": 13369}, \"_best_guess_score\": -8, \"name\": \"resolveShortcutStateFrame\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 13181, \"end_offset\": 13369, \"code\": \"async function resolveShortcutStateFrame(a) {\\n    return {\\n        ...withFlowStep(a, 'resolve-state-frame'),\\n        'stateFrame': buildShortcutStateFrame(a['slot'], a['intent'])\\n    };\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_X3I5ETma2jaiXB7GkVIU2121",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "249d9085bb819193"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_X3I5ETma2jaiXB7GkVIU2121",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 14830, \"end_offset\": 15203}, \"_best_guess_score\": -7, \"name\": \"runDraftFlow\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 14830, \"end_offset\": 15203, \"code\": \"async function runDraftFlow(a, b) {\\n    let c = {\\n        ...b,\\n        'flowName': a['name'],\\n        'started': 'shortcut_case003_state_encoding',\\n        'trace': makeFlowTrace(a, b)\\n    };\\n    for (const d of a['steps']) {\\n        const e = flowStepRegistry[d];\\n        if (typeof e !== 'function')\\n            return null;\\n        c = await e(c);\\n    }\\n    return c;\\n}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_kXh0ISG6FUEHWO0utKxt5515",
+     "name": "search_entity",
+     "input": {
+      "query": "flowStepRegistry"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_kXh0ISG6FUEHWO0utKxt5515",
+     "content": "{\"nodes\": [\"249d9085bb819193\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_v8bA4wrAKunThgWh0nKF2950",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "840c4d98dc7c9f19"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_BPqLepLFTgR8iIl91WsI7229",
+     "name": "search_entity",
+     "input": {
+      "query": "selectShortcutFrameFields"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_v8bA4wrAKunThgWh0nKF2950",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 6365, \"end_offset\": 6518}, \"_best_guess_score\": -74, \"name\": \"makeStateRows\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 6365, \"end_offset\": 6518, \"code\": \"function makeStateRows(a) {\\n    return stateKeys['map']((b, c) => ({\\n        'index': c,\\n        'key': b,\\n        'value': String(a[b] ?? '')\\n    }));\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_BPqLepLFTgR8iIl91WsI7229",
+     "content": "{\"nodes\": [\"43e99f3a772e550c\", \"90d3e2d4b74aaa51\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_Q1sqjhwK33IHEilzxaRe1767",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "43e99f3a772e550c"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_94iAfXWzj6cCkDV2Faig1263",
+     "name": "search_entity",
+     "input": {
+      "query": "stateKeys"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_Q1sqjhwK33IHEilzxaRe1767",
+     "content": "{\"_best_guess\": {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 7915, \"end_offset\": 8389}, \"_best_guess_score\": -19, \"name\": \"selectShortcutFrameFields\", \"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 7915, \"end_offset\": 8389, \"code\": \"function selectShortcutFrameFields(a, b = {}) {\\n    return {\\n        'schema': a['schema'],\\n        'page': a['page'],\\n        'lane': a['lane'] || b['lane'] || 'composer',\\n        'gesture': a['gesture'] || b['keyChord'] || 'ctrl-enter',\\n        'body': a['body'],\\n        'tag': a['tag'],\\n        'priority': a['priority'],\\n        'seed': a['seed'],\\n        'summaryLength': a['summary']?.['length'] ?? 0x0,\\n        'firstLine': a['summary']?.['firstLine'] || ''\\n    };\\n}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_94iAfXWzj6cCkDV2Faig1263",
+     "content": "{\"nodes\": [\"840c4d98dc7c9f19\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": []
+  },
+  {
+   "role": "user",
+   "content": "This is the final allowed step. You must call submit now and may not use any other tool. Submit exactly this single complete function unless you have a strictly better final candidate. Current best candidate location: {\"file\": \"captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js\", \"start_offset\": 10110, \"end_offset\": 10257}"
+  }
+ ],
+ "tools": [
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782544198.8889208
+}

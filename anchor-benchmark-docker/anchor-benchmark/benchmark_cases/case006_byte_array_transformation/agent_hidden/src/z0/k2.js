@@ -1,0 +1,185 @@
+import { l0 } from "./l0.js";
+
+function routeMark(packet) {
+  const trace = Array.isArray(packet.trace) ? packet.trace.slice() : [];
+  const seed = (Number(packet.routeSeed || 0) + 6 * 31 + trace.length) >>> 0;
+  const lane = (seed ^ (6 * 97)) >>> 0;
+  trace.push({ stage: "k2", seed, lane });
+  return {
+    ...packet,
+    routeSeed: seed,
+    routeLane6: lane,
+    trace
+  };
+}
+
+function routeGuard(packet) {
+  const action = String(packet.actionName || "");
+  const accepted = action === "byte.pipe.commit";
+  document.documentElement.dataset.case006Route6 = accepted ? "1" : "0";
+  return accepted;
+}
+
+function routeDecorate(packet) {
+  const projection = Array.isArray(packet.projection) ? packet.projection.slice() : [];
+  projection.push(["r6", String((Number(packet.routeSeed || 0) + 6) % 997)]);
+  return { ...packet, projection };
+}
+
+export function k2(packet) {
+  const marked = routeDecorate(routeMark(packet));
+  if (!routeGuard(marked)) return marked;
+  return l0(marked);
+}
+const k2_070 = "batch-tag:k2.js:070";
+const k2_071 = "audit-line:k2.js:071";
+const k2_072 = "intake-row:k2.js:072";
+const k2_073 = "manifest-slot:k2.js:073";
+const k2_074 = "ledger-entry:k2.js:074";
+const k2_075 = "shard-label:k2.js:075";
+const k2_076 = "codec-field:k2.js:076";
+const k2_077 = "queue-item:k2.js:077";
+const k2_078 = "batch-tag:k2.js:078";
+const k2_079 = "audit-line:k2.js:079";
+const k2_080 = "intake-row:k2.js:080";
+const k2_081 = "manifest-slot:k2.js:081";
+const k2_082 = "ledger-entry:k2.js:082";
+const k2_083 = "shard-label:k2.js:083";
+const k2_084 = "codec-field:k2.js:084";
+const k2_085 = "queue-item:k2.js:085";
+const k2_086 = "batch-tag:k2.js:086";
+const k2_087 = "audit-line:k2.js:087";
+const k2_088 = "intake-row:k2.js:088";
+const k2_089 = "manifest-slot:k2.js:089";
+const k2_090 = "ledger-entry:k2.js:090";
+const k2_091 = "shard-label:k2.js:091";
+const k2_092 = "codec-field:k2.js:092";
+const k2_093 = "queue-item:k2.js:093";
+const k2_094 = "batch-tag:k2.js:094";
+const k2_095 = "audit-line:k2.js:095";
+const k2_096 = "intake-row:k2.js:096";
+const k2_097 = "manifest-slot:k2.js:097";
+const k2_098 = "ledger-entry:k2.js:098";
+const k2_099 = "shard-label:k2.js:099";
+const k2_100 = "codec-field:k2.js:100";
+const k2_101 = "queue-item:k2.js:101";
+const k2_102 = "batch-tag:k2.js:102";
+const k2_103 = "audit-line:k2.js:103";
+const k2_104 = "intake-row:k2.js:104";
+const k2_105 = "manifest-slot:k2.js:105";
+const k2_106 = "ledger-entry:k2.js:106";
+const k2_107 = "shard-label:k2.js:107";
+const k2_108 = "codec-field:k2.js:108";
+const k2_109 = "queue-item:k2.js:109";
+const k2_110 = "batch-tag:k2.js:110";
+const k2_111 = "audit-line:k2.js:111";
+const k2_112 = "intake-row:k2.js:112";
+const k2_113 = "manifest-slot:k2.js:113";
+const k2_114 = "ledger-entry:k2.js:114";
+const k2_115 = "shard-label:k2.js:115";
+const k2_116 = "codec-field:k2.js:116";
+const k2_117 = "queue-item:k2.js:117";
+const k2_118 = "batch-tag:k2.js:118";
+const k2_119 = "audit-line:k2.js:119";
+const k2_120 = "intake-row:k2.js:120";
+const k2_121 = "manifest-slot:k2.js:121";
+const k2_122 = "ledger-entry:k2.js:122";
+const k2_123 = "shard-label:k2.js:123";
+const k2_124 = "codec-field:k2.js:124";
+const k2_125 = "queue-item:k2.js:125";
+const k2_126 = "batch-tag:k2.js:126";
+const k2_127 = "audit-line:k2.js:127";
+const k2_128 = "intake-row:k2.js:128";
+const k2_129 = "manifest-slot:k2.js:129";
+const k2_130 = "ledger-entry:k2.js:130";
+const k2_131 = "shard-label:k2.js:131";
+const k2_132 = "codec-field:k2.js:132";
+const k2_133 = "queue-item:k2.js:133";
+const k2_134 = "batch-tag:k2.js:134";
+const k2_135 = "audit-line:k2.js:135";
+const k2_136 = "intake-row:k2.js:136";
+const k2_137 = "manifest-slot:k2.js:137";
+const k2_138 = "ledger-entry:k2.js:138";
+const k2_139 = "shard-label:k2.js:139";
+const k2_140 = "codec-field:k2.js:140";
+const k2_141 = "queue-item:k2.js:141";
+const k2_142 = "batch-tag:k2.js:142";
+const k2_143 = "audit-line:k2.js:143";
+const k2_144 = "intake-row:k2.js:144";
+const k2_145 = "manifest-slot:k2.js:145";
+const k2_146 = "ledger-entry:k2.js:146";
+const k2_147 = "shard-label:k2.js:147";
+const k2_148 = "codec-field:k2.js:148";
+const k2_149 = "queue-item:k2.js:149";
+const k2_150 = "batch-tag:k2.js:150";
+const k2_151 = "audit-line:k2.js:151";
+const k2_152 = "intake-row:k2.js:152";
+const k2_153 = "manifest-slot:k2.js:153";
+const k2_154 = "ledger-entry:k2.js:154";
+const k2_155 = "shard-label:k2.js:155";
+const k2_156 = "codec-field:k2.js:156";
+const k2_157 = "queue-item:k2.js:157";
+const k2_158 = "batch-tag:k2.js:158";
+const k2_159 = "audit-line:k2.js:159";
+const k2_160 = "intake-row:k2.js:160";
+const k2_161 = "manifest-slot:k2.js:161";
+const k2_162 = "ledger-entry:k2.js:162";
+const k2_163 = "shard-label:k2.js:163";
+const k2_164 = "codec-field:k2.js:164";
+const k2_165 = "queue-item:k2.js:165";
+const k2_166 = "batch-tag:k2.js:166";
+const k2_167 = "audit-line:k2.js:167";
+const k2_168 = "intake-row:k2.js:168";
+const k2_169 = "manifest-slot:k2.js:169";
+const k2_170 = "ledger-entry:k2.js:170";
+const k2_171 = "shard-label:k2.js:171";
+const k2_172 = "codec-field:k2.js:172";
+const k2_173 = "queue-item:k2.js:173";
+const k2_174 = "batch-tag:k2.js:174";
+const k2_175 = "audit-line:k2.js:175";
+const k2_176 = "intake-row:k2.js:176";
+const k2_177 = "manifest-slot:k2.js:177";
+const k2_178 = "ledger-entry:k2.js:178";
+const k2_179 = "shard-label:k2.js:179";
+const k2_180 = "codec-field:k2.js:180";
+const k2_181 = "queue-item:k2.js:181";
+const k2_182 = "batch-tag:k2.js:182";
+const k2_183 = "audit-line:k2.js:183";
+const k2_184 = "intake-row:k2.js:184";
+const k2_185 = "manifest-slot:k2.js:185";
+const k2_186 = "ledger-entry:k2.js:186";
+const k2_187 = "shard-label:k2.js:187";
+const k2_188 = "codec-field:k2.js:188";
+const k2_189 = "queue-item:k2.js:189";
+const k2_190 = "batch-tag:k2.js:190";
+const k2_191 = "audit-line:k2.js:191";
+const k2_192 = "intake-row:k2.js:192";
+const k2_193 = "manifest-slot:k2.js:193";
+const k2_194 = "ledger-entry:k2.js:194";
+const k2_195 = "shard-label:k2.js:195";
+const k2_196 = "codec-field:k2.js:196";
+const k2_197 = "queue-item:k2.js:197";
+const k2_198 = "batch-tag:k2.js:198";
+const k2_199 = "audit-line:k2.js:199";
+const k2_200 = "intake-row:k2.js:200";
+const k2_201 = "manifest-slot:k2.js:201";
+const k2_202 = "ledger-entry:k2.js:202";
+const k2_203 = "shard-label:k2.js:203";
+const k2_204 = "codec-field:k2.js:204";
+const k2_205 = "queue-item:k2.js:205";
+const k2_206 = "batch-tag:k2.js:206";
+const k2_207 = "audit-line:k2.js:207";
+const k2_208 = "intake-row:k2.js:208";
+const k2_209 = "manifest-slot:k2.js:209";
+const k2_210 = "ledger-entry:k2.js:210";
+const k2_211 = "shard-label:k2.js:211";
+const k2_212 = "codec-field:k2.js:212";
+const k2_213 = "queue-item:k2.js:213";
+const k2_214 = "batch-tag:k2.js:214";
+const k2_215 = "audit-line:k2.js:215";
+const k2_216 = "intake-row:k2.js:216";
+const k2_217 = "manifest-slot:k2.js:217";
+const k2_218 = "ledger-entry:k2.js:218";
+const k2_219 = "shard-label:k2.js:219";
+const k2_220 = "codec-field:k2.js:220";
+const k2_221 = "queue-item:k2.js:221";

@@ -1,0 +1,492 @@
+[
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 1 (file/chunk localization, Agentless). Select the bundle chunks most likely to contain the behaviour anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital does not send its body in the clear: a request interceptor transforms the whole body into an envelope carrying an SM4-encrypted `encData` field and an SM2 `signData` signature field. Locate the anchor function for that transformed request. The anchor function is the target-specific request interceptor on the request-build chain: the single complete function whose own body assembles the transformed request body \u2014 it sets the x-tif-* headers, builds the signData signature and the encData ciphertext and writes them into the request it forwards \u2014 rather than the encData builder it calls to encrypt the body (a nested target-specific field builder), the signData builder for the signature field (another nested field builder), or the low-level SM4 encryptor below them (a core crypto utility). The task asks where both `encData` and `signData` are generated; that is this interceptor. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the individual encData/signData field builders or the SM4 primitive \u2014 return the interceptor that builds the whole transformed body. Only code under captures is in scope.  network_request POST /api/nthl/api/CommQuery/queryFixedHospital encData (the query request body) 3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/api/nthl/api/CommQuery/queryFixedHospital\", \"field\": \"encData\", \"plaintext_sample\": \"(the query request body)\", \"value_sample\": \"3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\"}\n\nBundle chunks:\n- chunk_000 (80 functions): 0046, 0046, getInitialData, getInitialData, (anon), (anon), getRawIndicesByActiveState, getRawIndicesByActiveState, (anon), 004f, 004f, doRender\n- chunk_001 (80 functions): render, (anon), 01ef, 01ef, updateViewOnPan, updateViewOnZoom, 0305, 0305, 0352, 0352, optionUpdated, optionUpdated\n- chunk_002 (80 functions): isRemoved, eachNode, eachNode, updateDepthAndHeight, updateDepthAndHeight, getNodeById, getNodeById, contains, contains, getAncestors, getAncestors, getValue\n- chunk_003 (80 functions): (anon), l, splitNumber, splitNumber, (anon), categories, categories, (anon), pieces, pieces, (anon), (anon)\n- chunk_004 (80 functions): 0b16, 0b16, a, resolve, resolveObject, format, b, parse, format, (anon), resolve, resolveObject\n- chunk_005 (80 functions): _updateController, _updateController, u, (anon), (anon), (anon), (anon), 0caf, 0caf, 0cde, 0cde, s\n- chunk_006 (80 functions): resetSourceDefaulter, prepareSource, (anon), (anon), (anon), (anon), (anon), (anon), makeSeriesEncodeForAxisCoordSys, (anon), g, m\n- chunk_007 (80 functions): h, d, _createSymbol, stopSymbolAnimation, getSymbolPath, getScale, highlight, downplay, setZ, setDraggable, updateData, v\n- chunk_008 (80 functions): update:page, update:limit, update:limit, 15af, 15af, 1687, 1687, r, i, a, mul, translate\n- chunk_009 (80 functions): I, P, L, D, toASCII, toASCII, (anon), toUnicode, toUnicode, (anon), (anon), 199f\n- chunk_010 (80 functions): s, l, updateData, (anon), _updateLabel, init, init, render, render, (anon), (anon), (anon)\n- chunk_011 (80 functions): 1fab, 1fab, r, i, (anon), one, one, on, on, isSilent, isSilent, off\n- chunk_012 (80 functions): setData, appendPath, appendPath, addData, addData, _expandData, _expandData, _needsDash, _needsDash, _dashedLineTo, _dashedLineTo, _dashedBezierTo\n- chunk_013 (80 functions): 22da, i, a, o, s, l, init, firstWalk, (anon), (anon), secondWalk, separation\n- chunk_014 (80 functions): remove, remove, dispose, dispose, _buildView, _buildView, _resetLocation, _resetLocation, (anon), _positionGroup, _positionGroup, _getViewExtent\n- chunk_015 (80 functions): init, init, isAnimationEnabled, isAnimationEnabled, mergeOption, mergeOption, _mergeOption, _mergeOption, (anon), (anon), formatTooltip, formatTooltip\n- chunk_016 (80 functions): 2943, exports, (anon), (anon), (anon), 2972, 2972, 29a8, 29a8, 29a9, 29a9, 2a7d\n- chunk_017 (80 functions): 2b8c, o, createVisualMappings, (anon), s, (anon), replaceVisualOption, (anon), (anon), applyVisual, u, h\n- chunk_018 (80 functions): polygon, polyline, polyline, image, image, text, text, tspan, tspan, path, path, lineargradient\n- chunk_019 (80 functions): (anon), (anon), (anon), (anon), 30a3, 30a3, s, (anon), addClip, addClip, addAnimator, addAnimator\n- chunk_020 (80 functions): (anon), u, (anon), grid, grid, polar, polar, singleAxis, singleAxis, 3301, 3301, p\n- chunk_021 (80 functions): get, get, set, set, handleSizeChange, handleSizeChange, handleCurrentChange, handleCurrentChange, (anon), update:currentPage, update:currentPage, update:current-page\n- chunk_022 (80 functions): _createGroup, _renderAxisLine, _renderAxisLine, _renderAxisTick, _renderAxisTick, (anon), _renderAxisLabel, _renderAxisLabel, (anon), _renderControl, _renderControl, f\n- chunk_023 (80 functions): reformIntervals, (anon), e, isNumeric, 38a2, 38a2, getDataParams, getDataParams, getFormattedLabel, getFormattedLabel, (anon), getRawValue\n- chunk_024 (80 functions): (anon), eachTargetAxis, eachTargetAxis, (anon), (anon), getAxisProxy, getAxisProxy, getAxisModel, getAxisModel, setRawRange, setRawRange, (anon)\n- chunk_025 (80 functions): _updateHandle, (anon), _showIndicator, _showIndicator, (anon), _enableHoverLinkToSeries, _enableHoverLinkToSeries, (anon), (anon), _enableHoverLinkFromSeries, _enableHoverLinkFromSeries, _doHoverLinkToSeries\n- chunk_026 (80 functions): updateTransform, updateTransform, (anon), (anon), updateView, updateView, updateVisual, updateVisual, updateLayout, updateLayout, Y, X\n- chunk_027 (80 functions): n, (anon), (anon), (anon), (anon), connect, (anon), (anon), dispose, getInstanceById, registerPostUpdate, registerCoordinateSystem\n- chunk_028 (80 functions): u, h, p, g, m, v, b, x, lift, toHex, modifyHSL, (anon)\n- chunk_029 (80 functions): mergeOption, get, get, getShallow, getShallow, getModel, getModel, isEmpty, isEmpty, restoreData, restoreData, clone\n- chunk_030 (80 functions): init, init, render, render, updateTransform, updateTransform, _updateGroupTransform, _updateGroupTransform, remove, remove, dispose, dispose\n- chunk_031 (80 functions): p, g, 4a3f, 4a3f, g, m, v, y, cubicDerivativeAt, cubicRootAt, cubicExtrema, cubicSubdivide\n- chunk_032 (80 functions): callback, (anon), click, click, fn, fn, fn, fn, update:page, update:page, update:limit, update:limit\n- chunk_033 (80 functions): handleReset, handleReset, handleSearch, handleSearch, fetchData, fetchData, (anon), (anon), (anon), callback, callback, callback\n- chunk_034 (80 functions): dataToPoint, 4c86, 4c86, load, load, (anon), (anon), 4c99, 4c99, reset, reset, progress\n- chunk_035 (80 functions): 4e9f, 4e9f, s, onclick, 4f85, 4f85, init, init, mergeDefaultAndTheme, mergeDefaultAndTheme, mergeOption, mergeOption\n- chunk_036 (80 functions): i, (anon), (anon), 523f, 523f, 527a, 527a, a, (anon), (anon), (anon), exports\n- chunk_037 (80 functions): (anon), (anon), (anon), unregister, (anon), generateCoordId, 55ac, 55ac, i, retrieveTargetInfo, aboveViewRoot, wrapTreePathInfo\n- chunk_038 (80 functions): C, create, (anon), (anon), 5b69, 5b69, u, h, (anon), d, (anon), buildPath\n- chunk_039 (80 functions): e, (anon), (anon), (anon), setCode, setCode, (anon), fn, fn, click, click, callback\n- chunk_040 (80 functions): getNormalizer, getColorMapper, getColorMapper, (anon), (anon), linear, linear, piecewise, piecewise, (anon), (anon), (anon)\n- chunk_041 (80 functions): (anon), (anon), (anon), (anon), (anon), incrementalPrepareRender, incrementalPrepareRender, incrementalRender, incrementalRender, dispose, dispose, remove\n- chunk_042 (80 functions): setLayout, getLayout, getItemLayout, setItemLayout, clearItemLayouts, getItemVisual, setItemVisual, clearAllVisual, N, setItemGraphicEl, getItemGraphicEl, eachItemGraphicEl\n- chunk_043 (80 functions): 6679, render, render, updateAxisPointer, updateAxisPointer, remove, remove, dispose, dispose, o, s, registerAxisPointerClass\n- chunk_044 (80 functions): (anon), cartesian2d, cartesian2d, (anon), polar, polar, A, C, buildPath, buildPath, M, (anon)\n- chunk_045 (80 functions): getHeight, pathToImage, pathToImage, setCursorStyle, setCursorStyle, findHover, findHover, on, on, off, off, trigger\n- chunk_046 (80 functions): (anon), line, line, shadow, shadow, 6bd4, 6bd4, exports, 6c12, 6c12, render, render\n- chunk_047 (80 functions): dataToPoint, pointToData, pointToData, containPoint, containPoint, 6cd8, 6cd8, buildPath, buildPath, init, init, render\n- chunk_048 (80 functions): filter, find, curry, (anon), isFunction, isString, isTypedArray, eqNaN, retrieve, retrieve2, retrieve3, slice\n- chunk_049 (80 functions): preventIncremental, getProgressive, getProgressive, getProgressiveThreshold, getProgressiveThreshold, 72b6, 72b6, init, init, render, render, renderBackground\n- chunk_050 (80 functions): n, (anon), remove, _clearIncremental, 7419, 7419, 74cb, 74cb, linear, linear, quadraticIn, quadraticIn\n- chunk_051 (80 functions): 767c0, 767c0, h, (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_052 (80 functions): render, (anon), (anon), (anon), onclick, remove, dispose, zoom, zoom, back, back, v\n- chunk_053 (80 functions): fn, fn, click, click, fn, fn, update:page, update:page, update:limit, update:limit, update:visible, update:visible\n- chunk_054 (80 functions): findComponents, eachComponent, eachComponent, (anon), (anon), getSeriesByName, getSeriesByName, (anon), getSeriesByIndex, getSeriesByIndex, getSeriesByType, getSeriesByType\n- chunk_055 (80 functions): (anon), dispose, dispose, 7f72, 7f72, 7f91, 7f91, s, buildPath, buildPath, pointAt, pointAt\n- chunk_056 (80 functions): (anon), (anon), (anon), (anon), 8236, 8236, data, data, (anon), e, (anon), (anon)\n- chunk_057 (80 functions): update:visible, update:visible, click, click, (anon), data, data, (anon), e, (anon), (anon), handleSearch\n- chunk_058 (80 functions): l, (anon), updateTransform, updateTransform, (anon), renderSeries, renderSeries, (anon), (anon), (anon), (anon), (anon)\n- chunk_059 (80 functions): init, mergeOption, mergeOption, _updateSelector, _updateSelector, (anon), optionUpdated, optionUpdated, _updateData, _updateData, (anon), (anon)\n- chunk_060 (80 functions): (anon), (anon), callback, callback, callback, callback, (anon), click, click, callback, callback, (anon)\n- chunk_061 (80 functions): update:page, update:limit, update:limit, data, data, created, created, getCsltList, getCsltList, (anon), handleChangeActive, handleChangeActive\n- chunk_062 (80 functions): progress, progress, 88b3, 88b3, a, h, d, clear, debounceNextCall, createOrUpdate, clear, 88f0\n- chunk_063 (80 functions): s, getCoordSysInfoBySeries, (anon), 8c2a, 8c2a, $constructor, $constructor, getTicks, getTicks, (anon), scale, scale\n- chunk_064 (80 functions): 903c, exports, (anon), 90c2, 90c2, reset, reset, e, (anon), (anon), (anon), (anon)\n- chunk_065 (80 functions): a, o, s, intervalScaleNiceTicks, 94b1, 94b1, reset, reset, 94e4, 94e4, value, value\n- chunk_066 (80 functions): l, (anon), c, u, (anon), f, p, g, (anon), e, (anon), t\n- chunk_067 (80 functions): get, (anon), exports, (anon), (anon), (anon), exports, (anon), exports, (anon), (anon), (anon)\n- chunk_068 (80 functions): (anon), exports, (anon), exports, (anon), (anon), (anon), a, normalize, (anon), exports, (anon)\n- chunk_069 (80 functions): exports, (anon), (anon), (anon), (anon), (anon), exports, (anon), (anon), (anon), exports, (anon)\n- chunk_070 (80 functions): ie, (anon), F, r, then, then, catch, catch, i, H, (anon), (anon)\n- chunk_071 (80 functions): (anon), (anon), finally, finally, (anon), (anon), (anon), (anon), (anon), (anon), F, z\n- chunk_072 (80 functions): get, get, getAll, getAll, has, has, set, set, sort, sort, forEach, forEach\n- chunk_073 (80 functions): delete, delete, has, has, get, get, set, set, add, add, (anon), c\n- chunk_074 (80 functions): (anon), f, (anon), (anon), (anon), exports, (anon), (anon), d, get, get, (anon)\n- chunk_075 (80 functions): forEach, peek, v, y, (anon), b, _, (anon), x, w, (anon), S\n- chunk_076 (80 functions): write, se, le, (anon), ce, (anon), ue, (anon), he, de, (anon), (anon)\n- chunk_077 (80 functions): (anon), n, (anon), (anon), (anon), e, get, get, close, enqueue, error, T\n- chunk_078 (80 functions): ft, pt, (anon), gt, mt, (anon), e, get, get, cancel, read, (anon)\n- chunk_079 (80 functions): (anon), get, get, get, get, Ot, Rt, Nt, Et, (anon), (anon), e\n- chunk_080 (80 functions): value, (anon), value, value, (anon), value, value, value, value, value, value, (anon)\n- chunk_081 (80 functions): (anon), value, value, (anon), (anon), (anon), value, value, value, value, (anon), (anon)\n- chunk_082 (80 functions): get, value, value, value, value, (anon), e, value, value, (anon), (anon), value\n- chunk_083 (80 functions): value, value, value, value, value, value, value, value, value, value, value, value\n- chunk_084 (80 functions): _invoke, o, (anon), n, (anon), (anon), (anon), (anon), C, T, M, k\n- chunk_085 (80 functions): value, value, value, value, (anon), e, (anon), t, toString, (anon), e, (anon)\n- chunk_086 (80 functions): value, value, value, value, (anon), (anon), e, (anon), (anon), (anon), (anon), o\n- chunk_087 (80 functions): clone, setCurrentPoint, setCurrentPoint, (anon), e, t, n, u, h, d, f, p\n- chunk_088 (80 functions): setCharSpacing, setCharSpacing, setWordSpacing, setWordSpacing, setHScale, setHScale, setLeading, setLeading, setFont, setFont, setTextRenderingMode, setTextRenderingMode\n- chunk_089 (80 functions): paintImageXObjectRepeat, paintImageXObjectRepeat, paintInlineImageXObject, paintInlineImageXObject, paintInlineImageXObjectGroup, paintInlineImageXObjectGroup, paintSolidColorImageMask, paintSolidColorImageMask, paintXObject, paintXObject, markPoint, markPoint\n- chunk_090 (80 functions): start, start, pull, pull, cancel, cancel, _createStreamSink, _createStreamSink, enqueue, enqueue, close, close\n- chunk_091 (80 functions): value, value, (anon), value, value, value, value, value, value, value, value, value\n- chunk_092 (80 functions): value, value, value, (anon), get, get, (anon), e, value, value, (anon), e\n- chunk_093 (80 functions): (anon), (anon), (anon), (anon), m, s, (anon), (anon), (anon), l, (anon), (anon)\n- chunk_094 (80 functions): value, value, (anon), t, value, value, (anon), t, value, value, (anon), t\n- chunk_095 (80 functions): (anon), t, value, value, (anon), t, value, value, value, value, (anon), e\n- chunk_096 (80 functions): value, value, value, value, value, value, value, value, value, value, value, value\n- chunk_097 (80 functions): value, value, value, value, value, value, value, value, value, value, value, value\n- chunk_098 (80 functions): e, (anon), (anon), value, value, value, value, value, value, (anon), (anon), (anon)\n- chunk_099 (80 functions): value, value, value, value, value, (anon), e, value, value, value, value, value\n- chunk_100 (80 functions): value, value, value, (anon), get, get, (anon), e, (anon), t, (anon), e\n- chunk_101 (80 functions): unfocusNodeAdjacency, (anon), (anon), _startForceLayoutIteration, _startForceLayoutIteration, r, (anon), _updateController, _updateController, (anon), (anon), (anon)\n- chunk_102 (80 functions): handleClick, (anon), (anon), (anon), (anon), codeChange, codeChange, callback, callback, change, change, callback\n- chunk_103 (80 functions): (anon), handleRowClick, handleRowClick, (anon), (anon), (anon), fn, fn, fn, fn, fn, fn\n- chunk_104 (80 functions): getLayoutOnAxis, layout, (anon), 9e2e, 9e2e, s, drawRectText, drawRectText, 9e47, 9e47, exports, (anon)\n- chunk_105 (80 functions): pin, arrow, arrow, triangle, triangle, (anon), calculateTextPosition, calculateTextPosition, buildPath, buildPath, g, createSymbol\n- chunk_106 (80 functions): L, D, O, R, normalizeTextStyle, renderText, (anon), (anon), (anon), needDrawText, a753, a753\n- chunk_107 (80 functions): fn, fn, fn, fn, fn, update:page, update:page, update:limit, update:limit, update:visible, update:visible, a87d\n- chunk_108 (80 functions): getViewRoot, resetViewRoot, resetViewRoot, aa3e, aa3e, i, (anon), exports, coord, coord, aa50, aa50\n- chunk_109 (80 functions): handleDetail, (anon), doDetail, doDetail, (anon), (anon), handleSlider, handleSlider, (anon), callback, callback, callback\n- chunk_110 (80 functions): _updateLineDraw, _showEffect, _showEffect, _clearLayer, _clearLayer, remove, remove, dispose, dispose, ae69, ae69, buildPath\n- chunk_111 (80 functions): b16f, s, addWithoutUpdate, (anon), add, update, (anon), updateDom, markUsed, b1d4, b1d4, exports\n- chunk_112 (80 functions): W, (anon), (anon), (anon), b383, b383, b3c71, b3c71, b419, b419, c, u\n- chunk_113 (80 functions): bc3e, default, default, data, data, dataList, dataList, (anon), e, (anon), (anon), handle\n- chunk_114 (80 functions): fetchData, (anon), (anon), handleReadDetail, handleReadDetail, handleSlider, handleSlider, (anon), callback, callback, fn, fn\n- chunk_115 (80 functions): d, (anon), p, g, setOutputRanges, (anon), matchOutputRanges, (anon), (anon), setInputRanges, (anon), makePanelOpts\n- chunk_116 (80 functions): created, getChildren, getChildren, change, change, (anon), (anon), fn, fn, click, click, h\n- chunk_117 (80 functions): fn, fn, click, click, fn, fn, fn, fn, update:page, update:page, update:limit, update:limit\n- chunk_118 (80 functions): makeGraphic, makeGraphic, removeGraphic, removeGraphic, p, c965, c965, buildPath, buildPath, afterBrush, afterBrush, findDataIndex\n- chunk_119 (80 functions): _dragEnd, cb73, cb73, exports, (anon), e, (anon), (anon), (anon), (anon), I, (anon)\n- chunk_120 (80 functions): getOtherAxisModel, getOtherAxisModel, (anon), getMinMaxSpan, getMinMaxSpan, calculateDataWindow, calculateDataWindow, (anon), f, reset, reset, (anon)\n- chunk_121 (80 functions): touchend, touchend, pointerdown, pointerdown, pointermove, pointermove, pointerup, pointerup, pointerout, pointerout, (anon), e\n- chunk_122 (80 functions): setNodePosition, getGraph, getGraph, getEdgeData, getEdgeData, formatTooltip, formatTooltip, optionUpdated, optionUpdated, getDataParams, getDataParams, d070\n- chunk_123 (80 functions): d2cf, u, h, dispose, f, p, g, setHandlerProxy, setHandlerProxy, (anon), mousemove, mousemove\n- chunk_124 (80 functions): _updatePathDirty, _updatePathDirty, beforeBrush, beforeBrush, buildPath, buildPath, afterBrush, afterBrush, getBoundingRect, getBoundingRect, d4d1, d4d1\n- chunk_125 (80 functions): d833, d833, m, v, y, b, contain, containStroke, d92e, d92e, default, default\n- chunk_126 (80 functions): containPoint, containPoint, getModel, getModel, _updateAxesFromSeries, _updateAxesFromSeries, (anon), (anon), resize, resize, getRect, getRect\n- chunk_127 (80 functions): x, w, S, A, getType, getType, getViewportRoot, getViewportRoot, getSvgDom, getSvgDom, getSvgRoot, getSvgRoot\n- chunk_128 (80 functions): _onHandleDragMove, _doDispatchAxisPointer, _doDispatchAxisPointer, _onHandleDragEnd, _onHandleDragEnd, clear, clear, doClear, doClear, buildLabel, buildLabel, dcdb\n- chunk_129 (80 functions): extname, (anon), (anon), dfbf, dfbf, statusFilterShow, statusFilterShow, data, data, (anon), e, (anon)\n- chunk_130 (80 functions): initData, (anon), e, (anon), (anon), citySelectChange, citySelectChange, handleSearch, handleSearch, fetchData, fetchData, (anon)\n- chunk_131 (80 functions): getDataParams, render, render, (anon), (anon), (anon), incrementalPrepareRender, incrementalPrepareRender, incrementalRender, incrementalRender, s, filterForExposedEvent\n- chunk_132 (80 functions): normalize, scale, unionExtent, unionExtentFromData, getExtent, setExtent, isBlank, setBlank, e1fc, e1fc, o, children\n- chunk_133 (80 functions): e7aa, a, setLabel, e7d2, e7d2, containStroke, e7fb, e7fb, data, data, created, created\n- chunk_134 (80 functions): v, y, updateVisual, markUpdateMethod, progress, progress, progress, progress, e8ae, e8ae, e9f9, e9f9\n- chunk_135 (80 functions): (anon), (anon), (anon), resetItemSize, resetItemSize, isCategory, isCategory, eaeb, eaeb, i, (anon), exports\n- chunk_136 (80 functions): (anon), (anon), b, _, x, ed21, ed21, d, g, (anon), getType, getType\n- chunk_137 (80 functions): getRenderedCanvas, (anon), getWidth, getWidth, getHeight, getHeight, _getSize, _getSize, pathToImage, pathToImage, eda2, eda2\n- chunk_138 (80 functions): _renderYearText, _renderYearText, _monthTextPositionControl, _monthTextPositionControl, _renderMonthText, _renderMonthText, _weekTextPositionControl, _weekTextPositionControl, _renderWeekText, _renderWeekText, ee84, ee84\n- chunk_139 (80 functions): f14c, f14c, setScrollDataIndex, setScrollDataIndex, init, init, mergeOption, mergeOption, l, f170, f170, f17f\n- chunk_140 (80 functions): fn, fn, fn, fn, fn, fn, fn, fn, fn, f219, f219, f273\n- chunk_141 (80 functions): dirty, unfinished, pipe, dispose, getUpstream, getDownstream, setOutputEnd, createTask, f4a2, f4a2, o, makeRectPanelClipPath\n- chunk_142 (80 functions): _defaultLabelLine, _defaultLabelLine, f816, f816, f8fa, f8fa, s, render, render, linkProps, linkProps, d\n- chunk_143 (80 functions): mergeLayoutParam, l, (anon), (anon), u, h, d, (anon), getLayoutParams, f9fa, f9fa, fa52\n- chunk_144 (80 functions): e, (anon), F, z, B, j, (anon), V, (anon), G, W, H\n- chunk_145 (80 functions): containData, containData, getAxis, getAxis, getAxes, getAxes, getAxesByScale, getAxesByScale, getAngleAxis, getAngleAxis, getRadiusAxis, getRadiusAxis\n- chunk_146 (80 functions): makeLineShape, makeRectShape, makeSectorShape, (anon), t, o, e, (anon), onerror, (anon), (anon), (anon)\n- chunk_147 (80 functions): toJSON, toJSON, 02f4, 02f4, exports, (anon), 036c, 036c, h, d, f, p\n- chunk_148 (80 functions): (anon), (anon), e, (anon), e, 0a49, 0a49, exports, (anon), 0b21, 0b21, 0bd3\n- chunk_149 (80 functions): get, set, set, (anon), (anon), 1169, 1169, (anon), 1173, 1173, exports, 11e9\n- chunk_150 (80 functions): 16, 16, 2, 2, 3, 3, 34, 34, 153e, 153e, 15ac, 15ac\n- chunk_151 (80 functions): 1fb5, 1fb5, byteLength, toByteArray, (anon), fromByteArray, c, u, 20d6, 20d6, (anon), findIndex\n- chunk_152 (80 functions): _append, _append, _process, _process, clone, clone, init, init, reset, reset, update, update\n- chunk_153 (80 functions): (anon), (anon), 2444, 2444, (anon), a, (anon), (anon), validateStatus, validateStatus, (anon), (anon)\n- chunk_154 (80 functions): l, (anon), render, (anon), 28a5, 28a5, (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_155 (80 functions): destroyed, destroyed, install, install, 14, 14, 2, 2, 3, 3, 5, 5\n- chunk_156 (80 functions): clear, ue, addSub, removeSub, depend, notify, de, fe, pe, get, ve, ge\n- chunk_157 (80 functions): ft, pt, mt, vt, i, gt, (anon), At, bt, yt, wt, Ct\n- chunk_158 (80 functions): pn, (anon), (anon), get, addDep, cleanupDeps, update, (anon), run, evaluate, depend, teardown\n- chunk_159 (80 functions): mounted, (anon), (anon), (anon), (anon), updated, updated, render, render, (anon), get, get\n- chunk_160 (80 functions): mi, i, gi, Ci, r, Si, _wrapper, ki, Ei, (anon), Di, Ti\n- chunk_161 (80 functions): (anon), componentUpdated, componentUpdated, (anon), (anon), gr, (anon), Ar, br, (anon), yr, wr\n- chunk_162 (80 functions): (anon), 2d83, 2d83, exports, 2d95, 2d95, exports, 2dc6, 2dc6, 2e08, 2e08, exports\n- chunk_163 (80 functions): (anon), (anon), (anon), (anon), (anon), get, get, get, get, (anon), (anon), (anon)\n- chunk_164 (80 functions): createNamespacedHelpers, createLogger, createLogger, n, i, o, a, s, (anon), (anon), (anon), 2f78\n- chunk_165 (80 functions): keys, keys, removeItem, removeItem, 34e4, 34e4, 34ef, 34ef, (anon), (anon), 3535, 3535\n- chunk_166 (80 functions): (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_167 (80 functions): G, $, X, J, Z, ee, te, ne, ie, re, oe, ae\n- chunk_168 (80 functions): join, 37a7, 37a7, s, has, has, get, get, set, set, keys, keys\n- chunk_169 (80 functions): 3934, (anon), r, (anon), (anon), 3a31, 3a31, 3a38, 3a38, exports, 3a72, 3a72\n- chunk_170 (80 functions): default, default, default, data, data, changeMesg, changeMesg, refreshCode, refreshCode, (anon), e, (anon)\n- chunk_171 (80 functions): 3fe5, 4010, 4010, s, (anon), addResizeListener, removeResizeListener, 4042, 4042, 405e, 405e, r\n- chunk_172 (80 functions): certNo, certType, certType, certTypeZero, certTypeZero, headerActive, headerActive, dictList, dictList, dictFormat, dictFormat, d\n- chunk_173 (80 functions): (anon), 4504, 4504, __defineGetter__, __defineGetter__, 454f, 454f, exports, 456d, 456d, (anon), (anon)\n- chunk_174 (80 functions): inActivePath, inActivePath, inCheckedPath, inCheckedPath, (anon), value, value, handleExpand, handleExpand, (anon), handleCheckChange, handleCheckChange\n- chunk_175 (80 functions): setCheckState, (anon), syncCheckState, doCheck, get, get, get, get, (anon), e, (anon), initNodes\n- chunk_176 (80 functions): (anon), (anon), (anon), calculateMultiCheckedValue, calculateMultiCheckedValue, (anon), scrollIntoView, scrollIntoView, (anon), getNodeByValue, getNodeByValue, getFlattedNodes\n- chunk_177 (80 functions): (anon), 4a59, 4a59, exports, (anon), 4aa6, 4aa6, 4ab2, 4ab2, 4b26, 4b26, u\n- chunk_178 (80 functions): (anon), m, v, g, A, b, y, w, 4d16, 4d16, 4d2d, 4d2d\n- chunk_179 (80 functions): 0, 0, i, l, (anon), render, (anon), 11, 11, 13, 13, 14\n- chunk_180 (80 functions): (anon), close, close, blur, blur, (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_181 (80 functions): data, selectDisabled, selectDisabled, (anon), placeholder, placeholder, value, value, visible, visible, (anon), options\n- chunk_182 (80 functions): onInputChange, onOptionDestroy, onOptionDestroy, resetInputWidth, resetInputWidth, handleResize, handleResize, checkDefaultFirstOption, checkDefaultFirstOption, getValueKey, getValueKey, created\n- chunk_183 (80 functions): exports, 51b6, 51b6, 520a, 520a, l, (anon), 5270, 5270, c, exports, (anon)\n- chunk_184 (80 functions): from, from, 54a8, 54a8, (anon), (anon), toPrecision, toPrecision, 551c, 551c, D, (anon)\n- chunk_185 (80 functions): 57f0, 57f0, (anon), (anon), 584a, 584a, 58b2, 58b2, 5904, 5904, 5924, 5924\n- chunk_186 (80 functions): (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_187 (80 functions): handleKeyup, handleInput, handleInput, handleChange, handleChange, render, render, render, render, handleCurrentChange, handleCurrentChange, prev\n- chunk_188 (80 functions): mounted, mounted, created, created, (anon), data, data, suggestionVisible, suggestionVisible, id, id, suggestionVisible\n- chunk_189 (80 functions): initEvent, (anon), (anon), (anon), handleMenuItemClick, handleMenuItemClick, triggerElmFocus, triggerElmFocus, initDomOperation, initDomOperation, render, render\n- chunk_190 (80 functions): getMigratingConfig, getMigratingConfig, getColorChannels, getColorChannels, mixColor, mixColor, addItem, addItem, removeItem, removeItem, addSubmenu, addSubmenu\n- chunk_191 (80 functions): removeItem, addSubmenu, addSubmenu, removeSubmenu, removeSubmenu, handleClick, handleClick, handleMouseenter, handleMouseenter, (anon), handleMouseleave, handleMouseleave\n- chunk_192 (80 functions): mouseleave, mousedown, mousedown, Re, (anon), (anon), data, data, validator, validator, _elFormItemSize, _elFormItemSize\n- chunk_193 (80 functions): getInput, getSuffixVisible, getSuffixVisible, created, created, mounted, mounted, updated, updated, install, We, dragstart\n- chunk_194 (80 functions): blur, blur, (anon), keydown, keydown, data, data, isGroup, isGroup, get, get, set\n- chunk_195 (80 functions): blur, (anon), focus, focus, blur, blur, data, data, get, get, set, set\n- chunk_196 (80 functions): _elFormItemSize, _elFormItemSize, checkboxGroupSize, checkboxGroupSize, value, value, install, Ct, click, click, keydown, keydown\n- chunk_197 (80 functions): click, (anon), (anon), data, data, isObject, isObject, currentLabel, currentLabel, currentValue, currentValue, itemSelected\n- chunk_198 (80 functions): (anon), placeholder, placeholder, value, value, visible, visible, (anon), options, options, (anon), handleComposition\n- chunk_199 (80 functions): resetInputWidth, resetInputWidth, handleResize, handleResize, checkDefaultFirstOption, checkDefaultFirstOption, getValueKey, getValueKey, created, created, (anon), (anon)\n- chunk_200 (80 functions): updateExpandRows, updateExpandRows, (anon), toggleRowExpansion, toggleRowExpansion, setExpandRowKeys, setExpandRowKeys, (anon), isRowExpanded, isRowExpanded, data, data\n- chunk_201 (80 functions): updateAllSelected, updateFilters, updateFilters, (anon), updateSort, updateSort, execFilter, execFilter, (anon), (anon), (anon), execSort\n- chunk_202 (80 functions): addObserver, removeObserver, notifyObservers, (anon), created, created, destroyed, destroyed, tableLayout, tableLayout, mounted, mounted\n- chunk_203 (80 functions): handleEvent, rowRender, rowRender, (anon), dblclick, dblclick, click, click, contextmenu, contextmenu, mouseenter, mouseenter\n- chunk_204 (80 functions): mousedown, mousedown, click, click, contextmenu, contextmenu, click, click, click, click, click, click\n- chunk_205 (80 functions): table, table, hasGutter, hasGutter, columnsCount, columnsCount, leftFixedCount, leftFixedCount, rightFixedCount, rightFixedCount, isCellHidden, isCellHidden\n- chunk_206 (80 functions): created, created, (anon), mounted, mounted, (anon), destroyed, destroyed, data, data, (anon), (anon)\n- chunk_207 (80 functions): (anon), (anon), beforeCreate, beforeCreate, created, created, (anon), (anon), (anon), (anon), (anon), mounted\n- chunk_208 (80 functions): triggerClass, selectionMode, selectionMode, haveTrigger, haveTrigger, displayValue, displayValue, parsedValue, parsedValue, (anon), _elFormItemSize, _elFormItemSize\n- chunk_209 (80 functions): isValidValue, Ii, (anon), click, click, input, input, focus, focus, input, input, Pi\n- chunk_210 (80 functions): t, onscroll, handleScroll, handleScroll, adjustSpinners, adjustSpinners, adjustCurrentSpinner, adjustCurrentSpinner, adjustSpinner, adjustSpinner, scrollDown, scrollDown\n- chunk_211 (80 functions): minDate, maxDate, maxDate, data, data, cellMatchesDate, cellMatchesDate, getCellStyle, getCellStyle, (anon), (anon), (anon)\n- chunk_212 (80 functions): defaultValue, timePickerVisible, timePickerVisible, (anon), selectionMode, selectionMode, proxyTimePickerDataProperties, proxyTimePickerDataProperties, n, i, r, handleClear\n- chunk_213 (80 functions): monthDate, monthDate, footerVisible, footerVisible, visibleTime, visibleTime, visibleDate, visibleDate, yearLabel, yearLabel, timeFormat, timeFormat\n- chunk_214 (80 functions): enableYearArrow, data, data, minDate, minDate, (anon), maxDate, maxDate, minTimePickerVisible, minTimePickerVisible, (anon), maxTimePickerVisible\n- chunk_215 (80 functions): leftYear, leftYear, rightYear, rightYear, enableYearArrow, enableYearArrow, data, data, value, value, defaultValue, defaultValue\n- chunk_216 (80 functions): beforeCreate, install, install, Ar, after-leave, after-leave, click, click, click, click, wr, Cr\n- chunk_217 (80 functions): doClose, handleFocus, handleFocus, handleClick, handleClick, handleBlur, handleBlur, handleMouseEnter, handleMouseEnter, (anon), handleKeydown, handleKeydown\n- chunk_218 (80 functions): Nr, click, click, click, click, keydown, keydown, keydown, keydown, callback, callback, keydown\n- chunk_219 (80 functions): install, io, data, data, mounted, mounted, (anon), install, so, provide, provide, rules\n- chunk_220 (80 functions): fieldValue, isRequired, isRequired, (anon), _formSize, _formSize, elFormItemSize, elFormItemSize, sizeClass, sizeClass, data, data\n- chunk_221 (80 functions): updated, updated, render, render, (anon), click, click, focus, focus, blur, blur, click\n- chunk_222 (80 functions): render, install, No, (anon), Fo, Lo, (anon), e, (anon), Vo, e, zo\n- chunk_223 (80 functions): getCheckedKeys, (anon), getHalfCheckedNodes, t, (anon), getHalfCheckedKeys, (anon), _getAllNodes, updateChildren, _setCheckedKeys, (anon), (anon)\n- chunk_224 (80 functions): handleDragEnd, handleDragEnd, created, created, (anon), (anon), data, data, default, default, default, default\n- chunk_225 (80 functions): (anon), (anon), (anon), (anon), mounted, mounted, updated, updated, install, Zo, click, click\n- chunk_226 (80 functions): (anon), (anon), (anon), ga, (anon), (anon), (anon), (anon), data, data, disabled, disabled\n- chunk_227 (80 functions): onSliderClick, onSliderClick, resetSize, resetSize, emitChange, emitChange, (anon), getStopStyle, getStopStyle, stops, stops, (anon)\n- chunk_228 (80 functions): install, (anon), (anon), gutter, gutter, render, render, (anon), (anon), (anon), install, install\n- chunk_229 (80 functions): abort, abort, (anon), post, post, onProgress, onProgress, onSuccess, onSuccess, onError, onError, handleClick\n- chunk_230 (80 functions): trackPath, perimeter, perimeter, rate, rate, strokeDashoffset, strokeDashoffset, trailPathStyle, trailPathStyle, circlePathStyle, circlePathStyle, stroke\n- chunk_231 (80 functions): default, default, default, text, text, decimalStyle, decimalStyle, valueDecimal, valueDecimal, classMap, classMap, decimalIconClass\n- chunk_232 (80 functions): space, space, style, style, updateStatus, updateStatus, calcProgress, calcProgress, mounted, mounted, (anon), (anon)\n- chunk_233 (80 functions): prev, next, next, handleIndicatorClick, handleIndicatorClick, handleIndicatorHover, handleIndicatorHover, created, created, (anon), (anon), mounted\n- chunk_234 (80 functions): provide, provide, value, value, setActiveNames, setActiveNames, handleItemClick, handleItemClick, created, created, install, ul\n- chunk_235 (80 functions): (anon), multiple, multiple, leafOnly, leafOnly, readonly, readonly, clearBtnVisible, clearBtnVisible, (anon), panel, panel\n- chunk_236 (80 functions): getCheckedNodes, install, El, callback, callback, (anon), (anon), Ol, Dl, (anon), Pl, Bl\n- chunk_237 (80 functions): mounted, drag, drag, end, end, Ql, color._alpha, color._alpha, color.value, color.value, handleClick, handleClick\n- chunk_238 (80 functions): confirmValue, clearValue, clearValue, hide, hide, resetColor, resetColor, (anon), displayedRgb, displayedRgb, mounted, mounted\n- chunk_239 (80 functions): handleAllCheckedChange, (anon), clearQuery, clearQuery, default, default, default, default, default, default, default, default\n- chunk_240 (80 functions): install, qc, Qc, click, click, click, click, click, click, click, click, (anon)\n- chunk_241 (80 functions): show, mounted, mounted, beforeDestroy, beforeDestroy, loadImage, loadImage, onload, (anon), handleLoad, handleLoad, handleError\n- chunk_242 (80 functions): selectDate, selectDate, toDate, toDate, rangeValidator, rangeValidator, prevMonthDatePrefix, prevMonthDatePrefix, curMonthDatePrefix, curMonthDatePrefix, nextMonthDatePrefix, nextMonthDatePrefix\n- chunk_243 (80 functions): Fu, config, config, isLeaf, isLeaf, isDisabled, isDisabled, checkedValue, checkedValue, isChecked, isChecked, inActivePath\n- chunk_244 (80 functions): getValueByOption, getText, isSameNode, (anon), broadcast, (anon), emit, onParentCheck, onChildCheck, (anon), (anon), setCheckState\n- chunk_245 (80 functions): handleKeyDown, handleKeyDown, (anon), handleExpand, handleExpand, (anon), (anon), handleCheckChange, handleCheckChange, lazyLoad, lazyLoad, (anon)\n- chunk_246 (80 functions): data, data, confirm, confirm, cancel, cancel, install, mh, click, click, close, close\n- chunk_247 (80 functions): hoverItem, hoverItem, selectOptionClick, selectOptionClick, queryChange, queryChange, created, created, beforeDestroy, beforeDestroy, data, data\n- chunk_248 (80 functions): emitChange, getOption, getOption, setSelected, setSelected, (anon), (anon), handleFocus, handleFocus, blur, blur, handleBlur\n- chunk_249 (80 functions): Dh, Th, (anon), (anon), (anon), (anon), (anon), (anon), Ih, (anon), Ph, Bh\n- chunk_250 (80 functions): data, assertRowKey, assertRowKey, updateColumns, updateColumns, (anon), (anon), (anon), scheduleLayout, scheduleLayout, isSelected, isSelected\n- chunk_251 (80 functions): Yh, (anon), r, r, (anon), e, (anon), updateScrollY, setHeight, (anon), setMaxHeight, getFlattenColumns\n- chunk_252 (80 functions): getSpan, getSpan, getRowStyle, getRowStyle, getRowClass, getRowClass, getCellStyle, getCellStyle, getCellClass, getCellClass, getColspanRealWidth, getColspanRealWidth\n- chunk_253 (80 functions): get, get, set, set, multiple, multiple, mounted, mounted, (anon), (anon), showPopper, showPopper\n- chunk_254 (80 functions): handleMouseDown, onselectstart, ondragstart, c, r, (anon), handleMouseMove, handleMouseMove, handleMouseOut, handleMouseOut, toggleOrder, toggleOrder\n- chunk_255 (80 functions): toggleAllSelection, tableSize, tableSize, bodyWrapper, bodyWrapper, shouldUpdateHeight, shouldUpdateHeight, bodyWidth, bodyWidth, bodyHeight, bodyHeight, fixedBodyHeight\n- chunk_256 (80 functions): realHeaderAlign, realHeaderAlign, getPropsData, getPropsData, (anon), (anon), getColumnElIndex, getColumnElIndex, setColumnWidth, setColumnWidth, setColumnForcedProps, setColumnForcedProps\n- chunk_257 (80 functions): (anon), (anon), 5eda, 5eda, exports, (anon), 5f1b, 5f1b, exports, 6095, 6095, every\n- chunk_258 (80 functions): data, data, style, style, created, created, (anon), (anon), 622c, 622c, 626a, 626a\n- chunk_259 (80 functions): (anon), u, fastKey, fastKey, getWeak, getWeak, onFreeze, onFreeze, 67bb, 67bb, 6821, 6821\n- chunk_260 (80 functions): deactivated, deactivated, doToggle, doToggle, doShow, doShow, doClose, doClose, handleFocus, handleFocus, handleClick, handleClick\n- chunk_261 (80 functions): hash, hex, digest, arrayBuffer, finalize, (anon), 6c37, 6c37, (anon), (anon), 6c7b, 6c7b\n- chunk_262 (80 functions): hasActive, (anon), e, (anon), e, 71c1, 71c1, exports, (anon), 71f1, 71f1, flatten\n- chunk_263 (80 functions): 7726, 774e, 774e, 77f1, 77f1, exports, 7872, 7872, log10, log10, 788d, 788d\n- chunk_264 (80 functions): 7b3e, 7b3e, exports, 7ba5, 7ba5, 7bbc, 7bbc, f, (anon), 7c0e, 7c0e, (anon)\n- chunk_265 (80 functions): (anon), 4, 4, 93, 93, i, _elFormItemSize, _elFormItemSize, checkboxGroupSize, checkboxGroupSize, value, value\n- chunk_266 (80 functions): 845f, (anon), n, d, r, t, (anon), n, (anon), (anon), o, 0\n- chunk_267 (80 functions): (anon), default, default, data, data, styleLayout, styleLayout, (anon), 896f, 896f, l, hasMetadata\n- chunk_268 (80 functions): r, t, (anon), n, (anon), (anon), o, 0, 0, i, l, (anon)\n- chunk_269 (80 functions): android, android, ipad, ipad, 8ed0, 8ed0, a, (anon), (anon), (anon), 8f60, 8f60\n- chunk_270 (80 functions): (anon), a, isGeneratorFunction, mark, awrap, s, async, (anon), a, toString, keys, n\n- chunk_271 (80 functions): component, component, component, component, component, component, component, component, 96fb, 96fb, (anon), 9744\n- chunk_272 (80 functions): exports, 9e1e, 9e1e, (anon), get, get, 9e8a, 9e8a, data, data, created, created\n- chunk_273 (80 functions): dataURLtoBlob, dataURLtoBlob, myBrowser, myBrowser, downloadByDownloadjs, downloadByDownloadjs, onload, urlCutName, urlCutName, doFormatter, doFormatter, 9ec8\n- chunk_274 (80 functions): string, method, method, number, number, boolean, boolean, regexp, regexp, integer, integer, float\n- chunk_275 (80 functions): (anon), D, B, M, (anon), N, (anon), (anon), j, F, L, R\n- chunk_276 (80 functions): Ee, _e, Oe, (anon), (anon), (anon), (anon), De, (anon), (anon), Te, Pe\n- chunk_277 (80 functions): getCurrentLocation, Re, Ve, He, ze, Ue, (anon), t, push, (anon), replace, (anon)\n- chunk_278 (80 functions): a3c3, a3c3, a3de, a3de, a481, a481, (anon), (anon), (anon), m, (anon), a5b8\n- chunk_279 (80 functions): i, e, d, onload, (anon), b, y, (anon), (anon), (anon), onload, aebd\n- chunk_280 (80 functions): value, value, value, value, value, value, value, (anon), e, value, value, value\n- chunk_281 (80 functions): dialogVisibleSec, dialogVisibleSec, created, created, checkRealName, checkRealName, handleClose, handleClose, (anon), update:visible, update:visible, b639\n- chunk_282 (80 functions): readUIntLE, readUIntBE, readUInt8, readUInt16LE, readUInt16BE, readUInt32LE, readUInt32BE, readIntLE, readIntBE, readInt8, readInt16LE, readInt16BE\n- chunk_283 (80 functions): o, bdd1, bdd1, be13, be13, exports, bef9, bef9, exports, bf04, bf04, bf0b\n- chunk_284 (80 functions): relativeStrokeWidth, relativeStrokeWidth, radius, radius, trackPath, trackPath, perimeter, perimeter, rate, rate, strokeDashoffset, strokeDashoffset\n- chunk_285 (80 functions): isStream, isURLSearchParams, isURLSearchParams, isStandardBrowserEnv, isStandardBrowserEnv, e, e, n, extend, extend, (anon), trim\n- chunk_286 (80 functions): c8af, exports, (anon), c8ba, c8ba, (anon), c8ce, c8ce, ca5a, ca5a, exports, cadf\n- chunk_287 (80 functions): d185, e, e, d225, d225, i, (anon), d25f, d25f, filter, filter, d263\n- chunk_288 (80 functions): MM, MMM, MMM, MMMM, MMMM, yy, yy, yyyy, yyyy, h, h, hh\n- chunk_289 (80 functions): (anon), (anon), (anon), toDate, isDate, isDateObject, formatDate, parseDate, getDayCountOfMonth, getDayCountOfYear, getFirstDayOfMonth, prevDate\n- chunk_290 (80 functions): (anon), n, d, r, t, (anon), n, (anon), (anon), o, 0, 0\n- chunk_291 (80 functions): apply, df84, df84, (anon), n, d, r, t, (anon), n, (anon), (anon)\n- chunk_292 (80 functions): 4d64, a, (anon), 4d75, 4d75, 5078, 5078, 50c4, 50c4, exports, 5135, 5135\n- chunk_293 (80 functions): 81d5, 81d5, exports, 825a, 825a, exports, 83ab, 83ab, (anon), get, get, 861d\n- chunk_294 (80 functions): c04e, c04e, exports, c272, c272, c430, c430, c6b6, c6b6, exports, c6cd, c6cd\n- chunk_295 (80 functions): a, (anon), c, (anon), e, (anon), (anon), h, d, f, p, m\n- chunk_296 (80 functions): bindTouchEvent, Z, mounted, mounted, portal, portal, (anon), (anon), n, i, (anon), data\n- chunk_297 (80 functions): genMessage, render, render, Te, Ie, (anon), (anon), (anon), Pe, clear, (anon), (anon)\n- chunk_298 (80 functions): touchstart, (anon), click, click, click, click, callback, callback, e, fc6a, fc6a, exports\n- chunk_299 (80 functions): 2, 23, 23, 32, 32, bind, bind, a, s, (anon), 87, 87\n- chunk_300 (80 functions): e4ae, exports, e4f7, e4f7, (anon), (anon), e506, e506, r, o, keys, e53d\n- chunk_301 (80 functions): isEqual, isEqual, contains, contains, (anon), handleGroupDisabled, handleGroupDisabled, hoverItem, hoverItem, selectOptionClick, selectOptionClick, queryChange\n- chunk_302 (80 functions): getOwnPropertyDescriptor, ebfd, ebfd, (anon), (anon), u, fastKey, fastKey, getWeak, getWeak, onFreeze, onFreeze\n- chunk_303 (80 functions): get, get, exports, _, get, get, (anon), set, set, (anon), (anon), (anon)\n- chunk_304 (80 functions): getFloat64, setInt8, setInt8, setUint8, setUint8, setInt16, setInt16, setUint16, setUint16, setInt32, setInt32, setUint32\n- chunk_305 (80 functions): exports, f28c, f28c, o, a, s, (anon), d, f, (anon), p, m\n- chunk_306 (80 functions): sqrTo, D, chunkSize, toRadix, fromRadix, fromNumber, bitwiseTo, changeBit, addTo, dMultiply, dAddOffset, multiplyLowerTo\n- chunk_307 (80 functions): 12, 12, 22, 22, 4, 4, 75, 75, i, mouseenter, mouseenter, mouseleave\n- chunk_308 (80 functions): handleInput, handleChange, handleChange, calcIconOffset, calcIconOffset, updateIconOffset, updateIconOffset, clear, clear, handlePasswordVisible, handlePasswordVisible, getInput\n- chunk_309 (80 functions): isGroup, isGroup, get, get, set, set, _elFormItemSize, _elFormItemSize, radioSize, radioSize, isDisabled, isDisabled\n- chunk_310 (80 functions): fd5a, fd5a, fdc2, fdc2, l, (anon), c, (anon), (anon), data, data, userCenterName\n- chunk_311 (80 functions): t, e, (anon), n, (anon), (anon), r, i, (anon), a, s, (anon)\n- chunk_312 (80 functions): an, un, ln, pn, (anon), (anon), vn, mn, gn, wn, onload, onerror\n- chunk_313 (80 functions): callback, callback, xr, (anon), Tr, Sr, Ar, Cr, kr, Nr, (anon), (anon)\n- chunk_314 (80 functions): (anon), handler, addResourceStatstic, hasChildType, (anon), buildImmediateAction, getRootContext, containContext, toJSON, setSendOptions, registerTimeout, (anon)\n- chunk_315 (80 functions): (anon), (anon), Xi, Qi, $i, (anon), Zi, to, io, lo, po, (anon)\n- chunk_316 (80 functions): (anon), (anon), jo, Uo, Fo, r, (anon), (anon), (anon), zo, (anon), Go\n- chunk_317 (80 functions): Ea, xa, (anon), Ta, send, getEventData, (anon), refreshEventAndStore, (anon), ka, Oa, Ia\n- chunk_318 (80 functions): (anon), bs, (anon), (anon), (anon), i, (anon), ws, (anon), (anon), _s, Es\n- chunk_319 (80 functions): Zs, addHeader, addHeader, getHeader, getHeader, addHeader, addHeader, getHeader, getHeader, ec, nc, rc\n- chunk_320 (80 functions): (anon), Lc, (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_321 (45 functions): (anon), (anon), (anon), (anon), gu, (anon), (anon), (anon), yu, (anon), (anon), (anon)\n\nReturn JSON {\"chunks\": [\"<chunk_id>\", ...]} (most-relevant first)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782570271.5473166
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"chunks\": [\"chunk_319\", \"chunk_317\", \"chunk_314\", \"chunk_321\", \"chunk_320\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 14726,
+    "output_tokens": 32
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-fcdf3ff6-6f05-9b17-aa90-2ad9b0b1826e",
+    "object": "chat.completion",
+    "created": 1782570269,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 14726,
+     "completion_tokens": 32,
+     "total_tokens": 14758,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 14726,
+     "output_tokens": 32
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"chunks\": [\"chunk_319\", \"chunk_317\", \"chunk_314\", \"chunk_321\", \"chunk_320\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 14726,
+   "output_tokens": 32
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital does not send its body in the clear: a request interceptor transforms the whole body into an envelope carrying an SM4-encrypted `encData` field and an SM2 `signData` signature field. Locate the anchor function for that transformed request. The anchor function is the target-specific request interceptor on the request-build chain: the single complete function whose own body assembles the transformed request body \u2014 it sets the x-tif-* headers, builds the signData signature and the encData ciphertext and writes them into the request it forwards \u2014 rather than the encData builder it calls to encrypt the body (a nested target-specific field builder), the signData builder for the signature field (another nested field builder), or the low-level SM4 encryptor below them (a core crypto utility). The task asks where both `encData` and `signData` are generated; that is this interceptor. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the individual encData/signData field builders or the SM4 primitive \u2014 return the interceptor that builds the whole transformed body. Only code under captures is in scope.  network_request POST /api/nthl/api/CommQuery/queryFixedHospital encData (the query request body) 3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/api/nthl/api/CommQuery/queryFixedHospital\", \"field\": \"encData\", \"plaintext_sample\": \"(the query request body)\", \"value_sample\": \"3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\"}\n\nFunctions:\n- 29378dafded37949 (Zs): function Zs(t,e)\n- b1f79c8a37eaae68 (addHeader): addHeader:function(t,e)\n- a7eb49809217f408 (addHeader): function(t,e)\n- dda19bb4870addc8 (getHeader): getHeader:function(t)\n- 134401eea62f00e7 (getHeader): function(t)\n- 113d68243af9063e (addHeader): addHeader:function(t,e)\n- f50bec595c38618e (addHeader): function(t,e)\n- 7300eb74e66afca4 (getHeader): getHeader:function(t)\n- 016037d844f44d07 (getHeader): function(t)\n- 24866699265c9932 (ec): function ec(t)\n- 4061bff39fb4cc61 (nc): function nc(t)\n- fce5e8e498cc8cd9 (rc): function rc(t,n)\n- 7dea3329b1bfec05 ((anon)): function(t)\n- 9e01789a3f1c748e ((anon)): function(n)\n- e63e71e4d5e09329 ((anon)): function(t)\n- 1c2cb1632ac97a31 ((anon)): function(n)\n- 6fd8914ea3bd7c01 ((anon)): function(t,e)\n- 86bf21bcdba128bd (ic): function ic(t)\n- d606c15fd31f59a3 ((anon)): function(t)\n- 1b0938a2f7ba9c03 (oc): function oc(t,e)\n- 8549a3a4ed242b59 (ac): function ac(t)\n- 5a2a6946a9a4d7fa ((anon)): function()\n- 7c12e2bd967ae2f1 ((anon)): function(r,i)\n- 43f66ce8a434c0cd ((anon)): function(t)\n- 6cd5495f0bc133cd ((anon)): function(t)\n- 28d985243572fb84 (sc): function sc(t,e)\n- cac32c06907f7d99 (cc): function cc(t,e,n)\n- 2dc496c9b52e94e0 ((anon)): function(t)\n- a86d1db3c0065f3a ((anon)): function(t)\n- f50c8094f4bb1851 (uc): function uc(t)\n- 5ec6067d6671a259 (dc): function dc(t,e,n)\n- 2ae6d56d8035b2ec ((anon)): function(e)\n- ef58924bfd6c8419 (fc): function fc(t)\n- 15f0fc47dd018658 ((anon)): function()\n- c9588cbeccfe489e (mc): function mc(t,e)\n- ed2095d073fedf1c (gc): function gc(t,e,n)\n- 9e7e3cdd0df04033 (yc): function yc(t)\n- fe2a3e00f3e3d58c ((anon)): function(t)\n- 9ca6cda20fbefb82 ((anon)): function(n)\n- f5c660085e2c1fc8 ((anon)): function(t,e)\n- f3e58a38bfb45c3a ((anon)): function(t,e)\n- 60dc5c8afff25d91 (bc): function bc(t)\n- 9c8c365787a92c2c (wc): function wc()\n- d3ab71d68debeb84 ((anon)): function(t)\n- 45297041ba3df8a3 ((anon)): function(t)\n- 3560a1c1bc344c1e ((anon)): function(t)\n- fbb7dae70658956d ((anon)): function()\n- 07f8df6b9adc3ed0 (_c): function _c()\n- da8dc06c1181fb1b ((anon)): function(t)\n- e420c020f905787c ((anon)): function(t)\n- 63f0b0f46d1716a1 ((anon)): function()\n- 78106293c09cef97 (Sc): function Sc(t,e)\n- bf6a154cacbb9baa (Ac): function Ac(t)\n- df6f6f6d998320cc (Cc): function Cc(t)\n- 4e71580c978d0d59 (kc): function kc(t)\n- dd60ed2dd8c77b6f (addHeader): addHeader:function(e,n)\n- 52b1c8dbe855c0ee (addHeader): function(e,n)\n- 0949155449a334d0 (getHeader): getHeader:function(t)\n- 6e09dec1fc45254a (getHeader): function(t)\n- 3bb0bc8a169b865e (Nc): function Nc(e)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782570272.663599
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"3bb0bc8a169b865e\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1750,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-ae91f81b-0228-9a55-a6a5-5bcdb0f842d3",
+    "object": "chat.completion",
+    "created": 1782570271,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1750,
+     "completion_tokens": 16,
+     "total_tokens": 1766,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1750,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"3bb0bc8a169b865e\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1750,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital does not send its body in the clear: a request interceptor transforms the whole body into an envelope carrying an SM4-encrypted `encData` field and an SM2 `signData` signature field. Locate the anchor function for that transformed request. The anchor function is the target-specific request interceptor on the request-build chain: the single complete function whose own body assembles the transformed request body \u2014 it sets the x-tif-* headers, builds the signData signature and the encData ciphertext and writes them into the request it forwards \u2014 rather than the encData builder it calls to encrypt the body (a nested target-specific field builder), the signData builder for the signature field (another nested field builder), or the low-level SM4 encryptor below them (a core crypto utility). The task asks where both `encData` and `signData` are generated; that is this interceptor. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the individual encData/signData field builders or the SM4 primitive \u2014 return the interceptor that builds the whole transformed body. Only code under captures is in scope.  network_request POST /api/nthl/api/CommQuery/queryFixedHospital encData (the query request body) 3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/api/nthl/api/CommQuery/queryFixedHospital\", \"field\": \"encData\", \"plaintext_sample\": \"(the query request body)\", \"value_sample\": \"3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\"}\n\nFunctions:\n- 36f825ab36ef6919 ((anon)): function(n,r)\n- eac6b40e22c12575 (toJSON): function()\n- b7e3b16b97ccf491 (Oc): function Oc(e)\n- 717320fcf52df642 ((anon)): function(n,r)\n- 7f15dbd8780950aa (Ic): function Ic(e)\n- aedae118a01527f1 ((anon)): function(n)\n- d3faca33dbd7b45d (Rc): function Rc(t,e,n)\n- 0d515115f488d328 (Pc): function Pc(t,e)\n- eb701513dfb36000 (Dc): function Dc(t,e)\n- d3fe475f11e05e06 (r): function r(r)\n- 56bd06109009681f ((anon)): function()\n- 3826d367d387dcfa ((anon)): function(t,e)\n- 42f4b25d16caf801 ((anon)): function(n,r)\n- 5a989dd52f861457 ((anon)): function()\n- bfc2a3e09620665a ((anon)): function(t,e)\n- 2c12bbcf31727e55 ((anon)): function(n,r)\n- b52425585186915f ((anon)): function(t)\n- 4978b9de10062ef7 ((anon)): function()\n- 90150021c2ddfa7b (i): function()\n- 9ada7bf7fd4e0fed ((anon)): function()\n- 3c95dd8e50888e84 (Ea): function Ea(t,e)\n- 23a9ec2acc75c7cb (xa): function xa(t,e)\n- 1792afa4a7723b8c ((anon)): function()\n- 8fd9da6166a7518e (Ta): function Ta(t)\n- 602c080400288c2b (send): function(t)\n- d15a9fc02e3cb2e5 (getEventData): function(t)\n- 3bbd8cd089562f41 ((anon)): function(t)\n- 6316e73e12a06535 (refreshEventAndStore): function(t)\n- c548a750255c1322 ((anon)): function(t)\n- dc1c1c237f60a036 (ka): function(t)\n- 2e9fff7d43d15ee9 (Oa): function(t)\n- 23d8fd6553dff2b2 (Ia): function(t)\n- 656d84b3f00ade6e ((anon)): function(t)\n- 1d0600c90e6b0787 ((anon)): function(t)\n- 4e95a7c850d59d14 (Pa): function(t)\n- e4a14d2f6910b933 (Da): function(t,e)\n- 2872912ddae2d99e ((anon)): function(t)\n- a625313c5df01717 (ja): function(t)\n- de9293b234cd541c (Ha): function(t)\n- 1689d586f49d7dc3 (qa): function(t)\n- bfae03b65f28ddec ((anon)): function(t)\n- bc0e1fc617f447fd ((anon)): function(t)\n- 06eeb15b0d98138d (atob): atob:function(t)\n- e85e9189108fee9e (atob): function(t)\n- 05416a19a29600e2 (encodeURI): encodeURI:function(t)\n- 1bd9ad79f529db20 (encodeURI): function(t)\n- a042c02d971493e7 (decode): decode:function(t)\n- a1a3022c1327ec6b (decode): function(t)\n- c5ee12be4d309d34 ((anon)): function(t)\n- 791c33b249537afa ((anon)): function(t)\n- 32356ae1697cdb55 (Ga): function Ga()\n- f9c0b7a0ccf7a2b6 (Ya): function Ya(t)\n- 1fdcda3c3c768dce ((anon)): function(t)\n- 86df1755d0d30abd ((anon)): function(t)\n- cf5353d05b2ec76d ((anon)): function(t)\n- 6e3abbc13ff8407c ((anon)): function(e)\n- b3ed827cf781f805 (Wa): function Wa(t)\n- 1c6e3baddfa44668 (Xa): function Xa(t,e)\n- 16921dcc004975ff (Qa): function Qa()\n- 05b03013040b7690 ((anon)): function(t)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782570273.7524805
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"0d515115f488d328\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1720,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-82afcef8-be0b-9ede-96e7-fe4b7af1d8a4",
+    "object": "chat.completion",
+    "created": 1782570272,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1720,
+     "completion_tokens": 16,
+     "total_tokens": 1736,
+     "prompt_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens": 1720,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"0d515115f488d328\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1720,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital does not send its body in the clear: a request interceptor transforms the whole body into an envelope carrying an SM4-encrypted `encData` field and an SM2 `signData` signature field. Locate the anchor function for that transformed request. The anchor function is the target-specific request interceptor on the request-build chain: the single complete function whose own body assembles the transformed request body \u2014 it sets the x-tif-* headers, builds the signData signature and the encData ciphertext and writes them into the request it forwards \u2014 rather than the encData builder it calls to encrypt the body (a nested target-specific field builder), the signData builder for the signature field (another nested field builder), or the low-level SM4 encryptor below them (a core crypto utility). The task asks where both `encData` and `signData` are generated; that is this interceptor. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the individual encData/signData field builders or the SM4 primitive \u2014 return the interceptor that builds the whole transformed body. Only code under captures is in scope.  network_request POST /api/nthl/api/CommQuery/queryFixedHospital encData (the query request body) 3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/api/nthl/api/CommQuery/queryFixedHospital\", \"field\": \"encData\", \"plaintext_sample\": \"(the query request body)\", \"value_sample\": \"3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\"}\n\nFunctions:\n- 3426dd09cca624d6 ((anon)): function(e)\n- 517f5edc44d1d615 ((anon)): function(n,r,i)\n- e9ce369c0a0d0135 ((anon)): function()\n- 533597dfaac5c1c7 ($a): function $a()\n- 36af14f0e1846581 ((anon)): function()\n- 44beb0a19ab7c4b8 (mark): mark:function(t,e)\n- 84b17aec93451520 (mark): function(t,e)\n- cbc9fcb447d305e7 (wrapVueRouter): wrapVueRouter:function(t,e)\n- 55f329fe6a2c8416 (wrapVueRouter): function(t,e)\n- 31054fb60dc3105d ((anon)): function(t)\n- 998a27b646d1b75d (captureException): captureException:function(t,e)\n- 06e55f41ef742288 (captureException): function(t,e)\n- 07e7b253e203098d (setExtraContext): setExtraContext:function()\n- bd8f93db6f6707ac (setExtraContext): function()\n- 0b49f53bfc440575 (stopLCPObserver): stopLCPObserver:function()\n- 5aacfb88b6c9274d (stopLCPObserver): function()\n- b0bb09fbca4a6411 (checkHookSupported): checkHookSupported:function(t,e)\n- 07c84707c21b98cd (checkHookSupported): function(t,e)\n- ddb20d9b3c8731bc (parseQuery): parseQuery:function(t)\n- e2cf24834c6fe48d (parseQuery): function(t)\n- ebc7b3cb55be1cb6 (startNextSession): startNextSession:function(t)\n- ffceed73a7483e57 (startNextSession): function(t)\n- 3b192c05c6c49a16 (ts): function ts(t,e)\n- 3d0abf8e46fefa71 (es): function es(t)\n- 7a0d3085ecb469ff (ns): function ns()\n- 2363145419eb9c4a ((anon)): function(t)\n- 7fab2c3912896ee3 (rs): function rs()\n- b2d789de45a2ff13 (as): function as(t)\n- 8125642b56d5ec8a (cs): function cs(t)\n- 8fb817686fb4e40f (us): function us(t)\n- 69f0504811b4ccaf ((anon)): function(t)\n- ede4f4f743d3bc5a (ds): function ds(t,e,n)\n- 297554a21a6925f9 (fs): function fs(t,e,n)\n- 5b8aa5a5c3a727af (ls): function ls(t)\n- 28de08a9f808498a (ps): function ps(t)\n- fdeac32bc722cb96 ((anon)): function(n)\n- bf306649105b83aa (hs): function hs(t)\n- b3a84b8eec040492 ((anon)): function(n)\n- d04da885a91ae318 (vs): function vs(t,e)\n- f6f4a569206574d0 ((anon)): function(t)\n- edacb19b3cb6fd3a ((anon)): function()\n- 497953d25190c588 (handler): function(e)\n- 2eb0f89505aabcee (addResourceStatstic): function(t,e,n)\n- 6b393bfdb6f961f1 (hasChildType): function(t)\n- dc08ee7edfe66677 ((anon)): function(n)\n- 82eed2f6e5cf35c3 (buildImmediateAction): function(t,e,n,r)\n- 3ec5024611719d07 (getRootContext): function(t,e)\n- c64a254b56185f0c (containContext): function(t,e)\n- 1774cf338614a074 (toJSON): function()\n- b00ed61e9fb29a44 (setSendOptions): function(t)\n- 9b2d907fe975d887 (registerTimeout): function()\n- 17e996b6f1e761f1 ((anon)): function()\n- 58e3588b63a5805a (addPostComposer): function(t)\n- 0c944adb94b9dab2 (add): function(t)\n- bf590d9e1b98faf3 (getAll): function()\n- ea1bf214e6632a03 ((anon)): function()\n- 9c407eb0c76599a0 (mi): function mi(t)\n- 8758dfd9ee841b87 (add): add:function(t,e)\n- a62391c9e4c05f8d (add): function(t,e)\n- 60b86f8d6a7c3a81 (get): get:function(t)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782570274.674362
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"3426dd09cca624d6\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1780,
+    "output_tokens": 15
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-5163ed37-5e36-9328-94b1-9987b4355f5d",
+    "object": "chat.completion",
+    "created": 1782570273,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1780,
+     "completion_tokens": 15,
+     "total_tokens": 1795,
+     "prompt_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens": 1780,
+     "output_tokens": 15
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"3426dd09cca624d6\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1780,
+   "output_tokens": 15
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital does not send its body in the clear: a request interceptor transforms the whole body into an envelope carrying an SM4-encrypted `encData` field and an SM2 `signData` signature field. Locate the anchor function for that transformed request. The anchor function is the target-specific request interceptor on the request-build chain: the single complete function whose own body assembles the transformed request body \u2014 it sets the x-tif-* headers, builds the signData signature and the encData ciphertext and writes them into the request it forwards \u2014 rather than the encData builder it calls to encrypt the body (a nested target-specific field builder), the signData builder for the signature field (another nested field builder), or the low-level SM4 encryptor below them (a core crypto utility). The task asks where both `encData` and `signData` are generated; that is this interceptor. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the individual encData/signData field builders or the SM4 primitive \u2014 return the interceptor that builds the whole transformed body. Only code under captures is in scope.  network_request POST /api/nthl/api/CommQuery/queryFixedHospital encData (the query request body) 3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/api/nthl/api/CommQuery/queryFixedHospital\", \"field\": \"encData\", \"plaintext_sample\": \"(the query request body)\", \"value_sample\": \"3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\"}\n\nFunctions:\n- 0f473faa97bbbd38 (get): function(t)\n- 823a0b9f3bb5d48f (reset): reset:function()\n- 3391ae31acfceca8 (reset): function()\n- 2bb7962f73bba65d (yi): function yi(t,e,n,r,i,o,a,s,c)\n- c808decd71094e83 ((anon)): function(t,e,n,r,i)\n- a315a8225cb40b04 (bi): function bi()\n- ca66a0215bdaefea ((anon)): function(t)\n- 2e43031844dfec90 (wi): function wi(t,e,n,r,i,o,a)\n- a1e54fc5ea017b59 ((anon)): function(t,e,n,r,i,o)\n- a3a0dbff003be684 ((anon)): function()\n- d94c00724b066186 (_i): function _i(t,e,n)\n- f6fd8e7231ebc162 (Ei): function Ei(t)\n- 0ace5afe7ce8e3c1 (xi): function xi(t)\n- ed841f668bc34dde (Ti): function Ti(t,e)\n- 88e7c02ccdd31a6c ((anon)): function()\n- 1339ea5086e0b305 (Si): function Si(t)\n- 5c88bb58f88f56c6 ((anon)): function(t)\n- e23526d48293ee81 (increase): increase:function()\n- da95cb0a98f6c824 (increase): function()\n- cf6f1d457bb99098 (recordFileName): recordFileName:function()\n- 31994cb1cd923b1e (recordFileName): function()\n- 8d877209629ae1a1 (fix): fix:function()\n- 3f6468c07869d747 (fix): function()\n- 97c506bce6f84750 ((anon)): function(t,n)\n- 9ded91625e3a21b5 (getErrorOverview): getErrorOverview:function()\n- f57647ecfb95c0ec (getErrorOverview): function()\n- 0ffcb56b1ae1da51 (toObject): toObject:function()\n- 1e1cb23718623569 (toObject): function()\n- 99e043286bab1dae ((anon)): function(t,n)\n- 004432d7646670c7 (initTraceInstance): initTraceInstance:function()\n- 900ef8c98e8cdb18 (initTraceInstance): function()\n- df145724ed7099be (triggerActionHook): triggerActionHook:function(t)\n- eca815f15dfb0fdd (triggerActionHook): function(t)\n- 11992812faebb7f4 (Ci): function Ci(t)\n- 05ffbef37279f6b0 (ki): function ki(t)\n- d29dc9aeadb41734 ((anon)): function(t,n)\n- e39841ce7623d86f (Ni): function Ni(t,e)\n- 7ad6f57805adb95f ((anon)): function(e,n)\n- 6c4acb79effb3361 (Oi): function Oi(t,e,n)\n- 51022dedd5195b49 ((anon)): function(e)\n- 8051bcafecd4dfc4 ((anon)): function(t,e)\n- c285a620e72b3d6a ((anon)): function(t,e)\n- 74e3e33ef5a88963 (Pi): function Pi(t)\n- 9c6a5fcce7f5f2d8 (Di): function Di(t,e)\n- 63469b3c71b2aa31 (Li): function Li(t)\n- eb0c5431d9e86c67 (Hi): function Hi(t)\n- 684e31da8f1e12ac (qi): function qi(t)\n- 637bdc22f358d904 (Bi): function Bi()\n- b665232943cec06c ((anon)): function(t)\n- da39a6a54a338cc6 ((anon)): function(t)\n- e6d538d705ff6a43 (Ui): function Ui(t,e)\n- fa0553b6c6cd678a (zi): function zi(t)\n- 9cfe06a04dd9dc19 ((anon)): function(n,r)\n- 184e8da334a5dccd ((anon)): function(t)\n- da4a2a0c5ab2fb8e (Gi): function Gi()\n- b7485cb1e9b96640 ((anon)): function(t)\n- d82169e2fa08b4ac (Yi): function Yi()\n- 1c97faff4cdf269c (Vi): function Vi(t)\n- 66cf20044f7b7cf1 ((anon)): function()\n- 15ac275b4fbf49f0 (Ji): function Ji(t,e)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782570275.5629463
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"6c4acb79effb3361\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1739,
+    "output_tokens": 15
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-3dd4f294-38c2-98f5-a68f-de8cd5b369f5",
+    "object": "chat.completion",
+    "created": 1782570274,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1739,
+     "completion_tokens": 15,
+     "total_tokens": 1754,
+     "prompt_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens": 1739,
+     "output_tokens": 15
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"6c4acb79effb3361\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1739,
+   "output_tokens": 15
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital does not send its body in the clear: a request interceptor transforms the whole body into an envelope carrying an SM4-encrypted `encData` field and an SM2 `signData` signature field. Locate the anchor function for that transformed request. The anchor function is the target-specific request interceptor on the request-build chain: the single complete function whose own body assembles the transformed request body \u2014 it sets the x-tif-* headers, builds the signData signature and the encData ciphertext and writes them into the request it forwards \u2014 rather than the encData builder it calls to encrypt the body (a nested target-specific field builder), the signData builder for the signature field (another nested field builder), or the low-level SM4 encryptor below them (a core crypto utility). The task asks where both `encData` and `signData` are generated; that is this interceptor. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the individual encData/signData field builders or the SM4 primitive \u2014 return the interceptor that builds the whole transformed body. Only code under captures is in scope.  network_request POST /api/nthl/api/CommQuery/queryFixedHospital encData (the query request body) 3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/api/nthl/api/CommQuery/queryFixedHospital\", \"field\": \"encData\", \"plaintext_sample\": \"(the query request body)\", \"value_sample\": \"3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\"}\n\nFunctions:\n- df7c5586f4fa0db5 ((anon)): function()\n- 44c4675a2cf4ec5f ((anon)): function()\n- a11cca02de200054 ((anon)): function()\n- 7eb0f3f32ccf627f ((anon)): function()\n- 249d5849f304e866 (gu): function gu(t)\n- 871aef1bf1dc194d ((anon)): function(t)\n- fe2bf7d11e84b03a ((anon)): function(t)\n- 7918a2794a643c6a ((anon)): function(t)\n- 1f5694131ceac839 (yu): function yu(t)\n- 51d62ba349f1418d ((anon)): function()\n- 958aa40d4c784295 ((anon)): function(t,e)\n- 3a61b5c9126658a4 ((anon)): function()\n- e9b31d90104445ba ((anon)): function(m,p)\n- b3ec820316a8d364 ((anon)): function()\n- 27b1521f0e4f089f (m): function m(a)\n- 87652e6027c5ffc2 (p): function p(a)\n- 7977104ee7e53569 ((anon)): function(h,c)\n- 440c38538374ad47 (onerror): function(a)\n- e088627df10b5f43 (onload): function()\n- 0a1c567e470c91bd ((anon)): function()\n- e81a8431374e8516 ((anon)): function()\n- b7077b7113eb13a5 ((anon)): function(a)\n- 0cc21d537b1858bf ((anon)): function()\n- 8531860a73515308 (r): function r(a)\n- fb33904e0aaee3d7 ((anon)): function(h,c)\n- 2b3ca2519a0f351f (onerror): function(a)\n- 56d95d84825073c0 (onload): function()\n- 5b030bf9ca3bc54f ((anon)): function(a)\n- aea3cce94ea9b43d ((anon)): function(a)\n- 11fac82ebdd61dcb (t): function(a)\n- 787835108efd8508 (load): load:function(a)\n- 2bc62c7cd2f4e98c (load): function(a)\n- 11f9b86b8fc74bda ((anon)): function(h,c)\n- fddad035a0736b62 (___onAPILoaded): function(d)\n- 4da7419b0945e2a0 ((anon)): function()\n- 9ef9b143e299511e (onerror): function(a)\n- daa47fd41fef60b4 ((anon)): function()\n- 43245cf3ca7bada6 ((anon)): function()\n- 2ae22951b4fb619d ((anon)): function()\n- 448c06088b3a2cd3 ((anon)): function()\n- 6979600c97598792 ((anon)): function()\n- 16b9058ac2e2d39e ((anon)): function()\n- 7f9feb435c548aa8 ((anon)): function()\n- 72df0567b5978cf8 (reset): reset:function()\n- 1ed72b3df84fc2b4 (reset): function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782570276.4679825
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"e9b31d90104445ba\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1414,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-16fd5db9-7c63-9c6e-9186-7b02318d907a",
+    "object": "chat.completion",
+    "created": 1782570275,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1414,
+     "completion_tokens": 16,
+     "total_tokens": 1430,
+     "prompt_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens_details": {
+      "cached_tokens": 512
+     },
+     "input_tokens": 1414,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"e9b31d90104445ba\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1414,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital does not send its body in the clear: a request interceptor transforms the whole body into an envelope carrying an SM4-encrypted `encData` field and an SM2 `signData` signature field. Locate the anchor function for that transformed request. The anchor function is the target-specific request interceptor on the request-build chain: the single complete function whose own body assembles the transformed request body \u2014 it sets the x-tif-* headers, builds the signData signature and the encData ciphertext and writes them into the request it forwards \u2014 rather than the encData builder it calls to encrypt the body (a nested target-specific field builder), the signData builder for the signature field (another nested field builder), or the low-level SM4 encryptor below them (a core crypto utility). The task asks where both `encData` and `signData` are generated; that is this interceptor. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the individual encData/signData field builders or the SM4 primitive \u2014 return the interceptor that builds the whole transformed body. Only code under captures is in scope.  network_request POST /api/nthl/api/CommQuery/queryFixedHospital encData (the query request body) 3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/api/nthl/api/CommQuery/queryFixedHospital\", \"field\": \"encData\", \"plaintext_sample\": \"(the query request body)\", \"value_sample\": \"3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97...\"}\n\nSuspicious functions:\n### 3bb0bc8a169b865e (Nc)\n```js\nfunction Nc(e){return function(n,r){var i=this;if(!$s(r)&&i&&(i.__ign=!0),Cc(i)){var o={};o.method=n,o.url=r,o.id=Fs.uniqueId++,o.jserror=!1,o.headerRecord={},o.scope=new Ve,o.shouldAddToEvent=ls(r),g(o,kc(i)),Ys(o),Qs(o),o.context.setData({type:st,subType:ge,id:o.id,cid:o.context.id,method:o.method,url:o.url,state:o.state,jserror:o.jserror}),fs(o,st),o.toJSON=function(){return undefined},Sc(i,o)}try{return e.apply(i,arguments)}catch(a){}if(!un())return t(e,[i,arguments])}}\n```\n### 0d515115f488d328 (Pc)\n```js\nfunction Pc(t,e){un()&&(t.onload&&!t.__ty_xhr_hooked&&(Oo(t,Ec,e),t.__ty_xhr_hooked=!0,t[Yt]=Ec));var n=t.onreadystatechange;!n||t.__ty_xhr_hooked||n.__ty_xhr_hooked||(Oo(t,xc,e),t.__ty_xhr_hooked=!0,t[Yt]=xc)}\n```\n### 3426dd09cca624d6 ((anon))\n```js\nfunction(e){return function(n,r,i){var o;o=e.apply(this,arguments);try{Wa(t)}catch(a){}return o}}\n```\n### 6c4acb79effb3361 (Oi)\n```js\nfunction Oi(t,e,n){var r={};return t&&e&&e.length&&e.length>0&&i(e,(function(e){var o=t[e];if(null!=o)Fn(r,e,o);else if(n){var a=function(t,e){var n=t+\".\"+e;if(Ai[n])return Ai[n];var r=(e||\"\").split(\".\"),o=\"\";e&&0!==e.indexOf(\"[\")&&(o=\".\");var a,s=t;i(r,(function(t,e){0===e&&(s+=o),t.indexOf(\"-\")>-1&&0!==t.indexOf(\"[\")&&t.indexOf(\"]\")!==t.length-1?s+=\"['\"+t+\"']\":s+=(e>0?\".\":\"\")+t}));try{a=new Function(t,\"try{return \"+s+\";}catch(e){}return null;\")}catch(c){a=q}return Ai[n]=a,a}(\"reqBody\",e);null!=(o=a(t))&&Fn(r,e,o)}})),r}\n```\n### e9b31d90104445ba ((anon))\n```js\nfunction(m,p){\"object\"===typeof exports&&\"undefined\"!==typeof module?module.exports=p():\"function\"===typeof define&&define.amd?define(p):(m=m||self,m.AMapLoader=p())}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+    }
+   ],
+   "tools": null,
+   "ts": 1782570278.1721897
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"top1\":\"3bb0bc8a169b865e\",\"ranking\":[\"3bb0bc8a169b865e\",\"0d515115f488d328\",\"3426dd09cca624d6\",\"6c4acb79effb3361\",\"e9b31d90104445ba\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1206,
+    "output_tokens": 76
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-5fda0ad3-2c10-90ae-9976-ad094e128d00",
+    "object": "chat.completion",
+    "created": 1782570276,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1206,
+     "completion_tokens": 76,
+     "total_tokens": 1282,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1206,
+     "output_tokens": 76
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"top1\":\"3bb0bc8a169b865e\",\"ranking\":[\"3bb0bc8a169b865e\",\"0d515115f488d328\",\"3426dd09cca624d6\",\"6c4acb79effb3361\",\"e9b31d90104445ba\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1206,
+   "output_tokens": 76
+  }
+ }
+]

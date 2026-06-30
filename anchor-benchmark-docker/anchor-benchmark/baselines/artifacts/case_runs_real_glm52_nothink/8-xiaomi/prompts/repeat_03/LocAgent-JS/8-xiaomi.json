@@ -1,0 +1,240 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request whose password is sent as an uppercase MD5 `hash` field (e.g. 13819912565 becomes 9E2BFBE3D7050EDF876679FE5CE6E5AA). The bundle is string-array obfuscated (object keys appear as Qe([...]) decoder calls). Locate the anchor function for that hash field. The anchor function is the target-specific login param-builder on the submit->request chain: the single complete function whose own body assembles the account-login parameters object and binds the password hash into it \u2014 it runs the password through the md5 routine, uppercases the result and places it under the (decoded) hash key \u2014 rather than the md5 primitive it invokes to compute the digest (a generic crypto utility reached cross-file via module interop, not defined in this file), the string-array decoder that only reveals the obfuscated key names (an off-chain helper), or the request-sending sink. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the md5 routine, the string-array decoder, or unrelated utilities \u2014 return the param-builder that binds the uppercase-MD5 hash into the login request. Only code under captures is in scope.  network_request POST /serviceLogin hash 13819912565 9E2BFBE3D7050EDF876679FE5CE6E5AA\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/serviceLogin', 'field': 'hash', 'plaintext_sample': '13819912565', 'value_sample': '9E2BFBE3D7050EDF876679FE5CE6E5AA'}\nCandidate seed nodes (lexical prior, not a ranking): ['6a3a23effd219d2e', '8c7499447e0aa318', '0358c9862f21edfe', '03f2024c2a3d3779', '2515b0bd20fe2cf4', '8848a014db94944b', '96c2d2373f67e040', 'e0a67af98d927b43']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I'll start by examining the candidate seed nodes to find the param-builder function that assembles the login parameters with the uppercase MD5 hash."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_c5ce9db2260747f888e91f19",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "6a3a23effd219d2e"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4aef5f6782fb45b0be516ac7",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "8c7499447e0aa318"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_73e2728f2cf24f04a8d08d05",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "0358c9862f21edfe"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_39935472018f420f9ae5c410",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "03f2024c2a3d3779"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_21661bb1d4284e7ca8800e5e",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "2515b0bd20fe2cf4"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_be5f3a6aeaf54d7a931051bd",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "8848a014db94944b"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_97f80ce427cb4818b71f5bb2",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "96c2d2373f67e040"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ea9a9f73a0ec4290a6142180",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e0a67af98d927b43"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_c5ce9db2260747f888e91f19",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 10049, \"end_offset\": 11910}, \"_best_guess_score\": 0, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 10049, \"end_offset\": 11910, \"code\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4aef5f6782fb45b0be516ac7",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9967, \"end_offset\": 11935}, \"_best_guess_score\": -1, \"name\": \"e\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9967, \"end_offset\": 11935, \"code\": \"function e(t,i){var d,p,l,f,g,w,v,y,A,U,J,N,$,W,q,B,D,z,K,Q;return(0,s.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}),e,null,[[1,40,45,48]])}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_73e2728f2cf24f04a8d08d05",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9926, \"end_offset\": 11992}, \"_best_guess_score\": -2, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9926, \"end_offset\": 11992, \"code\": \"function(){var e=(0,i.Z)((0,s.Z)().mark((function e(t,i){var d,p,l,f,g,w,v,y,A,U,J,N,$,W,q,B,D,z,K,Q;return(0,s.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}),e,null,[[1,40,45,48]])})));return function(t,r){return e.apply(this,arguments)}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_39935472018f420f9ae5c410",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9152, \"end_offset\": 12014}, \"_best_guess_score\": -3, \"name\": \"O\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js\", \"start_offset\": 9152, \"end_offset\": 12014, \"code\": \"function O(){var e,t,r=(0,d.Z)(),a=r.searchParams,o=null!==(e=U(a.get(\\\"_callingCode\\\"),/^\\\\+\\\\d+$/))&&void 0!==e?e:\\\"\\\",u=null!==(t=U(a.get(\\\"_user\\\"),/^\\\\d+$/))&&void 0!==t?t:\\\"\\\",l=a.get(\\\"_maskedPhone\\\")||u||\\\"\\\",k=r.uRegion,b=\\\"true\\\"===a.get(\\\"_agreementChecked\\\")||!1,S=a.get(\\\"_originSetPwd\\\")||\\\"\\\",C=a.get(\\\"_snsConfirm\\\")||\\\"\\\",F=(0,h.Y3)(b),R=(0,c.rb)(),A=(0,f.f)(),O=y(),I=(0,v.Sl)(),H=(0,w.Z)();(0,g.useEffect)((function(){S&&I(\\\"expose\\\",{tip:T.J.expose_setpwd_page,origin:S})}),[I,S]);var L=(0,g.useCallback)((function(e){I(\\\"click\\\",{tip:T.J.click_set_complete,result:e,origin:S})}),[I,S]),J=(0,p.TA)({initialValues:{callingCode:o,phone:u,maskedPhone:l,region:k,password:\\\"\\\",repassword:\\\"\\\"},validate:function(e){var t=e.password,r=e.repassword;return A({password:t,repassword:r})},onSubmit:function(){var e=(0,i.Z)((0,s.Z)().mark((function e(t,i){var d,p,l,f,g,w,v,y,A,U,J,N,$,W,q,B,D,z,K,Q;return(0,s.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return d=i.setSubmitting,p=i.setFormError,e.prev=1,e.next=4,M.a.getFingerprint();case 4:if(l=e.sent,f=l.visitorId,S!==T.m.child){e.next=23;break}return g={},(w=a.get(\\\"_registerChildAccountParams\\\"))&&(g=JSON.parse(w)),v=(0,n.Z)((0,n.Z)({},g),{},{password:t.password,pwdHash:V()(t.password).toUpperCase()}),y=a.get(\\\"_EUI\\\")||\\\"\\\",e.next=14,(0,Z.dU)(v,{EUI:y});case 14:return A=e.sent,U=A.location,O(H.formatMessage({id:\\\"web_child_create_succ\\\"})),I(\\\"click\\\",{tip:P.gt.clickChildCreateByPhoneResult,result:1}),L(1),U?window.location.href=(0,_.a)(U):x.Mv?(x.ij&&(0,x.IN)(\\\"goForwardAndSetResult\\\",JSON.stringify({result:0,extraInfo:{createChild:\\\"success\\\"}})),x.VO.invokeMethod(\\\"closePage\\\")):window.location.href=(0,_.a)(j.Kc),e.abrupt(\\\"return\\\");case 23:if(S!==T.m.sns){e.next=32;break}return J={region:k,agreementChecked:b,password:t.password,pwdHash:V()(t.password).toUpperCase(),deviceFingerprint:f,_json:!0},e.next=27,(0,c.v_)(C,J);case 27:return N=e.sent,$=N.code,W=N.data,q=N.location,B=(W||{}).callback,0===$&&B?(L(1),window.location.href=(0,_.a)(B)):0===$&&q?(L(1),window.location.href=(0,_.a)(q)):(L(0),p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"}))),e.abrupt(\\\"return\\\");case 32:return e.next=34,(0,c.pH)({region:k,phone:(0,h.jM)({callingCode:o,phone:u}),sid:r.submitParams.sid,qs:r.submitParams.qs,callback:r.submitParams.callback,password:t.password,pwdHash:V()(t.password).toUpperCase(),policyName:F,deviceFingerprint:f});case 34:D=e.sent,z=D.code,K=D.location,L(1),0===z&&K?window.location.href=(0,_.a)(K):(p((0,E.jsx)(m.Z,{id:\\\"jsp_sys_error\\\"})),window.Sentry&&window.Sentry.captureException(new Error(\\\"tokenRegister\\\\u6570\\\\u636e\\\\u5f02\\\\u5e38,\\\".concat(JSON.stringify(D))))),e.next=45;break;case 40:e.prev=40,e.t0=e.catch(1),L(0),Q=R(e.t0),p(Q);case 45:return e.prev=45,d(!1),e.finish(45);case 48:case\\\"end\\\":return e.stop()}}),e,null,[[1,40,45,48]])})));return function(t,r){return e.apply(this,arguments)}}()});return{formik:J}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_21661bb1d4284e7ca8800e5e",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js\", \"start_offset\": 80140, \"end_offset\": 81412}, \"_best_guess_score\": -4, \"name\": \"$\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js\", \"start_offset\": 80140, \"end_offset\": 81412, \"code\": \"function $(){return{default:\\\"Validation error on field %s\\\",required:\\\"%s is required\\\",enum:\\\"%s must be one of %s\\\",whitespace:\\\"%s cannot be empty\\\",date:{format:\\\"%s date %s is invalid for format %s\\\",parse:\\\"%s date could not be parsed, %s is invalid \\\",invalid:\\\"%s date %s is invalid\\\"},types:{string:\\\"%s is not a %s\\\",method:\\\"%s is not a %s (function)\\\",array:\\\"%s is not an %s\\\",object:\\\"%s is not an %s\\\",number:\\\"%s is not a %s\\\",date:\\\"%s is not a %s\\\",boolean:\\\"%s is not a %s\\\",integer:\\\"%s is not an %s\\\",float:\\\"%s is not a %s\\\",regexp:\\\"%s is not a valid %s\\\",email:\\\"%s is not a valid %s\\\",url:\\\"%s is not a valid %s\\\",hex:\\\"%s is not a valid %s\\\"},string:{len:\\\"%s must be exactly %s characters\\\",min:\\\"%s must be at least %s characters\\\",max:\\\"%s cannot be longer than %s characters\\\",range:\\\"%s must be between %s and %s characters\\\"},number:{len:\\\"%s must equal %s\\\",min:\\\"%s cannot be less than %s\\\",max:\\\"%s cannot be greater than %s\\\",range:\\\"%s must be between %s and %s\\\"},array:{len:\\\"%s must be exactly %s in length\\\",min:\\\"%s cannot be less than %s in length\\\",max:\\\"%s cannot be greater than %s in length\\\",range:\\\"%s must be between %s and %s in length\\\"},pattern:{mismatch:\\\"%s value %s does not match pattern %s\\\"},clone:function(){var e=JSON.parse(JSON.stringify(this));return e.clone=this.clone,e}}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_be5f3a6aeaf54d7a931051bd",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11849, \"end_offset\": 15482}, \"_best_guess_score\": -5, \"name\": \"99030\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11849, \"end_offset\": 15482, \"code\": \"function(e,n,t){\\\"use strict\\\";t.d(n,{$Q:function(){return w},B7:function(){return j},Bt:function(){return C},CV:function(){return _},IN:function(){return P},Iy:function(){return m},Lm:function(){return O},Mr:function(){return d},Mv:function(){return l},So:function(){return y},Uw:function(){return T},VO:function(){return a},X9:function(){return v},Yw:function(){return D},Zd:function(){return M},_B:function(){return F},dA:function(){return b},gN:function(){return k},gP:function(){return f},ij:function(){return E},l$:function(){return L},m0:function(){return R},qP:function(){return S},qs:function(){return A},xk:function(){return x},yh:function(){return p}});t(39275),t(10853),t(33290),t(21496),t(38472);var r,o,i,u=t(72791),c=t(38222),a=window.PASSPORT_JSB_METHOD_INVOKER,s=a&&a.isMethodSupported,f=s&&a.isMethodSupported(\\\"showDialog\\\"),l=s&&a.isMethodSupported(\\\"closePage\\\"),d=s&&a.isMethodSupported(\\\"skipProvision\\\"),p=s&&a.isMethodSupported(\\\"listenInboxSms\\\"),h=s&&a.isMethodSupported(\\\"getConfig\\\"),m=(s&&a.isMethodSupported(\\\"startPage\\\"),s&&a.isMethodSupported(\\\"goBack\\\")),v=(s&&a.isMethodSupported(\\\"removeAccount\\\"),s&&a.isMethodSupported(\\\"showToast\\\")),g=s&&a.isMethodSupported(\\\"getServiceData\\\"),_=s&&a.isMethodSupported(\\\"setAccountInfo\\\"),w=s&&a.isMethodSupported(\\\"isRegisteredFido2\\\"),y=s&&a.isMethodSupported(\\\"fido2Auth\\\"),b=a,S=!!(null===(r=window)||void 0===r||null===(o=r.webkit)||void 0===o||null===(i=o.messageHandlers)||void 0===i?void 0:i.PASSPORT_JSB_METHOD_INVOKER),I=s&&a.isMethodSupported(\\\"invalidateAccount\\\"),E=s&&a.isMethodSupported(\\\"goForwardAndSetResult\\\"),k=s&&a.isMethodSupported(\\\"getAccountInfo\\\"),O=s&&a.isMethodSupported(\\\"isLastPage\\\"),x=s&&a.isMethodSupported(\\\"onlyLoginEnd\\\"),C=s&&a.isMethodSupported(\\\"notifyWebLoadFinish\\\"),M=function(){return(0,u.useMemo)((function(){var e=\\\"\\\";try{if(g){var n=JSON.parse(a.invokeMethod(\\\"getServiceData\\\"));0===(null===n||void 0===n?void 0:n.code)&&(e=JSON.stringify(JSON.parse(n.result)))}}catch(t){}return e}),[])},P=function(e,n){if(b&&function(e){return!(!s||!a.isMethodSupported(e))}(e)){\\\"string\\\"!==typeof n&&(n=JSON.stringify(n)||\\\"{}\\\");try{return JSON.parse(a.invokeMethod(e,n))}catch(t){return null}}if(S){n=n||{};try{\\\"string\\\"===typeof n&&(n=JSON.parse(n))}catch(t){n={}}window.webkit.messageHandlers.PASSPORT_JSB_METHOD_INVOKER.postMessage({methodName:e,callbackId:n.callbackId,params:n})}return null},T=function(){l?(0,c.Uw)():S&&P(\\\"closePage\\\")},N=function(){var e=null;if(h){var n=P(\\\"getConfig\\\");0===(null===n||void 0===n?void 0:n.code)&&(e=n.result)}return e},A=function(){return(0,u.useMemo)((function(){return N()}),[])},R=function(){I&&P(\\\"invalidateAccount\\\")},j={callbackIds:{login:\\\"login\\\",notLogin:\\\"notLogin\\\",getSms:\\\"getSms\\\",getSmsRegister:\\\"getSmsRegister\\\",getRegisteredFido:\\\"getRegisteredFido\\\",fido2Auth:\\\"fido2Auth\\\",snsVerify:\\\"snsVerify\\\",getSmsTrustMobile:\\\"getSmsTrustMobile\\\",getHiddenTitleBar:\\\"getHiddenTitleBar\\\",getIsSupportWXLogin:\\\"getIsSupportWXLogin\\\",onlyLoginEnd:\\\"onlyLoginEnd\\\",getAccountInfo:\\\"getAccountInfo\\\",customBackAction:\\\"customBackAction\\\"},callbackMap:{},addCallback:function(e,n){var t=!(arguments.length>2&&void 0!==arguments[2])||arguments[2];if(this.callbackMap[e]&&!t)throw new Error(\\\"callbackId\\\\u4e0d\\\\u80fd\\\\u91cd\\\\u590d\\\");this.callbackMap[e]=n}},D=function(){var e=navigator.userAgent,n=A();return(0,u.useMemo)((function(){var t=n&&\\\"Harmony\\\"===n.system;return/Harmony/.test(e)||t}),[e,n])},L=function(){var e=N();if(e&&e.inMiuiProvisionStep&&e.appVersionCode){var n=e.appVersionCode,t=n.toString().substring(1);return t.startsWith(\\\"241105\\\")?parseInt(t)>=24110517:n>325062400}return!1},F=function(){return(0,u.useMemo)((function(){return L()}),[])}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_97f80ce427cb4818b71f5bb2",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11843, \"end_offset\": 15482}, \"_best_guess_score\": -6, \"name\": \"99030\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11843, \"end_offset\": 15482, \"code\": \"99030:function(e,n,t){\\\"use strict\\\";t.d(n,{$Q:function(){return w},B7:function(){return j},Bt:function(){return C},CV:function(){return _},IN:function(){return P},Iy:function(){return m},Lm:function(){return O},Mr:function(){return d},Mv:function(){return l},So:function(){return y},Uw:function(){return T},VO:function(){return a},X9:function(){return v},Yw:function(){return D},Zd:function(){return M},_B:function(){return F},dA:function(){return b},gN:function(){return k},gP:function(){return f},ij:function(){return E},l$:function(){return L},m0:function(){return R},qP:function(){return S},qs:function(){return A},xk:function(){return x},yh:function(){return p}});t(39275),t(10853),t(33290),t(21496),t(38472);var r,o,i,u=t(72791),c=t(38222),a=window.PASSPORT_JSB_METHOD_INVOKER,s=a&&a.isMethodSupported,f=s&&a.isMethodSupported(\\\"showDialog\\\"),l=s&&a.isMethodSupported(\\\"closePage\\\"),d=s&&a.isMethodSupported(\\\"skipProvision\\\"),p=s&&a.isMethodSupported(\\\"listenInboxSms\\\"),h=s&&a.isMethodSupported(\\\"getConfig\\\"),m=(s&&a.isMethodSupported(\\\"startPage\\\"),s&&a.isMethodSupported(\\\"goBack\\\")),v=(s&&a.isMethodSupported(\\\"removeAccount\\\"),s&&a.isMethodSupported(\\\"showToast\\\")),g=s&&a.isMethodSupported(\\\"getServiceData\\\"),_=s&&a.isMethodSupported(\\\"setAccountInfo\\\"),w=s&&a.isMethodSupported(\\\"isRegisteredFido2\\\"),y=s&&a.isMethodSupported(\\\"fido2Auth\\\"),b=a,S=!!(null===(r=window)||void 0===r||null===(o=r.webkit)||void 0===o||null===(i=o.messageHandlers)||void 0===i?void 0:i.PASSPORT_JSB_METHOD_INVOKER),I=s&&a.isMethodSupported(\\\"invalidateAccount\\\"),E=s&&a.isMethodSupported(\\\"goForwardAndSetResult\\\"),k=s&&a.isMethodSupported(\\\"getAccountInfo\\\"),O=s&&a.isMethodSupported(\\\"isLastPage\\\"),x=s&&a.isMethodSupported(\\\"onlyLoginEnd\\\"),C=s&&a.isMethodSupported(\\\"notifyWebLoadFinish\\\"),M=function(){return(0,u.useMemo)((function(){var e=\\\"\\\";try{if(g){var n=JSON.parse(a.invokeMethod(\\\"getServiceData\\\"));0===(null===n||void 0===n?void 0:n.code)&&(e=JSON.stringify(JSON.parse(n.result)))}}catch(t){}return e}),[])},P=function(e,n){if(b&&function(e){return!(!s||!a.isMethodSupported(e))}(e)){\\\"string\\\"!==typeof n&&(n=JSON.stringify(n)||\\\"{}\\\");try{return JSON.parse(a.invokeMethod(e,n))}catch(t){return null}}if(S){n=n||{};try{\\\"string\\\"===typeof n&&(n=JSON.parse(n))}catch(t){n={}}window.webkit.messageHandlers.PASSPORT_JSB_METHOD_INVOKER.postMessage({methodName:e,callbackId:n.callbackId,params:n})}return null},T=function(){l?(0,c.Uw)():S&&P(\\\"closePage\\\")},N=function(){var e=null;if(h){var n=P(\\\"getConfig\\\");0===(null===n||void 0===n?void 0:n.code)&&(e=n.result)}return e},A=function(){return(0,u.useMemo)((function(){return N()}),[])},R=function(){I&&P(\\\"invalidateAccount\\\")},j={callbackIds:{login:\\\"login\\\",notLogin:\\\"notLogin\\\",getSms:\\\"getSms\\\",getSmsRegister:\\\"getSmsRegister\\\",getRegisteredFido:\\\"getRegisteredFido\\\",fido2Auth:\\\"fido2Auth\\\",snsVerify:\\\"snsVerify\\\",getSmsTrustMobile:\\\"getSmsTrustMobile\\\",getHiddenTitleBar:\\\"getHiddenTitleBar\\\",getIsSupportWXLogin:\\\"getIsSupportWXLogin\\\",onlyLoginEnd:\\\"onlyLoginEnd\\\",getAccountInfo:\\\"getAccountInfo\\\",customBackAction:\\\"customBackAction\\\"},callbackMap:{},addCallback:function(e,n){var t=!(arguments.length>2&&void 0!==arguments[2])||arguments[2];if(this.callbackMap[e]&&!t)throw new Error(\\\"callbackId\\\\u4e0d\\\\u80fd\\\\u91cd\\\\u590d\\\");this.callbackMap[e]=n}},D=function(){var e=navigator.userAgent,n=A();return(0,u.useMemo)((function(){var t=n&&\\\"Harmony\\\"===n.system;return/Harmony/.test(e)||t}),[e,n])},L=function(){var e=N();if(e&&e.inMiuiProvisionStep&&e.appVersionCode){var n=e.appVersionCode,t=n.toString().substring(1);return t.startsWith(\\\"241105\\\")?parseInt(t)>=24110517:n>325062400}return!1},F=function(){return(0,u.useMemo)((function(){return L()}),[])}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ea9a9f73a0ec4290a6142180",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519}, \"_best_guess_score\": -7, \"name\": \"Pe\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519, \"code\": \"function Pe(e){var t=(0,b.Z)(),n=(0,g._8)(),i=(0,ce.nZ)(),c=(0,m.UQ)(),s=u.useCallback(function(){var s=(0,o.Z)((0,a.Z)().mark((function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:return p=u.setSubmitting,s.prev=1,d=e.callback,h=e.sid,g=e.qs,b=e._sign,v=e.serviceParam,w=e.user,s.next=5,Promise.all([r.e(2605),r.e(8132),r.e(695),r.e(7634)]).then(r.bind(r,23963));case 5:return y=s.sent,O=y.encryptAes,x=O({user:w}),_=x.encryptedParams,E=function(){var e=(0,o.Z)((0,a.Z)().mark((function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"true\\\",callback:d,sid:h,qs:g,_sign:b,serviceParam:v,user:_.user,hash:he()(l.password).toUpperCase(),policyName:i?\\\"miaccount\\\":\\\"globalmiaccount\\\",captCode:t.icode||\\\"\\\"},{EUI:x.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(t){return e.apply(this,arguments)}}(),j=\\\"\\\".concat(null!==(f=Ee[t.dataCenterZone])&&void 0!==f?f:\\\"en\\\",\\\"-pwd-login\\\"),s.next=13,n(E,{icodeType:\\\"login\\\",action:j});case 13:k=s.sent,(0,ae.Gt)(k),s.next=20;break;case 17:s.prev=17,s.t0=s.catch(1),c(s.t0,u);case 20:return s.prev=20,p(!1),s.finish(20);case 23:case\\\"end\\\":return s.stop()}}),s,null,[[1,17,20,23]])})));return function(e,t){return s.apply(this,arguments)}}(),[t,n,e,i,c]),l=u.useMemo((function(){return(0,re.Ry)().shape({password:(0,re.Z_)().required((function(){return(0,we.jsx)(p.Z,{id:\\\"EmptyErrorPwd\\\"})}))})}),[]);return{formik:(0,ne.TA)({initialValues:{password:\\\"\\\"},validationSchema:l,onSubmit:s})}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I found the anchor function. The last candidate node `e0a67af98d927b43` is the `Pe` function in `7381.5e160cb4.chunk.js`. This function's body contains the inner function `E` that assembles the login parameters object with `hash: he()(l.password).toUpperCase()` \u2014 running the password through the md5 routine (`he()`), uppercasing the result, and placing it under the `hash` key. This is the param-builder for the `/serviceLogin` POST request. Let me verify the exact offsets."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_28598856d6a64b42a129ed18",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e0a67af98d927b43"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_28598856d6a64b42a129ed18",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519}, \"_best_guess_score\": -7, \"name\": \"Pe\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519, \"code\": \"function Pe(e){var t=(0,b.Z)(),n=(0,g._8)(),i=(0,ce.nZ)(),c=(0,m.UQ)(),s=u.useCallback(function(){var s=(0,o.Z)((0,a.Z)().mark((function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:return p=u.setSubmitting,s.prev=1,d=e.callback,h=e.sid,g=e.qs,b=e._sign,v=e.serviceParam,w=e.user,s.next=5,Promise.all([r.e(2605),r.e(8132),r.e(695),r.e(7634)]).then(r.bind(r,23963));case 5:return y=s.sent,O=y.encryptAes,x=O({user:w}),_=x.encryptedParams,E=function(){var e=(0,o.Z)((0,a.Z)().mark((function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"true\\\",callback:d,sid:h,qs:g,_sign:b,serviceParam:v,user:_.user,hash:he()(l.password).toUpperCase(),policyName:i?\\\"miaccount\\\":\\\"globalmiaccount\\\",captCode:t.icode||\\\"\\\"},{EUI:x.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(t){return e.apply(this,arguments)}}(),j=\\\"\\\".concat(null!==(f=Ee[t.dataCenterZone])&&void 0!==f?f:\\\"en\\\",\\\"-pwd-login\\\"),s.next=13,n(E,{icodeType:\\\"login\\\",action:j});case 13:k=s.sent,(0,ae.Gt)(k),s.next=20;break;case 17:s.prev=17,s.t0=s.catch(1),c(s.t0,u);case 20:return s.prev=20,p(!1),s.finish(20);case 23:case\\\"end\\\":return s.stop()}}),s,null,[[1,17,20,23]])})));return function(e,t){return s.apply(this,arguments)}}(),[t,n,e,i,c]),l=u.useMemo((function(){return(0,re.Ry)().shape({password:(0,re.Z_)().required((function(){return(0,we.jsx)(p.Z,{id:\\\"EmptyErrorPwd\\\"})}))})}),[]);return{formik:(0,ne.TA)({initialValues:{password:\\\"\\\"},validationSchema:l,onSubmit:s})}}\"}"
+    }
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "name": "search_entity",
+   "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ]
+   }
+  },
+  {
+   "name": "traverse_graph",
+   "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     },
+     "edge": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node",
+     "edge"
+    ]
+   }
+  },
+  {
+   "name": "retrieve_entity",
+   "description": "Return the full source and location of a function node id.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node"
+    ]
+   }
+  },
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782565378.0373273
+}

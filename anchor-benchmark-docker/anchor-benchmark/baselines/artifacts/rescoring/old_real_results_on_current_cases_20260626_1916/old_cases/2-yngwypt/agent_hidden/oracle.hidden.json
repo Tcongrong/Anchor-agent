@@ -1,0 +1,167 @@
+{
+  "case_id": "real02_yngwypt_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "POST",
+      "url_contains": "/login",
+      "field": "password",
+      "plaintext_sample": "13819912565",
+      "value_sample": "0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616..."
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "For the password field the chain is dispatcher c(password, 32) -> n (sm32) -> i (sm2) over sm3(password). The anchor is n (sm32): its body composes sm3 then sm2 with the site public key to produce the observed password token. i (sm2NoKey) is a nested target-specific helper; c is the generic encrypt dispatcher. PLAN §8.14 rule 1/2.",
+  "primary_anchor": {
+    "answer_function": "n",
+    "source_function": "sm32",
+    "source_file": "js/chunk-858ed276.7bbb8c3f.js",
+    "captured_file": "captures/js/chunk-858ed276.7bbb8c3f.js",
+    "captured_span": {
+      "file": "captures/js/chunk-858ed276.7bbb8c3f.js",
+      "start_line": 965,
+      "end_line": 968,
+      "start_column": 8,
+      "end_column": 9,
+      "start_offset": 44894,
+      "end_offset": 45112,
+      "sha256": "3c6642666b37b1f31771338b3707084fdbdd639e73613b7662a56a4ff86fc3b0",
+      "normalized_sha256": "2257fb27769acb1691646cf6cd2d2f7685580ce1139b4f68e5d0b294c4e1e154"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "sm32: returns i(sm3(t), <site pubkey>, 1) — first hashes the password with sm3 then sm2-encrypts it, producing the observed password token (the sm32 branch selected by the dispatcher for the password field)."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "n",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "js/chunk-858ed276.7bbb8c3f.js",
+      "captured_span": {
+        "file": "captures/js/chunk-858ed276.7bbb8c3f.js",
+        "start_line": 965,
+        "end_line": 968,
+        "start_column": 8,
+        "end_column": 9,
+        "start_offset": 44894,
+        "end_offset": 45112,
+        "sha256": "3c6642666b37b1f31771338b3707084fdbdd639e73613b7662a56a4ff86fc3b0",
+        "normalized_sha256": "2257fb27769acb1691646cf6cd2d2f7685580ce1139b4f68e5d0b294c4e1e154"
+      },
+      "why": "sm32: returns i(sm3(t), <site pubkey>, 1) — first hashes the password with sm3 then sm2-encrypts it, producing the observed password token (the sm32 branch selected by the dispatcher for the password field).",
+      "answer_function": "n",
+      "source_function": "sm32"
+    },
+    {
+      "function": "i",
+      "role": "Nested target-specific helper",
+      "score": 0.7,
+      "source_file": "js/chunk-858ed276.7bbb8c3f.js",
+      "captured_span": {
+        "file": "captures/js/chunk-858ed276.7bbb8c3f.js",
+        "start_line": 973,
+        "end_line": 978,
+        "start_column": 8,
+        "end_column": 9,
+        "start_offset": 45208,
+        "end_offset": 45555,
+        "sha256": "53823c8163acc8d09e0f22fbbc50dea401c2831a37a5694fd784c367c58da12b",
+        "normalized_sha256": "8bdf21bb1b1257fcda7341041132b50284d76be157c52c9872dafd9e798748d8"
+      },
+      "why": "sm2NoKey: runs sm2.doEncrypt with the site public key and returns '04'+ciphertext. Invoked by n (sm32) on the password path and directly for the username; a nested target-specific helper.",
+      "answer_function": "i",
+      "source_function": "sm2NoKey"
+    },
+    {
+      "function": "c",
+      "role": "Path/Wrapper",
+      "score": 0.2,
+      "source_file": "js/chunk-858ed276.7bbb8c3f.js",
+      "captured_span": {
+        "file": "captures/js/chunk-858ed276.7bbb8c3f.js",
+        "start_line": 995,
+        "end_line": 1020,
+        "start_column": 8,
+        "end_column": 9,
+        "start_offset": 45914,
+        "end_offset": 46794,
+        "sha256": "ddae73d69224f66b8be34a4a0f32ff776b67d563883bfb558b7a99737beaf678",
+        "normalized_sha256": "c38f04f51c1ffc76890ea3130b640c07a732d739ddc4f81e1448f6226a3e2b2b"
+      },
+      "why": "The encrypt dispatcher (exported as h.b): routes a value by EncryptType (3nokey->o, 2nokey->i, 32->n). Generic selector, not the password-specific encryptor.",
+      "answer_function": "c",
+      "source_function": "encrypt"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The network sink / request-sending service emits an already constructed value and is not the constructor.",
+      "Thin forwarding wrappers and submit handlers that merely call the value constructor should not outrank the anchor.",
+      "Generic crypto/encoding primitives (md5/AES/RSA/SM/base64/uuid libraries) are Core utilities, below the field-binding anchor.",
+      "Same-request OTHER fields (a second encrypted parameter, signatures, fingerprints) are off-chain decoys for this observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention."
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to primary_anchor.captured_span (the field-binding/value-constructing function)."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to a target-specific helper nested below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to a generic crypto/encoding primitive used by the construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to a path-critical step, a forwarding wrapper or the submit handler."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Span maps to a generic low-level helper (BigInt math, DOM read) on the upstream path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to an off-chain decoy / same-request other field, or cannot be uniquely mapped."
+    }
+  ]
+}

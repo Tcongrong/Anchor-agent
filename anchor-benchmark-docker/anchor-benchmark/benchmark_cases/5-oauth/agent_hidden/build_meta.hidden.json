@@ -1,0 +1,114 @@
+{
+  "case_id": "real05_oauth_request_signature",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 9,
+    "captured_js_total_bytes": 615151,
+    "anchor_file": "oauth.d.cn/auth/goLogin.html (inline script)",
+    "minified": false,
+    "bundler": "none",
+    "obfuscation_level": 0,
+    "vendor_noise_level": "medium",
+    "call_depth_estimate": 2,
+    "cross_file_anchor": false,
+    "anchor_in_html_inline_script": true,
+    "same_request_decoy_fields": 0,
+    "notes": "Classic RSA.js triplet (BigInt.js/Barrett.js/RSA.js) + inline rsa() in goLogin.html. Geetest captcha SDK is vendor noise. The anchor is in an HTML inline <script> (acorn cannot parse the HTML wrapper; located via bracket-balance fallback)."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "fill account",
+          "fill password",
+          "pass captcha",
+          "click login"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "POST",
+        "url_contains": "/auth",
+        "field": "pwd",
+        "plaintext_sample": "13819912565",
+        "value_sample": "4f72f474...effb3d147 (128-hex RSA token)"
+      }
+    },
+    "anchor_definition": "The pwdFormLogin submit handler that reads the inputs, RSA-encrypts the password via rsa() and assembles submitData with the pwd field before POSTing; it is the complete function containing the captured 1.json code (goLogin.html:450). The rsa() site encryptor is a nested target-specific helper (0.7); encryptedString/RSAKeyPair are core utilities."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.{js,html}"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "client_side_password_rsa",
+    "subtype": "RSA (custom BigInt impl) of password as request pwd field",
+    "network_request_present": true,
+    "recomputable_offline": false,
+    "recompute_check": "RSA padding behavior of this legacy impl not asserted; static localization only",
+    "near_categories": [
+      {
+        "category": "request_transformation",
+        "why_not": "Only the scalar password is encrypted, not the whole request body."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The token is RSA of user input, not a device/browser digest."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The anchor lives in an HTML inline <script>; the RSA primitive is split across BigInt.js/Barrett.js/RSA.js."
+      ]
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "pwdFormLogin (submit handler / anchor) vs rsa (binds the site key, 0.7) vs encryptedString/RSAKeyPair (generic RSA primitives, 0.5) are easy to confuse."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": false,
+      "evidence": []
+    }
+  },
+  "provenance": {
+    "source_url": "https://oauth.d.cn/auth/goLogin.html",
+    "label_in_1json": "goLogin.html:450:3",
+    "label_is_stale": false,
+    "label_points_to": "the pwdFormLogin submit handler (~line 450) — this is the anchor; the rsa() site encryptor it calls is at line 338 (0.7 nested helper)",
+    "located_by": "content_search",
+    "anchor_locate_method": "fallback"
+  },
+  "primary_anchor": {
+    "answer_function": "pwdFormLogin",
+    "source_function": "pwdFormLogin",
+    "source_file": "oauth.d.cn/auth/goLogin.html",
+    "captured_file": "captures/oauth.d.cn/auth/goLogin.html",
+    "captured_span": {
+      "start_line": 450,
+      "end_line": 536,
+      "start_offset": 15406,
+      "end_offset": 18891
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

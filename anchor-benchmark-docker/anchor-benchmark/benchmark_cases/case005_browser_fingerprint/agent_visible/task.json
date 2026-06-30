@@ -1,0 +1,108 @@
+{
+  "case_id": "case005_browser_fingerprint",
+  "page": "captures/devtools-source-dump/127.0.0.1_4173/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#fingerprintMode",
+      "value": "strict"
+    },
+    {
+      "action": "check",
+      "selector": "#entropyConsent"
+    },
+    {
+      "action": "submit",
+      "selector": "#fingerprintForm"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "method": "log",
+    "action": "browser.fingerprint",
+    "field": "browser_fingerprint",
+    "expected_format": "^bf_[a-z0-9_-]{10,18}$"
+  },
+  "anchor_definition_general": "A function is target-specific with respect to the observable described in the task if at least one statement in its body either constructs or binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: If a target-specific function C is called by a generic dispatcher B and itself calls a generic utility D (for example a hash routine), the anchor is C, not B (too generic/upstream) and not D (too generic/reusable). If a generic function A merely writes whatever its callee B returns into the target field, and B is the function dedicated to computing that value, the anchor is B, even though the literal field assignment is syntactically inside A. If the target-specific statement is just one branch or line inside a larger function F that also handles unrelated cases, F is still target-specific and remains a valid anchor candidate — do not discard it for a purer sub-function.",
+  "anchor_worked_example": "Illustration only (checkout page): A checkout page emits body.order_sig_v2 after the user clicks Submit Order. The runtime chain runs construct order draft, encode checkout state, collect async profile receipt, compose request envelope, run interceptor pipeline, select sealing interceptor (ANCHOR), canonicalize payload fields, fold payload with receipt and pepper, compute digest, write body.order_sig_v2, and send request. The sealing interceptor is the anchor because its caller is a generic pipeline dispatcher and its body is the highest point that explains why order_sig_v2 is produced. Functions below it (canonicalize, fold) are nested helpers; the digest routine is a core utility; dispatcher and request sender are path/wrapper. Other same-click values such as analytics_sig, coupon_digest, view_cache_key, and retry_fingerprint are off-chain decoys. Apply the same reasoning to this page and bundle.",
+  "question": "Locate the anchor function for the browser_fingerprint field in the console.log object whose action is browser.fingerprint after selecting strict in #fingerprintMode, checking #entropyConsent, and submitting #fingerprintForm. The anchor is the first target-specific browser fingerprint value constructor on the dynamic behavior chain: after form-submit gating, local-event dispatch, asynchronous scheduling, browser environment collection, input normalization and projection preparation, its function body itself constructs the target observable bf_ browser fingerprint digest value rather than merely collecting navigator/screen/canvas/media inputs, dispatching control, wrapping a return value, or writing to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, raw feature collectors, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` or `async function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` or `async function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4173/assets/browser.app.bundle.js",
+      "slice": {
+        "start_line": 1200,
+        "end_line": 1218,
+        "start_offset": 52000,
+        "end_offset": 54800,
+        "code": "function exampleAnchorFn(tuple, context = {}) {\n  const rows = normalizeTuple(tuple);\n  const body = mixReducer(rows, context);\n  return 'bf_' + body;\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return browser environment collectors, generic formatters, routers or decoy bf-like emitters when a more target-specific fingerprint value constructor is present.",
+    "Constrain the observable by both action browser.fingerprint and field browser_fingerprint.",
+    "The browser fingerprint value is local and console-observable; no network request is required.",
+    "A source path outside captures is not a default answer."
+  ],
+  "notes": [
+    "Use only the documented form controls and the console output.",
+    "The target field is browser_fingerprint.",
+    "The visible JavaScript corpus is the captured bundle.",
+    "Return the top-1 anchor function only."
+  ]
+}

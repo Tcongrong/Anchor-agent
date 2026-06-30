@@ -1,0 +1,205 @@
+{
+  "case_id": "case008_byte_array_transformation",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 12,
+    "router_layers": 4,
+    "middleware_layers": 3,
+    "state_machine_steps": 3128,
+    "async_level": 3,
+    "distractor_count": 44,
+    "semantic_decoy_count": 16,
+    "submit_path_decoy_count": 2,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "public_task_label": "byte_array_transformation",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "selector": "#armBatch",
+            "action": "click"
+          },
+          {
+            "selector": "#priorityFilter",
+            "action": "select",
+            "value": "escalated"
+          },
+          {
+            "selector": "#statusFilter",
+            "action": "select",
+            "value": "open"
+          },
+          {
+            "selector": "#minAmount",
+            "action": "fill",
+            "value": "250"
+          },
+          {
+            "selector": "#ownerInput",
+            "action": "fill",
+            "value": "maria"
+          },
+          {
+            "selector": "#reviewToggle",
+            "action": "check"
+          },
+          {
+            "selector": "#previewBatch",
+            "action": "click"
+          },
+          {
+            "selector": "#commitFilter",
+            "action": "click"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "table.segment.commit",
+        "field": "typed_array_payload",
+        "value_pattern": "^ta_[A-Za-z0-9_-]{24}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after staged UI gating, custom-event dispatch, action routing, tuple preparation and asynchronous continuation, whose own body constructs the target observable typed_array_payload value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_hidden/dist/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/filter.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4008/assets/filter.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 2575850,
+    "bundle_lines": 98324
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "staged DOM click gate plus CustomEvent dispatch, promise and microtask continuations",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name is assembled from character-code arrays at the sink, so direct literal search is insufficient.",
+        "The typed-array payload is carried through an arm/preview/commit staged table segment flow before the sink wrapper receives it.",
+        "The selected slot and config are recovered through a runtime table before the converter is called."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 2575850,
+        "captured_bundle_lines": 98324,
+        "shadow_file_count": 44,
+        "vendor_noise_file_count": 25
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The click path crosses staged session gating, custom event dispatch, action routing, filtering, priority projection, tuple construction, asynchronous scheduling, table config selection, typed-array materialization and console sink wrapping.",
+        "Dozens of decoy modules call the same factory with non-target slots, so nearby factory usage is not enough to identify the target anchor.",
+        "The UI table filter remains semantically plausible, but the target observable is the typed_array_payload field on the segment commit output rather than visual filtering or preview state."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 16,
+        "off_chain_decoy_modules": 44,
+        "same_factory_decoy_slots": 31
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from the commit click by arm and preview state, CustomEvent dispatch, Promise and microtask boundaries.",
+        "The final sink receives an already encoded ta_ payload, so sink inspection alone cannot identify the conversion site.",
+        "The converter receives tuple rows plus transit, priority, review and statistics context that were prepared in earlier layers."
+      ],
+      "async_boundaries": [
+        "CustomEvent dispatch",
+        "Promise continuation",
+        "queueMicrotask continuation"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "byte_array_transformation",
+    "case_category": "byte_array_transformation",
+    "subtype": "staged table-segment typed-array payload materialization",
+    "network_request_present": false,
+    "reason": "The observable value is constructed by materializing an 18-byte Uint8Array from staged table segment tuple lanes, runtime transit state and statistics, then serializing it as a stable ta_ console payload.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "The anchor explicitly materializes and serializes a Uint8Array rather than only formatting state fields."
+      },
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The output has no request proof, token or seal semantics."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "No network request body is emitted or rewritten."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The target inputs come from local table controls and segment staging state, not browser or device capability collection."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "agent_hidden/oracle.hidden.json",
+    "reason": "This file describes the public task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "construct_validity_note": "The captured bundle uses mangled identifiers with renameGlobals:false, so module-level function names (including answer_function values) remain readable as required by the agent submission contract. The primary difficulty is semantic disambiguation among the staged arm/preview/commit chain, the factory wrapper, the nested typed-array helpers and the shadow decoys, rather than long opaque-name tracing alone.",
+  "primary_anchor": {
+    "answer_function": "transformTableTypedArray",
+    "source_function": "transformTableTypedArray",
+    "source_file": "src/z8/k7/q3/t9.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4008/assets/filter.app.bundle.js",
+    "captured_span": {
+      "start_line": 34466,
+      "end_line": 34473,
+      "start_offset": 930671,
+      "end_offset": 930979
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  },
+  "source_line_counts": {
+    "srcLines": 21112,
+    "z8Lines": 20541
+  }
+}

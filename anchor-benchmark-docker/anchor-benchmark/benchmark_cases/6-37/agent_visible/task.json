@@ -1,0 +1,45 @@
+{
+  "case_id": "real06_37_request_signature",
+  "page": "captures/ptres.37.com/js/sq/widget/sq.login2015.js",
+  "interaction": [],
+  "observable": {
+    "type": "network_request",
+    "method": "GET",
+    "url_contains": "/login",
+    "field": "password",
+    "plaintext_sample": "13819912565",
+    "value_sample": "bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4="
+  },
+  "question": "On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login — rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler — return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": { "type": "string", "required": true, "description": "Identifier of the function as it appears in the captured file." },
+      "file": { "type": "string", "required": true, "description": "captures-relative path; must match visible_corpus." },
+      "slice": {
+        "type": "object", "required": true,
+        "fields": {
+          "start_line": { "type": "integer", "required": true },
+          "end_line": { "type": "integer", "required": true },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based UTF-16 offset (BOM stripped)." },
+          "end_offset": { "type": "integer", "required": true, "description": "Exclusive end offset." },
+          "code": { "type": "string", "required": true, "description": "Exact text [start_offset,end_offset); one complete function." }
+        }
+      }
+    },
+    "example": { "function_name": "exampleDispatcher", "file": "captures/ptres.37.com/js/sq/widget/sq.login2015.js", "slice": { "start_line": 1, "end_line": 1, "start_offset": 1000, "end_offset": 1100, "code": "exampleDispatcher:function(a,b){ /* assembles request, binds password via encoder, sends it */ }" } }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema.",
+    "function_name and slice.code must refer to the same function in the captured file.",
+    "slice.code must be one complete function (balanced braces).",
+    "Return one top-1 function, not a list.",
+    "Do not return the password encoder, the shared base64 primitive, or the sibling scrambler — return the login dispatcher that binds the password into the request and sends it."
+  ],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested request field, or dispatches the requested action, and removing that statement would break the observed value carried in the network request. A function is generic when it is a reusable utility (hash/encode/encrypt/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the shallowest target-specific function on the path from the user trigger to the network sink: upstream dispatchers are too generic, downstream reusable crypto/encoding primitives are too low-level, and the request-sending service that merely emits an already-built value is a wrapper rather than the anchor. When the request is assembled and dispatched by a handler that reads the inputs, routes the target field through the site's encoder, applies any request-level transform and sends the request, that submit/assembly handler is the anchor; the encoder it calls is a target-specific helper (even a bespoke one) and any generic base64/hash primitive below it is a core utility. (Only when there is no such assembling handler and the page calls a dedicated key-bound constructor directly is that constructor itself the anchor.) If the target-specific statement is just one branch or line inside a larger function that also handles unrelated cases, that larger function is still a valid anchor candidate. Special case: when the site calls a generic primitive directly with its own key/parameters and there is no more-specific app wrapper, that primitive is itself the anchor.",
+  "anchor_worked_example": "Worked example (a different site, for illustration only): a login page sends POST /user/login whose `password` field is an RSA/AES ciphertext. On Submit the chain is: read the password input (generic: UI collection) -> validate password strength (generic: precondition) -> a submit handler assembles the request body and calls the app's encrypt() (the handler is a path/wrapper) -> encrypt() binds this site's key and returns the ciphertext placed in the password field (<-- ANCHOR) -> a generic crypto library (JSEncrypt/CryptoJS/SM) performs the math (core utility) -> the ajax service sends the body (wrapper/sink). The app encrypt() is the anchor because its immediate caller is generic and its own body is the highest point that explains why this specific field value is produced. The crypto library below it is a core utility (0.5); the submit handler and the ajax sender are path/wrapper (0.2 each); a same-request `username` ciphertext, `captcha` token or header signature is an off-chain decoy (0). Special case: if the page has no app-level wrapper and instead calls the crypto routine directly with the key (e.g. encryptString(siteKey, password)), that routine is itself the anchor. Contrast (this case): when a login/registration dispatcher reads the inputs, routes the password through the site's encoder, assembles the request and sends it, that dispatcher is the anchor — the password encoder it calls (however bespoke its scrambling) is a nested target-specific helper, the shared base64 primitive below it is a core utility, and a sibling scrambler for other data is an off-chain decoy. Apply the same reasoning to the captured bundle below."
+}

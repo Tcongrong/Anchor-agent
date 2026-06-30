@@ -1,0 +1,113 @@
+{
+  "case_id": "real11_fuwu_request_transformation",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 4,
+    "captured_js_total_bytes": 2974246,
+    "anchor_bundle_bytes": 1404784,
+    "minified": true,
+    "bundler": "webpack",
+    "obfuscation_level": 1,
+    "vendor_noise_level": "medium",
+    "call_depth_estimate": 3,
+    "cross_file_anchor": false,
+    "same_request_decoy_fields": 2,
+    "notes": "1.4 MB minified app.js. encData is built by a multi-cipher dispatcher (SM2/SM3/SM4) with nested IIFEs. IMPORTANT: 1.json.code points at the HEADER signature interceptor f (x-tif-signature/nonce/timestamp), which is NOT the body encData constructor — the true anchor is the encData builder found by content search. The header interceptor and the signData builder are duplicated (two API-client instances), so they are not uniquely locatable; the signData decoy uses explicit offsets for its first instance."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "open hospital search",
+          "submit a query / next page"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "POST",
+        "url_contains": "/api/nthl/api/CommQuery/queryFixedHospital",
+        "field": "encData",
+        "plaintext_sample": "(serialized query body)",
+        "value_sample": "3DFBCA4667B978F639BB23B95DCE4CC7... (encrypted hex)"
+      }
+    },
+    "anchor_definition": "The encData builder that encrypts the request body (SM2/SM3/SM4 dispatch); not the header x-tif-signature interceptor or the signData builder."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_transformation",
+    "case_category": "request_body_encryption_encData",
+    "subtype": "SM-crypto encryption of the whole request body into encData (+ signData signature)",
+    "network_request_present": true,
+    "recomputable_offline": false,
+    "recompute_check": "SM2/SM4 with timestamp/nonce; not reproducible to a fixed value",
+    "near_categories": [
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The whole request body is encrypted into encData (transformation), not a single signature token; the header signature is a separate decoy."
+      },
+      {
+        "category": "state_encoding",
+        "why_not": "encData encrypts request data with SM crypto, not a local UI-state encoding."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "1.4 MB minified bundle; the encData builder is one anonymous dispatcher among many; 1.json's label points at the wrong (header) signature."
+      ]
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "encData (body encryption) vs signData (signature) vs x-tif-signature (header signature) are three distinct same-request crypto sites."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "encData is built inside a request interceptor via nested IIFEs that switch by cipher algorithm."
+      ]
+    }
+  },
+  "provenance": {
+    "source_url": "https://fuwu.nhsa.gov.cn/nationalHallSt/#/search/medical",
+    "label_in_1json": "app.1770190565320.js:1:1001347",
+    "label_is_stale": false,
+    "label_points_to": "the HEADER x-tif-signature interceptor f, NOT the body encData builder; the true anchor was found by content search near offset 1002002",
+    "located_by": "content_search",
+    "anchor_locate_method": "ast"
+  },
+  "primary_anchor": {
+    "answer_function": "encData",
+    "source_function": "encData",
+    "source_file": "fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+    "captured_file": "captures/fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+    "captured_span": {
+      "start_line": 1,
+      "end_line": 1,
+      "start_offset": 1002002,
+      "end_offset": 1002542
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

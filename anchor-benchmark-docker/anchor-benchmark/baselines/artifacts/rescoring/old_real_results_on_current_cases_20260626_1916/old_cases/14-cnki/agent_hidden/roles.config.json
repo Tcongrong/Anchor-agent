@@ -1,0 +1,29 @@
+{
+  "case_id": "real14_cnki_request_transformation",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the function exported as `encrypto` (minified `s`): it parses a fixed AES key, AES-ECB/Pkcs7 encrypts the input, and rewrites the base64 to the URL-safe form actually seen in the `words` field. PLAN §5.1: the dedicated value-constructing function is the anchor, not the translate handler that calls it (too generic, just assigns the result) nor CryptoJS AES (a reusable primitive).",
+  "anchor": {
+    "file": "dict.cnki.net/js/app.1767778297134.js",
+    "locator": "function s(t){var e={mode:a.mode.ECB,padding:a.pad.Pkcs7}",
+    "answer_function": "s",
+    "source_function": "encrypto",
+    "source_file": "dict.cnki.net/js/app.1767778297134.js",
+    "why": "AES-ECB(Pkcs7) encrypt of the input with the fixed key 4e87183cfd3a45fe, then base64 made URL-safe (/ -> _, + -> -). This produces the exact `words` token value observed in the translate request."
+  },
+  "roles": [
+    {
+      "file": "dict.cnki.net/js/app.1767778297134.js",
+      "locator": "function t(){var e,i,a,n=this",
+      "role": "Path/Wrapper",
+      "answer_function": "t",
+      "why": "The translate-action handler: trims the input, calls encrypto(e) and assigns it to i.words, then dispatches getTranslate(i). It triggers the request but only forwards to the encryptor."
+    },
+    {
+      "file": "dict.cnki.net/js/app.1767778297134.js",
+      "locator": "function r(t){var e=t.replace(",
+      "role": "Off-chain",
+      "answer_function": "r",
+      "why": "`decrypto`: the inverse transform (URL-safe base64 back to standard, AES-ECB decrypt). Not on the request-construction path."
+    }
+  ]
+}

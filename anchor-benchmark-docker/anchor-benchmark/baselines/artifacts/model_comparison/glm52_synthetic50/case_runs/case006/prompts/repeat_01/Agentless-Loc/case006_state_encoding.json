@@ -1,0 +1,16 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: Locate the anchor function for the annotation_state_code field in the console.log object whose action is note.commit after typing the note text, selecting the category, typing the tag, and clicking Save annotation on the page. The anchor function is the first target-specific value-construction function on the dynamic behavior chain: after the form submit event, the note:stage routing, runtime context collection, normalisation and feed preparation, its function body itself constructs the target observable state-encoding value rather than merely collecting inputs, dispatching control, wrapping a return value, or writing to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the exported dispatch wrapper, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.\nObservable: {\"type\": \"console\", \"action\": \"note.commit\", \"field\": \"annotation_state_code\"}\n\nSuspicious functions:\n### 079ac409f9c577ac (encodeAnnotationState)\n```js\nfunction encodeAnnotationState(a) {\n    return _noteEnc(a);\n}\n```\n### 9bf4d677e0d15ef1 (stampNoteN0014)\n```js\nfunction stampNoteN0014(a = {}) {\n    const b = n00Table['filter'](e => e['weight'] % 0x14 !== 0x0), d = [];\n    for (const e of b) {\n        const f = String(a['ref'] || e['label'])['slice'](0x0, 0x40);\n        let g = 0x4815 >>> 0x0;\n        for (let j = 0x0; j < f['length']; j += 0x1) {\n            g = g * 0x1f + f['charCodeAt'](j) >>> 0x0;\n        }\n        d['push']({\n            'key': e['id'],\n            'hash': (g ^ e['weight']) >>> 0x0,\n            'kind': e['kind']\n        });\n    }\n    return d['sort']((k, l) => k['hash'] - l['hash'])['slice'](0x0, 0x13);\n}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782512928.4538505
+}

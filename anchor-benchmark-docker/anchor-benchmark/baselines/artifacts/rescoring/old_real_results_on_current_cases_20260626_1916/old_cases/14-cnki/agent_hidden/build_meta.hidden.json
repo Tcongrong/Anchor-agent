@@ -1,0 +1,110 @@
+{
+  "case_id": "real14_cnki_request_transformation",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 21,
+    "captured_js_total_bytes": 2879318,
+    "anchor_bundle_lines": 1,
+    "minified": true,
+    "bundler": "webpack",
+    "obfuscation_level": 1,
+    "vendor_noise_level": "high",
+    "call_depth_estimate": 2,
+    "cross_file_anchor": false,
+    "same_request_decoy_fields": 1,
+    "notes": "Vue/webpack single-line bundle app.1767778297134.js (~600 KB). The crypto module exports encrypto (s) and decrypto (r); encrypto is AES-ECB with the fixed key 4e87183cfd3a45fe and a URL-safe base64 rewrite. The translate handler t calls encrypto and assigns it to the words field. CNKI login scripts, Tencent captcha and Baidu analytics are vendor noise."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "type a word in the translate box",
+          "trigger translation"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "POST",
+        "url_contains": "translate",
+        "field": "words",
+        "plaintext_sample": "你好",
+        "value_sample": "p-B8cnTutsG0RvXOyV0ihg=="
+      }
+    },
+    "anchor_definition": "encrypto (s): AES-ECB fixed-key encrypt + URL-safe base64 of the input, producing the words token; not the translate handler, CryptoJS AES, or decrypto."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.{js,html}"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_transformation",
+    "case_category": "request_field_encryption",
+    "subtype": "AES-ECB fixed-key + URL-safe base64 of a request field (words)",
+    "network_request_present": true,
+    "recomputable_offline": true,
+    "recompute_check": "AES-ECB with fixed key 4e87183cfd3a45fe is deterministic; 你好 -> p-B8cnTutsG0RvXOyV0ihg== reproduces the sample.",
+    "near_categories": [
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The value is an encryption of the request payload field itself (recoverable via decrypto), not an auth signature/nonce derived for the request."
+      },
+      {
+        "category": "state_encoding",
+        "why_not": "It encrypts user-supplied query text, not encoded UI/app state."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "Single-line minified bundle; encrypto exported as s and reached via a webpack alias (h.encrypto)."
+      ]
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The same module also defines decrypto (r), and the bundle carries unrelated CNKI login crypto (md5, RSA)."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": false,
+      "evidence": []
+    }
+  },
+  "provenance": {
+    "source_url": "https://dict.cnki.net/index",
+    "label_in_1json": "app.1767778297134.js:1:543772",
+    "label_is_stale": false,
+    "located_by": "content_search",
+    "anchor_locate_method": "ast"
+  },
+  "primary_anchor": {
+    "answer_function": "s",
+    "source_function": "encrypto",
+    "source_file": "dict.cnki.net/js/app.1767778297134.js",
+    "captured_file": "captures/dict.cnki.net/js/app.1767778297134.js",
+    "captured_span": {
+      "start_line": 1,
+      "end_line": 1,
+      "start_offset": 341462,
+      "end_offset": 341631
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

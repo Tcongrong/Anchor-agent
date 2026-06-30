@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transcode Buffer Lab</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Typed-Array Materialization</p>
+          <h1>Transcode Buffer Lab</h1>
+        </div>
+        <div class="summary-strip" aria-label="Transcode scope summary">
+          <span><strong id="selectedCodecLabel">hevc</strong> codec</span>
+          <span><strong id="selectedRenderLabel">deferred</strong> render</span>
+          <span><strong id="selectedBudgetLabel">480</strong> frames</span>
+        </div>
+      </header>
+
+      <section class="planner-grid" aria-label="Transcode buffer controls">
+        <div class="control-band">
+          <label>
+            <span>Codec profile</span>
+            <select id="codecProfile">
+              <option value="hevc" selected>hevc</option>
+              <option value="h264">h264</option>
+              <option value="av1">av1</option>
+              <option value="prores">prores</option>
+            </select>
+          </label>
+          <label>
+            <span>Render mode</span>
+            <select id="renderMode">
+              <option value="deferred" selected>deferred</option>
+              <option value="realtime">realtime</option>
+              <option value="batch">batch</option>
+            </select>
+          </label>
+          <label>
+            <span>Frame budget</span>
+            <input id="frameBudget" type="number" min="0" step="1" value="480" />
+          </label>
+          <label>
+            <span>Operator tag</span>
+            <input id="operatorTag" type="text" autocomplete="off" value="morgan" />
+          </label>
+          <label class="toggle-row">
+            <span>Sync strict</span>
+            <input id="syncStrict" type="checkbox" />
+          </label>
+          <div class="stage-actions">
+            <button id="primeSessionButton" data-stage="prime" type="button">Prime session</button>
+            <button id="packFramesButton" data-stage="pack" type="button">Pack frames</button>
+            <button id="commitTranscodeButton" data-stage="commit" type="button">Commit transcode</button>
+          </div>
+        </div>
+        <aside class="status-panel" aria-label="Transcode session panel">
+          <dl>
+            <dt>Transcode phase</dt>
+            <dd id="transcodePhase">Idle</dd>
+            <dt>Buffer state</dt>
+            <dd id="bufferState">Cold</dd>
+            <dt>Matched segments</dt>
+            <dd id="segmentMatchCount">0</dd>
+            <dt>Last action</dt>
+            <dd id="lastAction">None</dd>
+            <dt>Marker</dt>
+            <dd id="shadowMarker">-</dd>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="auxbar" aria-label="Transcode noise actions">
+        <button data-transcode-noise="transcode.export.segment" type="button">Export segment</button>
+        <button data-transcode-noise="transcode.frame.resync" type="button">Resync frames</button>
+        <button data-transcode-noise="transcode.codec.warmup" type="button">Warm codec</button>
+        <button data-transcode-noise="transcode.buffer.flush" type="button">Flush buffer</button>
+        <button data-transcode-noise="transcode.reel.anchor" type="button">Anchor reel</button>
+        <button data-transcode-noise="transcode.phase.shift" type="button">Shift phase</button>
+      </section>
+
+      <section class="table-panel" aria-label="Transcode clip catalog">
+        <table>
+          <thead>
+            <tr>
+              <th>Clip</th>
+              <th>Reel</th>
+              <th>State</th>
+              <th>Operator</th>
+              <th>Bitrate</th>
+              <th>Age</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody id="clipRows"></tbody>
+        </table>
+      </section>
+
+      <div id="transcodeQueueNode" class="hidden-node" aria-hidden="true"></div>
+    </main>
+
+    <template id="audit-template-000"><span data-transcode-lane="3"></span></template>
+    <template id="audit-template-001"><span data-transcode-lane="10"></span></template>
+    <template id="audit-template-002"><span data-transcode-lane="17"></span></template>
+    <template id="audit-template-003"><span data-transcode-lane="24"></span></template>
+    <template id="audit-template-004"><span data-transcode-lane="31"></span></template>
+    <template id="audit-template-005"><span data-transcode-lane="38"></span></template>
+    <template id="audit-template-006"><span data-transcode-lane="45"></span></template>
+    <template id="audit-template-007"><span data-transcode-lane="52"></span></template>
+    <template id="audit-template-008"><span data-transcode-lane="59"></span></template>
+    <template id="audit-template-009"><span data-transcode-lane="66"></span></template>
+    <template id="audit-template-010"><span data-transcode-lane="73"></span></template>
+    <template id="audit-template-011"><span data-transcode-lane="80"></span></template>
+    <template id="audit-template-012"><span data-transcode-lane="87"></span></template>
+    <template id="audit-template-013"><span data-transcode-lane="94"></span></template>
+    <template id="audit-template-014"><span data-transcode-lane="101"></span></template>
+    <template id="audit-template-015"><span data-transcode-lane="108"></span></template>
+    <template id="audit-template-016"><span data-transcode-lane="115"></span></template>
+    <template id="audit-template-017"><span data-transcode-lane="122"></span></template>
+    <template id="audit-template-018"><span data-transcode-lane="129"></span></template>
+    <template id="audit-template-019"><span data-transcode-lane="136"></span></template>
+    <template id="audit-template-020"><span data-transcode-lane="143"></span></template>
+    <template id="audit-template-021"><span data-transcode-lane="150"></span></template>
+    <template id="audit-template-022"><span data-transcode-lane="157"></span></template>
+    <template id="audit-template-023"><span data-transcode-lane="164"></span></template>
+    <template id="audit-template-024"><span data-transcode-lane="171"></span></template>
+    <template id="audit-template-025"><span data-transcode-lane="178"></span></template>
+    <template id="audit-template-026"><span data-transcode-lane="185"></span></template>
+    <template id="audit-template-027"><span data-transcode-lane="192"></span></template>
+    <template id="audit-template-028"><span data-transcode-lane="199"></span></template>
+    <template id="audit-template-029"><span data-transcode-lane="206"></span></template>
+    <template id="audit-template-030"><span data-transcode-lane="213"></span></template>
+    <template id="audit-template-031"><span data-transcode-lane="220"></span></template>
+    <template id="audit-template-032"><span data-transcode-lane="227"></span></template>
+    <template id="audit-template-033"><span data-transcode-lane="234"></span></template>
+    <template id="audit-template-034"><span data-transcode-lane="241"></span></template>
+    <template id="audit-template-035"><span data-transcode-lane="248"></span></template>
+    <template id="audit-template-036"><span data-transcode-lane="255"></span></template>
+    <template id="audit-template-037"><span data-transcode-lane="262"></span></template>
+    <template id="audit-template-038"><span data-transcode-lane="269"></span></template>
+    <template id="audit-template-039"><span data-transcode-lane="276"></span></template>
+    <template id="audit-template-040"><span data-transcode-lane="283"></span></template>
+    <template id="audit-template-041"><span data-transcode-lane="290"></span></template>
+    <template id="audit-template-042"><span data-transcode-lane="297"></span></template>
+    <template id="audit-template-043"><span data-transcode-lane="304"></span></template>
+    <template id="audit-template-044"><span data-transcode-lane="311"></span></template>
+    <template id="audit-template-045"><span data-transcode-lane="318"></span></template>
+    <template id="audit-template-046"><span data-transcode-lane="325"></span></template>
+    <template id="audit-template-047"><span data-transcode-lane="332"></span></template>
+    <template id="audit-template-048"><span data-transcode-lane="339"></span></template>
+    <template id="audit-template-049"><span data-transcode-lane="346"></span></template>
+    <template id="audit-template-050"><span data-transcode-lane="353"></span></template>
+    <template id="audit-template-051"><span data-transcode-lane="360"></span></template>
+    <template id="audit-template-052"><span data-transcode-lane="367"></span></template>
+    <template id="audit-template-053"><span data-transcode-lane="374"></span></template>
+    <template id="audit-template-054"><span data-transcode-lane="381"></span></template>
+    <template id="audit-template-055"><span data-transcode-lane="388"></span></template>
+    <template id="audit-template-056"><span data-transcode-lane="395"></span></template>
+    <template id="audit-template-057"><span data-transcode-lane="402"></span></template>
+    <template id="audit-template-058"><span data-transcode-lane="409"></span></template>
+    <template id="audit-template-059"><span data-transcode-lane="416"></span></template>
+    <template id="audit-template-060"><span data-transcode-lane="423"></span></template>
+    <template id="audit-template-061"><span data-transcode-lane="430"></span></template>
+    <template id="audit-template-062"><span data-transcode-lane="437"></span></template>
+    <template id="audit-template-063"><span data-transcode-lane="444"></span></template>
+    <template id="audit-template-064"><span data-transcode-lane="451"></span></template>
+    <template id="audit-template-065"><span data-transcode-lane="458"></span></template>
+    <template id="audit-template-066"><span data-transcode-lane="465"></span></template>
+    <template id="audit-template-067"><span data-transcode-lane="472"></span></template>
+    <template id="audit-template-068"><span data-transcode-lane="479"></span></template>
+    <template id="audit-template-069"><span data-transcode-lane="486"></span></template>
+    <template id="audit-template-070"><span data-transcode-lane="493"></span></template>
+    <template id="audit-template-071"><span data-transcode-lane="500"></span></template>
+    <script type="module" src="./assets/media.app.bundle.js"></script>
+  </body>
+</html>

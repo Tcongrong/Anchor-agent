@@ -1,0 +1,111 @@
+{
+  "case_id": "case007_browser_fingerprint",
+  "page": "captures/devtools-source-dump/127.0.0.1_8477/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#scanMode",
+      "value": "active"
+    },
+    {
+      "action": "check",
+      "selector": "#extendedSignals"
+    },
+    {
+      "action": "click",
+      "selector": "#scanButton"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "method": "log",
+    "action": "fingerprint.collect",
+    "field": "browser_fp",
+    "format": "^fp_[a-z0-9]{12}$"
+  },
+  "question": "Locate the anchor function for the browser_fp field in the console.log object whose action is fingerprint.collect after selecting scan mode active, checking Extended Signals, and clicking Scan & Fingerprint. The anchor function is the first target-specific browser fingerprint value constructor on the dynamic behavior chain: after scan profile normalization, signal selection, browser capability collection, tuple packing, asynchronous transport and middleware orchestration, its function body itself constructs the target observable fingerprint hash value rather than merely collecting browser signals, dispatching control, packaging a result, or writing to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, raw signal collectors, wrappers, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "A function is target-specific with respect to the observable described in the task if at least one statement in its body either constructs or binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) If a target-specific function C is called by a generic dispatcher B and itself calls a generic utility D (for example a hash routine), the anchor is C, not B (too generic/upstream) and not D (too generic/reusable). (2) If a generic function A merely writes whatever its callee B returns into the target field, and B is the function dedicated to computing that value, the anchor is B, even though the literal field assignment is syntactically inside A. (3) If the target-specific statement is just one branch or line inside a larger function F that also handles unrelated cases, F is still target-specific and remains a valid anchor candidate — do not discard it for a purer sub-function.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): A checkout page emits body.order_sig_v2 after the user clicks Submit Order. The runtime chain is: click Submit Order -> construct order draft (generic prep) -> encode checkout state (generic prep) -> collect async profile receipt (generic prep) -> compose request envelope (generic prep) -> run interceptor pipeline (generic dispatcher) -> select sealing interceptor (ANCHOR) -> canonicalize payload fields (nested helper) -> fold payload with receipt + pepper (nested helper) -> compute digest (core utility) -> write body.order_sig_v2 -> send request (wrapper/sink). The sealing interceptor is the anchor: its immediate caller is the generic interceptor-pipeline dispatcher; its own body is the highest point on the chain whose code, read alone, explains why order_sig_v2 specifically is produced. Apply the same reasoning to the actual page and bundle below.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_8477/assets/fingerprint.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 107,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(input, context = {}) {\n  const text = buildSource(input, context);\n  let acc = seed ^ text.length;\n  for (let i = 0; i < text.length; i += 1) acc = mix(acc, text.charCodeAt(i));\n  return formatPrefix(config) + acc.toString(36).slice(-12);\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, scan profile normalizer, router, or browser signal collector when a more target-specific fingerprint value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The output changes when scanMode changes (passive vs active vs deep).",
+    "The output changes when the extendedSignals checkbox state changes.",
+    "Similar values printed by console.debug or console.info are distractors and are not the target observable."
+  ],
+  "notes": [
+    "Use the page behavior and the console output as the starting point.",
+    "Only the value printed by console.log with action fingerprint.collect is the target.",
+    "Do not stop at the button click handler or scan profile normalizer.",
+    "Do not stop at the signal selector or browser signal collection code.",
+    "A full call-chain explanation is not required.",
+    "The same browser in the same scan configuration should produce the same target value."
+  ]
+}

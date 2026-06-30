@@ -1,0 +1,167 @@
+{
+  "case_id": "real17_doyo_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "POST",
+      "url_contains": "/User/Passport/login",
+      "field": "password",
+      "plaintext_sample": "13819912565",
+      "value_sample": "16119784763b3e501cc8eae56190fb0993517cfe"
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the $.get('/User/Passport/token') success callback: it reads the server nonce/ts, computes pwd = Sha1.hash(rawPassword) then pwd = Sha1.hash(nonce+ts+pwd), and posts it as the password field. PLAN §4.3: the value-construction lives inside this (anonymous) callback, so it is the smallest complete enclosing function; PLAN §5.1: not the generic Sha1.hash primitive it calls (the SHA-1 implementation lives in a separate, fully-commented sha1.js and is a reusable primitive — conceptually a 0.5 utility, but it is not pinned as a role row).",
+  "primary_anchor": {
+    "answer_function": "loginTokenCallback",
+    "source_function": "loginTokenCallback",
+    "source_file": "www.doyo.cn/passport/login.html",
+    "captured_file": "captures/www.doyo.cn/passport/login.html",
+    "captured_span": {
+      "file": "captures/www.doyo.cn/passport/login.html",
+      "start_line": 97,
+      "end_line": 122,
+      "start_column": 108,
+      "end_column": 3,
+      "start_offset": 3841,
+      "end_offset": 4630,
+      "sha256": "9c48445058c231258c1189b70a262e8f587e7940d955c421745421a2f879aadb",
+      "normalized_sha256": "46ac114af0f89c6ddc22e257377e072c11dd53354884d8a3245b5c76ec1686b6"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "Anonymous token success callback. Salts the SHA-1 of the password with the freshly fetched nonce+ts (double SHA-1) and posts it to /User/Passport/login. This constructs the exact password value sent in the login request."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "loginTokenCallback",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 97,
+        "end_line": 122,
+        "start_column": 108,
+        "end_column": 3,
+        "start_offset": 3841,
+        "end_offset": 4630,
+        "sha256": "9c48445058c231258c1189b70a262e8f587e7940d955c421745421a2f879aadb",
+        "normalized_sha256": "46ac114af0f89c6ddc22e257377e072c11dd53354884d8a3245b5c76ec1686b6"
+      },
+      "why": "Anonymous token success callback. Salts the SHA-1 of the password with the freshly fetched nonce+ts (double SHA-1) and posts it to /User/Passport/login. This constructs the exact password value sent in the login request.",
+      "answer_function": "loginTokenCallback",
+      "source_function": "loginTokenCallback"
+    },
+    {
+      "function": "go_search_page",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 261,
+        "end_line": 261,
+        "start_column": 0,
+        "end_column": 119,
+        "start_offset": 10021,
+        "end_offset": 10140,
+        "sha256": "08dac2a6ba731af5881a972dac93ccb65deb2892e0d219407ce74d24cf78e6fe",
+        "normalized_sha256": "08dac2a6ba731af5881a972dac93ccb65deb2892e0d219407ce74d24cf78e6fe"
+      },
+      "why": "A page search-bar helper (navigates to the search results page); unrelated to the login password path.",
+      "answer_function": "go_search_page",
+      "source_function": "go_search_page"
+    },
+    {
+      "function": "check_search_key",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "www.doyo.cn/passport/login.html",
+      "captured_span": {
+        "file": "captures/www.doyo.cn/passport/login.html",
+        "start_line": 250,
+        "end_line": 258,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 9791,
+        "end_offset": 9998,
+        "sha256": "b6a58fe9b47321a15a82baaec692506d4e6ae976ebc77cd0fdbe6d2380b09df0",
+        "normalized_sha256": "a2b826e968ae0ae0825f01d402f503f79002b9fd6aa3ff1c73ffbe26b7ebdc3e"
+      },
+      "why": "Validates the search-box keyword; unrelated to the login password path.",
+      "answer_function": "check_search_key",
+      "source_function": "check_search_key"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The network sink / request-sending service emits an already constructed value and is not the constructor.",
+      "Thin forwarding wrappers and submit handlers that merely call the value constructor should not outrank the anchor.",
+      "Generic crypto/encoding primitives (md5/AES/RSA/SM/base64/uuid libraries) are Core utilities, below the field-binding anchor.",
+      "Same-request OTHER fields (a second encrypted parameter, signatures, fingerprints) are off-chain decoys for this observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention."
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to primary_anchor.captured_span (the field-binding/value-constructing function)."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to a target-specific helper nested below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to a generic crypto/encoding primitive used by the construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to a path-critical step, a forwarding wrapper or the submit handler."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Span maps to a generic low-level helper (BigInt math, DOM read) on the upstream path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to an off-chain decoy / same-request other field, or cannot be uniquely mapped."
+    }
+  ]
+}

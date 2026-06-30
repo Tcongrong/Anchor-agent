@@ -1,0 +1,112 @@
+{
+  "case_id": "case010_browser_fingerprint",
+  "page": "captures/devtools-source-dump/127.0.0.1_4197/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#filterSelect",
+      "value": "cinema"
+    },
+    {
+      "action": "select",
+      "selector": "#playlistSelect",
+      "value": "launch_reel"
+    },
+    {
+      "action": "select",
+      "selector": "#qualitySelect",
+      "value": "1080p"
+    },
+    {
+      "action": "click",
+      "selector": "#applyMediaButton"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "api": "console.log",
+    "action": "media.fingerprint",
+    "field": "media_fp"
+  },
+  "question": "Locate the anchor function for the media_fp field in the console.log object whose action is media.fingerprint after selecting the color profile, codec lane and render tier and clicking Probe fingerprint on the page. The anchor function is the first target-specific media fingerprint value constructor on the dynamic behavior chain: after action routing, stage gating, browser and media-capability signal collection, asynchronous hand-off, local event dispatch and per-stage folding, its function body itself constructs the target observable media fingerprint hash value rather than merely collecting browser/media environment signals, dispatching control, wrapping a return value, or writing to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, raw signal collectors, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4197/assets/media.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 107,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(input, config, context) {\n  const text = composeExampleText(input, config);\n  const bytes = materializeExampleBytes(text, config, context);\n  return encodeExampleHash(bytes, context);\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, environment signal collector, command dispatcher, gate, async hand-off step, fold stage or formatter when a more target-specific fingerprint value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The target value is a media-capability fingerprint hash and should not be confused with media.shadow.action debug objects, boot-time vendor digests, or other non-target fingerprint-like decoys.",
+    "The target behavior is browser_fingerprint, not request signature token derivation, state encoding, byte-array transformation or request transformation."
+  ],
+  "notes": [
+    "The page is a local media-capability fingerprint probe configured by color profile, codec lane and render tier.",
+    "Use the observable console object (action media.fingerprint, field media_fp) to guide the investigation.",
+    "Only the final media_fp value should be treated as the target.",
+    "The same probe configuration in the same browser environment produces the same media_fp; changing the color profile, codec lane or render tier changes it.",
+    "The fingerprint also folds in browser and media-capability environment signals such as user agent, platform, language, screen geometry, device pixel ratio, timezone and codec support."
+  ]
+}

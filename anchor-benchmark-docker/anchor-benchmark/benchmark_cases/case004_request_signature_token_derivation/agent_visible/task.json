@@ -1,0 +1,112 @@
+{
+  "case_id": "case004_request_signature_token_derivation",
+  "page": "captures/devtools-source-dump/127.0.0.1_4191/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#resourceInput",
+      "value": "ledger:close:8492"
+    },
+    {
+      "action": "select",
+      "selector": "#environmentSelect",
+      "value": "prod"
+    },
+    {
+      "action": "select",
+      "selector": "#grantSelect",
+      "value": "approve"
+    },
+    {
+      "action": "check",
+      "selector": "#replayGuard"
+    },
+    {
+      "action": "drag",
+      "selector": "#challengeSlider",
+      "value": "88"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "vault.sign",
+    "field": "request_sig"
+  },
+  "question": "Locate the anchor function for the request_sig field in the console.log object whose action is vault.sign, observed after configuring the Vault protected resource (type the resource, select the production environment, choose the approve grant, enable replay guard) and then dragging the challenge slider past the committed authorization threshold. The anchor function is the first target-specific request-signature token constructor on the dynamic behavior chain: after resource journaling, environment/grant capability resolution, replay guard checking, slider challenge authorization, stream mailbox transfer, route-graph fan-in, runtime configuration selection and input preparation, its function body itself constructs the target observable signature value rather than merely collecting inputs, dispatching control, wrapping a return value, or emitting it to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic mixers, formatters, reducer utilities, slider handlers, routers, the full call chain, or the final sink. Note: a partial slider sweep below the authorization threshold is not the target trigger; the target follows the committed challenge-slider path. The target value is the rs_-prefixed vault proof token, not an ap_-prefixed proof-like decoy or a non-target preview/audit object. You may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleSignatureFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4191/assets/relay.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 106,
+        "start_offset": 4200,
+        "end_offset": 4720,
+        "code": "function exampleSignatureFn(parts, ctx, opts = {}) {\n  const lane = ctx.route.reduce((a, b) => a ^ b, 0);\n  return formatExample(reducers[lane & 0x7](parts, ctx, opts));\n}"
+      }
+    }
+  },
+  "anchor_definition_general": "A function is target-specific with respect to the observable described in the question if at least one statement in its body constructs/binds the target value, writes the target field, or dispatches the target action - and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic - equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) if a target-specific function C is called by a generic dispatcher B and itself calls a generic utility D (e.g. a hash routine), the anchor is C, not B (too generic/upstream) and not D (too generic/reusable); (2) if a generic function A merely writes whatever its callee B returns into the target field, and B is the function dedicated to computing that value, the anchor is B, even though the literal field assignment is syntactically inside A; (3) if the target-specific statement is just one branch/line inside a larger function F that also handles unrelated cases, F is still target-specific and remains a valid anchor candidate - do not discard it for a purer sub-function.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): a checkout page emits body.order_sig_v2 after the user clicks Submit Order. The runtime chain is: click Submit Order -> construct order draft (generic: prep/state collection) -> encode checkout state (generic: prep) -> collect async profile receipt (generic: prep) -> compose request envelope (generic: prep) -> run interceptor pipeline (generic: dispatcher) -> select sealing interceptor (ANCHOR) -> canonicalize payload fields (nested helper, target-specific) -> fold payload with receipt + pepper (nested helper, target-specific) -> compute digest (core utility: generic SHA-256) -> write body.order_sig_v2 -> send request (wrapper/sink: generic). The sealing interceptor is the anchor: its immediate caller is the generic interceptor-pipeline dispatcher, and its own body is the highest point on the chain whose code, read alone, explains why order_sig_v2 specifically is produced (it assigns the final signature into the request envelope). Functions below it (canonicalize, fold) are nested helpers; the digest routine is a core utility; the dispatcher and request sender are path/wrapper. Other same-click values such as analytics_sig, coupon_digest, view_cache_key, retry_fingerprint are off-chain decoys. Apply the same reasoning to the actual page and bundle in this task.",
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "start_offset and end_offset are 0-based byte offsets into the captured file.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, formatter, reducer utility, slider handler or router when a more target-specific value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "A partial slider sweep below the authorization threshold is not the target trigger; the target follows the committed challenge-slider path.",
+    "The target is the rs_-prefixed vault proof token, not an ap_-prefixed proof-like decoy or a non-target preview/audit object."
+  ]
+}

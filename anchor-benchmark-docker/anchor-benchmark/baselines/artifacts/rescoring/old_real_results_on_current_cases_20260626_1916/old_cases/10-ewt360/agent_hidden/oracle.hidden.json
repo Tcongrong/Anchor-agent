@@ -1,0 +1,207 @@
+{
+  "case_id": "real10_ewt360_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "POST",
+      "url_contains": "/api/authcenter/v2/oauth/login/account",
+      "field": "password",
+      "plaintext_sample": "13819912565",
+      "value_sample": "A987B688ACCCDB600F78FE657DF98627"
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the function whose body constructs the encrypted password token on the login submit path: `encrypt` in main.js, which binds the fixed AES key/iv and returns the uppercase ciphertext. It is NOT passwordEncrypt (thin wrapper), NOT the _callee6$ login handler (call-site), and NOT the byte-identical `Encrypt` in the lazily-loaded 254 chunk (a different feature's duplicate, off the login path). PLAN §8.14 rule 1: the field-binding function that pins the fixed key/iv outranks the reusable CryptoJS primitive it calls.",
+  "primary_anchor": {
+    "answer_function": "encrypt",
+    "source_function": "encrypt",
+    "source_file": "src/utils/encode.js",
+    "captured_file": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+    "captured_span": {
+      "file": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+      "start_line": 25736,
+      "end_line": 25744,
+      "start_column": 14,
+      "end_column": 1,
+      "start_offset": 1105789,
+      "end_offset": 1106210,
+      "sha256": "3ebd59bc1c4350ec30bc7993d5bde9e4ff7938cca85a46772e73efee02f28ec9",
+      "normalized_sha256": "12bef7e28c1df2528deed9c6103b63f661bd8068d6113eb87a58f51f88f0cafc"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "Binds the fixed AES key '20171109124536982017110912453698' and iv '2017110912453698', runs AES-CBC/Pkcs7 over the password, and returns encrypted.ciphertext.toString().toUpperCase() — exactly the observed token. This is the encrypt reached from the login submit via passwordEncrypt."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "encrypt",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "src/utils/encode.js",
+      "captured_span": {
+        "file": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+        "start_line": 25736,
+        "end_line": 25744,
+        "start_column": 14,
+        "end_column": 1,
+        "start_offset": 1105789,
+        "end_offset": 1106210,
+        "sha256": "3ebd59bc1c4350ec30bc7993d5bde9e4ff7938cca85a46772e73efee02f28ec9",
+        "normalized_sha256": "12bef7e28c1df2528deed9c6103b63f661bd8068d6113eb87a58f51f88f0cafc"
+      },
+      "why": "Binds the fixed AES key '20171109124536982017110912453698' and iv '2017110912453698', runs AES-CBC/Pkcs7 over the password, and returns encrypted.ciphertext.toString().toUpperCase() — exactly the observed token. This is the encrypt reached from the login submit via passwordEncrypt.",
+      "answer_function": "encrypt",
+      "source_function": "encrypt"
+    },
+    {
+      "function": "passwordEncrypt",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+      "captured_span": {
+        "file": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+        "start_line": 25745,
+        "end_line": 25749,
+        "start_column": 22,
+        "end_column": 1,
+        "start_offset": 1106234,
+        "end_offset": 1106385,
+        "sha256": "b6365488f3f2ede3b9013f4fe09684e495f77ff965ea0b3616f40ffdfacfc4a1",
+        "normalized_sha256": "3e7686bb76e59292c61852cf6016f071ef1d1d9ad6b0a2f82787515ec21355cc"
+      },
+      "why": "Thin guard wrapper: returns '' / undefined for empty input, otherwise forwards to encrypt(password). Constructs no value itself.",
+      "answer_function": "passwordEncrypt",
+      "source_function": "passwordEncrypt"
+    },
+    {
+      "function": "_callee6$",
+      "role": "Path/Wrapper",
+      "score": 0.2,
+      "source_file": "cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+      "captured_span": {
+        "file": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/main.ca76481795ca3e337743.js",
+        "start_line": 20967,
+        "end_line": 21054,
+        "start_column": 40,
+        "end_column": 7,
+        "start_offset": 897291,
+        "end_offset": 902060,
+        "sha256": "47d2561f58718ac08c272e99467b1b6820c7d4e3fc0d87c463d6915ca408f1e3",
+        "normalized_sha256": "2477ebfa5a434e973b590de1fcbe3ac02166bc925ab2e38f94fb1a2a091e0074"
+      },
+      "why": "The regenerator-compiled login submit handler: reads the form, sets requestParams.password = passwordEncrypt(requestParams.password), then calls requestPasswordLogin. Call site, not the encoder.",
+      "answer_function": "_callee6$",
+      "source_function": "_callee6$"
+    },
+    {
+      "function": "Encrypt",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "cdn.ewt360.com/resources/app/prod/register-pc/dist/js/254.ca76481795ca3e337743.chunk.js",
+      "captured_span": {
+        "file": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/254.ca76481795ca3e337743.chunk.js",
+        "start_line": 40,
+        "end_line": 48,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1932,
+        "end_offset": 2353,
+        "sha256": "717d81cb140567bea4fb612c3958f8972887ba250a3c56ca3c07e2702b2ab331",
+        "normalized_sha256": "b2dd8757eecf7273e65d5b0cf04a5ff392cddbf3ab5b1b38d28755e365ac2630"
+      },
+      "why": "A byte-identical AES encryptor (same key/iv) in a lazily-loaded chunk (module 73259, export Q) for a different feature. It produces the same value but is NOT on the login request path; a strong duplicate decoy.",
+      "answer_function": "Encrypt",
+      "source_function": "Encrypt"
+    },
+    {
+      "function": "Decrypt",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "cdn.ewt360.com/resources/app/prod/register-pc/dist/js/254.ca76481795ca3e337743.chunk.js",
+      "captured_span": {
+        "file": "captures/cdn.ewt360.com/resources/app/prod/register-pc/dist/js/254.ca76481795ca3e337743.chunk.js",
+        "start_line": 25,
+        "end_line": 35,
+        "start_column": 0,
+        "end_column": 1,
+        "start_offset": 1540,
+        "end_offset": 1902,
+        "sha256": "dee8fcb7711c97c18d39fd39208625010d7996d391a67d1dd096ddfbe618ba3f",
+        "normalized_sha256": "56cb81072a2d94977529627ff9261abe9310c8bca1bd52490b702095644bb374"
+      },
+      "why": "The inverse AES decryptor in the same lazy chunk; never on the password-encoding path.",
+      "answer_function": "Decrypt",
+      "source_function": "Decrypt"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The network sink / request-sending service emits an already constructed value and is not the constructor.",
+      "Thin forwarding wrappers and submit handlers that merely call the value constructor should not outrank the anchor.",
+      "Generic crypto/encoding primitives (md5/AES/RSA/SM/base64/uuid libraries) are Core utilities, below the field-binding anchor.",
+      "Same-request OTHER fields (a second encrypted parameter, signatures, fingerprints) are off-chain decoys for this observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention."
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to primary_anchor.captured_span (the field-binding/value-constructing function)."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to a target-specific helper nested below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to a generic crypto/encoding primitive used by the construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to a path-critical step, a forwarding wrapper or the submit handler."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Span maps to a generic low-level helper (BigInt math, DOM read) on the upstream path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to an off-chain decoy / same-request other field, or cannot be uniquely mapped."
+    }
+  ]
+}

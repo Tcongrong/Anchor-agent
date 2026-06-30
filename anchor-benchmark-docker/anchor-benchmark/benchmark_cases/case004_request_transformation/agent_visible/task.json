@@ -1,0 +1,105 @@
+{
+  "case_id": "case004_request_transformation",
+  "page": "captures/devtools-source-dump/127.0.0.1_4173/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#reportScope",
+      "value": "ops-daily"
+    },
+    {
+      "action": "select",
+      "selector": "#outputFormat",
+      "value": "json"
+    },
+    {
+      "action": "type",
+      "selector": "#targetEnv",
+      "value": "production"
+    },
+    {
+      "action": "click",
+      "selector": "#exportButton"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "report.export",
+    "field": "query_payload",
+    "fetch_header": "X-Query-Payload",
+    "fetch_url": "/api/report/export"
+  },
+  "question": "Locate the anchor function for the query_payload field in the console.log object whose action is report.export after typing the report scope, selecting the output format, typing the target environment, and clicking Export on the page. The same query_payload value is also written into the X-Query-Payload header of a fetch request issued on export. The anchor function is the first target-specific request-transform value constructor on the dynamic behavior chain: after delegated submit routing, action routing, input normalization, asynchronous staging, transit and middleware accumulation, and projection preparation, its function body itself constructs the target observable request transform value rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or fetch call. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the reducer factory, the full call chain, the final console sink, or the fetch call site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4173/assets/dashboard.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 107,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(parts, config, opts = {}) {\n  const pick = (config.branch ^ opts.routeScore) & 7;\n  return encodeExampleField(reducers[pick](parts, config, opts));\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or the fetch call site.",
+    "Do not return a generic DOM reader, formatter, router, normalizer or transport helper when a more target-specific request transform value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The target value is a request transform value and should not be confused with the report.shadow/report.preview shadow_key and preview_key decoys emitted on the same export interaction."
+  ]
+}

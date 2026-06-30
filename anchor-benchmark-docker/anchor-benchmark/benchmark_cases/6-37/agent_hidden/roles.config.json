@@ -1,0 +1,43 @@
+{
+  "case_id": "real06_37_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the SQ login/registration dispatcher _action (the answer recorded in 1.json): it assembles the request object h, binds the password by calling the site's password encoder (h.password=td(f), also password1/rpassword), applies the request-level cryps transform and sends the GET jsonp /login request. Graded below it: td (the bespoke password scrambler that produces the observed token, 0.7) -> __rsa (the base64 primitive td and cryp share, 0.5). cryp (a sibling scrambler for other data) is off-chain (0). NOTE: the file is a single-line minified blob that does not parse with acorn (Dean-Edwards eval was statically unpacked in place); _action is pinned by explicit offsets because the locator/AST path cannot resolve it.",
+  "anchor": {
+    "file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+    "start_offset": 27893,
+    "end_offset": 31671,
+    "answer_function": "_action",
+    "source_function": "_action",
+    "source_file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+    "why": "_action: the SQ login/reg dispatcher captured as the 1.json answer. It assembles the request h, binds the password to the site encoder (h.password=td(f)), applies the request transform (g.cryps) and sends the GET jsonp request to /login. The field->encoder binding that produces the observed password token lives in this function's body."
+  },
+  "roles": [
+    {
+      "file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+      "start_offset": 2641,
+      "end_offset": 2843,
+      "role": "Nested target-specific helper",
+      "answer_function": "td",
+      "source_function": "td",
+      "why": "td: the bespoke password scrambler — it inserts a.substr(0,3) at index 7 and a.substr(3) at index 12 among 15 random chars, then base64-encodes the joined result via __rsa, producing the observed password token. A target-specific helper nested below the dispatcher."
+    },
+    {
+      "file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+      "start_offset": 2136,
+      "end_offset": 2641,
+      "role": "Core utility",
+      "answer_function": "__rsa",
+      "source_function": "__rsa",
+      "why": "__rsa: a standard base64 encoder (despite the name) over the `ch` charset with '='/'==' padding, shared by td (password) and cryp (other data). The generic encoding primitive on the construction path — a core utility below the field-binding helper."
+    },
+    {
+      "file": "ptres.37.com/js/sq/widget/sq.login2015.js",
+      "start_offset": 2844,
+      "end_offset": 3094,
+      "role": "Off-chain",
+      "answer_function": "cryp",
+      "source_function": "cryp",
+      "why": "cryp: a different scrambling/encoding routine (URL-encodes then permutes its input, joined by '.', also via __rsa) for other data; not the password encoder. A sibling decoy."
+    }
+  ]
+}

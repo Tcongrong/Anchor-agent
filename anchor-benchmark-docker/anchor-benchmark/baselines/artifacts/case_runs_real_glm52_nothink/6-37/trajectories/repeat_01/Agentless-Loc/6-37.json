@@ -1,0 +1,562 @@
+[
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 1 (file/chunk localization, Agentless). Select the bundle chunks most likely to contain the behaviour anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nBundle chunks:\n- chunk_000 (80 functions): (anon), set, get, rb, c, (anon), (anon), i, j, J, Xb, Z\n- chunk_001 (80 functions): onload, get, wa, b, k, onreadystatechange, (anon), onreadystatechange, (anon), c, c, k\n- chunk_002 (80 functions): Ra, (anon), (anon), (anon), lb, lb, Gb, Gb, (anon), e, D, D\n- chunk_003 (80 functions): (anon), tb, tb, va, va, oa, oa, Ba, Ba, Cb, Cb, f\n- chunk_004 (80 functions): getHref, getReferrer, getEntryUrl, cutUrl, getQuery, getQueryMap, getQueryParam, n, addUrlParam, expandCustomParams, convertUrlParamsToJson, (anon)\n- chunk_005 (80 functions): removeClass, removeClass, isDarkMode, isDarkMode, (anon), (anon), (anon), s, c, u, d, l\n- chunk_006 (80 functions): (anon), shrinkArraySize, shrinkArraySizeFromRuisun, (anon), (anon), next, next, (anon), getTemplateDomain, (anon), (anon), y\n- chunk_007 (80 functions): bindListener, onmessage, run, (anon), (anon), sendToWorker, terminate, (anon), exports, (anon), exports, (anon)\n- chunk_008 (80 functions): add, get, get, (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_009 (80 functions): successCheck, refreshWorkload, (anon), (anon), refresh, success, success, error, error, verify, success, success\n- chunk_010 (80 functions): (anon), (anon), (anon), next, next, (anon), e, emit, indexOf, on, one, remove\n- chunk_011 (80 functions): showSuccessNote, showCoverErrorByWording, showErrorNoteByWording, showErrorNote, (anon), shakeEls, addEmbedTip, addHoverDom, (anon), (anon), (anon), (anon)\n- chunk_012 (80 functions): onError, onSuccess, onSuccess, resize, setImgStyle, setElBgStyle, setSliderStyle, (anon), (anon), (anon), (anon), e\n- chunk_013 (80 functions): (anon), (anon), (anon), (anon), m, x, b, w, S, p, toArray, toArray\n- chunk_014 (80 functions): (anon), ge, (anon), ve, (anon), (anon), ye, isXML, setDocument, (anon), (anon), (anon)\n- chunk_015 (80 functions): empty, empty, parent, parent, header, header, input, input, button, button, text, text\n- chunk_016 (80 functions): parentsUntil, parentsUntil, next, next, prev, prev, nextAll, nextAll, prevAll, prevAll, nextUntil, nextUntil\n- chunk_017 (80 functions): a, (anon), exceptionHook, readyException, (anon), B, ready, (anon), ready, ready, $, t\n- chunk_018 (80 functions): ve, ye, xe, Ce, Ee, Se, (anon), ke, i, (anon), Ae, handler\n- chunk_019 (80 functions): text, text, (anon), (anon), append, append, (anon), prepend, prepend, (anon), before, before\n- chunk_020 (80 functions): run, run, get, get, set, set, set, set, linear, linear, swing, swing\n- chunk_021 (80 functions): prop, prop, removeProp, removeProp, (anon), prop, prop, get, get, get, get, set\n- chunk_022 (80 functions): getResponseHeader, getResponseHeader, getAllResponseHeaders, getAllResponseHeaders, setRequestHeader, setRequestHeader, overrideMimeType, overrideMimeType, statusCode, statusCode, abort, abort\n- chunk_023 (80 functions): offset, (anon), position, position, offsetParent, offsetParent, (anon), (anon), t, (anon), (anon), (anon)\n- chunk_024 (80 functions): module, module, config, config, $, init, init, (anon), defineDep, defineDep, fetch, fetch\n- chunk_025 (80 functions): (anon), b, createNode, load, (anon), define, (anon), (anon), exec, (anon), c, (anon)\n- chunk_026 (80 functions): pushStack, each, each, ready, ready, eq, eq, first, first, last, last, slice\n- chunk_027 (80 functions): Callbacks, l, add, add, c, (anon), remove, remove, (anon), has, has, empty\n- chunk_028 (80 functions): (anon), delay, delay, (anon), stop, clearQueue, clearQueue, promise, promise, i, attr, attr\n- chunk_029 (80 functions): get, get, (anon), set, set, Hb, add, add, h, remove, remove, trigger\n- chunk_030 (80 functions): delegate, delegate, undelegate, undelegate, trigger, trigger, (anon), triggerHandler, triggerHandler, toggle, toggle, e\n- chunk_031 (80 functions): (anon), (anon), (anon), TAG, TAG, (anon), (anon), CLASS, CLASS, (anon), ATTR, ATTR\n- chunk_032 (80 functions): is, is, closest, closest, index, index, add, add, addBack, addBack, parent, parent\n- chunk_033 (80 functions): (anon), replaceWith, replaceWith, (anon), (anon), detach, detach, domManip, domManip, (anon), (anon), (anon)\n- chunk_034 (80 functions): load, complete, complete, (anon), (anon), b, (anon), c, getScript, getScript, getJSON, getJSON\n- chunk_035 (80 functions): (anon), (anon), a, speed, complete, linear, linear, swing, swing, tick, timer, stop\n- chunk_036 (80 functions): (anon), (anon), getCharCount, getCharCount, substr, substr, refresh, refresh, isDigits, isDigits, isNumber, isNumber\n- chunk_037 (80 functions): addTagToUrlCallback, tempSub, mapList, mapList, nonEnterGame, nonEnterGame, rawFunc, rawFunc, imgSub, imgSub, getParames, getParames\n- chunk_038 (80 functions): getHostFirst, _placeholder, _placeholder, (anon), (anon), (anon), (anon), (anon), e, (anon), e, toBinding\n- chunk_039 (80 functions): _events, (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon), (anon)\n- chunk_040 (80 functions): getData, getData, getScriptData, getScriptData, (anon), (anon), dateChange, dateChange, extendData, extendData, _parse, _parse\n- chunk_041 (80 functions): a, c, (anon), (anon), _csfpCheck, (anon), (anon), (anon), init, init, _events, _events\n- chunk_042 (80 functions): signLogs, signLogs, (anon), getSignLogs, getSignLogs, getSign, getSign, apiCall, apiCall, (anon), init, init\n- chunk_043 (80 functions): statis, init, init, run, run, (anon), init, init, run, run, (anon), (anon)\n- chunk_044 (80 functions): bindFail, bindAlways, bindAlways, skipToLogin, skipToLogin, setNavStyle, setNavStyle, setHome, setHome, bookMark, bookMark, overShow\n- chunk_045 (80 functions): getHostFirst, getHostFirst, getDoc, getDoc, tj, tj, events, events, (anon), isIE, isIE, isIeVer\n- chunk_046 (80 functions): click, click, click, clearTopMsg, clearTopMsg, creatMsgDom, creatMsgDom, topEvt, topEvt, (anon), showFestival, showFestival\n- chunk_047 (80 functions): (anon), (anon), signLogCall, signLogCall, getSignObj, getSignObj, isLogin, isLogin, backLogin, backLogin, refreshPoint, refreshPoint\n- chunk_048 (80 functions): tab, setNameLv, setNameLv, recentlyPlayed, recentlyPlayed, init, init, set, set, evt, evt, (anon)\n- chunk_049 (80 functions): (anon), (anon), a, d, r, t, (anon), n, (anon), (anon), o, (anon)\n- chunk_050 (80 functions): get, (anon), (anon), (anon), (anon), get, get, (anon), (anon), (anon), i, h\n- chunk_051 (80 functions): getBrowserLang, langTransform, (anon), i, r, (anon), getErrorRes, (anon), (anon), (anon), (anon), m\n- chunk_052 (80 functions): markTypeTemplateUnloaded, removeTemplateWrapper, injectTemplate, (anon), includeInPreoloadTemplate, (anon), getNativeDom, get$Id, get$Class, (anon), (anon), e\n- chunk_053 (80 functions): (anon), langExist, init, (anon), (anon), next, next, (anon), subscribe, subscribe, bind, bind\n- chunk_054 (80 functions): initPreIframeListener, (anon), (anon), destroy, updateIframeSrc, preCreate, create, setDivPosition, (anon), pre_onlyChangePos, changePos, insertRule\n- chunk_055 (80 functions): success, error, error, getType, checkWebWorker, getIframeSrcNew, (anon), (anon), (anon), (anon), get, get\n- chunk_056 (80 functions): (anon), c, getLogCommonParams, getPerformance, debounce, (anon), (anon), hashCode, getLatestPrehandleSpeed, getIEVersion, isIos, isLowIE\n- chunk_057 (80 functions): (anon), l, perfectStack, perfectStack, setGlobalStatus, setGlobalStatus, (anon), (anon), t, (anon), (anon), (anon)\n- chunk_058 (24 functions): TCaptcha, initParam, ready, eventHandler, destroy, refresh, getTicket, (anon), langFun, checkInOwnDomain, (anon), show\n\nReturn JSON {\"chunks\": [\"<chunk_id>\", ...]} (most-relevant first)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560857.8121579
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"chunks\": [\"chunk_041\", \"chunk_042\", \"chunk_037\", \"chunk_040\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 2963,
+    "output_tokens": 27
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-c50fde76-cd3b-9d39-a48c-78377738686a",
+    "object": "chat.completion",
+    "created": 1782560855,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 2963,
+     "completion_tokens": 27,
+     "total_tokens": 2990,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 2963,
+     "output_tokens": 27
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"chunks\": [\"chunk_041\", \"chunk_042\", \"chunk_037\", \"chunk_040\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 2963,
+   "output_tokens": 27
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nFunctions:\n- 3b34c0f047b72dc3 (a): function a()\n- 834ec32d557f9a66 (c): function c()\n- c7e06101b107df32 ((anon)): function()\n- 7b085469b72e8085 ((anon)): function()\n- 1064c41e2763dbb3 (_csfpCheck): function(a)\n- c475121e1d779c9e ((anon)): function()\n- 247a47f2a89e547f ((anon)): function()\n- 9f6283a0dbdeafc6 ((anon)): function(a,b,c)\n- abd659df465ecee1 (init): init:function(c)\n- 53b1681f176134b9 (init): function(c)\n- 8085c487fe89ccdf (_events): _events:function()\n- 2dd79864894d73be (_events): function()\n- 28c921ca5f8045f6 ((anon)): function(a)\n- 01eca4c6e2fea2cb ((anon)): function(a)\n- 6b039cfc2701f146 ((anon)): function(a)\n- 55bb4f59bf9af5c4 ((anon)): function(a)\n- e1c9c93e0183174b ((anon)): function(c)\n- 29d1ec50e05c61cb ((anon)): function(b)\n- 49854c4419e1c877 (_render): _render:function()\n- a9a513311111838d (_render): function()\n- a68d66e873dcc3f8 (_insetContent): _insetContent:function()\n- 6d2500ee0e7173a1 (_insetContent): function()\n- 1f7a40220a764f69 (_content): _content:function()\n- a2b2f0d4350b6df2 (_content): function()\n- 856007c4b626da84 (change): change:function(b)\n- 3f0ff1f9bd6ed57a (change): function(b)\n- 309de0a43616c743 (_showImg): _showImg:function()\n- 59f17278dc3295bf (_showImg): function()\n- 6b3f11cace662803 (success): success:function(d)\n- 44927e70a7185e23 (success): function(d)\n- 7ce038a01c7a8dc8 (_hideImg): _hideImg:function()\n- b27742ca8bfcb54f (_hideImg): function()\n- ba3f2dcc60196f75 (_interval): _interval:function(a)\n- 98e2932921b6bd53 (_interval): function(a)\n- cd99dde1fadbe9d1 ((anon)): function()\n- 65084146dd3be0ac (_valid): _valid:function(b)\n- b2b5b99cf5292d5d (_valid): function(b)\n- d7a1d16d9c419dc1 (success): success:function(a)\n- 3c5528cf7cc8e97d (success): function(a)\n- 072bc7a74a562a17 (error): error:function(a,b,c)\n- b8ba48eb5f0a3b7f (error): function(a,b,c)\n- c7ac782134cbac33 (_showMsg): _showMsg:function(c,d,e,g)\n- 65e2f4ae88ded8f7 (_showMsg): function(c,d,e,g)\n- bc4f645780277779 (_msgsuc): _msgsuc:function()\n- e5fe59ec82788cbc (_msgsuc): function()\n- 660653c885855efa (_msgfail): _msgfail:function(a,b,c)\n- 256b28528e0e9fcc (_msgfail): function(a,b,c)\n- f9a953235310f78b (show): show:function()\n- 15112a4d5d9b28fb (show): function()\n- 6ed84d0caf3bf95b (hide): hide:function()\n- 333e7b813d3af65c (hide): function()\n- 6df2b33a7906bdce (clickStatis): clickStatis:function(a)\n- ef7ce0fd7c9ce41f (clickStatis): function(a)\n- dd9b8c7812312186 ((anon)): function(a,b,c)\n- 9fd0f5161ae935d6 (init): init:function(c)\n- 22883a0b5e52a8d0 (init): function(c)\n- a033d9b9372dc3bb (isStr): isStr:function(a)\n- 0bf2de34652b7af0 (isStr): function(a)\n- 7749e7a8fc438e15 (addStyle): addStyle:function(a)\n- 9641b0eb144a171a (addStyle): function(a)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560859.0021412
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"6b3f11cace662803\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1697,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-87c52f12-51bc-9c40-a23f-df374f664a78",
+    "object": "chat.completion",
+    "created": 1782560857,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1697,
+     "completion_tokens": 16,
+     "total_tokens": 1713,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1697,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"6b3f11cace662803\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1697,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nFunctions:\n- 2a669a85c0fe3978 (d): function()\n- 810b7c6132f34f19 (unLogin): unLogin:function()\n- a6ee9d3bb345a66a (unLogin): function()\n- 38b56a35157db53e (success): success:function(b)\n- 6197d90f8cfeb219 (success): function(b)\n- 6762a4a4d98ff3ff (signed): signed:function()\n- 117cca4a7183726a (signed): function()\n- 987b2d3ce4604d4e (fail): fail:function()\n- aa887083fab58e49 (fail): function()\n- 86057f547dd927d5 (events): events:function()\n- 0d9b53ee23060dcd (events): function()\n- cdd9749a396353bb ((anon)): function(a)\n- 9725e96b4bc43274 (signNow): signNow:function()\n- c1c7836d4bd91c1f (signNow): function()\n- d439395a9e1a3b93 (sign): sign:function()\n- 46d4896042773c4e (sign): function()\n- 86e867b56bf5bb59 (getSignCall): getSignCall:function(a,b)\n- 269da662d64bc010 (getSignCall): function(a,b)\n- 18f2fa74d84f7813 (notice): notice:function()\n- 7d6cbc378ca92a42 (notice): function()\n- 33cda303acce53dc (signLogs): signLogs:function()\n- 66152855d5559794 (signLogs): function()\n- 1d6d41e3fdf5a194 ((anon)): function(a)\n- 0ab1a63843d82b05 (getSignLogs): getSignLogs:function(a)\n- 3eed4428b8e6c272 (getSignLogs): function(a)\n- 23bf1f7fd5866716 (getSign): getSign:function(b)\n- c2840c67158258fa (getSign): function(b)\n- 1eda933c0d8b71c9 (apiCall): apiCall:function(b,c,d)\n- 6e4453df2165c4d0 (apiCall): function(b,c,d)\n- 4d2b0ae316bc5e72 ((anon)): function(a)\n- af85996448c81de3 (init): init:function(a)\n- 4a0657a59806f91a (init): function(a)\n- 69adef011b9d5314 (events): events:function(a,b)\n- d848f5dfcb75cca5 (events): function(a,b)\n- 415b315ad93ed70f ((anon)): function()\n- 4e142f2afdea160c (setSignStatus): setSignStatus:function(b)\n- 72ba098900789d7d (setSignStatus): function(b)\n- 0b1d4a00ffa0fd53 (today): today:function(a)\n- 96b8c40fd5760f38 (today): function(a)\n- 3cdca6868642dbed (eventsHandler): eventsHandler:function()\n- 00ee02ca44476563 (eventsHandler): function()\n- 8f281993d61a2d28 (getFirstDate): getFirstDate:function(a,b)\n- b002deb236fbba0c (getFirstDate): function(a,b)\n- 7920480005dd43c8 (getLastDate): getLastDate:function(a,b)\n- a4bc5c48de7f2477 (getLastDate): function(a,b)\n- d28b7c8b7d319aa9 ((anon)): function(a,b,c)\n- 761251d4a2f9782a (getDocReferrer): getDocReferrer:function(a)\n- a87b68ccf9157a62 (getDocReferrer): function(a)\n- 85e781f0060a39fa (convertPathToDomain): convertPathToDomain:function(a)\n- 71d30f4ad173656d (convertPathToDomain): function(a)\n- 6bd8efa31e232640 (addDom): addDom:function(b,c,d)\n- 940a934cdf47a2cd (addDom): function(b,c,d)\n- e3723c7d8b8949cd (setReferer): setReferer:function(a,c,d)\n- a3d8326bf88b802b (setReferer): function(a,c,d)\n- 12bfaac18beb87dc (getReferer): getReferer:function()\n- e51ba172d7f1de6e (getReferer): function()\n- fee70e15f286e52d (updateReferer): updateReferer:function(a,c)\n- ba85f6ad88673d86 (updateReferer): function(a,c)\n- 820de4369e9de0f1 (hasAdReferer): hasAdReferer:function(a)\n- 7607bc864b8a0015 (hasAdReferer): function(a)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560860.2638764
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"1eda933c0d8b71c9\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1755,
+    "output_tokens": 17
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-7e3e6628-f1f1-90f4-a4f8-bba0e5f6da47",
+    "object": "chat.completion",
+    "created": 1782560858,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1755,
+     "completion_tokens": 17,
+     "total_tokens": 1772,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1755,
+     "output_tokens": 17
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"1eda933c0d8b71c9\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1755,
+   "output_tokens": 17
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nFunctions:\n- 7560889c11cf411b (delReferer): delReferer:function()\n- ea0eebd0a990ff2e (delReferer): function()\n- 0dd6642f087da7f8 (setADcookie): setADcookie:function()\n- e68ad1f999005e07 (setADcookie): function()\n- 289c2990162c1374 (init): init:function(c,e,f,g)\n- 83295b2c0bffd502 (init): function(c,e,f,g)\n- 8ee28d4b532a0406 ((anon)): function()\n- 5297274dcf0ddd1e (_getCookie): _getCookie:function()\n- 84d74446381c793d (_getCookie): function()\n- a5428e0070263fb6 (_setCookie): _setCookie:function()\n- 08bdab6dc98b4375 (_setCookie): function()\n- 2a0ea8f11df49170 (_setBtn): _setBtn:function(a)\n- 8ca52969f482f24c (_setBtn): function(a)\n- b2b75f4077966add (_addParam): _addParam:function(a)\n- ff28f37d6545156a (_addParam): function(a)\n- 4aeb404dc549cdbf (_parseParam): _parseParam:function(c)\n- 7052b32c790d358b (_parseParam): function(c)\n- 3c1a47558cb9adf1 (getSource): getSource:function(a)\n- 486c9e0a6dbe2e79 (getSource): function(a)\n- fd98a939a71ec9cb (init): init:function(a,b)\n- 5892893f2155e9ae (init): function(a,b)\n- 0d1833da3876a396 (_parseParam): _parseParam:function(a)\n- 9410e9561f566fcc (_parseParam): function(a)\n- 4c2f6e63abcaf5ce (_request): _request:function(b)\n- c1e751c0df9b8099 (_request): function(b)\n- 9c4791eace77be21 (init): init:function(c,d,f)\n- a8c0975ece73c565 (init): function(c,d,f)\n- a5b2ca3429163aa7 ((anon)): function(c)\n- 3c0cb7a7ba01bd74 (_download): _download:function(a)\n- 706b6c45b408fcda (_download): function(a)\n- 1b7648430f041686 (init): init:function(b,c)\n- 3ca060900a901ba3 (init): function(b,c)\n- c0e17dd46973b740 ((anon)): function(d)\n- 3b4ed4629144c865 (_request): _request:function(a)\n- a369eb650f754d46 (_request): function(a)\n- bc3c4262435f70a5 (init): init:function(b)\n- dbe71b6c76ff0d76 (init): function(b)\n- d351b1221e8e4f6b (_request): _request:function(a)\n- 58b65f459a4b9468 (_request): function(a)\n- b8fa6ef5c76ee730 (statis): statis:function()\n- ce8744ec793fbfc4 (addTagToUrlCallback): function(tag)\n- c935a26a164a641a (tempSub): function(url)\n- 9cf577434062f32d (mapList): mapList:function(list,callback)\n- b8416df0f5544549 (mapList): function(list,callback)\n- 72994e3ed54599ea (nonEnterGame): nonEnterGame:function(x)\n- ff64479531d7ecbc (nonEnterGame): function(x)\n- 6f4dc47d80515395 (rawFunc): rawFunc:function(x)\n- 83207b882e17eee4 (rawFunc): function(x)\n- 7d790f418e84cdea (imgSub): imgSub:function(url,data)\n- 75795e2c19889b0a (imgSub): function(url,data)\n- 0b2fbc88826333a3 (getParames): getParames:function(data)\n- 1d5df9e0acfbaf0c (getParames): function(data)\n- 5e434bc5edf8e7c4 (getCookie): getCookie:function(key)\n- bf1c44ff4291dcf1 (getCookie): function(key)\n- 4f5728ea3ef79c7b (getQueryString): getQueryString:function(name)\n- baf60af3569424bf (getQueryString): function(name)\n- ed7354550b5985e2 (getBrowserInfo): getBrowserInfo:function()\n- f0403e016800856a (getBrowserInfo): function()\n- 9a40666c4b40066f (getParamInfo): getParamInfo:function(r,u,gid,sid)\n- 05d10eb49f92230e (getParamInfo): function(r,u,gid,sid)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560861.330137
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"4c2f6e63abcaf5ce\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1766,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-803579ba-da31-9a6a-a619-b369826f62e0",
+    "object": "chat.completion",
+    "created": 1782560859,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1766,
+     "completion_tokens": 16,
+     "total_tokens": 1782,
+     "prompt_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens": 1766,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"4c2f6e63abcaf5ce\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1766,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nFunctions:\n- 947f187510446ded (trim): trim:function(str)\n- 4598067e6ee97742 (trim): function(str)\n- 8ef56a73f1b3e052 (nonScript): nonScript:function(dom)\n- 4f96e675be167463 (nonScript): function(dom)\n- c539dae3eac364e8 (nonOther): nonOther:function(dom,htmlNodeName)\n- 320c5cb0fb23affd (nonOther): function(dom,htmlNodeName)\n- d1ec9fe91eb21c6c (test): function(o)\n- d426a0b77fc99172 (check37DomainInit): function(platform,gid,sid)\n- 9f03cf0d5c96c8e9 ((anon)): function()\n- 4edc55578783a11b ((anon)): function($,SQ,undefined)\n- 1f8afaab7a4fb3bd (init): init:function(a)\n- d0d562a0c317a099 (init): function(a)\n- 7f6ba9011ef49002 (checked): checked:function()\n- 30a0e069450f1d44 (checked): function()\n- dea05971c2714634 (showVC): showVC:function(a)\n- d9c7d298748dec26 (showVC): function(a)\n- c3c95292b0fd0866 (clearInput): clearInput:function()\n- 51e5a6e585a387cc (clearInput): function()\n- e0c85ea5b9829eb0 ((anon)): function()\n- 82cedbf93a378150 (setContent): setContent:function(a)\n- 5dcb8d739d8b2128 (setContent): function(a)\n- 5ebc5c0fdc442eea (_events): _events:function()\n- c61c42e44ddeed05 (_events): function()\n- c3343809d7a6b4a5 ((anon)): function(b)\n- ec5f1e40be676a02 ((anon)): function(b)\n- 569166b7efb83d39 ((anon)): function(b)\n- 04531d834bd2cb86 ((anon)): function(a)\n- 4eb97c68f56b8285 ((anon)): function()\n- 3140e3502a843c2f ((anon)): function()\n- 2a7dd63f6510e20b ((anon)): function(b)\n- d4202d084404135c ((anon)): function(b)\n- d7b65fa4b579e6ae ((anon)): function()\n- 670f119813943e3e ((anon)): function(c)\n- 4a2400d9f7daf0d7 ((anon)): function()\n- 3239ec38512b51e7 (_getRegister): _getRegister:function()\n- a8029bc77465db1b (_getRegister): function()\n- f0cbbd69f5120692 ((anon)): function()\n- 960b7d44069e72a8 (_toBinding): _toBinding:function(a)\n- 2df78048711fbb86 (_toBinding): function(a)\n- 6bdbe9d644777c6b ((anon)): function(a)\n- d8600ee3b379ee3e (show): show:function(a)\n- 004b7e457c12a3d5 (show): function(a)\n- 7f0ae3f0017b1be9 (_show): _show:function()\n- fc9afa7bba22b1e8 (_show): function()\n- 50d7231151b55b59 ((anon)): function(a)\n- 2497b5480ce83c33 (_isShow): _isShow:function()\n- 55ad968a70017e46 (_isShow): function()\n- 2d108ded587188af (_regFieldTip): _regFieldTip:function(a,b)\n- 4a526f9f152d752d (_regFieldTip): function(a,b)\n- 52da0702e83a594b (_showRepeat): _showRepeat:function(a)\n- 9911ab6b692b807b (_showRepeat): function(a)\n- c5461a6060f183de ((anon)): function()\n- 16034a4ed1c4be25 ((anon)): function()\n- 0ef89cf282c2a32c (_getTop): _getTop:function()\n- 6961e7fd5a82885e (_getTop): function()\n- 531d957a373733dc (_resize): _resize:function(a,b)\n- 406b35e902c091dd (_resize): function(a,b)\n- ad0daa2cf1d3ac17 (hide): hide:function(a)\n- 1132aa4e32ce20ca (hide): function(a)\n- 849d35494f9e7e72 (getHostFirst): getHostFirst:function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560867.4125926
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"3239ec38512b51e7\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1705,
+    "output_tokens": 16
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-6550332f-03f8-98c1-9fb3-457c0ad4dc6d",
+    "object": "chat.completion",
+    "created": 1782560865,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1705,
+     "completion_tokens": 16,
+     "total_tokens": 1721,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1705,
+     "output_tokens": 16
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"3239ec38512b51e7\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1705,
+   "output_tokens": 16
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nFunctions:\n- c3942235cccf9916 (getData): getData:function()\n- 4cd2b953982e2102 (getData): function()\n- 206d47a0ae59f261 (getScriptData): getScriptData:function(c)\n- 52499a8d4cc07181 (getScriptData): function(c)\n- fe4fbcf03b6164aa ((anon)): function()\n- 4e44f5f5f44ad385 ((anon)): function(c,i)\n- 2d44428eaae86d14 (dateChange): dateChange:function(a)\n- 7ee751ede33e65a6 (dateChange): function(a)\n- 135f24fba2764d30 (extendData): extendData:function(b,c)\n- 42daeec6f022d397 (extendData): function(b,c)\n- 07f93278e4c12426 (_parse): _parse:function(c)\n- 3e1a0070ecc38b17 (_parse): function(c)\n- dd7e5aa61ffb3c75 ((anon)): function(a)\n- 8d7f22ca9b9d89e4 (howSetStorage): howSetStorage:function()\n- abc64627a873ab00 (howSetStorage): function()\n- 20394f5262e4ec6e (_countStart): _countStart:function()\n- 8d15d4e094b6d6ed (_countStart): function()\n- 39c5f3797f18f24c ((anon)): function()\n- 155e7850d3fd29c7 (hdHide): hdHide:function()\n- a869828561ad47f9 (hdHide): function()\n- 24d30d9e6701d1c7 (_destroying): _destroying:function()\n- 342b9e6914d66da5 (_destroying): function()\n- 0eb713eeddfd3c44 (throttle): throttle:function(a,b)\n- 4ee6919197c882b9 (throttle): function(a,b)\n- d6ec9f824f229a57 ((anon)): function()\n- d3f8e382471cccdd ((anon)): function()\n- 7a0f0eaab7539750 (getStorage): getStorage:function(c,d,e)\n- fe85d4f751f357ec (getStorage): function(c,d,e)\n- 01c19f108566263e (setStorage): setStorage:function(a,c,d)\n- 0a199fe34b5c32aa (setStorage): function(a,c,d)\n- e85fe81516fe6976 ((anon)): function(a,b,c)\n- aa2d245e9dceffd2 (init): init:function(b)\n- 260704e2a8faa6cb (init): function(b)\n- e320438f793e449f (error): error:function()\n- 965c4caecacab6f1 (error): function()\n- 9b6bcb966357f5a3 (_events): _events:function()\n- 58cf5a0000a77c23 (_events): function()\n- 51735b70477594e5 ((anon)): function()\n- 8bcb240820ebbe67 ((anon)): function()\n- ca64176122b0312c (_destroying): _destroying:function()\n- f6b880ae74506a8c (_destroying): function()\n- 3e4ca2a2d922abd8 (_inView): _inView:function(c)\n- 88a81ae458cbdad0 (_inView): function(c)\n- 42796e30a0dfefe2 (load): load:function()\n- 415b7ddcd3bcbe21 (load): function()\n- 2420907ff286aa65 ((anon)): function()\n- c3645ccaf2bf418b (loadImg): loadImg:function(a)\n- 51811db23b3a9936 (loadImg): function(a)\n- 7d2051b13f8ab98e (_errorHandler): _errorHandler:function(b)\n- fc88503a806ce586 (_errorHandler): function(b)\n- 872046fdce717e04 ((anon)): function(a,b,c,d)\n- 481f304a5c187a51 (init): init:function(a)\n- 4edb521ec82dcda3 (init): function(a)\n- ba5370963797f9f5 ((anon)): function()\n- a4477393fcff08cc (subImg): subImg:function(a)\n- 03a4b63cb90a0f00 (subImg): function(a)\n- 8ade5acd198d1733 (objToStr): objToStr:function(a)\n- dcecba800b1a86e7 (objToStr): function(a)\n- 66e694af8fc6aa40 (urlFilter): urlFilter:function(a)\n- f18423e367cf4085 (urlFilter): function(a)\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560868.8593762
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": [\"4e44f5f5f44ad385\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1699,
+    "output_tokens": 17
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-a09bd361-e922-9121-9d26-b8ddc85569e1",
+    "object": "chat.completion",
+    "created": 1782560867,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1699,
+     "completion_tokens": 17,
+     "total_tokens": 1716,
+     "prompt_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens": 1699,
+     "output_tokens": 17
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": [\"4e44f5f5f44ad385\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1699,
+   "output_tokens": 17
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 2 (related-element localization, Agentless). From these functions select the suspicious ones that could be the anchor. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nFunctions:\n- 469818cf7d23d9c8 (getMemory): getMemory:function()\n- 0c8a9f9e5c1bed80 (getMemory): function()\n- e7409e33120cfbd6 (getFirstScreenTime): getFirstScreenTime:function()\n- eda392664e8ae2c6 (getFirstScreenTime): function()\n- a19617e0ed0c843d (getPerformanceTiming): getPerformanceTiming:function()\n- bf2a6d6a55b5bddf (getPerformanceTiming): function()\n- 228717fc14fdeb56 (getEntryTiming): getEntryTiming:function(a)\n- 8d4af465402b0518 (getEntryTiming): function(a)\n- a7dfb15ae4757b75 ((anon)): function(a,b)\n- 611b8b431a5ccac7 (getUserAgent): getUserAgent:function()\n- a3f49ddd25536b4d (getUserAgent): function()\n- 4e79bd984cbcc3e0 (a): function a()\n- 75cc1da627e770dd (chromeVersion): chromeVersion:function()\n- 50acf0990b83aef9 (chromeVersion): function()\n- a4191d9985d4523d (getResolution): getResolution:function()\n- a931efe44dc0d977 (getResolution): function()\n- d7a02e1038889be4 (isFlashInstall): isFlashInstall:function()\n- ed2f7c450e0f205e (isFlashInstall): function()\n- 8e3d2c87417fb714 (dataProcess): dataProcess:function()\n- 4e5e6acef5b4cb66 (dataProcess): function()\n\nReturn JSON {\"functions\": [\"<func_id>\", ...]} (ids from this list)."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560869.8697996
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"functions\": []}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 927,
+    "output_tokens": 5
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-e95ede66-cf45-93f3-b54b-1f8f5c1a837a",
+    "object": "chat.completion",
+    "created": 1782560868,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 927,
+     "completion_tokens": 5,
+     "total_tokens": 932,
+     "prompt_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens_details": {
+      "cached_tokens": 384
+     },
+     "input_tokens": 927,
+     "output_tokens": 5
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"functions\": []}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 927,
+   "output_tokens": 5
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the 37.com login widget, clicking login sends a GET jsonp request to /login whose `password` field is not the raw password but a scrambled, base64-encoded token (e.g. the password 13819912565 is sent as bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=). Locate the anchor function for that login request. The anchor function is the target-specific login/registration dispatcher on the click->request chain: the single function whose own body assembles the request object, binds the password field by routing it through the site's password encoder, applies the request-level transform and sends the GET request to /login \u2014 rather than the bespoke password scrambler it calls to build the token bytes (a nested target-specific helper), the base64 primitive below that which both scramblers share (a core utility), or the sibling scrambling routine used for other request data (an off-chain decoy). Note: the login widget script ships with Dean-Edwards packed eval() blocks that have been statically unpacked in place, so the encoder and its siblings appear as ordinary named functions, while the dispatcher itself was always plain text. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the password encoder, the shared base64 primitive, or the sibling scrambler \u2014 return the dispatcher that binds the password into the request and sends it. Only code under captures is in scope.  network_request GET /login password 13819912565 bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\nObservable: {\"type\": \"network_request\", \"method\": \"GET\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"bzVkdG1MV0ExMzhsSUlVbjE5OTEyNTY1NG4=\"}\n\nSuspicious functions:\n### 6b3f11cace662803 (success)\n```js\nsuccess:function(d){0===d.ret&&(a(c.elem).find(f.$divQrImg).find(\"img\").prop(\"src\",f.getImageUrl+\"&token=\"+d.token+\"&t=\"+a.now()).css({width:\"124px\",height:\"124px\"}),window.onlyQrclass=c.elem,b._interval(d.token))}\n```\n### 1eda933c0d8b71c9 (apiCall)\n```js\napiCall:function(b,c,d){if(b&&c&&\"function\"==typeof c){b=b+\"&r=\"+Math.random();var e=this;a.ajax({url:b,dataType:\"jsonp\"}).done(function(a){if(d&&\"signlogs\"==d&&a.data&&a.data.sign_days)for(var b=e.calendar.today(\"\"),f=a.data.sign_days,g=0;g<f.length;g++)if(f[g]==b){e.isSign=!0;break}c(a,e)})}}\n```\n### 4c2f6e63abcaf5ce (_request)\n```js\n_request:function(b){e.addDom(this.adUrl+\"?\"+a.param(b))}\n```\n### 3239ec38512b51e7 (_getRegister)\n```js\n_getRegister:function(){var a={},b=this,c=$(\"#to-binding-form\"),d=this._validate.check(c,this.$regError,b);!d||b.pending||b.pendingN?d||b.$btnReg.text(\"\u6ce8\u518c\u5e76\u7ed1\u5b9a\"):(this.$btnReg.text(\"\u7ed1\u5b9a\u4e2d...\"),c.find(\"input[data-rule]\").each(function(){a[this.name]=this.value}),a.binding_flag=1,b.ignoreFocusValidate=!0,b._toBinding(a))}\n```\n### 4e44f5f5f44ad385 ((anon))\n```js\nfunction(c,i){if(f=d.dateChange(h[c].begin_datetime),g=d.dateChange(h[c].end_datetime),\"game_site_flash_popup\"==e.key&&h[c].games&&a.isArray(h[c].games)&&a.inArray(d.options.gameid+\"\",h[c].games||[])>=0&&g&&new Date(g).getTime()>(new Date).getTime()&&f&&new Date(f).getTime()<(new Date).getTime())return void d._parse(d.extendData(e.api,a.isFunction(e.fn)?e.fn.call(d,h[c]):h[c]));if(\"pt_2015_index_flash_popup\"==e.key){var j,k=-1!==a.inArray(b.MD5.hex_md5(b.MD5.hex_md5(e.account+h[c].randstr)+h[c].randstr),h[c].acc);h[c].vip_level&&(j=-1!==a.inArray(e.vip+\"\",h[c].vip_level.split(\",\")));var l=+b.cookie(h[c].randstr)||0,m=l<+h[c].number,n=(k||j)&&m;if(!n)return!0;if(l++,b.cookie(h[c].randstr,l),g&&new Date(g).getTime()>(new Date).getTime()&&f&&new Date(f).getTime()<(new Date).getTime())return d._parse(d.extendData(e.api,a.isFunction(e.fn)?e.fn.call(d,h[c]):h[c])),!1;if(!g&&!f)return d._parse(d.extendData(e.api,a.isFunction(e.fn)?e.fn.call(d,h[c]):h[c])),!1}else{if(g&&new Date(g).getTime()>(new Date).getTime()&&f&&new Date(f).getTime()<(new Date).getTime())return void d._parse(d.extendData(e.api,a.isFunction(e.fn)?e.fn.call(d,h[c]):h[c]));if(!g&&!f)return void d._parse(d.extendData(e.api,a.isFunction(e.fn)?e.fn.call(d,h[c]):h[c]))}}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+    }
+   ],
+   "tools": null,
+   "ts": 1782560871.7486775
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"top1\":\"1eda933c0d8b71c9\",\"ranking\":[\"1eda933c0d8b71c9\",\"4c2f6e63abcaf5ce\",\"3239ec38512b51e7\",\"6b3f11cace662803\",\"4e44f5f5f44ad385\"]}"
+    }
+   ],
+   "usage": {
+    "input_tokens": 1332,
+    "output_tokens": 81
+   },
+   "stop_reason": "stop",
+   "raw_response": {
+    "id": "chatcmpl-21138e1e-34f5-9a83-a976-149d987c3555",
+    "object": "chat.completion",
+    "created": 1782560869,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 1332,
+     "completion_tokens": 81,
+     "total_tokens": 1413,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 1332,
+     "output_tokens": 81
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "{\"top1\":\"1eda933c0d8b71c9\",\"ranking\":[\"1eda933c0d8b71c9\",\"4c2f6e63abcaf5ce\",\"3239ec38512b51e7\",\"6b3f11cace662803\",\"4e44f5f5f44ad385\"]}",
+       "role": "assistant"
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "stop",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 1332,
+   "output_tokens": 81
+  }
+ }
+]

@@ -1,0 +1,46 @@
+{
+  "case_id": "real03_weidian_request_transformation",
+  "page": "captures/d.weidian.com/weidian-pc/login/index.html",
+  "interaction": [],
+  "observable": {
+    "type": "network_request",
+    "method": "POST",
+    "url_contains": "sso.weidian.com/user/login",
+    "field": "password",
+    "plaintext_sample": "13819912565",
+    "value_sample": "cLhf/IoKEkAkByIWgtpD2FGOZT5W7PzBDX/8k0w4ZzViMVJusApHdFXMO5ngm7h6... (RSA, base64)"
+  },
+  "question": "On the Weidian PC login page, the login POST to sso.weidian.com/user/login sends phone, countryCode and password as RSA-encrypted values rather than plaintext. Locate the single complete function that is the anchor for the encrypted password field. The anchor function is the target-specific function on the dynamic behavior chain from the login click to the network request whose own body assembles the request payload and writes the encrypted password into it: after the submit handler validates the form and dispatches login, the anchor's body builds the request object r = {phone: <enc>, countryCode: <enc>, password: <RSA ciphertext>, ...} and POSTs it to sso.weidian.com/user/login, rather than merely validating/dispatching (the submit handler), computing one field's ciphertext (the dedicated per-field encryptor it calls), performing the RSA math (the generic JSEncrypt/RSA library primitive), or mapping a sibling field. Return exactly one JSON object (see answer_format). The per-field encryptor and the generic JSEncrypt primitive below it are NOT the answer (they are helpers nested below this function). Only code under captures is in scope.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": { "type": "string", "required": true, "description": "Identifier or member/property name of the function as it appears in the captured bundle." },
+      "file": { "type": "string", "required": true, "description": "captures-relative path; must match visible_corpus." },
+      "slice": {
+        "type": "object", "required": true,
+        "fields": {
+          "start_line": { "type": "integer", "required": true },
+          "end_line": { "type": "integer", "required": true },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based UTF-16 offset (BOM stripped)." },
+          "end_offset": { "type": "integer", "required": true, "description": "Exclusive end offset." },
+          "code": { "type": "string", "required": true, "description": "Exact text [start_offset,end_offset); one complete function." }
+        }
+      }
+    },
+    "example": { "function_name": "exampleSubmit", "file": "captures/assets.geilicdn.com/.../index.js", "slice": { "start_line": 1, "end_line": 1, "start_offset": 1000, "end_offset": 1080, "code": "function(n){for(;;)switch(n.next){case 0:return r={password:t.enc(t.form.pwd)},t.$http({url:\"/user/login\",data:r})}}" } }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema.",
+    "function_name and slice.code must refer to the same function in the captured bundle.",
+    "slice.code must be one complete function (balanced braces).",
+    "Return one top-1 function, not a list.",
+    "Do not return the per-field encryptor or the generic JSEncrypt library primitive (those are helpers nested below the anchor)."
+  ],
+  "_answer_leak_allow": ["login"],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested request field, or dispatches the requested action, and removing that statement would break the observed value carried in the network request. A function is generic when it is a reusable utility (hash/encode/encrypt/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the complete function whose own body assembles the request payload and writes the requested field value into it before dispatching — the field-assignment / payload-assembly site. A dedicated downstream encryptor/helper that this function calls to compute the field value is a nested target-specific helper (not the anchor); reusable crypto/encoding primitives are core utilities; the request-sending service that merely emits an already-built body is a wrapper/sink. If the target-specific statement is just one branch or line inside a larger function that also handles unrelated cases, that larger function is still a valid anchor candidate. Special case: when the site has no app-level assembly function and writes the field directly from a generic primitive call, that call site / primitive is itself the anchor.",
+  "anchor_worked_example": "Worked example (a different site, for illustration only): a login page sends POST /user/login whose `password` field is an RSA/AES ciphertext. On Submit the chain is: read the password input (generic: UI collection) -> validate password strength (generic: precondition) -> a submit/login function assembles the request body r = {password: enc(pwd), ...} and POSTs it (<-- ANCHOR: the complete function containing the field-assignment code) -> the app's dedicated encryptor enc() that it calls per field binds the site key and returns the ciphertext (nested target-specific helper, 0.7) -> a generic crypto library (JSEncrypt/CryptoJS/SM) performs the math (core utility, 0.5) -> the ajax service sends the body (wrapper/sink). The assembly/login function is the anchor because its own body is where the requested field value is written into the payload. The dedicated encryptor below it is 0.7; the crypto library is 0.5; a same-request sibling-field mapper, `captcha` token or header signature is an off-chain decoy (0). Special case: if the page has no app-level assembly function and writes the field directly from a primitive call, that primitive is itself the anchor. Apply the same reasoning to the captured bundle below."
+}

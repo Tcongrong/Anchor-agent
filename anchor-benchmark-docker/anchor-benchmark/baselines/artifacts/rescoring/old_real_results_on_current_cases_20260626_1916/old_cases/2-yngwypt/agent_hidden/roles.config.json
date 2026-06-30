@@ -1,0 +1,31 @@
+{
+  "case_id": "real02_yngwypt_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "For the password field the chain is dispatcher c(password, 32) -> n (sm32) -> i (sm2) over sm3(password). The anchor is n (sm32): its body composes sm3 then sm2 with the site public key to produce the observed password token. i (sm2NoKey) is a nested target-specific helper; c is the generic encrypt dispatcher. PLAN §8.14 rule 1/2.",
+  "anchor": {
+    "file": "js/chunk-858ed276.7bbb8c3f.js",
+    "locator": "sm3)(t), \"04182b39fcaa",
+    "answer_function": "n",
+    "source_function": "sm32",
+    "source_file": "js/chunk-858ed276.7bbb8c3f.js",
+    "why": "sm32: returns i(sm3(t), <site pubkey>, 1) — first hashes the password with sm3 then sm2-encrypts it, producing the observed password token (the sm32 branch selected by the dispatcher for the password field)."
+  },
+  "roles": [
+    {
+      "file": "js/chunk-858ed276.7bbb8c3f.js",
+      "locator": "o = n.doEncrypt(t, e, 1)",
+      "role": "Nested target-specific helper",
+      "answer_function": "i",
+      "source_function": "sm2NoKey",
+      "why": "sm2NoKey: runs sm2.doEncrypt with the site public key and returns '04'+ciphertext. Invoked by n (sm32) on the password path and directly for the username; a nested target-specific helper."
+    },
+    {
+      "file": "js/chunk-858ed276.7bbb8c3f.js",
+      "locator": "if (\"3nokey\" == e || \"3key\" == e)",
+      "role": "Path/Wrapper",
+      "answer_function": "c",
+      "source_function": "encrypt",
+      "why": "The encrypt dispatcher (exported as h.b): routes a value by EncryptType (3nokey->o, 2nokey->i, 32->n). Generic selector, not the password-specific encryptor."
+    }
+  ]
+}

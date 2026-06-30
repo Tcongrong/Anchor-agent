@@ -1,0 +1,110 @@
+{
+  "case_id": "case008_state_encoding",
+  "page": "captures/devtools-source-dump/127.0.0.1_4218/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#themeSelect",
+      "value": "dark"
+    },
+    {
+      "action": "select",
+      "selector": "#densitySelect",
+      "value": "roomy"
+    },
+    {
+      "action": "check",
+      "selector": "#autosaveToggle"
+    },
+    {
+      "action": "type",
+      "selector": "#workspaceNameInput",
+      "value": "north-ops"
+    },
+    {
+      "action": "click",
+      "selector": "#savePreferences"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "prefs.save",
+    "field": "state_code",
+    "value_pattern": "^[a-z0-9]{12}$"
+  },
+  "question": "Locate the anchor function for the state_code field in the console.log object whose action is prefs.save, produced after selecting the dark theme, selecting the roomy density, checking the autosave toggle, typing the workspace name, and clicking Save preferences on the page. The anchor function is the first target-specific value-construction function on the dynamic behavior chain: after command queueing, the asynchronous queue drain, command routing, workspace-snapshot collection, input normalization, appearance-profile resolution and envelope assembly, its own function body constructs the target 12-character state-encoding value rather than merely collecting inputs, dispatching control, looking up which encoder to call, wrapping an already-encoded value, or writing it to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the asynchronous queue/drain functions, the encoder-selection lookup, the exported dispatch wrapper, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "A function is target-specific for the observable above if at least one statement in its body constructs or binds the target value, writes the target field, or dispatches the target action, and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility, control-flow dispatcher, scheduler, event bus, validation routine, input collector, lifecycle hook, or preparation routine whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the trigger-to-sink chain whose immediate caller is generic, equivalently the shallowest target-specific function on that path.",
+  "anchor_worked_example": "Worked example from a different scenario: a checkout page emits body.order_sig_v2 after Submit Order. The chain prepares an order draft, encodes checkout state, collects an async profile receipt, composes a request envelope, enters a generic interceptor pipeline, selects a sealing interceptor, canonicalizes payload fields, folds payload data with a receipt and pepper, computes a digest, writes body.order_sig_v2, and sends the request. The sealing interceptor is the anchor because its immediate caller is the generic pipeline dispatcher and its own body is the highest point on the chain whose code explains why order_sig_v2 is produced. The canonicalizer and folder are nested target-specific helpers, the digest routine is a reusable core utility, the dispatcher and sender are wrappers, and same-click values such as analytics_sig or retry_fingerprint are off-chain decoys. Apply the same reasoning to this page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4218/assets/prefs.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 108,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(input) {\n  const parts = readExample(input);\n  let acc = input.seed >>> 0;\n  for (let i = 0; i < parts.length; i++) acc = mixExample(acc, parts[i], i);\n  return `${(acc >>> 0).toString(36).slice(-12)}`;\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, command queue/drain, router, normalizer, encoder-selection lookup or exported dispatch wrapper when a more target-specific value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The target value is a 12-character lowercase base-36 state code and should not be confused with the page-load startup window stamps, the preview/export/sync/reset action codes produced on sibling actions, or the non-active slot reducers in the workspace codec table."
+  ]
+}

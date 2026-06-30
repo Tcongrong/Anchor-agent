@@ -1,0 +1,154 @@
+{
+  "case_id": "case008_request_transformation",
+  "page": "captures/devtools-source-dump/127.0.0.1_11751/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#requestProfile",
+      "value": "audit"
+    },
+    {
+      "action": "select",
+      "selector": "#statusFilter",
+      "value": "open"
+    },
+    {
+      "action": "select",
+      "selector": "#regionFilter",
+      "value": "west"
+    },
+    {
+      "action": "fill",
+      "selector": "#minAmount",
+      "value": "500"
+    },
+    {
+      "action": "fill",
+      "selector": "#ownerInput",
+      "value": "maria"
+    },
+    {
+      "action": "check",
+      "selector": "#agedOnly"
+    },
+    {
+      "action": "click",
+      "selector": "#stageRequest"
+    },
+    {
+      "action": "click",
+      "selector": "[data-action='table.page.next']"
+    },
+    {
+      "action": "click",
+      "selector": "[data-action='table.columns.save']"
+    },
+    {
+      "action": "click",
+      "selector": "#prepareRequest"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "method": "log",
+    "action": "table.filter.request",
+    "field": "request_payload",
+    "expected_shape": {
+      "method": "POST",
+      "endpoint": "/api/receivables/search",
+      "profile": "audit",
+      "stage": "object",
+      "body": {
+        "filters": "array",
+        "projection": "array",
+        "page": "object",
+        "sort": "array",
+        "hydration": "object",
+        "matched": "object"
+      }
+    }
+  },
+  "question": "After selecting #requestProfile=audit, #statusFilter=open and #regionFilter=west, filling #minAmount with 500, filling #ownerInput with maria, checking #agedOnly, clicking #stageRequest, clicking the next-page table action, clicking the save-columns table action, and finally clicking #prepareRequest, locate the anchor function for the request_payload field in the console.log object whose action is table.filter.request. The anchor function is the first target-specific request-transformation value-construction function on the dynamic behavior chain: after delegated click routing, action dispatch, form collection, normalization, visual scope calculation, stage ticket creation, page/layout mutation, stage reconciliation, hydration, async queueing and resolver dispatch, its own function body constructs the observable request_payload value (an object with method, endpoint, profile, stage and a body holding filters, projection, page, sort, hydration and matched scope) rather than merely collecting inputs, dispatching control, packaging an already built value, or emitting it to the console sink. The target field name and action are assembled from character-code arrays at the sink, so direct literal search in the captured bundles is insufficient. Return exactly one complete function as a single JSON object (see answer_format). Do not return a generic helper, event handler, router, staging wrapper, hydration bridge, the full call chain, the final console sink, or a decoy table action. Note: the code you can inspect is limited to the captured corpus under captures; the full source tree is not part of the default answer space.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function (the app bundle or the lazy request transformation core chunk). Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_11751/assets/filter.app.bundle.js",
+      "slice": {
+        "start_line": 1,
+        "end_line": 1,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(envelope) { const shape = pickExampleShape(envelope); return { method: \"POST\", endpoint: \"/example\", profile: envelope.profile, body: { filters: exampleFilters(envelope) } }; }"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink.",
+    "Do not return form input readers, staging helpers, hydration/event bridges, visual table filtering, request wrappers, routers or decoy table actions when a more target-specific request payload constructor is present.",
+    "Constrain the observable by both action table.filter.request and field request_payload.",
+    "The request payload is local and console-observable; no network request is required.",
+    "A source path outside captures is not a default answer.",
+    "A partial snippet is useful only if it uniquely identifies one complete enclosing function."
+  ],
+  "notes": [
+    "The target field is request_payload.",
+    "The page is served from the captured index.html under captures.",
+    "The visible JavaScript corpus is the captured DevTools dump (a large obfuscated app bundle haystack plus a lazy request transformation core chunk).",
+    "The target field name and action are assembled from character-code arrays at the sink.",
+    "The staging click alone is not the target observation.",
+    "Return the top-1 anchor function only."
+  ]
+}

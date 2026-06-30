@@ -1,0 +1,114 @@
+{
+  "case_id": "case002_request_transformation",
+  "page": "captures/devtools-source-dump/127.0.0.1_4191/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#methodSelect",
+      "value": "post"
+    },
+    {
+      "action": "type",
+      "selector": "#endpointPath",
+      "value": "/api/v1/transform"
+    },
+    {
+      "action": "select",
+      "selector": "#pipelineMode",
+      "value": "rewrite"
+    },
+    {
+      "action": "select",
+      "selector": "#authScheme",
+      "value": "bearer"
+    },
+    {
+      "action": "check",
+      "selector": "#includeAuth"
+    },
+    {
+      "action": "click",
+      "selector": "#runPipeline"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "request.pipeline",
+    "field": "req_pipeline"
+  },
+  "question": "Locate the anchor function for the req_pipeline field in the console.log object whose action is request.pipeline, observed after selecting the HTTP method, typing the endpoint path, selecting the pipeline mode and auth scheme, attaching credentials, and clicking Execute Pipeline on the page. The anchor function is the first target-specific request-transform value constructor on the dynamic behavior chain: after delegated click routing, action routing, the request gate, form-state tuple collection, asynchronous scheduling (Promise, timer, MessageChannel and window.postMessage) and runtime config selection, its function body itself constructs the target observable request pipeline value rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console sink. The req_pipeline value matches /^rp_[A-Za-z0-9_-]{24}$/. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, or the final console sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4191/assets/request.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 107,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(parts, config, opts = {}) {\n  const pick = (config.branch ^ opts.routeScore) & 7;\n  return encodeExampleField(reducers[pick](parts, config, opts));\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or a payload wrapper.",
+    "Do not return a generic DOM reader, formatter, router or transport helper when a more target-specific request pipeline value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The target behavior is request transformation pipeline encoding, not byte-array conversion, request signing, browser fingerprinting or state encoding.",
+    "The target value is a request pipeline token and should not be confused with request_token, request_trace or non-target request.inspect/request.audit req_pipeline-like decoys.",
+    "The observable is triggered by a single button click, not a two-stage interaction."
+  ]
+}

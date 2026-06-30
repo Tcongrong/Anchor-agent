@@ -1,0 +1,32 @@
+{
+  "case_id": "real04_iquicker_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the function whose own body constructs the encoded password token. It is base64Encode (the dedicated encoder), not the doLogin handler that calls it (a thin call-site wrapper), nor the login service that sends the request (the sink). PLAN §8.14 rule 2: a dedicated algorithm function outranks a thin forwarding wrapper.",
+  "anchor": {
+    "file": "js/app.min.js",
+    "locator": "function base64Encode(",
+    "answer_function": "base64Encode",
+    "source_function": "base64Encode",
+    "source_file": "js/app.min.js",
+    "why": "Its body turns the password string into the observed base64 token (out += base64EncodeChars.charAt(...)). doLogin only forwards the result into the request data; the login service only POSTs it."
+  },
+  "roles": [
+    {
+      "file": "login/js/controllers.js",
+      "start_offset": 8780,
+      "end_offset": 11462,
+      "role": "Path/Wrapper",
+      "answer_function": "doLogin",
+      "source_function": "doLogin",
+      "why": "The label-designated login handler ($scope.doLogin, controllers.js:329): reads username/password, calls base64Encode(password), assembles the request data, and invokes the login service. A call-site wrapper, not the encoder."
+    },
+    {
+      "file": "js/app.min.js",
+      "locator": "function base64Decode(",
+      "role": "Off-chain",
+      "answer_function": "base64Decode",
+      "source_function": "base64Decode",
+      "why": "The inverse base64 decoder defined next to the anchor; never on the password-encoding path. A pure decoy."
+    }
+  ]
+}

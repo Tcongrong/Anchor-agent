@@ -1,0 +1,29 @@
+{
+  "case_id": "real12_learn_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the ajax wrapper (_ajax.call) whose body appends the cache-buster `bust` parameter (the current millisecond timestamp) onto every request URL. A degenerate/trivial token: deterministic time, no crypto.",
+  "anchor": {
+    "file": "learn.open.com.cn/Content/scripts/common.js",
+    "locator": "\"?bust=\" + (new Date()).getTime()",
+    "answer_function": "_ajax.call",
+    "source_function": "_ajax.call",
+    "source_file": "learn.open.com.cn/Content/scripts/common.js",
+    "why": "Builds settings.url by appending `?bust=`/`&bust=` + (new Date()).getTime(); this is where the observed bust request parameter is generated."
+  },
+  "roles": [
+    {
+      "file": "learn.open.com.cn/Content/scripts/common.js",
+      "locator": "_common.getUrlParams = function (url)",
+      "role": "Off-chain",
+      "answer_function": "_common.getUrlParams",
+      "why": "A URL query-string parser utility; reads URL params but does not generate the bust value. Pure decoy."
+    },
+    {
+      "file": "learn.open.com.cn/Content/scripts/common.js",
+      "locator": "_common.cloneObj = function (obj)",
+      "role": "Off-chain",
+      "answer_function": "_common.cloneObj",
+      "why": "A generic deep-clone utility; not on the request-URL bust path."
+    }
+  ]
+}

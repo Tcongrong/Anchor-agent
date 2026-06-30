@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Byte Lane Materializer</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Typed Buffer Desk</p>
+          <h1>Byte Lane Materializer</h1>
+        </div>
+        <div class="summary-strip" aria-label="Scope summary">
+          <span><strong id="selectedScopeLabel">baseline</strong> scope</span>
+          <span><strong id="selectedLedgerLabel">all</strong> ledger</span>
+          <span><strong id="selectedFloorLabel">0</strong> floor</span>
+        </div>
+      </header>
+
+      <section class="planner-grid" aria-label="Lane materializer controls">
+        <div class="control-band">
+          <label>
+            <span>Scope band</span>
+            <select id="scopeBand">
+              <option value="baseline" selected>baseline</option>
+              <option value="narrow">narrow</option>
+              <option value="wide">wide</option>
+            </select>
+          </label>
+          <label>
+            <span>Ledger slice</span>
+            <select id="ledgerSlice">
+              <option value="all">all</option>
+              <option value="open">open</option>
+              <option value="pending">pending</option>
+              <option value="closed">closed</option>
+            </select>
+          </label>
+          <label>
+            <span>Floor units</span>
+            <input id="floorUnits" type="number" min="0" step="1" placeholder="0" />
+          </label>
+          <label>
+            <span>Custodian tag</span>
+            <input id="custodianTag" type="text" autocomplete="off" placeholder="custodian" />
+          </label>
+          <label class="toggle-row">
+            <span>Parity lock</span>
+            <input id="parityLock" type="checkbox" />
+          </label>
+          <div class="stage-actions">
+            <button id="bootLaneButton" data-stage="boot" type="button">Boot lane</button>
+            <button id="bindScopeButton" data-stage="bind" type="button">Bind scope</button>
+            <button id="emitBufferButton" data-stage="emit" type="button">Emit buffer</button>
+          </div>
+        </div>
+        <aside class="status-panel" aria-label="Lane session panel">
+          <dl>
+            <dt>Lane stage</dt>
+            <dd id="laneStage">Idle</dd>
+            <dt>Buffer session</dt>
+            <dd id="bufferSession">Cold</dd>
+            <dt>Matched rows</dt>
+            <dd id="laneMatchCount">0</dd>
+            <dt>Last action</dt>
+            <dd id="lastAction">None</dd>
+            <dt>Marker</dt>
+            <dd id="shadowMarker">-</dd>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="auxbar" aria-label="Lane noise actions">
+        <button data-lane-noise="lane.export.preview" type="button">Export lane</button>
+        <button data-lane-noise="lane.page.shift" type="button">Shift page</button>
+        <button data-lane-noise="lane.columns.freeze" type="button">Freeze columns</button>
+        <button data-lane-noise="lane.badge.resync" type="button">Resync badges</button>
+        <button data-lane-noise="lane.view.anchor" type="button">Anchor view</button>
+        <button data-lane-noise="lane.queue.flush" type="button">Flush queue</button>
+      </section>
+
+      <section class="table-panel" aria-label="Source ledger preview">
+        <table>
+          <thead>
+            <tr>
+              <th>Invoice</th>
+              <th>Account</th>
+              <th>Status</th>
+              <th>Owner</th>
+              <th>Amount</th>
+              <th>Age</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody id="invoiceRows"></tbody>
+        </table>
+      </section>
+
+      <div id="localQueueNode" class="hidden-node" aria-hidden="true"></div>
+    </main>
+
+    <template id="audit-template-000"><span data-lane="3"></span></template>
+    <template id="audit-template-001"><span data-lane="10"></span></template>
+    <template id="audit-template-002"><span data-lane="17"></span></template>
+    <template id="audit-template-003"><span data-lane="24"></span></template>
+    <template id="audit-template-004"><span data-lane="31"></span></template>
+    <template id="audit-template-005"><span data-lane="38"></span></template>
+    <template id="audit-template-006"><span data-lane="45"></span></template>
+    <template id="audit-template-007"><span data-lane="52"></span></template>
+    <template id="audit-template-008"><span data-lane="59"></span></template>
+    <template id="audit-template-009"><span data-lane="66"></span></template>
+    <template id="audit-template-010"><span data-lane="73"></span></template>
+    <template id="audit-template-011"><span data-lane="80"></span></template>
+    <template id="audit-template-012"><span data-lane="87"></span></template>
+    <template id="audit-template-013"><span data-lane="94"></span></template>
+    <template id="audit-template-014"><span data-lane="101"></span></template>
+    <template id="audit-template-015"><span data-lane="108"></span></template>
+    <template id="audit-template-016"><span data-lane="115"></span></template>
+    <template id="audit-template-017"><span data-lane="122"></span></template>
+    <template id="audit-template-018"><span data-lane="129"></span></template>
+    <template id="audit-template-019"><span data-lane="136"></span></template>
+    <template id="audit-template-020"><span data-lane="143"></span></template>
+    <template id="audit-template-021"><span data-lane="150"></span></template>
+    <template id="audit-template-022"><span data-lane="157"></span></template>
+    <template id="audit-template-023"><span data-lane="164"></span></template>
+    <template id="audit-template-024"><span data-lane="171"></span></template>
+    <template id="audit-template-025"><span data-lane="178"></span></template>
+    <template id="audit-template-026"><span data-lane="185"></span></template>
+    <template id="audit-template-027"><span data-lane="192"></span></template>
+    <template id="audit-template-028"><span data-lane="199"></span></template>
+    <template id="audit-template-029"><span data-lane="206"></span></template>
+    <template id="audit-template-030"><span data-lane="213"></span></template>
+    <template id="audit-template-031"><span data-lane="220"></span></template>
+    <template id="audit-template-032"><span data-lane="227"></span></template>
+    <template id="audit-template-033"><span data-lane="234"></span></template>
+    <template id="audit-template-034"><span data-lane="241"></span></template>
+    <template id="audit-template-035"><span data-lane="248"></span></template>
+    <template id="audit-template-036"><span data-lane="255"></span></template>
+    <template id="audit-template-037"><span data-lane="262"></span></template>
+    <template id="audit-template-038"><span data-lane="269"></span></template>
+    <template id="audit-template-039"><span data-lane="276"></span></template>
+    <template id="audit-template-040"><span data-lane="283"></span></template>
+    <template id="audit-template-041"><span data-lane="290"></span></template>
+    <template id="audit-template-042"><span data-lane="297"></span></template>
+    <template id="audit-template-043"><span data-lane="304"></span></template>
+    <template id="audit-template-044"><span data-lane="311"></span></template>
+    <template id="audit-template-045"><span data-lane="318"></span></template>
+    <template id="audit-template-046"><span data-lane="325"></span></template>
+    <template id="audit-template-047"><span data-lane="332"></span></template>
+    <template id="audit-template-048"><span data-lane="339"></span></template>
+    <template id="audit-template-049"><span data-lane="346"></span></template>
+    <template id="audit-template-050"><span data-lane="353"></span></template>
+    <template id="audit-template-051"><span data-lane="360"></span></template>
+    <template id="audit-template-052"><span data-lane="367"></span></template>
+    <template id="audit-template-053"><span data-lane="374"></span></template>
+    <template id="audit-template-054"><span data-lane="381"></span></template>
+    <template id="audit-template-055"><span data-lane="388"></span></template>
+    <template id="audit-template-056"><span data-lane="395"></span></template>
+    <template id="audit-template-057"><span data-lane="402"></span></template>
+    <template id="audit-template-058"><span data-lane="409"></span></template>
+    <template id="audit-template-059"><span data-lane="416"></span></template>
+    <template id="audit-template-060"><span data-lane="423"></span></template>
+    <template id="audit-template-061"><span data-lane="430"></span></template>
+    <template id="audit-template-062"><span data-lane="437"></span></template>
+    <template id="audit-template-063"><span data-lane="444"></span></template>
+    <template id="audit-template-064"><span data-lane="451"></span></template>
+    <template id="audit-template-065"><span data-lane="458"></span></template>
+    <template id="audit-template-066"><span data-lane="465"></span></template>
+    <template id="audit-template-067"><span data-lane="472"></span></template>
+    <template id="audit-template-068"><span data-lane="479"></span></template>
+    <template id="audit-template-069"><span data-lane="486"></span></template>
+    <template id="audit-template-070"><span data-lane="493"></span></template>
+    <template id="audit-template-071"><span data-lane="500"></span></template>
+    <script type="module" src="./assets/calendar.app.bundle.js"></script>
+  </body>
+</html>

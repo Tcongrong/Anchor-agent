@@ -1,0 +1,459 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On the yngwypt login page, the password is transformed into an SM-crypto token before being sent (e.g. 13819912565 becomes a long hex token beginning 0436...). The password uses the SM3-then-SM2 (sm32) scheme. Locate the single complete function whose own body composes that SM3+SM2 transform to produce the password token. Return exactly one JSON object (see answer_format). Do NOT return the generic encrypt dispatcher that merely routes by type, the lower-level SM2 helper it calls, or the form submit handler. Only code under captures is in scope.  network_request POST /login password 13819912565 0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/login', 'field': 'password', 'plaintext_sample': '13819912565', 'value_sample': '0436679559170009c0c7a7702fae527b0498ce64f6da4011ac39281f4ffeb616...'}\nCandidate seed nodes (lexical prior, not a ranking): ['ca29fba7bd4194b1', 'dde450c5d71f3548', 'dc6dc04bc91881f1', '1d1a73944244e43f', '12fc216e46546ca7', '260c17379f3b3fca', 'e92aedc8ce4ca7f2', 'b3f83f69490d4975']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_gWWgI1hHoTWzEGcGtaKo1800",
+     "name": "search_entity",
+     "input": {
+      "query": "sm32"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_AiHuiQK2aJLPOGU5EzXb2102",
+     "name": "search_entity",
+     "input": {
+      "query": "sm3"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_na9NandyyIbKCR2zQx5o8794",
+     "name": "search_entity",
+     "input": {
+      "query": "sm2"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_gWWgI1hHoTWzEGcGtaKo1800",
+     "content": "{\"nodes\": [\"260c17379f3b3fca\", \"e92aedc8ce4ca7f2\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"319d394832fc49e8\", \"3298eda5853d730c\", \"4167d68a0a58a5ce\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_AiHuiQK2aJLPOGU5EzXb2102",
+     "content": "{\"nodes\": [\"260c17379f3b3fca\", \"e92aedc8ce4ca7f2\", \"71be2707f4ec4721\", \"daa7db5e87cb1b7e\", \"3fc14e0e89fc700e\", \"d1e2bbef80bbb750\", \"d052d2fe55860399\", \"606b7ff4ffb71b8b\", \"ce8b7b5cd589608d\", \"93f94bf29619d697\", \"1def473404e8f1cd\", \"90e54fc9a1b7512d\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"9300c1a05e8e69df\", \"251dab7cdf6dc560\", \"fb7578ac3b3f9a4c\", \"53c16c9c5b50021e\", \"146fbd269cefe4b6\", \"319d394832fc49e8\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_na9NandyyIbKCR2zQx5o8794",
+     "content": "{\"nodes\": [\"260c17379f3b3fca\", \"e92aedc8ce4ca7f2\", \"b62d143601b07ba9\", \"025e6c54f69b1213\", \"65fb4c6a850320fe\", \"1def473404e8f1cd\", \"90e54fc9a1b7512d\", \"2f2d5ecd9f671919\", \"eb3268815b91c748\", \"9bfb86ad629c92a8\", \"9841830e75a9f8df\", \"71531c635045698e\", \"fb7578ac3b3f9a4c\", \"53c16c9c5b50021e\", \"146fbd269cefe4b6\", \"319d394832fc49e8\", \"3298eda5853d730c\", \"4167d68a0a58a5ce\", \"45b847a9e6fce05b\", \"d17ca588c4c21ef8\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_A8vrqCa0lSyKZWEFZ6JI8964",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "260c17379f3b3fca"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_iHKiEgIjgUM4WjHR3zzN9150",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "e92aedc8ce4ca7f2"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_ZlAqRk2axUBdUmXtdhdy9171",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "2f2d5ecd9f671919"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_03_7MTElgXvJ3LynDcoplv42435",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "eb3268815b91c748"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_A8vrqCa0lSyKZWEFZ6JI8964",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44844, \"end_offset\": 46800}, \"_best_guess_score\": -5, \"name\": \"193c\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44844, \"end_offset\": 46800, \"code\": \"function(t, e, r) {\\n        \\\"use strict\\\";\\n        function n(t) {\\n            return i((0,\\n            r(\\\"8060\\\").sm3)(t), \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\", 1)\\n        }\\n        function o(t) {\\n            return (0,\\n            r(\\\"8060\\\").sm3)(t)\\n        }\\n        function i(t) {\\n            var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\"\\n              , n = r(\\\"8060\\\").sm2\\n              , o = n.doEncrypt(t, e, 1);\\n            return \\\"04\\\" + o\\n        }\\n        r.d(e, \\\"a\\\", (function() {\\n            return a\\n        }\\n        )),\\n        r.d(e, \\\"b\\\", (function() {\\n            return c\\n        }\\n        ));\\n        var s = r(\\\"3c77\\\")\\n          , a = {\\n            sm2nokey: \\\"2nokey\\\",\\n            sm2key: \\\"2key\\\",\\n            sm3nokey: \\\"3nokey\\\",\\n            sm3key: \\\"3key\\\",\\n            sm32: 32\\n        };\\n        function c(t, e, r) {\\n            var a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : \\\"SM\\\";\\n            if (\\\"SM\\\" == a) {\\n                if (\\\"3nokey\\\" == e || \\\"3key\\\" == e) {\\n                    var c = o(t);\\n                    return c\\n                }\\n                if (\\\"2nokey\\\" == e || \\\"2key\\\" == e) {\\n                    var u = i(t);\\n                    return u\\n                }\\n                if (32 == e) {\\n                    var f = n(t);\\n                    return f\\n                }\\n            } else if (\\\"NSM\\\" == a) {\\n                if (32 == e || \\\"2nokey\\\" == e || \\\"3nokey\\\" == e) {\\n                    var l = Object(s.b)(t);\\n                    return l\\n                }\\n                if (\\\"3key\\\" == e || \\\"2key\\\" == e) {\\n                    var p = Object(s.a)(t, r);\\n                    return p\\n                }\\n            }\\n        }\\n    }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_iHKiEgIjgUM4WjHR3zzN9150",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44836, \"end_offset\": 46800}, \"_best_guess_score\": -6, \"name\": \"193c\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44836, \"end_offset\": 46800, \"code\": \"\\\"193c\\\": function(t, e, r) {\\n        \\\"use strict\\\";\\n        function n(t) {\\n            return i((0,\\n            r(\\\"8060\\\").sm3)(t), \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\", 1)\\n        }\\n        function o(t) {\\n            return (0,\\n            r(\\\"8060\\\").sm3)(t)\\n        }\\n        function i(t) {\\n            var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\"\\n              , n = r(\\\"8060\\\").sm2\\n              , o = n.doEncrypt(t, e, 1);\\n            return \\\"04\\\" + o\\n        }\\n        r.d(e, \\\"a\\\", (function() {\\n            return a\\n        }\\n        )),\\n        r.d(e, \\\"b\\\", (function() {\\n            return c\\n        }\\n        ));\\n        var s = r(\\\"3c77\\\")\\n          , a = {\\n            sm2nokey: \\\"2nokey\\\",\\n            sm2key: \\\"2key\\\",\\n            sm3nokey: \\\"3nokey\\\",\\n            sm3key: \\\"3key\\\",\\n            sm32: 32\\n        };\\n        function c(t, e, r) {\\n            var a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : \\\"SM\\\";\\n            if (\\\"SM\\\" == a) {\\n                if (\\\"3nokey\\\" == e || \\\"3key\\\" == e) {\\n                    var c = o(t);\\n                    return c\\n                }\\n                if (\\\"2nokey\\\" == e || \\\"2key\\\" == e) {\\n                    var u = i(t);\\n                    return u\\n                }\\n                if (32 == e) {\\n                    var f = n(t);\\n                    return f\\n                }\\n            } else if (\\\"NSM\\\" == a) {\\n                if (32 == e || \\\"2nokey\\\" == e || \\\"3nokey\\\" == e) {\\n                    var l = Object(s.b)(t);\\n                    return l\\n                }\\n                if (\\\"3key\\\" == e || \\\"2key\\\" == e) {\\n                    var p = Object(s.a)(t, r);\\n                    return p\\n                }\\n            }\\n        }\\n    }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_ZlAqRk2axUBdUmXtdhdy9171",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 200505, \"end_offset\": 270193}, \"_best_guess_score\": -26, \"name\": \"9ed6\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 200505, \"end_offset\": 270193, \"code\": \"function(t, e, r) {\\n        \\\"use strict\\\";\\n        r.r(e);\\n        var n = [function() {\\n            var t = this._self._c;\\n            return t(\\\"div\\\", {\\n                staticClass: \\\"hcb_conten_img\\\"\\n            }, [t(\\\"img\\\", {\\n                staticStyle: {\\n                    width: \\\"100%\\\"\\n                },\\n                attrs: {\\n                    src: r(\\\"07a6\\\"),\\n                    margin: \\\"\\\"\\n                }\\n            })])\\n        }\\n        ]\\n          , o = (r(\\\"b54a\\\"),\\n        r(\\\"6762\\\"),\\n        r(\\\"2fdb\\\"),\\n        {\\n            data: function() {\\n                return {\\n                    visible: !1,\\n                    envParam: \\\"YN\\\",\\n                    jsvisible: !1,\\n                    apptest: \\\"data:image/png;base64,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\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_03_7MTElgXvJ3LynDcoplv42435",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 200497, \"end_offset\": 270193}, \"_best_guess_score\": -27, \"name\": \"9ed6\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 200497, \"end_offset\": 270193, \"code\": \"\\\"9ed6\\\": function(t, e, r) {\\n        \\\"use strict\\\";\\n        r.r(e);\\n        var n = [function() {\\n            var t = this._self._c;\\n            return t(\\\"div\\\", {\\n                staticClass: \\\"hcb_conten_img\\\"\\n            }, [t(\\\"img\\\", {\\n                staticStyle: {\\n                    width: \\\"100%\\\"\\n                },\\n                attrs: {\\n                    src: r(\\\"07a6\\\"),\\n                    margin: \\\"\\\"\\n                }\\n            })])\\n        }\\n        ]\\n          , o = (r(\\\"b54a\\\"),\\n        r(\\\"6762\\\"),\\n        r(\\\"2fdb\\\"),\\n        {\\n            data: function() {\\n                return {\\n                    visible: !1,\\n                    envParam: \\\"YN\\\",\\n                    jsvisible: !1,\\n                    apptest: \\\"data:image/png;base64,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\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me look at the candidate seed nodes and also check the exact boundaries of function `n` (the sm32 function)."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_00_Qy7HSNEFw4zLw8UvsgjT9280",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ca29fba7bd4194b1"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_XXx1BT9MvmYYWQyFMsEV1092",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "dde450c5d71f3548"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_aJSzwCGFHcpDKWHEIjuA0993",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "dc6dc04bc91881f1"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_03_FH2IUDKNFmaXStcYwnw24613",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "1d1a73944244e43f"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_Qy7HSNEFw4zLw8UvsgjT9280",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56698, \"end_offset\": 58792}, \"_best_guess_score\": 0, \"name\": \"(anon)\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56698, \"end_offset\": 58792, \"code\": \"function(e) {\\n            var n = r(\\\"c532\\\")\\n              , o = r(\\\"c8af\\\")\\n              , i = {\\n                \\\"Content-Type\\\": \\\"application/x-www-form-urlencoded\\\"\\n            };\\n            function s(t, e) {\\n                !n.isUndefined(t) && n.isUndefined(t[\\\"Content-Type\\\"]) && (t[\\\"Content-Type\\\"] = e)\\n            }\\n            var a, c = {\\n                adapter: ((\\\"undefined\\\" != typeof XMLHttpRequest || void 0 !== e && \\\"[object process]\\\" === Object.prototype.toString.call(e)) && (a = r(\\\"b50d\\\")),\\n                a),\\n                transformRequest: [function(t, e) {\\n                    return o(e, \\\"Accept\\\"),\\n                    o(e, \\\"Content-Type\\\"),\\n                    n.isFormData(t) || n.isArrayBuffer(t) || n.isBuffer(t) || n.isStream(t) || n.isFile(t) || n.isBlob(t) ? t : n.isArrayBufferView(t) ? t.buffer : n.isURLSearchParams(t) ? (s(e, \\\"application/x-www-form-urlencoded;charset=utf-8\\\"),\\n                    t.toString()) : n.isObject(t) ? (s(e, \\\"application/json;charset=utf-8\\\"),\\n                    JSON.stringify(t)) : t\\n                }\\n                ],\\n                transformResponse: [function(t) {\\n                    if (\\\"string\\\" == typeof t)\\n                        try {\\n                            t = JSON.parse(t)\\n                        } catch (t) {}\\n                    return t\\n                }\\n                ],\\n                timeout: 0,\\n                xsrfCookieName: \\\"XSRF-TOKEN\\\",\\n                xsrfHeaderName: \\\"X-XSRF-TOKEN\\\",\\n                maxContentLength: -1,\\n                validateStatus: function(t) {\\n                    return t >= 200 && t < 300\\n                }\\n            };\\n            c.headers = {\\n                common: {\\n                    Accept: \\\"application/json, text/plain, */*\\\"\\n                }\\n            },\\n            n.forEach([\\\"delete\\\", \\\"get\\\", \\\"head\\\"], (function(t) {\\n                c.headers[t] = {}\\n            }\\n            )),\\n            n.forEach([\\\"post\\\", \\\"put\\\", \\\"patch\\\"], (function(t) {\\n                c.headers[t] = n.merge(i)\\n            }\\n            )),\\n            t.exports = c\\n        }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_XXx1BT9MvmYYWQyFMsEV1092",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56647, \"end_offset\": 58830}, \"_best_guess_score\": -1, \"name\": \"2444\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56647, \"end_offset\": 58830, \"code\": \"function(t, e, r) {\\n        \\\"use strict\\\";\\n        (function(e) {\\n            var n = r(\\\"c532\\\")\\n              , o = r(\\\"c8af\\\")\\n              , i = {\\n                \\\"Content-Type\\\": \\\"application/x-www-form-urlencoded\\\"\\n            };\\n            function s(t, e) {\\n                !n.isUndefined(t) && n.isUndefined(t[\\\"Content-Type\\\"]) && (t[\\\"Content-Type\\\"] = e)\\n            }\\n            var a, c = {\\n                adapter: ((\\\"undefined\\\" != typeof XMLHttpRequest || void 0 !== e && \\\"[object process]\\\" === Object.prototype.toString.call(e)) && (a = r(\\\"b50d\\\")),\\n                a),\\n                transformRequest: [function(t, e) {\\n                    return o(e, \\\"Accept\\\"),\\n                    o(e, \\\"Content-Type\\\"),\\n                    n.isFormData(t) || n.isArrayBuffer(t) || n.isBuffer(t) || n.isStream(t) || n.isFile(t) || n.isBlob(t) ? t : n.isArrayBufferView(t) ? t.buffer : n.isURLSearchParams(t) ? (s(e, \\\"application/x-www-form-urlencoded;charset=utf-8\\\"),\\n                    t.toString()) : n.isObject(t) ? (s(e, \\\"application/json;charset=utf-8\\\"),\\n                    JSON.stringify(t)) : t\\n                }\\n                ],\\n                transformResponse: [function(t) {\\n                    if (\\\"string\\\" == typeof t)\\n                        try {\\n                            t = JSON.parse(t)\\n                        } catch (t) {}\\n                    return t\\n                }\\n                ],\\n                timeout: 0,\\n                xsrfCookieName: \\\"XSRF-TOKEN\\\",\\n                xsrfHeaderName: \\\"X-XSRF-TOKEN\\\",\\n                maxContentLength: -1,\\n                validateStatus: function(t) {\\n                    return t >= 200 && t < 300\\n                }\\n            };\\n            c.headers = {\\n                common: {\\n                    Accept: \\\"application/json, text/plain, */*\\\"\\n                }\\n            },\\n            n.forEach([\\\"delete\\\", \\\"get\\\", \\\"head\\\"], (function(t) {\\n                c.headers[t] = {}\\n            }\\n            )),\\n            n.forEach([\\\"post\\\", \\\"put\\\", \\\"patch\\\"], (function(t) {\\n                c.headers[t] = n.merge(i)\\n            }\\n            )),\\n            t.exports = c\\n        }\\n        ).call(this, r(\\\"f28c\\\"))\\n    }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_aJSzwCGFHcpDKWHEIjuA0993",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56641, \"end_offset\": 58830}, \"_best_guess_score\": -2, \"name\": \"2444\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 56641, \"end_offset\": 58830, \"code\": \"2444: function(t, e, r) {\\n        \\\"use strict\\\";\\n        (function(e) {\\n            var n = r(\\\"c532\\\")\\n              , o = r(\\\"c8af\\\")\\n              , i = {\\n                \\\"Content-Type\\\": \\\"application/x-www-form-urlencoded\\\"\\n            };\\n            function s(t, e) {\\n                !n.isUndefined(t) && n.isUndefined(t[\\\"Content-Type\\\"]) && (t[\\\"Content-Type\\\"] = e)\\n            }\\n            var a, c = {\\n                adapter: ((\\\"undefined\\\" != typeof XMLHttpRequest || void 0 !== e && \\\"[object process]\\\" === Object.prototype.toString.call(e)) && (a = r(\\\"b50d\\\")),\\n                a),\\n                transformRequest: [function(t, e) {\\n                    return o(e, \\\"Accept\\\"),\\n                    o(e, \\\"Content-Type\\\"),\\n                    n.isFormData(t) || n.isArrayBuffer(t) || n.isBuffer(t) || n.isStream(t) || n.isFile(t) || n.isBlob(t) ? t : n.isArrayBufferView(t) ? t.buffer : n.isURLSearchParams(t) ? (s(e, \\\"application/x-www-form-urlencoded;charset=utf-8\\\"),\\n                    t.toString()) : n.isObject(t) ? (s(e, \\\"application/json;charset=utf-8\\\"),\\n                    JSON.stringify(t)) : t\\n                }\\n                ],\\n                transformResponse: [function(t) {\\n                    if (\\\"string\\\" == typeof t)\\n                        try {\\n                            t = JSON.parse(t)\\n                        } catch (t) {}\\n                    return t\\n                }\\n                ],\\n                timeout: 0,\\n                xsrfCookieName: \\\"XSRF-TOKEN\\\",\\n                xsrfHeaderName: \\\"X-XSRF-TOKEN\\\",\\n                maxContentLength: -1,\\n                validateStatus: function(t) {\\n                    return t >= 200 && t < 300\\n                }\\n            };\\n            c.headers = {\\n                common: {\\n                    Accept: \\\"application/json, text/plain, */*\\\"\\n                }\\n            },\\n            n.forEach([\\\"delete\\\", \\\"get\\\", \\\"head\\\"], (function(t) {\\n                c.headers[t] = {}\\n            }\\n            )),\\n            n.forEach([\\\"post\\\", \\\"put\\\", \\\"patch\\\"], (function(t) {\\n                c.headers[t] = n.merge(i)\\n            }\\n            )),\\n            t.exports = c\\n        }\\n        ).call(this, r(\\\"f28c\\\"))\\n    }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_03_FH2IUDKNFmaXStcYwnw24613",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 58842, \"end_offset\": 71567}, \"_best_guess_score\": -3, \"name\": \"2503\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 58842, \"end_offset\": 71567, \"code\": \"function(t, e, r) {\\n        \\\"use strict\\\";\\n        r.d(e, \\\"p\\\", (function() {\\n            return g\\n        }\\n        )),\\n        r.d(e, \\\"q\\\", (function() {\\n            return v\\n        }\\n        )),\\n        r.d(e, \\\"s\\\", (function() {\\n            return b\\n        }\\n        )),\\n        r.d(e, \\\"h\\\", (function() {\\n            return w\\n        }\\n        )),\\n        r.d(e, \\\"i\\\", (function() {\\n            return A\\n        }\\n        )),\\n        r.d(e, \\\"k\\\", (function() {\\n            return S\\n        }\\n        )),\\n        r.d(e, \\\"o\\\", (function() {\\n            return x\\n        }\\n        )),\\n        r.d(e, \\\"n\\\", (function() {\\n            return B\\n        }\\n        )),\\n        r.d(e, \\\"r\\\", (function() {\\n            return k\\n        }\\n        )),\\n        r.d(e, \\\"t\\\", (function() {\\n            return C\\n        }\\n        )),\\n        r.d(e, \\\"d\\\", (function() {\\n            return _\\n        }\\n        )),\\n        r.d(e, \\\"m\\\", (function() {\\n            return F\\n        }\\n        )),\\n        r.d(e, \\\"a\\\", (function() {\\n            return E\\n        }\\n        )),\\n        r.d(e, \\\"g\\\", (function() {\\n            return T\\n        }\\n        )),\\n        r.d(e, \\\"f\\\", (function() {\\n            return I\\n        }\\n        )),\\n        r.d(e, \\\"v\\\", (function() {\\n            return P\\n        }\\n        )),\\n        r.d(e, \\\"c\\\", (function() {\\n            return O\\n        }\\n        )),\\n        r.d(e, \\\"b\\\", (function() {\\n            return R\\n        }\\n        )),\\n        r.d(e, \\\"j\\\", (function() {\\n            return j\\n        }\\n        )),\\n        r.d(e, \\\"l\\\", (function() {\\n            return D\\n        }\\n        )),\\n        r.d(e, \\\"e\\\", (function() {\\n            return U\\n        }\\n        )),\\n        r.d(e, \\\"u\\\", (function() {\\n            return N\\n        }\\n        ));\\n        r(\\\"4917\\\"),\\n        r(\\\"3b2b\\\"),\\n        r(\\\"6762\\\"),\\n        r(\\\"cd17\\\");\\n        var n = r(\\\"ed3b\\\")\\n          , o = (r(\\\"3b18\\\"),\\n        r(\\\"f64c\\\"))\\n          , i = r(\\\"bc3a\\\")\\n          , s = r.n(i)\\n          , a = r(\\\"a18c\\\")\\n          , c = r(\\\"27ae\\\")\\n          , u = r(\\\"4328\\\")\\n          , f = r.n(u)\\n          , l = s.a.create({\\n            baseURL: \\\"https://lcgwypt-login.zmnyjk.com/\\\",\\n            withCredentials: !0,\\n            timeout: 1e4\\n        });\\n        l.interceptors.request.use((function(t) {\\n            if (-1 !== [\\\"/authentication/loginForm\\\", \\\"/v2/authentication/loginForm\\\", \\\"/authentication/smsLogin\\\", \\\"/v2/authentication/smsLogin\\\", \\\"authentication/yuxi\\\", \\\"/authentication/twoFactorLoginForm\\\"].indexOf(t.url)) {\\n                var e = c.Base64.encode(\\\"\\\".concat(\\\"7847639021266751499\\\", \\\":\\\").concat(\\\"58d5db3afdcf4fa3b45d9e109e0a5e58\\\"));\\n                t.headers.Authorization = \\\"Basic \\\".concat(e)\\n            } else {\\n                var r = y(\\\"bGNnd3lwdF9hdA\\\");\\n                t.headers.Authorization = \\\"bearer \\\".concat(r)\\n            }\\n            return t\\n        }\\n        ), (function(t) {\\n            return Promise.reject(t)\\n        }\\n        )),\\n        l.interceptors.response.use((function(t) {\\n            var e = t.data;\\n            switch (e.code) {\\n            case \\\"BIZ.TOKEN_EXPIRATION\\\":\\n                o.a.error({\\n                    content: e.msg\\n                }),\\n                setTimeout((function() {\\n                    a.a.push({\\n                        name: \\\"index\\\"\\n                    })\\n                }\\n                ), 1e3)\\n            }\\n            return e\\n        }\\n        ), (function(t) {\\n            var e = t.response;\\n            return e && 200 !== e.status ? o.a.error({\\n                content: m(e.status)\\n            }) : void 0 === e && n.a.error({\\n                title: \\\"\\u63d0\\u793a\\\",\\n                content: \\\"\\u7f51\\u7edc\\u597d\\u50cf\\u8d70\\u4e22\\u4e86\\uff0c\\u8bf7\\u68c0\\u67e5\\u7f51\\u7edc\\uff0c\\u7a0d\\u540e\\u91cd\\u8bd5\\u54e6\\u3002\\\",\\n                okText: \\\"\\u786e\\u8ba4\\\",\\n                centered: !0\\n            }),\\n            Promise.reject(t)\\n        }\\n        ));\\n        var p = s.a.create({\\n            baseURL: \\\"https://lcgwypt-perpcapi.zmnyjk.com\\\",\\n            withCredentials: !0,\\n            timeout: 1e4\\n        });\\n        p.interceptors.request.use((function(t) {\\n            if (-1 === [\\\"/v1/sm\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Looking more closely at function `n` inside the `193c` module - that's the sm32 function. Let me check its exact boundaries and also look at the other candidates."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_00_B9QlXxpXpuzZdDrVjDoM7916",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "12fc216e46546ca7"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_D7zXzRaWiZL5Tanfhq4Z1616",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "b3f83f69490d4975"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_Hll1c40Sa6J8o8l7785v1384",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "319d394832fc49e8"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_03_QmSezYzCfQJY4ZidiNY17486",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "3298eda5853d730c"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_B9QlXxpXpuzZdDrVjDoM7916",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 58836, \"end_offset\": 71567}, \"_best_guess_score\": -4, \"name\": \"2503\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 58836, \"end_offset\": 71567, \"code\": \"2503: function(t, e, r) {\\n        \\\"use strict\\\";\\n        r.d(e, \\\"p\\\", (function() {\\n            return g\\n        }\\n        )),\\n        r.d(e, \\\"q\\\", (function() {\\n            return v\\n        }\\n        )),\\n        r.d(e, \\\"s\\\", (function() {\\n            return b\\n        }\\n        )),\\n        r.d(e, \\\"h\\\", (function() {\\n            return w\\n        }\\n        )),\\n        r.d(e, \\\"i\\\", (function() {\\n            return A\\n        }\\n        )),\\n        r.d(e, \\\"k\\\", (function() {\\n            return S\\n        }\\n        )),\\n        r.d(e, \\\"o\\\", (function() {\\n            return x\\n        }\\n        )),\\n        r.d(e, \\\"n\\\", (function() {\\n            return B\\n        }\\n        )),\\n        r.d(e, \\\"r\\\", (function() {\\n            return k\\n        }\\n        )),\\n        r.d(e, \\\"t\\\", (function() {\\n            return C\\n        }\\n        )),\\n        r.d(e, \\\"d\\\", (function() {\\n            return _\\n        }\\n        )),\\n        r.d(e, \\\"m\\\", (function() {\\n            return F\\n        }\\n        )),\\n        r.d(e, \\\"a\\\", (function() {\\n            return E\\n        }\\n        )),\\n        r.d(e, \\\"g\\\", (function() {\\n            return T\\n        }\\n        )),\\n        r.d(e, \\\"f\\\", (function() {\\n            return I\\n        }\\n        )),\\n        r.d(e, \\\"v\\\", (function() {\\n            return P\\n        }\\n        )),\\n        r.d(e, \\\"c\\\", (function() {\\n            return O\\n        }\\n        )),\\n        r.d(e, \\\"b\\\", (function() {\\n            return R\\n        }\\n        )),\\n        r.d(e, \\\"j\\\", (function() {\\n            return j\\n        }\\n        )),\\n        r.d(e, \\\"l\\\", (function() {\\n            return D\\n        }\\n        )),\\n        r.d(e, \\\"e\\\", (function() {\\n            return U\\n        }\\n        )),\\n        r.d(e, \\\"u\\\", (function() {\\n            return N\\n        }\\n        ));\\n        r(\\\"4917\\\"),\\n        r(\\\"3b2b\\\"),\\n        r(\\\"6762\\\"),\\n        r(\\\"cd17\\\");\\n        var n = r(\\\"ed3b\\\")\\n          , o = (r(\\\"3b18\\\"),\\n        r(\\\"f64c\\\"))\\n          , i = r(\\\"bc3a\\\")\\n          , s = r.n(i)\\n          , a = r(\\\"a18c\\\")\\n          , c = r(\\\"27ae\\\")\\n          , u = r(\\\"4328\\\")\\n          , f = r.n(u)\\n          , l = s.a.create({\\n            baseURL: \\\"https://lcgwypt-login.zmnyjk.com/\\\",\\n            withCredentials: !0,\\n            timeout: 1e4\\n        });\\n        l.interceptors.request.use((function(t) {\\n            if (-1 !== [\\\"/authentication/loginForm\\\", \\\"/v2/authentication/loginForm\\\", \\\"/authentication/smsLogin\\\", \\\"/v2/authentication/smsLogin\\\", \\\"authentication/yuxi\\\", \\\"/authentication/twoFactorLoginForm\\\"].indexOf(t.url)) {\\n                var e = c.Base64.encode(\\\"\\\".concat(\\\"7847639021266751499\\\", \\\":\\\").concat(\\\"58d5db3afdcf4fa3b45d9e109e0a5e58\\\"));\\n                t.headers.Authorization = \\\"Basic \\\".concat(e)\\n            } else {\\n                var r = y(\\\"bGNnd3lwdF9hdA\\\");\\n                t.headers.Authorization = \\\"bearer \\\".concat(r)\\n            }\\n            return t\\n        }\\n        ), (function(t) {\\n            return Promise.reject(t)\\n        }\\n        )),\\n        l.interceptors.response.use((function(t) {\\n            var e = t.data;\\n            switch (e.code) {\\n            case \\\"BIZ.TOKEN_EXPIRATION\\\":\\n                o.a.error({\\n                    content: e.msg\\n                }),\\n                setTimeout((function() {\\n                    a.a.push({\\n                        name: \\\"index\\\"\\n                    })\\n                }\\n                ), 1e3)\\n            }\\n            return e\\n        }\\n        ), (function(t) {\\n            var e = t.response;\\n            return e && 200 !== e.status ? o.a.error({\\n                content: m(e.status)\\n            }) : void 0 === e && n.a.error({\\n                title: \\\"\\u63d0\\u793a\\\",\\n                content: \\\"\\u7f51\\u7edc\\u597d\\u50cf\\u8d70\\u4e22\\u4e86\\uff0c\\u8bf7\\u68c0\\u67e5\\u7f51\\u7edc\\uff0c\\u7a0d\\u540e\\u91cd\\u8bd5\\u54e6\\u3002\\\",\\n                okText: \\\"\\u786e\\u8ba4\\\",\\n                centered: !0\\n            }),\\n            Promise.reject(t)\\n        }\\n        ));\\n        var p = s.a.create({\\n            baseURL: \\\"https://lcgwypt-perpcapi.zmnyjk.com\\\",\\n            withCredentials: !0,\\n            timeout: 1e4\\n        });\\n        p.interceptors.request.use((function(t) {\\n            if (-1 === [\\\"\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_D7zXzRaWiZL5Tanfhq4Z1616",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 67476, \"end_offset\": 67634}, \"_best_guess_score\": -7, \"name\": \"g\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 67476, \"end_offset\": 67634, \"code\": \"function(t) {\\n            return l.post(\\\"/v2/authentication/loginForm\\\", t).then((function(t) {\\n                return t\\n            }\\n            ))\\n        }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_Hll1c40Sa6J8o8l7785v1384",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 227011, \"end_offset\": 234090}, \"_best_guess_score\": -12, \"name\": \"accountSubmit\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 227011, \"end_offset\": 234090, \"code\": \"function() {\\n                    var t = this;\\n                    this.accountLoginForm.validateFields((function(e, r) {\\n                        if (!e) {\\n                            var n, o = /012345|123456|234567|345678|456789/.test(r.password), i = /987654|876543|765432|654321|543210/.test(r.password), s = /(\\\\d)\\\\1{5}/.test(r.password);\\n                            n = /^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\\\-=\\\\[\\\\]{};':\\\"\\\\\\\\|,.<>\\\\/?]).{8,64}$/.test(r.password) && !o && !i && !s;\\n                            var a = new FormData;\\n\\n                            a.append(\\\"username\\\", Object(h.b)(r.username, h.a.sm2nokey)),\\n                            a.append(\\\"password\\\", Object(h.b)(r.password, h.a.sm32)),\\n                            a.append(\\\"captchaVerification\\\", t.captchaVerification.captchaVerification),\\n\\t\\t\\t\\t\\t\\t\\twindow.__fd = Array.from(a.entries());\\n\\t\\t\\t\\t\\t\\t\\twindow.__password = a.get(\\\"password\\\");\\n                            t.accountLoading = !0,\\n                            t.limitAccount.includes(r.username) ? (a.append(\\\"smsCaptcha\\\", r.captcha),\\n                            a.append(\\\"type\\\", 0),\\n                            Object(u.q)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n                                localStorage.setItem(\\\"logintoken-pro\\\", e.data.token),\\n                                p.a.set(\\\"complexity\\\", n ? 1 : 0, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"bGNnd3lwdF9hdA\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TOKEN\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TYPE\\\", \\\"UNIT\\\", {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_token\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_userid\\\", e.data.userid, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_modifypassword\\\", e.data.modifypassword, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                t.$message.success(\\\"\\u767b\\u5f55\\u6210\\u529f\\\", 1.5).then((function() {\\n                                    t.accountLoading = !1,\\n                                    t.$router.push({\\n                                        name: \\\"home\\\",\\n                                        params: {\\n                                            password: r.password\\n                                        }\\n                                    })\\n                                }\\n                                ))) : (t.accountAlt.disabled = !0,\\n                                t.accountLoading = !1,\\n                                t.accountAlt.charact = e.msg,\\n                                t.captchaVerificationVis = !1)\\n                            }\\n                            )).catch((function() {\\n                                t.codeLoading = !1\\n                            }\\n                            ))) : (t.$route.query.tripartiteId && a.append(\\\"tripartiteId\\\", t.$route.query.tripartiteId),\\n                            Object(u.p)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n \"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_03_QmSezYzCfQJY4ZidiNY17486",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 226996, \"end_offset\": 234090}, \"_best_guess_score\": -9, \"name\": \"accountSubmit\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 226996, \"end_offset\": 234090, \"code\": \"accountSubmit: function() {\\n                    var t = this;\\n                    this.accountLoginForm.validateFields((function(e, r) {\\n                        if (!e) {\\n                            var n, o = /012345|123456|234567|345678|456789/.test(r.password), i = /987654|876543|765432|654321|543210/.test(r.password), s = /(\\\\d)\\\\1{5}/.test(r.password);\\n                            n = /^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\\\-=\\\\[\\\\]{};':\\\"\\\\\\\\|,.<>\\\\/?]).{8,64}$/.test(r.password) && !o && !i && !s;\\n                            var a = new FormData;\\n\\n                            a.append(\\\"username\\\", Object(h.b)(r.username, h.a.sm2nokey)),\\n                            a.append(\\\"password\\\", Object(h.b)(r.password, h.a.sm32)),\\n                            a.append(\\\"captchaVerification\\\", t.captchaVerification.captchaVerification),\\n\\t\\t\\t\\t\\t\\t\\twindow.__fd = Array.from(a.entries());\\n\\t\\t\\t\\t\\t\\t\\twindow.__password = a.get(\\\"password\\\");\\n                            t.accountLoading = !0,\\n                            t.limitAccount.includes(r.username) ? (a.append(\\\"smsCaptcha\\\", r.captcha),\\n                            a.append(\\\"type\\\", 0),\\n                            Object(u.q)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.disabled = !1,\\n                                localStorage.setItem(\\\"logintoken-pro\\\", e.data.token),\\n                                p.a.set(\\\"complexity\\\", n ? 1 : 0, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"bGNnd3lwdF9hdA\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TOKEN\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_ASSESMENT_TYPE\\\", \\\"UNIT\\\", {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_token\\\", e.data.token, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_userid\\\", e.data.userid, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                p.a.set(\\\"_modifypassword\\\", e.data.modifypassword, {\\n                                    path: \\\"/\\\",\\n                                    domain: \\\".zmnyjk.com\\\"\\n                                }),\\n                                t.$message.success(\\\"\\u767b\\u5f55\\u6210\\u529f\\\", 1.5).then((function() {\\n                                    t.accountLoading = !1,\\n                                    t.$router.push({\\n                                        name: \\\"home\\\",\\n                                        params: {\\n                                            password: r.password\\n                                        }\\n                                    })\\n                                }\\n                                ))) : (t.accountAlt.disabled = !0,\\n                                t.accountLoading = !1,\\n                                t.accountAlt.charact = e.msg,\\n                                t.captchaVerificationVis = !1)\\n                            }\\n                            )).catch((function() {\\n                                t.codeLoading = !1\\n                            }\\n                            ))) : (t.$route.query.tripartiteId && a.append(\\\"tripartiteId\\\", t.$route.query.tripartiteId),\\n                            Object(u.p)(a).then((function(e) {\\n                                \\\"SUCCESS\\\" === e.code ? (t.accountAlt.d\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_DtPnoiyhoM6KY2aAeEh85875",
+     "name": "traverse_graph",
+     "input": {
+      "node": "260c17379f3b3fca",
+      "edge": "child"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_tseYDGANHekHvIrYpp0w0896",
+     "name": "traverse_graph",
+     "input": {
+      "node": "e92aedc8ce4ca7f2",
+      "edge": "child"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_DtPnoiyhoM6KY2aAeEh85875",
+     "content": "{\"neighbours\": [\"71be2707f4ec4721\", \"daa7db5e87cb1b7e\", \"b62d143601b07ba9\", \"bc176c665201da49\", \"e23bf7735012331a\", \"cc3732a7b77c95f9\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_tseYDGANHekHvIrYpp0w0896",
+     "content": "{\"neighbours\": [\"260c17379f3b3fca\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_aQWglu1vOrbwYnNBpbKv2889",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "71be2707f4ec4721"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_01_lZPgOBfJdlvOxmTEvZ5f8610",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "daa7db5e87cb1b7e"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_02_i01RBouUNlVFSMKS9HKr0646",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "b62d143601b07ba9"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_03_d3vPXO1dBFVFd0tjzXOZ3273",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "bc176c665201da49"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_aQWglu1vOrbwYnNBpbKv2889",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44894, \"end_offset\": 45112}, \"_best_guess_score\": -276, \"name\": \"n\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 44894, \"end_offset\": 45112, \"code\": \"function n(t) {\\n            return i((0,\\n            r(\\\"8060\\\").sm3)(t), \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\", 1)\\n        }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_01_lZPgOBfJdlvOxmTEvZ5f8610",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 45121, \"end_offset\": 45199}, \"_best_guess_score\": -262, \"name\": \"o\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 45121, \"end_offset\": 45199, \"code\": \"function o(t) {\\n            return (0,\\n            r(\\\"8060\\\").sm3)(t)\\n        }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_02_i01RBouUNlVFSMKS9HKr0646",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 45208, \"end_offset\": 45555}, \"_best_guess_score\": -70, \"name\": \"i\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 45208, \"end_offset\": 45555, \"code\": \"function i(t) {\\n            var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : \\\"04182b39fcaa3d111981de100d3742cceae4b94b662352591f2cc33a52d4fce716be9594c60c9c5221fe40751c51cf546ddd406e49c2d259e194f1bcfdf75e8d7a\\\"\\n              , n = r(\\\"8060\\\").sm2\\n              , o = n.doEncrypt(t, e, 1);\\n            return \\\"04\\\" + o\\n        }\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_03_d3vPXO1dBFVFd0tjzXOZ3273",
+     "content": "{\"_best_guess\": {\"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 45577, \"end_offset\": 45620}, \"_best_guess_score\": -3916, \"name\": \"(anon)\", \"file\": \"captures/js/chunk-858ed276.7bbb8c3f.js\", \"start_offset\": 45577, \"end_offset\": 45620, \"code\": \"function() {\\n            return a\\n        }\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_00_eqEe3q6mIrnhDko6bcxM1216",
+     "name": "traverse_graph",
+     "input": {
+      "node": "71be2707f4ec4721",
+      "edge": "parent"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_00_eqEe3q6mIrnhDko6bcxM1216",
+     "content": "{\"neighbours\": [\"260c17379f3b3fca\"]}"
+    }
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "name": "search_entity",
+   "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ]
+   }
+  },
+  {
+   "name": "traverse_graph",
+   "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     },
+     "edge": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node",
+     "edge"
+    ]
+   }
+  },
+  {
+   "name": "retrieve_entity",
+   "description": "Return the full source and location of a function node id.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node"
+    ]
+   }
+  },
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782225145.3336737
+}

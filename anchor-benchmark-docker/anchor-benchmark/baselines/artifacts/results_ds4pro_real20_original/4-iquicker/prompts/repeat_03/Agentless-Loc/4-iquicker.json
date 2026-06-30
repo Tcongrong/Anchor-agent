@@ -1,0 +1,16 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On the iQuicker login page, submitting the form sends a POST whose `password` field is not the raw password but an encoded token (e.g. the password 13819912565 is sent as MTM4MTk5MTI1NjU=). Locate the single complete function whose own body constructs that encoded value. Return exactly one JSON object (see answer_format). Do NOT return the login click handler that merely calls the encoder and assembles the request, the request-sending service (sink), or the inverse decoder. Only code under captures is in scope.  network_request POST /login password 13819912565 MTM4MTk5MTI1NjU=\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"MTM4MTk5MTI1NjU=\"}\n\nSuspicious functions:\n### 9a4b32a813709a42 (base64Encode)\n```js\nfunction base64Encode(toEncode) {\r\n\tvar out, i, len;\r\n\tvar c1, c2, c3;\r\n\tlen = toEncode.length;\r\n\ti = 0;\r\n\tout = \"\";\r\n\r\n\twhile (i < len) {\r\n\t\tc1 = toEncode.charCodeAt(i++) & 0xff;\r\n\r\n\t\tif (i == len) {\r\n\t\t\tout += base64EncodeChars.charAt(c1 >> 2);\r\n\t\t\tout += base64EncodeChars.charAt((c1 & 0x3) << 4);\r\n\t\t\tout += \"==\";\r\n\t\t\tbreak\r\n\t\t}\r\n\r\n\t\tc2 = toEncode.charCodeAt(i++);\r\n\r\n\t\tif (i == len) {\r\n\t\t\tout += base64EncodeChars.charAt(c1 >> 2);\r\n\t\t\tout += base64EncodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));\r\n\t\t\tout += base64EncodeChars.charAt((c2 & 0xF) << 2);\r\n\t\t\tout += \"=\";\r\n\t\t\tbreak\r\n\t\t}\r\n\r\n\t\tc3 = toEncode.charCodeAt(i++);\r\n\t\tout += base64EncodeChars.charAt(c1 >> 2);\r\n\t\tout += base64EncodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));\r\n\t\tout += base64EncodeChars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));\r\n\t\tout += base64EncodeChars.charAt(c3 & 0x3F)\r\n\t}\r\n\r\n\treturn out\r\n}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782249353.9877496
+}

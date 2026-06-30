@@ -1,0 +1,167 @@
+{
+  "case_id": "real13_kuwo_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "GET",
+      "url_contains": "/openapi/v1/www/search/searchKey",
+      "field": "reqId",
+      "plaintext_sample": "(none; generated)",
+      "value_sample": "8eb656f0-35a0-11f1-b1e8-b9604e7bb052"
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is the request interceptor (x) whose body generates a uuid and binds it to the request's reqId field (t.data.reqId = l()()). It is not requestKey (the search call-site that invokes the http wrapper) nor the uuid library itself (a reusable primitive). PLAN §8.14 rule 1: the field-binding interceptor outranks the generic uuid generator it calls.",
+  "primary_anchor": {
+    "answer_function": "x",
+    "source_function": "x",
+    "source_file": "h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+    "captured_file": "captures/h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+    "captured_span": {
+      "file": "captures/h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+      "start_line": 1,
+      "end_line": 1,
+      "start_column": 19379,
+      "end_column": 20128,
+      "start_offset": 19379,
+      "end_offset": 20128,
+      "sha256": "66a0d6de5d3bd39b346bc5b88c815d57cd82f5214d1ed8a81a2560bb6150defe",
+      "normalized_sha256": "66a0d6de5d3bd39b346bc5b88c815d57cd82f5214d1ed8a81a2560bb6150defe"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "The axios request interceptor: generates n = l()() (a v1 uuid) and assigns t.data.reqId = n (and plat/from/httpsStatus). This is where the observed reqId request parameter is produced and attached."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "x",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+      "captured_span": {
+        "file": "captures/h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 19379,
+        "end_column": 20128,
+        "start_offset": 19379,
+        "end_offset": 20128,
+        "sha256": "66a0d6de5d3bd39b346bc5b88c815d57cd82f5214d1ed8a81a2560bb6150defe",
+        "normalized_sha256": "66a0d6de5d3bd39b346bc5b88c815d57cd82f5214d1ed8a81a2560bb6150defe"
+      },
+      "why": "The axios request interceptor: generates n = l()() (a v1 uuid) and assigns t.data.reqId = n (and plat/from/httpsStatus). This is where the observed reqId request parameter is produced and attached.",
+      "answer_function": "x",
+      "source_function": "x"
+    },
+    {
+      "function": "requestKey",
+      "role": "Path/Wrapper",
+      "score": 0.2,
+      "source_file": "h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+      "captured_span": {
+        "file": "captures/h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 131568,
+        "end_column": 131850,
+        "start_offset": 131568,
+        "end_offset": 131850,
+        "sha256": "bee66c7eb9c7fb8f750b693b7944eeb7b00e3931f8ec3a9096e22cd4ac0c0190",
+        "normalized_sha256": "bee66c7eb9c7fb8f750b693b7944eeb7b00e3931f8ec3a9096e22cd4ac0c0190"
+      },
+      "why": "The search box handler that builds the search param and calls the http wrapper Object(o.a)(param); it triggers the request but does not itself generate reqId.",
+      "answer_function": "requestKey",
+      "source_function": "requestKey"
+    },
+    {
+      "function": "formatKey",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+      "captured_span": {
+        "file": "captures/h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+        "start_line": 1,
+        "end_line": 1,
+        "start_column": 131851,
+        "end_column": 132176,
+        "start_offset": 131851,
+        "end_offset": 132176,
+        "sha256": "3aee591829e461a146646ef14d637f2e9793dd591721dfaf2207d507d9aa7e98",
+        "normalized_sha256": "3aee591829e461a146646ef14d637f2e9793dd591721dfaf2207d507d9aa7e98"
+      },
+      "why": "Formats the search-suggestion results for display; not on the reqId generation path.",
+      "answer_function": "formatKey",
+      "source_function": "formatKey"
+    }
+  ],
+  "empty_roles": [],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The network sink / request-sending service emits an already constructed value and is not the constructor.",
+      "Thin forwarding wrappers and submit handlers that merely call the value constructor should not outrank the anchor.",
+      "Generic crypto/encoding primitives (md5/AES/RSA/SM/base64/uuid libraries) are Core utilities, below the field-binding anchor.",
+      "Same-request OTHER fields (a second encrypted parameter, signatures, fingerprints) are off-chain decoys for this observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention."
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to primary_anchor.captured_span (the field-binding/value-constructing function)."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to a target-specific helper nested below the anchor."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to a generic crypto/encoding primitive used by the construction path."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to a path-critical step, a forwarding wrapper or the submit handler."
+    },
+    {
+      "score": 0.1,
+      "matched_reason": "Span maps to a generic low-level helper (BigInt math, DOM read) on the upstream path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to an off-chain decoy / same-request other field, or cannot be uniquely mapped."
+    }
+  ]
+}

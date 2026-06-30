@@ -1,0 +1,328 @@
+function name() {
+  const left = [114, 101, 113].map((n) => String.fromCharCode(n));
+  const right = [95, 112, 105, 112, 101, 108, 105, 110, 101].map((n) => String.fromCharCode(n));
+  return left.concat(right).join('');
+}
+function actionName(ctx) {
+  const base = [114, 101, 113, 117, 101, 115, 116, 46, 112, 105, 112, 101, 108, 105, 110, 101];
+  return base.map((n) => String.fromCharCode(n)).join('');
+}
+function out(value, ctx) {
+  const payload = {};
+  Reflect.set(payload, 'action', actionName(ctx));
+  Reflect.set(payload, name(), value);
+  return payload;
+}
+function keyRing(ctx) {
+  const runtime = ctx.meta && ctx.meta.runtime ? ctx.meta.runtime : {};
+  const seed = (ctx.req.kind * 31 + ctx.req.lane * 7 + ctx.req.priority + (runtime.retryValue || 0) * 3 + (runtime.transformIndex || 0) * 11) & 255;
+  const base = [0x62, 0x67, 0x72].map((code, index) => String.fromCharCode(code + ((seed + index) % 5)));
+  return [
+    `${base[0]}${seed.toString(16)}`,
+    `${base[1]}${(seed ^ 0x55).toString(16)}`,
+    `${base[2]}${(seed ^ 0xaa).toString(16)}`
+  ];
+}
+function pick(ctx) {
+  const keys = keyRing(ctx);
+  const bag = Array.isArray(ctx[keys[0]]) ? ctx[keys[0]] : [];
+  const lane = (ctx[keys[1]] ^ ctx.machine ^ ctx[keys[2]]) & 7;
+  return bag[lane];
+}
+function altAction(index) {
+  const names = [
+    [114, 101, 113, 117, 101, 115, 116, 46, 105, 110, 115, 112, 101, 99, 116],
+    [114, 101, 113, 117, 101, 115, 116, 46, 97, 117, 100, 105, 116]
+  ];
+  return names[index].map((code) => String.fromCharCode(code)).join('');
+}
+function side(ctx) {
+  const target = pick(ctx);
+  const transport = keyRing(ctx);
+  const bag = Array.isArray(ctx[transport[0]]) ? ctx[transport[0]].filter((value) => value && value !== target) : [];
+  const labels = ['request_token', 'request_trace'];
+  labels.forEach((key, index) => {
+    const payload = {};
+    Reflect.set(payload, 'action', actionName({ req: { kind: index + 1 } }));
+    Reflect.set(payload, key, bag[(index + 1) % Math.max(1, bag.length)] || 'rp_AAAAAAAAAAAAAAAAAAAAAAAA');
+    console['log'](payload);
+  });
+  [0, 1].forEach((index) => {
+    const payload = {};
+    Reflect.set(payload, 'action', altAction(index));
+    Reflect.set(payload, name(), bag[index % Math.max(1, bag.length)] || 'rp_AAAAAAAAAAAAAAAAAAAAAAAA');
+    console['log'](payload);
+  });
+}
+function stage(payload) {
+  const pipe = [
+    (x) => ({ ...x }),
+    (x) => Object.assign({}, x),
+    (x) => Reflect.ownKeys(x).reduce((acc, key) => { acc[key] = x[key]; return acc; }, {})
+  ];
+  return pipe.reduce((acc, fn) => fn(acc), payload);
+}
+export function r(ctx) {
+  side(ctx);
+  const payload = stage(out(pick(ctx), ctx));
+  console['log'](payload);
+  const node = document.getElementById('pipelineStatus');
+  if (node) node.value = 'Emitted';
+  return payload;
+}
+const n0_0 = "request-header:n0.js:000";
+const n0_1 = "response-body:n0.js:001";
+const n0_2 = "middleware-pipe:n0.js:002";
+const n0_3 = "auth-token:n0.js:003";
+const n0_4 = "route-param:n0.js:004";
+const n0_5 = "query-string:n0.js:005";
+const n0_6 = "payload-field:n0.js:006";
+const n0_7 = "intercept-hook:n0.js:007";
+const n0_8 = "request-header:n0.js:008";
+const n0_9 = "response-body:n0.js:009";
+const n0_10 = "middleware-pipe:n0.js:010";
+const n0_11 = "auth-token:n0.js:011";
+const n0_12 = "route-param:n0.js:012";
+const n0_13 = "query-string:n0.js:013";
+const n0_14 = "payload-field:n0.js:014";
+const n0_15 = "intercept-hook:n0.js:015";
+const n0_16 = "request-header:n0.js:016";
+const n0_17 = "response-body:n0.js:017";
+const n0_18 = "middleware-pipe:n0.js:018";
+const n0_19 = "auth-token:n0.js:019";
+const n0_20 = "route-param:n0.js:020";
+const n0_21 = "query-string:n0.js:021";
+const n0_22 = "payload-field:n0.js:022";
+const n0_23 = "intercept-hook:n0.js:023";
+const n0_24 = "request-header:n0.js:024";
+const n0_25 = "response-body:n0.js:025";
+const n0_26 = "middleware-pipe:n0.js:026";
+const n0_27 = "auth-token:n0.js:027";
+const n0_28 = "route-param:n0.js:028";
+const n0_29 = "query-string:n0.js:029";
+const n0_30 = "payload-field:n0.js:030";
+const n0_31 = "intercept-hook:n0.js:031";
+const n0_32 = "request-header:n0.js:032";
+const n0_33 = "response-body:n0.js:033";
+const n0_34 = "middleware-pipe:n0.js:034";
+const n0_35 = "auth-token:n0.js:035";
+const n0_36 = "route-param:n0.js:036";
+const n0_37 = "query-string:n0.js:037";
+const n0_38 = "payload-field:n0.js:038";
+const n0_39 = "intercept-hook:n0.js:039";
+const n0_40 = "request-header:n0.js:040";
+const n0_41 = "response-body:n0.js:041";
+const n0_42 = "middleware-pipe:n0.js:042";
+const n0_43 = "auth-token:n0.js:043";
+const n0_44 = "route-param:n0.js:044";
+const n0_45 = "query-string:n0.js:045";
+const n0_46 = "payload-field:n0.js:046";
+const n0_47 = "intercept-hook:n0.js:047";
+const n0_48 = "request-header:n0.js:048";
+const n0_49 = "response-body:n0.js:049";
+const n0_50 = "middleware-pipe:n0.js:050";
+const n0_51 = "auth-token:n0.js:051";
+const n0_52 = "route-param:n0.js:052";
+const n0_53 = "query-string:n0.js:053";
+const n0_54 = "payload-field:n0.js:054";
+const n0_55 = "intercept-hook:n0.js:055";
+const n0_56 = "request-header:n0.js:056";
+const n0_57 = "response-body:n0.js:057";
+const n0_58 = "middleware-pipe:n0.js:058";
+const n0_59 = "auth-token:n0.js:059";
+const n0_60 = "route-param:n0.js:060";
+const n0_61 = "query-string:n0.js:061";
+const n0_62 = "payload-field:n0.js:062";
+const n0_63 = "intercept-hook:n0.js:063";
+const n0_64 = "request-header:n0.js:064";
+const n0_65 = "response-body:n0.js:065";
+const n0_66 = "middleware-pipe:n0.js:066";
+const n0_67 = "auth-token:n0.js:067";
+const n0_68 = "route-param:n0.js:068";
+const n0_69 = "query-string:n0.js:069";
+const n0_70 = "payload-field:n0.js:070";
+const n0_71 = "intercept-hook:n0.js:071";
+const n0_72 = "request-header:n0.js:072";
+const n0_73 = "response-body:n0.js:073";
+const n0_74 = "middleware-pipe:n0.js:074";
+const n0_75 = "auth-token:n0.js:075";
+const n0_76 = "route-param:n0.js:076";
+const n0_77 = "query-string:n0.js:077";
+const n0_78 = "payload-field:n0.js:078";
+const n0_79 = "intercept-hook:n0.js:079";
+const n0_80 = "request-header:n0.js:080";
+const n0_81 = "response-body:n0.js:081";
+const n0_82 = "middleware-pipe:n0.js:082";
+const n0_83 = "auth-token:n0.js:083";
+const n0_84 = "route-param:n0.js:084";
+const n0_85 = "query-string:n0.js:085";
+const n0_86 = "payload-field:n0.js:086";
+const n0_87 = "intercept-hook:n0.js:087";
+const n0_88 = "request-header:n0.js:088";
+const n0_89 = "response-body:n0.js:089";
+const n0_90 = "middleware-pipe:n0.js:090";
+const n0_91 = "auth-token:n0.js:091";
+const n0_92 = "route-param:n0.js:092";
+const n0_93 = "query-string:n0.js:093";
+const n0_94 = "payload-field:n0.js:094";
+const n0_95 = "intercept-hook:n0.js:095";
+const n0_96 = "request-header:n0.js:096";
+const n0_97 = "response-body:n0.js:097";
+const n0_98 = "middleware-pipe:n0.js:098";
+const n0_99 = "auth-token:n0.js:099";
+const n0_100 = "route-param:n0.js:100";
+const n0_101 = "query-string:n0.js:101";
+const n0_102 = "payload-field:n0.js:102";
+const n0_103 = "intercept-hook:n0.js:103";
+const n0_104 = "request-header:n0.js:104";
+const n0_105 = "response-body:n0.js:105";
+const n0_106 = "middleware-pipe:n0.js:106";
+const n0_107 = "auth-token:n0.js:107";
+const n0_108 = "route-param:n0.js:108";
+const n0_109 = "query-string:n0.js:109";
+const n0_110 = "payload-field:n0.js:110";
+const n0_111 = "intercept-hook:n0.js:111";
+const n0_112 = "request-header:n0.js:112";
+const n0_113 = "response-body:n0.js:113";
+const n0_114 = "middleware-pipe:n0.js:114";
+const n0_115 = "auth-token:n0.js:115";
+const n0_116 = "route-param:n0.js:116";
+const n0_117 = "query-string:n0.js:117";
+const n0_118 = "payload-field:n0.js:118";
+const n0_119 = "intercept-hook:n0.js:119";
+const n0_120 = "request-header:n0.js:120";
+const n0_121 = "response-body:n0.js:121";
+const n0_122 = "middleware-pipe:n0.js:122";
+const n0_123 = "auth-token:n0.js:123";
+const n0_124 = "route-param:n0.js:124";
+const n0_125 = "query-string:n0.js:125";
+const n0_126 = "payload-field:n0.js:126";
+const n0_127 = "intercept-hook:n0.js:127";
+const n0_128 = "request-header:n0.js:128";
+const n0_129 = "response-body:n0.js:129";
+const n0_130 = "middleware-pipe:n0.js:130";
+const n0_131 = "auth-token:n0.js:131";
+const n0_132 = "route-param:n0.js:132";
+const n0_133 = "query-string:n0.js:133";
+const n0_134 = "payload-field:n0.js:134";
+const n0_135 = "intercept-hook:n0.js:135";
+const n0_136 = "request-header:n0.js:136";
+const n0_137 = "response-body:n0.js:137";
+const n0_138 = "middleware-pipe:n0.js:138";
+const n0_139 = "auth-token:n0.js:139";
+const n0_140 = "route-param:n0.js:140";
+const n0_141 = "query-string:n0.js:141";
+const n0_142 = "payload-field:n0.js:142";
+const n0_143 = "intercept-hook:n0.js:143";
+const n0_144 = "request-header:n0.js:144";
+const n0_145 = "response-body:n0.js:145";
+const n0_146 = "middleware-pipe:n0.js:146";
+const n0_147 = "auth-token:n0.js:147";
+const n0_148 = "route-param:n0.js:148";
+const n0_149 = "query-string:n0.js:149";
+const n0_150 = "payload-field:n0.js:150";
+const n0_151 = "intercept-hook:n0.js:151";
+const n0_152 = "request-header:n0.js:152";
+const n0_153 = "response-body:n0.js:153";
+const n0_154 = "middleware-pipe:n0.js:154";
+const n0_155 = "auth-token:n0.js:155";
+const n0_156 = "route-param:n0.js:156";
+const n0_157 = "query-string:n0.js:157";
+const n0_158 = "payload-field:n0.js:158";
+const n0_159 = "intercept-hook:n0.js:159";
+const n0_160 = "request-header:n0.js:160";
+const n0_161 = "response-body:n0.js:161";
+const n0_162 = "middleware-pipe:n0.js:162";
+const n0_163 = "auth-token:n0.js:163";
+const n0_164 = "route-param:n0.js:164";
+const n0_165 = "query-string:n0.js:165";
+const n0_166 = "payload-field:n0.js:166";
+const n0_167 = "intercept-hook:n0.js:167";
+const n0_168 = "request-header:n0.js:168";
+const n0_169 = "response-body:n0.js:169";
+const n0_170 = "middleware-pipe:n0.js:170";
+const n0_171 = "auth-token:n0.js:171";
+const n0_172 = "route-param:n0.js:172";
+const n0_173 = "query-string:n0.js:173";
+const n0_174 = "payload-field:n0.js:174";
+const n0_175 = "intercept-hook:n0.js:175";
+const n0_176 = "request-header:n0.js:176";
+const n0_177 = "response-body:n0.js:177";
+const n0_178 = "middleware-pipe:n0.js:178";
+const n0_179 = "auth-token:n0.js:179";
+const n0_180 = "route-param:n0.js:180";
+const n0_181 = "query-string:n0.js:181";
+const n0_182 = "payload-field:n0.js:182";
+const n0_183 = "intercept-hook:n0.js:183";
+const n0_184 = "request-header:n0.js:184";
+const n0_185 = "response-body:n0.js:185";
+const n0_186 = "middleware-pipe:n0.js:186";
+const n0_187 = "auth-token:n0.js:187";
+const n0_188 = "route-param:n0.js:188";
+const n0_189 = "query-string:n0.js:189";
+const n0_190 = "payload-field:n0.js:190";
+const n0_191 = "intercept-hook:n0.js:191";
+const n0_192 = "request-header:n0.js:192";
+const n0_193 = "response-body:n0.js:193";
+const n0_194 = "middleware-pipe:n0.js:194";
+const n0_195 = "auth-token:n0.js:195";
+const n0_196 = "route-param:n0.js:196";
+const n0_197 = "query-string:n0.js:197";
+const n0_198 = "payload-field:n0.js:198";
+const n0_199 = "intercept-hook:n0.js:199";
+const n0_200 = "request-header:n0.js:200";
+const n0_201 = "response-body:n0.js:201";
+const n0_202 = "middleware-pipe:n0.js:202";
+const n0_203 = "auth-token:n0.js:203";
+const n0_204 = "route-param:n0.js:204";
+const n0_205 = "query-string:n0.js:205";
+const n0_206 = "payload-field:n0.js:206";
+const n0_207 = "intercept-hook:n0.js:207";
+const n0_208 = "request-header:n0.js:208";
+const n0_209 = "response-body:n0.js:209";
+const n0_210 = "middleware-pipe:n0.js:210";
+const n0_211 = "auth-token:n0.js:211";
+const n0_212 = "route-param:n0.js:212";
+const n0_213 = "query-string:n0.js:213";
+const n0_214 = "payload-field:n0.js:214";
+const n0_215 = "intercept-hook:n0.js:215";
+const n0_216 = "request-header:n0.js:216";
+const n0_217 = "response-body:n0.js:217";
+const n0_218 = "middleware-pipe:n0.js:218";
+const n0_219 = "auth-token:n0.js:219";
+const n0_220 = "route-param:n0.js:220";
+const n0_221 = "query-string:n0.js:221";
+const n0_222 = "payload-field:n0.js:222";
+const n0_223 = "intercept-hook:n0.js:223";
+const n0_224 = "request-header:n0.js:224";
+const n0_225 = "response-body:n0.js:225";
+const n0_226 = "middleware-pipe:n0.js:226";
+const n0_227 = "auth-token:n0.js:227";
+const n0_228 = "route-param:n0.js:228";
+const n0_229 = "query-string:n0.js:229";
+const n0_230 = "payload-field:n0.js:230";
+const n0_231 = "intercept-hook:n0.js:231";
+const n0_232 = "request-header:n0.js:232";
+const n0_233 = "response-body:n0.js:233";
+const n0_234 = "middleware-pipe:n0.js:234";
+const n0_235 = "auth-token:n0.js:235";
+const n0_236 = "route-param:n0.js:236";
+const n0_237 = "query-string:n0.js:237";
+const n0_238 = "payload-field:n0.js:238";
+const n0_239 = "intercept-hook:n0.js:239";
+const n0_240 = "request-header:n0.js:240";
+const n0_241 = "response-body:n0.js:241";
+const n0_242 = "middleware-pipe:n0.js:242";
+const n0_243 = "auth-token:n0.js:243";
+const n0_244 = "route-param:n0.js:244";
+const n0_245 = "query-string:n0.js:245";
+const n0_246 = "payload-field:n0.js:246";
+const n0_247 = "intercept-hook:n0.js:247";
+const n0_248 = "request-header:n0.js:248";
+const n0_249 = "response-body:n0.js:249";
+const n0_250 = "middleware-pipe:n0.js:250";
+const n0_251 = "auth-token:n0.js:251";
+const n0_252 = "route-param:n0.js:252";
+const n0_253 = "query-string:n0.js:253";
+const n0_254 = "payload-field:n0.js:254";
+const n0_255 = "intercept-hook:n0.js:255";

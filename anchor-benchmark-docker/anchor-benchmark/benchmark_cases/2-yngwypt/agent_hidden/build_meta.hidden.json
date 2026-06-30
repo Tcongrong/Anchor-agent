@@ -1,0 +1,115 @@
+{
+  "case_id": "real02_yngwypt_request_signature",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 6,
+    "captured_js_total_bytes": 2312105,
+    "anchor_bundle_lines": 10958,
+    "minified": true,
+    "minified_then_beautified_on_disk": true,
+    "bundler": "webpack (vue-cli)",
+    "obfuscation_level": 1,
+    "vendor_noise_level": "high",
+    "call_depth_estimate": 4,
+    "cross_file_anchor": false,
+    "same_request_decoy_fields": 1,
+    "notes": "sm-crypto (module 193c) wraps module 8060 (sm2/sm3). Password uses sm32 (n = sm2(sm3(x))); username uses sm2nokey (i) directly, so i is shared by both paths (not a clean username-only decoy). The anchor is the captured submit handler accountSubmit (the answer recorded in 1.json): it binds password->sm32 and username->sm2nokey via Object(h.b)(...) and writes both tokens into the POSTed FormData. It resolves cleanly via the AST locator (lines 5519-5642) and passes the brace-balance check (acorn parses its password-strength regex literals correctly), so it is a valid complete-function span. The value-construction chain it drives is graded as helpers: n (sm32) 0.7, i (sm2) 0.5, c (dispatcher) 0.2, o (sm3nokey sibling) 0."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "fill username",
+          "fill password",
+          "click login"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "POST",
+        "url_contains": "/login",
+        "field": "password",
+        "plaintext_sample": "13819912565",
+        "value_sample": "0436679559170009c0c7a7702fae527b... (sm32)"
+      }
+    },
+    "anchor_definition": "The login submit handler accountSubmit (captured as the 1.json answer): it binds the password to sm32 and the username to sm2nokey via the encrypt entry Object(h.b)(...) and writes the resulting tokens into the POSTed request. The sm32 function n (0.7), the sm2 helper i (0.5), the dispatcher c (0.2) and the sm3nokey sibling o (0) are graded below it."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "client_side_credential_sm2_sm3",
+    "subtype": "password via SM3-then-SM2 (sm32); username via SM2 (sm2nokey)",
+    "network_request_present": true,
+    "recomputable_offline": false,
+    "recompute_check": "SM2 encryption is randomized; not reproducible to a fixed value",
+    "near_categories": [
+      {
+        "category": "request_transformation",
+        "why_not": "A single credential field (password) is tokenized; this is a per-field token derivation."
+      },
+      {
+        "category": "state_encoding",
+        "why_not": "The value is keyed SM crypto of user input, not a UI-state encoding."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "Minified webpack bundle (single-letter functions n/i/o/c); the sm-crypto wrapper is one module among many."
+      ]
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "Password (sm32 -> n) and username (sm2nokey -> i) share the sm2 helper; n vs i vs c (dispatcher) are easy to confuse."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The dispatcher c selects the scheme by an EncryptType enum value; the actual algorithm is two modules deep (193c -> 8060)."
+      ]
+    }
+  },
+  "provenance": {
+    "source_url": "https://yngwypt.zmnyjk.com/#/",
+    "label_in_1json": "chunk-858ed276.7bbb8c3f.js:12:106634",
+    "label_is_stale": false,
+    "label_points_to": "the minified original (line 12); the on-disk file is beautified, so locate by content not by line:col",
+    "located_by": "content_search",
+    "anchor_locate_method": "ast"
+  },
+  "primary_anchor": {
+    "answer_function": "accountSubmit",
+    "source_function": "accountSubmit",
+    "source_file": "js/chunk-858ed276.7bbb8c3f.js",
+    "captured_file": "captures/js/chunk-858ed276.7bbb8c3f.js",
+    "captured_span": {
+      "start_line": 5519,
+      "end_line": 5642,
+      "start_offset": 226996,
+      "end_offset": 234090
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

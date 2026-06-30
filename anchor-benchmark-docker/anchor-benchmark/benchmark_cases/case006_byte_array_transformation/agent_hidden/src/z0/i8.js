@@ -1,0 +1,185 @@
+import { j9 } from "./j9.js";
+
+function routeMark(packet) {
+  const trace = Array.isArray(packet.trace) ? packet.trace.slice() : [];
+  const seed = (Number(packet.routeSeed || 0) + 2 * 31 + trace.length) >>> 0;
+  const lane = (seed ^ (2 * 97)) >>> 0;
+  trace.push({ stage: "i8", seed, lane });
+  return {
+    ...packet,
+    routeSeed: seed,
+    routeLane2: lane,
+    trace
+  };
+}
+
+function routeGuard(packet) {
+  const action = String(packet.actionName || "");
+  const accepted = action === "byte.pipe.commit";
+  document.documentElement.dataset.case006Route2 = accepted ? "1" : "0";
+  return accepted;
+}
+
+function routeDecorate(packet) {
+  const projection = Array.isArray(packet.projection) ? packet.projection.slice() : [];
+  projection.push(["r2", String((Number(packet.routeSeed || 0) + 2) % 997)]);
+  return { ...packet, projection };
+}
+
+export function i8(packet) {
+  const marked = routeDecorate(routeMark(packet));
+  if (!routeGuard(marked)) return marked;
+  return j9(marked);
+}
+const i8_070 = "batch-tag:i8.js:070";
+const i8_071 = "audit-line:i8.js:071";
+const i8_072 = "intake-row:i8.js:072";
+const i8_073 = "manifest-slot:i8.js:073";
+const i8_074 = "ledger-entry:i8.js:074";
+const i8_075 = "shard-label:i8.js:075";
+const i8_076 = "codec-field:i8.js:076";
+const i8_077 = "queue-item:i8.js:077";
+const i8_078 = "batch-tag:i8.js:078";
+const i8_079 = "audit-line:i8.js:079";
+const i8_080 = "intake-row:i8.js:080";
+const i8_081 = "manifest-slot:i8.js:081";
+const i8_082 = "ledger-entry:i8.js:082";
+const i8_083 = "shard-label:i8.js:083";
+const i8_084 = "codec-field:i8.js:084";
+const i8_085 = "queue-item:i8.js:085";
+const i8_086 = "batch-tag:i8.js:086";
+const i8_087 = "audit-line:i8.js:087";
+const i8_088 = "intake-row:i8.js:088";
+const i8_089 = "manifest-slot:i8.js:089";
+const i8_090 = "ledger-entry:i8.js:090";
+const i8_091 = "shard-label:i8.js:091";
+const i8_092 = "codec-field:i8.js:092";
+const i8_093 = "queue-item:i8.js:093";
+const i8_094 = "batch-tag:i8.js:094";
+const i8_095 = "audit-line:i8.js:095";
+const i8_096 = "intake-row:i8.js:096";
+const i8_097 = "manifest-slot:i8.js:097";
+const i8_098 = "ledger-entry:i8.js:098";
+const i8_099 = "shard-label:i8.js:099";
+const i8_100 = "codec-field:i8.js:100";
+const i8_101 = "queue-item:i8.js:101";
+const i8_102 = "batch-tag:i8.js:102";
+const i8_103 = "audit-line:i8.js:103";
+const i8_104 = "intake-row:i8.js:104";
+const i8_105 = "manifest-slot:i8.js:105";
+const i8_106 = "ledger-entry:i8.js:106";
+const i8_107 = "shard-label:i8.js:107";
+const i8_108 = "codec-field:i8.js:108";
+const i8_109 = "queue-item:i8.js:109";
+const i8_110 = "batch-tag:i8.js:110";
+const i8_111 = "audit-line:i8.js:111";
+const i8_112 = "intake-row:i8.js:112";
+const i8_113 = "manifest-slot:i8.js:113";
+const i8_114 = "ledger-entry:i8.js:114";
+const i8_115 = "shard-label:i8.js:115";
+const i8_116 = "codec-field:i8.js:116";
+const i8_117 = "queue-item:i8.js:117";
+const i8_118 = "batch-tag:i8.js:118";
+const i8_119 = "audit-line:i8.js:119";
+const i8_120 = "intake-row:i8.js:120";
+const i8_121 = "manifest-slot:i8.js:121";
+const i8_122 = "ledger-entry:i8.js:122";
+const i8_123 = "shard-label:i8.js:123";
+const i8_124 = "codec-field:i8.js:124";
+const i8_125 = "queue-item:i8.js:125";
+const i8_126 = "batch-tag:i8.js:126";
+const i8_127 = "audit-line:i8.js:127";
+const i8_128 = "intake-row:i8.js:128";
+const i8_129 = "manifest-slot:i8.js:129";
+const i8_130 = "ledger-entry:i8.js:130";
+const i8_131 = "shard-label:i8.js:131";
+const i8_132 = "codec-field:i8.js:132";
+const i8_133 = "queue-item:i8.js:133";
+const i8_134 = "batch-tag:i8.js:134";
+const i8_135 = "audit-line:i8.js:135";
+const i8_136 = "intake-row:i8.js:136";
+const i8_137 = "manifest-slot:i8.js:137";
+const i8_138 = "ledger-entry:i8.js:138";
+const i8_139 = "shard-label:i8.js:139";
+const i8_140 = "codec-field:i8.js:140";
+const i8_141 = "queue-item:i8.js:141";
+const i8_142 = "batch-tag:i8.js:142";
+const i8_143 = "audit-line:i8.js:143";
+const i8_144 = "intake-row:i8.js:144";
+const i8_145 = "manifest-slot:i8.js:145";
+const i8_146 = "ledger-entry:i8.js:146";
+const i8_147 = "shard-label:i8.js:147";
+const i8_148 = "codec-field:i8.js:148";
+const i8_149 = "queue-item:i8.js:149";
+const i8_150 = "batch-tag:i8.js:150";
+const i8_151 = "audit-line:i8.js:151";
+const i8_152 = "intake-row:i8.js:152";
+const i8_153 = "manifest-slot:i8.js:153";
+const i8_154 = "ledger-entry:i8.js:154";
+const i8_155 = "shard-label:i8.js:155";
+const i8_156 = "codec-field:i8.js:156";
+const i8_157 = "queue-item:i8.js:157";
+const i8_158 = "batch-tag:i8.js:158";
+const i8_159 = "audit-line:i8.js:159";
+const i8_160 = "intake-row:i8.js:160";
+const i8_161 = "manifest-slot:i8.js:161";
+const i8_162 = "ledger-entry:i8.js:162";
+const i8_163 = "shard-label:i8.js:163";
+const i8_164 = "codec-field:i8.js:164";
+const i8_165 = "queue-item:i8.js:165";
+const i8_166 = "batch-tag:i8.js:166";
+const i8_167 = "audit-line:i8.js:167";
+const i8_168 = "intake-row:i8.js:168";
+const i8_169 = "manifest-slot:i8.js:169";
+const i8_170 = "ledger-entry:i8.js:170";
+const i8_171 = "shard-label:i8.js:171";
+const i8_172 = "codec-field:i8.js:172";
+const i8_173 = "queue-item:i8.js:173";
+const i8_174 = "batch-tag:i8.js:174";
+const i8_175 = "audit-line:i8.js:175";
+const i8_176 = "intake-row:i8.js:176";
+const i8_177 = "manifest-slot:i8.js:177";
+const i8_178 = "ledger-entry:i8.js:178";
+const i8_179 = "shard-label:i8.js:179";
+const i8_180 = "codec-field:i8.js:180";
+const i8_181 = "queue-item:i8.js:181";
+const i8_182 = "batch-tag:i8.js:182";
+const i8_183 = "audit-line:i8.js:183";
+const i8_184 = "intake-row:i8.js:184";
+const i8_185 = "manifest-slot:i8.js:185";
+const i8_186 = "ledger-entry:i8.js:186";
+const i8_187 = "shard-label:i8.js:187";
+const i8_188 = "codec-field:i8.js:188";
+const i8_189 = "queue-item:i8.js:189";
+const i8_190 = "batch-tag:i8.js:190";
+const i8_191 = "audit-line:i8.js:191";
+const i8_192 = "intake-row:i8.js:192";
+const i8_193 = "manifest-slot:i8.js:193";
+const i8_194 = "ledger-entry:i8.js:194";
+const i8_195 = "shard-label:i8.js:195";
+const i8_196 = "codec-field:i8.js:196";
+const i8_197 = "queue-item:i8.js:197";
+const i8_198 = "batch-tag:i8.js:198";
+const i8_199 = "audit-line:i8.js:199";
+const i8_200 = "intake-row:i8.js:200";
+const i8_201 = "manifest-slot:i8.js:201";
+const i8_202 = "ledger-entry:i8.js:202";
+const i8_203 = "shard-label:i8.js:203";
+const i8_204 = "codec-field:i8.js:204";
+const i8_205 = "queue-item:i8.js:205";
+const i8_206 = "batch-tag:i8.js:206";
+const i8_207 = "audit-line:i8.js:207";
+const i8_208 = "intake-row:i8.js:208";
+const i8_209 = "manifest-slot:i8.js:209";
+const i8_210 = "ledger-entry:i8.js:210";
+const i8_211 = "shard-label:i8.js:211";
+const i8_212 = "codec-field:i8.js:212";
+const i8_213 = "queue-item:i8.js:213";
+const i8_214 = "batch-tag:i8.js:214";
+const i8_215 = "audit-line:i8.js:215";
+const i8_216 = "intake-row:i8.js:216";
+const i8_217 = "manifest-slot:i8.js:217";
+const i8_218 = "ledger-entry:i8.js:218";
+const i8_219 = "shard-label:i8.js:219";
+const i8_220 = "codec-field:i8.js:220";
+const i8_221 = "queue-item:i8.js:221";

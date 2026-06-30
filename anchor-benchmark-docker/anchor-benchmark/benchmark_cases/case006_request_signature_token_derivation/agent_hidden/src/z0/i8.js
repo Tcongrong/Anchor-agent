@@ -1,0 +1,185 @@
+import { j9 } from "./j9.js";
+
+function routeMark(packet) {
+  const trace = Array.isArray(packet.trace) ? packet.trace.slice() : [];
+  const seed = (Number(packet.routeSeed || 0) + 2 * 31 + trace.length) >>> 0;
+  const lane = (seed ^ (2 * 97)) >>> 0;
+  trace.push({ stage: "i8", seed, lane });
+  return {
+    ...packet,
+    routeSeed: seed,
+    routeLane2: lane,
+    trace
+  };
+}
+
+function routeGuard(packet) {
+  const action = String(packet.actionName || "");
+  const accepted = action === "vault.req.commit";
+  document.documentElement.dataset.case006Route2 = accepted ? "1" : "0";
+  return accepted;
+}
+
+function routeDecorate(packet) {
+  const projection = Array.isArray(packet.projection) ? packet.projection.slice() : [];
+  projection.push(["r2", String((Number(packet.routeSeed || 0) + 2) % 997)]);
+  return { ...packet, projection };
+}
+
+export function i8(packet) {
+  const marked = routeDecorate(routeMark(packet));
+  if (!routeGuard(marked)) return marked;
+  return j9(marked);
+}
+const i8_row_070 = Object.freeze({ id: 70, left: 87, right: 221, tag: "i8:070" });
+const i8_row_071 = Object.freeze({ id: 71, left: 88, right: 224, tag: "i8:071" });
+const i8_row_072 = Object.freeze({ id: 72, left: 89, right: 227, tag: "i8:072" });
+const i8_row_073 = Object.freeze({ id: 73, left: 90, right: 230, tag: "i8:073" });
+const i8_row_074 = Object.freeze({ id: 74, left: 91, right: 233, tag: "i8:074" });
+const i8_row_075 = Object.freeze({ id: 75, left: 92, right: 236, tag: "i8:075" });
+const i8_row_076 = Object.freeze({ id: 76, left: 93, right: 239, tag: "i8:076" });
+const i8_row_077 = Object.freeze({ id: 77, left: 94, right: 242, tag: "i8:077" });
+const i8_row_078 = Object.freeze({ id: 78, left: 95, right: 245, tag: "i8:078" });
+const i8_row_079 = Object.freeze({ id: 79, left: 96, right: 248, tag: "i8:079" });
+const i8_row_080 = Object.freeze({ id: 80, left: 97, right: 251, tag: "i8:080" });
+const i8_row_081 = Object.freeze({ id: 81, left: 98, right: 254, tag: "i8:081" });
+const i8_row_082 = Object.freeze({ id: 82, left: 99, right: 257, tag: "i8:082" });
+const i8_row_083 = Object.freeze({ id: 83, left: 100, right: 260, tag: "i8:083" });
+const i8_row_084 = Object.freeze({ id: 84, left: 101, right: 263, tag: "i8:084" });
+const i8_row_085 = Object.freeze({ id: 85, left: 102, right: 266, tag: "i8:085" });
+const i8_row_086 = Object.freeze({ id: 86, left: 103, right: 269, tag: "i8:086" });
+const i8_row_087 = Object.freeze({ id: 87, left: 104, right: 272, tag: "i8:087" });
+const i8_row_088 = Object.freeze({ id: 88, left: 105, right: 275, tag: "i8:088" });
+const i8_row_089 = Object.freeze({ id: 89, left: 106, right: 278, tag: "i8:089" });
+const i8_row_090 = Object.freeze({ id: 90, left: 107, right: 281, tag: "i8:090" });
+const i8_row_091 = Object.freeze({ id: 91, left: 108, right: 284, tag: "i8:091" });
+const i8_row_092 = Object.freeze({ id: 92, left: 109, right: 287, tag: "i8:092" });
+const i8_row_093 = Object.freeze({ id: 93, left: 110, right: 290, tag: "i8:093" });
+const i8_row_094 = Object.freeze({ id: 94, left: 111, right: 293, tag: "i8:094" });
+const i8_row_095 = Object.freeze({ id: 95, left: 112, right: 296, tag: "i8:095" });
+const i8_row_096 = Object.freeze({ id: 96, left: 113, right: 299, tag: "i8:096" });
+const i8_row_097 = Object.freeze({ id: 97, left: 114, right: 302, tag: "i8:097" });
+const i8_row_098 = Object.freeze({ id: 98, left: 115, right: 305, tag: "i8:098" });
+const i8_row_099 = Object.freeze({ id: 99, left: 116, right: 308, tag: "i8:099" });
+const i8_row_100 = Object.freeze({ id: 100, left: 117, right: 311, tag: "i8:100" });
+const i8_row_101 = Object.freeze({ id: 101, left: 118, right: 314, tag: "i8:101" });
+const i8_row_102 = Object.freeze({ id: 102, left: 119, right: 317, tag: "i8:102" });
+const i8_row_103 = Object.freeze({ id: 103, left: 120, right: 320, tag: "i8:103" });
+const i8_row_104 = Object.freeze({ id: 104, left: 121, right: 323, tag: "i8:104" });
+const i8_row_105 = Object.freeze({ id: 105, left: 122, right: 326, tag: "i8:105" });
+const i8_row_106 = Object.freeze({ id: 106, left: 123, right: 329, tag: "i8:106" });
+const i8_row_107 = Object.freeze({ id: 107, left: 124, right: 332, tag: "i8:107" });
+const i8_row_108 = Object.freeze({ id: 108, left: 125, right: 335, tag: "i8:108" });
+const i8_row_109 = Object.freeze({ id: 109, left: 126, right: 338, tag: "i8:109" });
+const i8_row_110 = Object.freeze({ id: 110, left: 127, right: 341, tag: "i8:110" });
+const i8_row_111 = Object.freeze({ id: 111, left: 128, right: 344, tag: "i8:111" });
+const i8_row_112 = Object.freeze({ id: 112, left: 129, right: 347, tag: "i8:112" });
+const i8_row_113 = Object.freeze({ id: 113, left: 130, right: 350, tag: "i8:113" });
+const i8_row_114 = Object.freeze({ id: 114, left: 131, right: 353, tag: "i8:114" });
+const i8_row_115 = Object.freeze({ id: 115, left: 132, right: 356, tag: "i8:115" });
+const i8_row_116 = Object.freeze({ id: 116, left: 133, right: 359, tag: "i8:116" });
+const i8_row_117 = Object.freeze({ id: 117, left: 134, right: 362, tag: "i8:117" });
+const i8_row_118 = Object.freeze({ id: 118, left: 135, right: 365, tag: "i8:118" });
+const i8_row_119 = Object.freeze({ id: 119, left: 136, right: 368, tag: "i8:119" });
+const i8_row_120 = Object.freeze({ id: 120, left: 137, right: 371, tag: "i8:120" });
+const i8_row_121 = Object.freeze({ id: 121, left: 138, right: 374, tag: "i8:121" });
+const i8_row_122 = Object.freeze({ id: 122, left: 139, right: 377, tag: "i8:122" });
+const i8_row_123 = Object.freeze({ id: 123, left: 140, right: 380, tag: "i8:123" });
+const i8_row_124 = Object.freeze({ id: 124, left: 141, right: 383, tag: "i8:124" });
+const i8_row_125 = Object.freeze({ id: 125, left: 142, right: 386, tag: "i8:125" });
+const i8_row_126 = Object.freeze({ id: 126, left: 143, right: 389, tag: "i8:126" });
+const i8_row_127 = Object.freeze({ id: 127, left: 144, right: 392, tag: "i8:127" });
+const i8_row_128 = Object.freeze({ id: 128, left: 145, right: 395, tag: "i8:128" });
+const i8_row_129 = Object.freeze({ id: 129, left: 146, right: 398, tag: "i8:129" });
+const i8_row_130 = Object.freeze({ id: 130, left: 147, right: 401, tag: "i8:130" });
+const i8_row_131 = Object.freeze({ id: 131, left: 148, right: 404, tag: "i8:131" });
+const i8_row_132 = Object.freeze({ id: 132, left: 149, right: 407, tag: "i8:132" });
+const i8_row_133 = Object.freeze({ id: 133, left: 150, right: 410, tag: "i8:133" });
+const i8_row_134 = Object.freeze({ id: 134, left: 151, right: 413, tag: "i8:134" });
+const i8_row_135 = Object.freeze({ id: 135, left: 152, right: 416, tag: "i8:135" });
+const i8_row_136 = Object.freeze({ id: 136, left: 153, right: 419, tag: "i8:136" });
+const i8_row_137 = Object.freeze({ id: 137, left: 154, right: 422, tag: "i8:137" });
+const i8_row_138 = Object.freeze({ id: 138, left: 155, right: 425, tag: "i8:138" });
+const i8_row_139 = Object.freeze({ id: 139, left: 156, right: 428, tag: "i8:139" });
+const i8_row_140 = Object.freeze({ id: 140, left: 157, right: 431, tag: "i8:140" });
+const i8_row_141 = Object.freeze({ id: 141, left: 158, right: 434, tag: "i8:141" });
+const i8_row_142 = Object.freeze({ id: 142, left: 159, right: 437, tag: "i8:142" });
+const i8_row_143 = Object.freeze({ id: 143, left: 160, right: 440, tag: "i8:143" });
+const i8_row_144 = Object.freeze({ id: 144, left: 161, right: 443, tag: "i8:144" });
+const i8_row_145 = Object.freeze({ id: 145, left: 162, right: 446, tag: "i8:145" });
+const i8_row_146 = Object.freeze({ id: 146, left: 163, right: 449, tag: "i8:146" });
+const i8_row_147 = Object.freeze({ id: 147, left: 164, right: 452, tag: "i8:147" });
+const i8_row_148 = Object.freeze({ id: 148, left: 165, right: 455, tag: "i8:148" });
+const i8_row_149 = Object.freeze({ id: 149, left: 166, right: 458, tag: "i8:149" });
+const i8_row_150 = Object.freeze({ id: 150, left: 167, right: 461, tag: "i8:150" });
+const i8_row_151 = Object.freeze({ id: 151, left: 168, right: 464, tag: "i8:151" });
+const i8_row_152 = Object.freeze({ id: 152, left: 169, right: 467, tag: "i8:152" });
+const i8_row_153 = Object.freeze({ id: 153, left: 170, right: 470, tag: "i8:153" });
+const i8_row_154 = Object.freeze({ id: 154, left: 171, right: 473, tag: "i8:154" });
+const i8_row_155 = Object.freeze({ id: 155, left: 172, right: 476, tag: "i8:155" });
+const i8_row_156 = Object.freeze({ id: 156, left: 173, right: 479, tag: "i8:156" });
+const i8_row_157 = Object.freeze({ id: 157, left: 174, right: 482, tag: "i8:157" });
+const i8_row_158 = Object.freeze({ id: 158, left: 175, right: 485, tag: "i8:158" });
+const i8_row_159 = Object.freeze({ id: 159, left: 176, right: 488, tag: "i8:159" });
+const i8_row_160 = Object.freeze({ id: 160, left: 177, right: 491, tag: "i8:160" });
+const i8_row_161 = Object.freeze({ id: 161, left: 178, right: 494, tag: "i8:161" });
+const i8_row_162 = Object.freeze({ id: 162, left: 179, right: 497, tag: "i8:162" });
+const i8_row_163 = Object.freeze({ id: 163, left: 180, right: 500, tag: "i8:163" });
+const i8_row_164 = Object.freeze({ id: 164, left: 181, right: 503, tag: "i8:164" });
+const i8_row_165 = Object.freeze({ id: 165, left: 182, right: 506, tag: "i8:165" });
+const i8_row_166 = Object.freeze({ id: 166, left: 183, right: 509, tag: "i8:166" });
+const i8_row_167 = Object.freeze({ id: 167, left: 184, right: 512, tag: "i8:167" });
+const i8_row_168 = Object.freeze({ id: 168, left: 185, right: 515, tag: "i8:168" });
+const i8_row_169 = Object.freeze({ id: 169, left: 186, right: 518, tag: "i8:169" });
+const i8_row_170 = Object.freeze({ id: 170, left: 187, right: 521, tag: "i8:170" });
+const i8_row_171 = Object.freeze({ id: 171, left: 188, right: 524, tag: "i8:171" });
+const i8_row_172 = Object.freeze({ id: 172, left: 189, right: 527, tag: "i8:172" });
+const i8_row_173 = Object.freeze({ id: 173, left: 190, right: 530, tag: "i8:173" });
+const i8_row_174 = Object.freeze({ id: 174, left: 191, right: 533, tag: "i8:174" });
+const i8_row_175 = Object.freeze({ id: 175, left: 192, right: 536, tag: "i8:175" });
+const i8_row_176 = Object.freeze({ id: 176, left: 193, right: 539, tag: "i8:176" });
+const i8_row_177 = Object.freeze({ id: 177, left: 194, right: 542, tag: "i8:177" });
+const i8_row_178 = Object.freeze({ id: 178, left: 195, right: 545, tag: "i8:178" });
+const i8_row_179 = Object.freeze({ id: 179, left: 196, right: 548, tag: "i8:179" });
+const i8_row_180 = Object.freeze({ id: 180, left: 197, right: 551, tag: "i8:180" });
+const i8_row_181 = Object.freeze({ id: 181, left: 198, right: 554, tag: "i8:181" });
+const i8_row_182 = Object.freeze({ id: 182, left: 199, right: 557, tag: "i8:182" });
+const i8_row_183 = Object.freeze({ id: 183, left: 200, right: 560, tag: "i8:183" });
+const i8_row_184 = Object.freeze({ id: 184, left: 201, right: 563, tag: "i8:184" });
+const i8_row_185 = Object.freeze({ id: 185, left: 202, right: 566, tag: "i8:185" });
+const i8_row_186 = Object.freeze({ id: 186, left: 203, right: 569, tag: "i8:186" });
+const i8_row_187 = Object.freeze({ id: 187, left: 204, right: 572, tag: "i8:187" });
+const i8_row_188 = Object.freeze({ id: 188, left: 205, right: 575, tag: "i8:188" });
+const i8_row_189 = Object.freeze({ id: 189, left: 206, right: 578, tag: "i8:189" });
+const i8_row_190 = Object.freeze({ id: 190, left: 207, right: 581, tag: "i8:190" });
+const i8_row_191 = Object.freeze({ id: 191, left: 208, right: 584, tag: "i8:191" });
+const i8_row_192 = Object.freeze({ id: 192, left: 209, right: 587, tag: "i8:192" });
+const i8_row_193 = Object.freeze({ id: 193, left: 210, right: 590, tag: "i8:193" });
+const i8_row_194 = Object.freeze({ id: 194, left: 211, right: 593, tag: "i8:194" });
+const i8_row_195 = Object.freeze({ id: 195, left: 212, right: 596, tag: "i8:195" });
+const i8_row_196 = Object.freeze({ id: 196, left: 213, right: 599, tag: "i8:196" });
+const i8_row_197 = Object.freeze({ id: 197, left: 214, right: 602, tag: "i8:197" });
+const i8_row_198 = Object.freeze({ id: 198, left: 215, right: 605, tag: "i8:198" });
+const i8_row_199 = Object.freeze({ id: 199, left: 216, right: 608, tag: "i8:199" });
+const i8_row_200 = Object.freeze({ id: 200, left: 217, right: 611, tag: "i8:200" });
+const i8_row_201 = Object.freeze({ id: 201, left: 218, right: 614, tag: "i8:201" });
+const i8_row_202 = Object.freeze({ id: 202, left: 219, right: 617, tag: "i8:202" });
+const i8_row_203 = Object.freeze({ id: 203, left: 220, right: 620, tag: "i8:203" });
+const i8_row_204 = Object.freeze({ id: 204, left: 221, right: 623, tag: "i8:204" });
+const i8_row_205 = Object.freeze({ id: 205, left: 222, right: 626, tag: "i8:205" });
+const i8_row_206 = Object.freeze({ id: 206, left: 223, right: 629, tag: "i8:206" });
+const i8_row_207 = Object.freeze({ id: 207, left: 224, right: 632, tag: "i8:207" });
+const i8_row_208 = Object.freeze({ id: 208, left: 225, right: 635, tag: "i8:208" });
+const i8_row_209 = Object.freeze({ id: 209, left: 226, right: 638, tag: "i8:209" });
+const i8_row_210 = Object.freeze({ id: 210, left: 227, right: 641, tag: "i8:210" });
+const i8_row_211 = Object.freeze({ id: 211, left: 228, right: 644, tag: "i8:211" });
+const i8_row_212 = Object.freeze({ id: 212, left: 229, right: 647, tag: "i8:212" });
+const i8_row_213 = Object.freeze({ id: 213, left: 230, right: 650, tag: "i8:213" });
+const i8_row_214 = Object.freeze({ id: 214, left: 231, right: 653, tag: "i8:214" });
+const i8_row_215 = Object.freeze({ id: 215, left: 232, right: 656, tag: "i8:215" });
+const i8_row_216 = Object.freeze({ id: 216, left: 233, right: 659, tag: "i8:216" });
+const i8_row_217 = Object.freeze({ id: 217, left: 234, right: 662, tag: "i8:217" });
+const i8_row_218 = Object.freeze({ id: 218, left: 235, right: 665, tag: "i8:218" });
+const i8_row_219 = Object.freeze({ id: 219, left: 236, right: 668, tag: "i8:219" });
+const i8_row_220 = Object.freeze({ id: 220, left: 237, right: 671, tag: "i8:220" });
+const i8_row_221 = Object.freeze({ id: 221, left: 238, right: 674, tag: "i8:221" });

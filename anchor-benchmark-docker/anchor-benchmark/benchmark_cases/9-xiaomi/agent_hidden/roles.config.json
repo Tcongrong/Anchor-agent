@@ -1,0 +1,38 @@
+{
+  "case_id": "real09_xiaomi_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the account-login params flow (the regenerator function recorded as the 1.json answer, label 2395...:1:14164): its case-10 lazy-imports the crypto module, encrypts the username via k=m({user:d}) (m = f.encryptAes -> Q) and binds w=k.encryptedParams into the login request it posts (it also builds the password hash via the inner _). Graded below it, cross-file in the crypto chunk: Q (the AES encryptor that actually produces encryptedParams, 0.7) and encryptAes (the thin accessor exposing Q, 0.2); B (the sibling RSA encryptor) is off-chain (0). NOTE: the anchor (2395 chunk) and its helpers (crypto chunk) live in different files; each role is graded in its own file. The 2395 chunk is minified, so the anchor is pinned by explicit offsets.",
+  "anchor": {
+    "file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+    "start_offset": 13946,
+    "end_offset": 14945,
+    "answer_function": "loginParamsFlow",
+    "source_function": "accountLoginParamsFlow",
+    "source_file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js",
+    "why": "The account-login regenerator flow captured as the 1.json answer: case-10 lazy-imports the crypto chunk, computes the username encryptedParams via k=m({user:d}) (m = encryptAes -> Q) and binds w=k.encryptedParams into the request params it posts. The field-binding for the observed username encryptedParams lives here; the AES math itself is delegated cross-file to Q."
+  },
+  "roles": [
+    {
+      "file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto.17efe504.chunk.js",
+      "locator": "function Q(",
+      "role": "Nested target-specific helper",
+      "answer_function": "Q",
+      "source_function": "encryptAes",
+      "why": "Q: the AES encryptor in the crypto chunk — it RSA-wraps a random AES key with the site public key and AES-encrypts each field, returning {EUI, encryptedParams}. The dedicated value constructor the flow reaches via encryptAes; a nested target-specific helper (cross-file from the anchor)."
+    },
+    {
+      "file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto.17efe504.chunk.js",
+      "locator": "encryptAes:function()",
+      "role": "Path/Wrapper",
+      "answer_function": "encryptAes",
+      "why": "encryptAes:function(){return Q}: the thin accessor exposing the AES encryptor; a getter on the path, not the encryptor itself."
+    },
+    {
+      "file": "cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto.17efe504.chunk.js",
+      "locator": "function B(",
+      "role": "Off-chain",
+      "answer_function": "B",
+      "why": "The sibling RSA encryptor (exposed via rsa()); builds encryptedParams by RSA, not the AES path used for the username. A same-module decoy."
+    }
+  ]
+}

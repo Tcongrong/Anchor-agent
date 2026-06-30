@@ -1,0 +1,29 @@
+{
+  "case_id": "real03_weidian_request_transformation",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the `encrypt` method that each login payload field passes through: it RSA-encrypts a value via the JSEncrypt instance bound with the site's public key (v.encrypt). It is not the login regenerator that assembles the payload (call site) nor JSEncrypt.prototype.encrypt (the generic RSA primitive). PLAN §8.14 rule 2: the dedicated field encryptor outranks the call site and the reusable primitive.",
+  "anchor": {
+    "file": "assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js",
+    "locator": "v.encrypt(e+\"\")",
+    "answer_function": "encrypt",
+    "source_function": "encrypt",
+    "source_file": "assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js",
+    "why": "encrypt(e){return e?v.encrypt(e+\"\"):\"\"} — the method through which phone, countryCode and password are each RSA-encrypted with the page's bound JSEncrypt key before being placed in the login payload."
+  },
+  "roles": [
+    {
+      "file": "assets.geilicdn.com/weidian-pc/login/6.5.71/index/index.js",
+      "locator": "t.encrypt(t.ruleForm.telephone)",
+      "role": "Path/Wrapper",
+      "answer_function": "login",
+      "why": "The regenerator-compiled login method body: assembles r = {phone: t.encrypt(...), countryCode: t.encrypt(...), password: t.encrypt(...), ...} and POSTs it. Call site that invokes the encrypt anchor per field."
+    },
+    {
+      "file": "assets.geilicdn.com/v-components/cdn/jsencrypt/index.min.js",
+      "locator": "hex2b64(this.getKey().encrypt(a)",
+      "role": "Core utility",
+      "answer_function": "JSEncrypt.prototype.encrypt",
+      "why": "The generic JSEncrypt RSA primitive: hex2b64(this.getKey().encrypt(a)). Reusable library routine invoked by the page's encrypt method; not bound to this login's payload."
+    }
+  ]
+}

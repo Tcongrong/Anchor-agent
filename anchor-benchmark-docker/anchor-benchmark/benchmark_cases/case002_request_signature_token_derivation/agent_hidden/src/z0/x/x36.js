@@ -1,0 +1,179 @@
+import { u } from "../k7/q3/t9.js";
+
+const cfg = {
+  slot: 37,
+  salt: "d:36:catalog-local",
+  order: [0, 3, 6, 1, 4, 7, 2, 5],
+  sep: "\u2062",
+  shift: 12,
+  mask: 3507073702,
+  branch: 15
+};
+
+function makeTuple(ctx) {
+  const tuple = ctx && Array.isArray(ctx.tuple) ? ctx.tuple : [];
+  if (tuple.length) return tuple;
+  return [
+    { k: "q", i: 0, v: "shadow jacket", y: "shadow", n: 13 },
+    { k: "s", i: 1, v: "price_desc", y: "sort", n: 10 },
+    { k: "o", i: 2, v: "1", y: "one", n: 1 },
+    { k: "n", i: 3, v: "northline.catalog.search", y: "ns", n: 24 },
+    { k: "v", i: 4, v: "v2", y: "v2", n: 2 },
+    { k: "l", i: 5, v: "13:10:1", y: "lens", n: 7 },
+    { k: "c", i: 6, v: "catalog.search", y: "cmd", n: 14 },
+    { k: "t", i: 7, v: "shadow,jacket", y: "tok", n: 13 }
+  ];
+}
+
+function mutate(value, ctx) {
+  const tail = ((cfg.slot + (ctx.index || 0) + 36) % 36).toString(36);
+  return value.slice(0, -1) + tail;
+}
+
+export function d(ctx = {}) {
+  const fn = u(cfg);
+  const value = fn(makeTuple(ctx), {
+    machine: ((ctx.machine || 0) ^ cfg.mask ^ (ctx.vendorScore || 0)) >>> 0,
+    route: ctx.route || [0, 1],
+    runtimeTicket: (ctx.runtimeTicket || 0) ^ 137,
+    salt: cfg.salt
+  });
+  return mutate(value, ctx);
+}
+const x36_0 = "viewer-pane:x36.js:000";
+const x36_1 = "text-layer:x36.js:001";
+const x36_2 = "outline-row:x36.js:002";
+const x36_3 = "toolbar-slot:x36.js:003";
+const x36_4 = "page-label:x36.js:004";
+const x36_5 = "form-field:x36.js:005";
+const x36_6 = "history-entry:x36.js:006";
+const x36_7 = "thumbnail-item:x36.js:007";
+const x36_8 = "viewer-pane:x36.js:008";
+const x36_9 = "text-layer:x36.js:009";
+const x36_10 = "outline-row:x36.js:010";
+const x36_11 = "toolbar-slot:x36.js:011";
+const x36_12 = "page-label:x36.js:012";
+const x36_13 = "form-field:x36.js:013";
+const x36_14 = "history-entry:x36.js:014";
+const x36_15 = "thumbnail-item:x36.js:015";
+const x36_16 = "viewer-pane:x36.js:016";
+const x36_17 = "text-layer:x36.js:017";
+const x36_18 = "outline-row:x36.js:018";
+const x36_19 = "toolbar-slot:x36.js:019";
+const x36_20 = "page-label:x36.js:020";
+const x36_21 = "form-field:x36.js:021";
+const x36_22 = "history-entry:x36.js:022";
+const x36_23 = "thumbnail-item:x36.js:023";
+const x36_24 = "viewer-pane:x36.js:024";
+const x36_25 = "text-layer:x36.js:025";
+const x36_26 = "outline-row:x36.js:026";
+const x36_27 = "toolbar-slot:x36.js:027";
+const x36_28 = "page-label:x36.js:028";
+const x36_29 = "form-field:x36.js:029";
+const x36_30 = "history-entry:x36.js:030";
+const x36_31 = "thumbnail-item:x36.js:031";
+const x36_32 = "viewer-pane:x36.js:032";
+const x36_33 = "text-layer:x36.js:033";
+const x36_34 = "outline-row:x36.js:034";
+const x36_35 = "toolbar-slot:x36.js:035";
+const x36_36 = "page-label:x36.js:036";
+const x36_37 = "form-field:x36.js:037";
+const x36_38 = "history-entry:x36.js:038";
+const x36_39 = "thumbnail-item:x36.js:039";
+const x36_40 = "viewer-pane:x36.js:040";
+const x36_41 = "text-layer:x36.js:041";
+const x36_42 = "outline-row:x36.js:042";
+const x36_43 = "toolbar-slot:x36.js:043";
+const x36_44 = "page-label:x36.js:044";
+const x36_45 = "form-field:x36.js:045";
+const x36_46 = "history-entry:x36.js:046";
+const x36_47 = "thumbnail-item:x36.js:047";
+const x36_48 = "viewer-pane:x36.js:048";
+const x36_49 = "text-layer:x36.js:049";
+const x36_50 = "outline-row:x36.js:050";
+const x36_51 = "toolbar-slot:x36.js:051";
+const x36_52 = "page-label:x36.js:052";
+const x36_53 = "form-field:x36.js:053";
+const x36_54 = "history-entry:x36.js:054";
+const x36_55 = "thumbnail-item:x36.js:055";
+const x36_56 = "viewer-pane:x36.js:056";
+const x36_57 = "text-layer:x36.js:057";
+const x36_58 = "outline-row:x36.js:058";
+const x36_59 = "toolbar-slot:x36.js:059";
+const x36_60 = "page-label:x36.js:060";
+const x36_61 = "form-field:x36.js:061";
+const x36_62 = "history-entry:x36.js:062";
+const x36_63 = "thumbnail-item:x36.js:063";
+const x36_64 = "viewer-pane:x36.js:064";
+const x36_65 = "text-layer:x36.js:065";
+const x36_66 = "outline-row:x36.js:066";
+const x36_67 = "toolbar-slot:x36.js:067";
+const x36_68 = "page-label:x36.js:068";
+const x36_69 = "form-field:x36.js:069";
+const x36_70 = "history-entry:x36.js:070";
+const x36_71 = "thumbnail-item:x36.js:071";
+const x36_72 = "viewer-pane:x36.js:072";
+const x36_73 = "text-layer:x36.js:073";
+const x36_74 = "outline-row:x36.js:074";
+const x36_75 = "toolbar-slot:x36.js:075";
+const x36_76 = "page-label:x36.js:076";
+const x36_77 = "form-field:x36.js:077";
+const x36_78 = "history-entry:x36.js:078";
+const x36_79 = "thumbnail-item:x36.js:079";
+const x36_80 = "viewer-pane:x36.js:080";
+const x36_81 = "text-layer:x36.js:081";
+const x36_82 = "outline-row:x36.js:082";
+const x36_83 = "toolbar-slot:x36.js:083";
+const x36_84 = "page-label:x36.js:084";
+const x36_85 = "form-field:x36.js:085";
+const x36_86 = "history-entry:x36.js:086";
+const x36_87 = "thumbnail-item:x36.js:087";
+const x36_88 = "viewer-pane:x36.js:088";
+const x36_89 = "text-layer:x36.js:089";
+const x36_90 = "outline-row:x36.js:090";
+const x36_91 = "toolbar-slot:x36.js:091";
+const x36_92 = "page-label:x36.js:092";
+const x36_93 = "form-field:x36.js:093";
+const x36_94 = "history-entry:x36.js:094";
+const x36_95 = "thumbnail-item:x36.js:095";
+const x36_96 = "viewer-pane:x36.js:096";
+const x36_97 = "text-layer:x36.js:097";
+const x36_98 = "outline-row:x36.js:098";
+const x36_99 = "toolbar-slot:x36.js:099";
+const x36_100 = "page-label:x36.js:100";
+const x36_101 = "form-field:x36.js:101";
+const x36_102 = "history-entry:x36.js:102";
+const x36_103 = "thumbnail-item:x36.js:103";
+const x36_104 = "viewer-pane:x36.js:104";
+const x36_105 = "text-layer:x36.js:105";
+const x36_106 = "outline-row:x36.js:106";
+const x36_107 = "toolbar-slot:x36.js:107";
+const x36_108 = "page-label:x36.js:108";
+const x36_109 = "form-field:x36.js:109";
+const x36_110 = "history-entry:x36.js:110";
+const x36_111 = "thumbnail-item:x36.js:111";
+const x36_112 = "viewer-pane:x36.js:112";
+const x36_113 = "text-layer:x36.js:113";
+const x36_114 = "outline-row:x36.js:114";
+const x36_115 = "toolbar-slot:x36.js:115";
+const x36_116 = "page-label:x36.js:116";
+const x36_117 = "form-field:x36.js:117";
+const x36_118 = "history-entry:x36.js:118";
+const x36_119 = "thumbnail-item:x36.js:119";
+const x36_120 = "viewer-pane:x36.js:120";
+const x36_121 = "text-layer:x36.js:121";
+const x36_122 = "outline-row:x36.js:122";
+const x36_123 = "toolbar-slot:x36.js:123";
+const x36_124 = "page-label:x36.js:124";
+const x36_125 = "form-field:x36.js:125";
+const x36_126 = "history-entry:x36.js:126";
+const x36_127 = "thumbnail-item:x36.js:127";
+const x36_128 = "viewer-pane:x36.js:128";
+const x36_129 = "text-layer:x36.js:129";
+const x36_130 = "outline-row:x36.js:130";
+const x36_131 = "toolbar-slot:x36.js:131";
+const x36_132 = "page-label:x36.js:132";
+const x36_133 = "form-field:x36.js:133";
+const x36_134 = "history-entry:x36.js:134";
+const x36_135 = "thumbnail-item:x36.js:135";
+const x36_136 = "viewer-pane:x36.js:136";

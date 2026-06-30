@@ -1,0 +1,17 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You locate the single behaviour-anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON only.",
+ "thinking": null,
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: Locate the anchor function for the state_code field in the console.log object whose action is workspace.commit after filling Workspace Key with project-alpha-2024, selecting Sync Interval 30 seconds, checking Offline Mode, and clicking Apply Workspace. The anchor is the first target-specific value-construction function on the dynamic behavior chain: it appears after routing, workspace action-table resolution, scope-field selection, and input preparation, and its own function body constructs the target workspace state-encoding hash value instead of merely collecting workspace parameters, forwarding control, wrapping a return value, or emitting to the sink. Return exactly one complete JavaScript function and its location in the captured corpus. Do not return a generic utility, event handler, action-table dispatcher, scope resolver, full call chain, or final console sink.\n\nExample value pattern: ^sc_[a-z0-9]{12}$\nObservable: {\"type\": \"console\", \"method\": \"log\", \"action\": \"workspace.commit\", \"field\": \"state_code\", \"format\": \"^sc_[a-z0-9]{12}$\"}\n\nShortlisted functions:\n### eb914a9e8f9c2b03 (v00)\n```js\nfunction v00(input = {}) {\n  const normalized = normalize00(input);\n  const folded = fold00(normalized.rows, normalized.seed);\n  const digest = digest00(folded, normalized.label);\n  const total = folded.out.reduce((sum, item) => (sum + item) >>> 0, folded.a ^ folded.b);\n  const bucket = normalized.rows.map((item, idx) => ({ idx, item, mark: (Number(item) + idx + 0) % 17 }));\n  return { index: 0, total, digest, bucket, label: normalized.label };\n}\n```\n### efb0debd6d0938ea (deriveStats)\n```js\nfunction deriveStats(ctx) {\n  const ws = parseWorkspaceKey(ctx.workspaceKey);\n  const interval = String(ctx.syncInterval || \"30\");\n  const offline = Boolean(ctx.offlineMode);\n  const scope = ctx.scope || {};\n  const host = String(location.hostname || \"localhost\");\n  const authSalt = Number(scope.signSalt || 0);\n  const extraInterval = scope.includeInterval ? ws.segCount * 3 : 0;\n  const extraKey = scope.includeKey ? ws.token.length * 7 + authSalt : authSalt % 5;\n  const extraOffline = scope.includeOffline ? 5 : 0;\n  return {\n    lines: Number(interval) || 30,\n    chars: ws.key.length + host.length + extraKey,\n    words: ws.key.length + host.length + ws.segCount + extraInterval,\n    headings: (interval.length * 7 + ws.segCount * 3) % 97,\n    lists: (offline ? 4 : 1) + (scope.includeInterval ? 3 : 0) + extraOffline + (authSalt % 17),\n    fences: ws.segCount + (scope.includeKey ? 2 : 0),\n    workspaceKey: ws.key,\n    syncInterval: interval,\n    offlineMode: offline\n  };\n}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782616546.8390443
+}

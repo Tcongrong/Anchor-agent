@@ -1,0 +1,93 @@
+{
+  "case_id": "case009_request_signature_token_derivation",
+  "page": "captures/devtools-source-dump/127.0.0.1_4173/index.html",
+  "interaction": [
+    {
+      "action": "fill",
+      "selector": "#requestRef",
+      "value": "RSV-2026-0618"
+    },
+    {
+      "action": "select",
+      "selector": "#windowSelect",
+      "value": "w-1430"
+    },
+    {
+      "action": "select",
+      "selector": "#tierSelect",
+      "value": "standard"
+    },
+    {
+      "action": "check",
+      "selector": "#guardToggle"
+    },
+    {
+      "action": "click",
+      "selector": "#armButton"
+    },
+    {
+      "action": "click",
+      "selector": "#commitButton"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "reservation.sign",
+    "field": "req_sig"
+  },
+  "expected_output_shape": {
+    "sink": "console.log",
+    "action": "reservation.sign",
+    "field": "req_sig",
+    "pattern": "^sig_[a-z0-9]{4,8}-[a-z0-9]{4,8}-[a-z0-9]{6,10}$"
+  },
+  "question": "After filling the reservation request fields (request reference, time window, service tier), enabling replay protection, and clicking Arm and then Sign, the page prints an object to the browser console under action reservation.sign. Locate the anchor function for the req_sig field of that object. The anchor is the first target-specific signature-token construction function on the dynamic behavior chain: it sits after command queueing and dispatch, phase gating, request-field collection, asynchronous hand-off and the per-stage folds, and its own body constructs the target observable request signature token value - rather than merely collecting inputs, dispatching control, packaging a return value, or emitting it to the console sink. Return exactly one complete function together with its code location; do not return a generic utility, an event handler, the whole call chain, or the final sink. Note: you can only inspect the code under captures; you cannot access the full source repository.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": "The function identifier exactly as it appears at the head of the function in the captures bundle (the obfuscated name may be a mangled token such as _0xabc123). Do not invent a source-level name.",
+      "file": "Path to the captures .js file that contains the function, e.g. captures/devtools-source-dump/127.0.0.1_4173/assets/calendar.app.bundle.js",
+      "slice": {
+        "start_line": "integer, 1-based line where the function starts in that file",
+        "end_line": "integer, 1-based line where the function ends",
+        "start_offset": "integer, 0-based byte offset of the first character of the function",
+        "end_offset": "integer, 0-based byte offset one past the last character of the function (exclusive)",
+        "code": "The complete function source text, from the function keyword through its matching closing brace"
+      }
+    },
+    "example": {
+      "function_name": "_0x000000",
+      "file": "captures/devtools-source-dump/127.0.0.1_4173/assets/calendar.app.bundle.js",
+      "slice": {
+        "start_line": 12345,
+        "end_line": 12360,
+        "start_offset": 999000,
+        "end_offset": 999500,
+        "code": "function _0x000000(_0xarg) {\n  /* complete function body as it appears in captures */\n  return _0xarg;\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Return a single JSON object that matches answer_format.response_schema (one top-1 function), not a list of candidate chains.",
+    "function_name must be the identifier as it appears in captures; slice.code must be one complete function (balanced braces), not a signature fragment or a partial body.",
+    "Do not return the final console sink.",
+    "Do not return a generic DOM reader, command queue, phase dispatcher, gate, request-field collector, async hand-off step, fold stage or formatter when a more target-specific signature-value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The page contains many high-similarity signing slot configurations; only the configuration selected by the live sign route constructs the observed signature token.",
+    "The target behavior is request_signature_token_derivation, not state encoding, byte-array transformation, browser fingerprinting or request transformation."
+  ],
+  "notes": [
+    "The page is a local two-step (arm then sign) reservation request signer.",
+    "Use the observable console object (action reservation.sign, field req_sig) to guide the investigation.",
+    "Only the final field value should be treated as the target.",
+    "Similar debug or shadow action messages are not target output.",
+    "Signing requires the request to be armed first; an un-armed commit produces no target output.",
+    "The same request fields must produce the same req_sig; changing the request reference, window or tier must change the req_sig."
+  ],
+  "anchor_definition_general": "A function is target-specific (with respect to the observable above) if at least one statement in its body constructs or binds the target value, writes the target field, or dispatches the target action, and removing that statement would break the observed output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic, i.e. the shallowest target-specific function on the path from the trigger to the sink. If a target-specific function C is called by a generic dispatcher B and itself calls a generic utility D (e.g. a hash routine), the anchor is C, not B and not D. If a generic function A merely writes whatever its callee B returns into the target field, and B is dedicated to computing that value, the anchor is B. If the target-specific statement is one branch inside a larger function F that also handles unrelated cases, F is still a valid anchor candidate.",
+  "anchor_worked_example": "Worked example (different scenario, illustration only): a checkout page emits body.order_sig_v2 after the user clicks Submit Order. The chain is: click Submit Order -> construct order draft (generic prep) -> encode checkout state (generic prep) -> collect async profile receipt (generic prep) -> compose request envelope (generic prep) -> run interceptor pipeline (generic dispatcher) -> select sealing interceptor (ANCHOR) -> canonicalize payload fields (nested helper) -> fold payload with receipt and pepper (nested helper) -> compute digest (generic SHA-256 core utility) -> write body.order_sig_v2 -> send request (generic wrapper/sink). The sealing interceptor is the anchor: its immediate caller is the generic interceptor-pipeline dispatcher, and its own body is the highest point on the chain whose code, read alone, explains why order_sig_v2 specifically is produced. Functions below it (canonicalize, fold) are nested helpers; the digest routine is a core utility; dispatcher and sender are path/wrapper. Other same-click values such as analytics_sig or coupon_digest are off-chain decoys. Apply the same reasoning to the actual page and bundle."
+}

@@ -1,0 +1,195 @@
+{
+  "case_id": "case004_request_signature_token_derivation",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 39,
+    "router_layers": 5,
+    "middleware_layers": 10,
+    "state_machine_steps": 4096,
+    "async_level": 6,
+    "distractor_count": 44,
+    "semantic_decoy_count": 26,
+    "target_path_decoy_count": 18,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#resourceInput",
+            "value": "ledger:close:8492"
+          },
+          {
+            "action": "select",
+            "selector": "#environmentSelect",
+            "value": "prod"
+          },
+          {
+            "action": "select",
+            "selector": "#grantSelect",
+            "value": "approve"
+          },
+          {
+            "action": "check",
+            "selector": "#replayGuard"
+          },
+          {
+            "action": "drag",
+            "selector": "#challengeSlider",
+            "value": "88"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "vault.sign",
+        "field": "request_sig",
+        "value_pattern": "^rs_[a-z0-9]{12}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after routing and input preparation, whose own body constructs the target observable value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_visible/captures/devtools-source-dump/127.0.0.1_4191/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/relay.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4191/assets/relay.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 1697212,
+    "bundle_lines": 35197
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM input/change events and range-slider challenge commit on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name is assembled from adjusted character-code arrays at the sink, so direct literal search is insufficient.",
+        "The rs_-prefixed vault proof is carried through runtime-derived transport keys and recovered shortly before console output.",
+        "The live reducer configuration is selected only after resource journal capture, environment/grant capability resolution, replay guard state, asynchronous stream framing and route-graph fan-in."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1697212,
+        "captured_bundle_lines": 35197,
+        "capability_rows": 4,
+        "state_machine_steps": 4096
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The target path requires resource entry, environment selection, grant selection, replay guard arming, then a challenge slider sweep beyond the authorization threshold.",
+        "After slider commit, the path crosses capability resolution, slider challenge gating, tuple construction, Web Crypto and idle scheduling, ReadableStream framing, a TransformStream mailbox, three route branches, graph fan-in, config materialization, signature derivation, dynamic transport and sink wrapping.",
+        "The same authorized sweep emits non-target preview/audit objects carrying request_sig-like values, while the bundle also contains an ap_-prefixed proof constructor and vendor-like decoys."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 36,
+        "off_chain_decoy_modules": 44,
+        "same_field_non_target_console_objects": 2
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from slider commit by SubtleCrypto, requestIdleCallback, Promise aggregation, ReadableStream and TransformStream boundaries.",
+        "Independent challenge, journal and policy branches are merged before a WeakMap-backed runtime configuration is materialized.",
+        "The final sink receives an already derived request signature after dynamic cell and lane recovery, so sink inspection alone does not identify the construction site."
+      ],
+      "async_boundaries": [
+        "crypto.subtle.digest promise",
+        "requestIdleCallback callback",
+        "Promise.all join",
+        "ReadableStream reader.read",
+        "TransformStream writer.write",
+        "TransformStream reader.read"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "client_side_vault_request_proof_derivation",
+    "subtype": "signature-like slider-challenge vault request proof token",
+    "network_request_present": false,
+    "reason": "The observable request_sig is an rs_-prefixed deterministic proof token derived from vault resource controls, a field journal, replay guard state, an authorized slider challenge, capability state and route-graph/runtime configuration. It behaves like a client-side request signature even though this local benchmark does not issue a network request.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "Journal and challenge state are inputs, but the observable is explicitly a vault request proof token rather than a reusable UI-state snapshot."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "No request body is rewritten or emitted; the requested observable is the derived proof token."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "Slider and DOM runtime state influence config selection, but the target behavior is vault request proof derivation rather than browser identity collection."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in agent_hidden/oracle.hidden.json",
+    "private_oracle_location": "agent_hidden/oracle.hidden.json",
+    "agent_visible_partition": "agent_visible/ (task.json + captures/ only)",
+    "agent_hidden_partition": "agent_hidden/ (src, scripts, dist, oracle, build_meta, package.json)",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle. It lives under agent_hidden/ and is never distributed to agents."
+  },
+  "construct_validity_note": {
+    "decision": "M11 option (a): describe honestly, keep schema and obfuscation as-is.",
+    "observation": "Obfuscation is intentionally asymmetric: identifierNamesGenerator is 'mangled' for locals and stringArray hides literals, but renameGlobals is false, so module-level function names (anchor, helpers, and decoys alike) stay readable in the bundle. This is required so answer_function is something an agent can actually submit (审查.md §12.2).",
+    "implication": "The declared call_depth / async_level / control-flow-flattening difficulty is real, but a meaningful part of the challenge is semantic disambiguation within a small set of readable, deliberately similar names (deriveRequestSignature vs formatRequestSignature/signatureFrame, the rs_ target vs the ap_ assembleProof decoy, vault.sign vs vault.preview/vault.audit), not only long-chain tracing. Decoy names are kept comparably descriptive so a keyword search cannot separate target from decoy by name alone."
+  },
+  "primary_anchor": {
+    "answer_function": "deriveRequestSignature",
+    "source_function": "deriveRequestSignature",
+    "source_file": "src/z0/k7/q3/t9.js",
+    "captured_span": {
+      "file": "captures/devtools-source-dump/127.0.0.1_4191/assets/relay.app.bundle.js",
+      "start_line": 574,
+      "end_line": 581,
+      "start_column": 0,
+      "end_column": 1,
+      "start_offset": 65582,
+      "end_offset": 66078,
+      "sha256": "64289b7ef2f461054448bea294cd1e68dfa13efe909f1d6ab05250a2db7015f8",
+      "normalized_sha256": "d3196ae8ca73e399344a9310bf1bc46b08621e05761c2e66626f0ead2ca7c63b"
+    }
+  }
+}

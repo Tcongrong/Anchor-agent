@@ -1,0 +1,1 @@
+var sq_content_s_www_pt_2015_popup_order = {"data":[{"link":"pt_2015_index_flash_popup","switch":"1"},{"link":"pt_2015_birth_popup","switch":"-1"},{"link":"pt_2015_vip_popup","switch":"1"}]};

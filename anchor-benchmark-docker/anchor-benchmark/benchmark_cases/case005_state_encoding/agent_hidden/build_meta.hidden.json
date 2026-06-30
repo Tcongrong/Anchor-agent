@@ -1,0 +1,157 @@
+{
+  "case_id": "case005_state_encoding",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "generated_at": "2026-06-15T09:34:03.463Z",
+  "difficulty": {
+    "preset": "hard_main_thread_state_encoding",
+    "runtime_boundary": "main_thread_only",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3112,
+    "async_level": 6,
+    "distractor_count": 44,
+    "distractor_count_note": "distractor_count counts shadow reducers x00-x43 only. role_oracle Off-chain rows total 45 because p0 is scored separately as a launch decoy.",
+    "semantic_decoy_count": 32,
+    "semantic_decoy_note": "Count of slot reducer configs in src/z0/k7/q3/t9.js (slots 0-31); only slot 23 is live for notification state_code.",
+    "vendor_noise_file_count": 25,
+    "obfuscation_level": 0,
+    "construct_validity_note": "The primary challenge is semantic disambiguation among notification state-encoding reducers and off-chain decoys in the captured bundle; this case preserves callable names so submissions can name captured functions deterministically. semantic_decoy_count counts the 32 slot reducer configs in t9.js (slots 0-31); slot 23 is the live encoder."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "select",
+            "selector": "#notifyFrequency",
+            "value": "daily"
+          },
+          {
+            "action": "select",
+            "selector": "#notifyFormat",
+            "value": "digest"
+          },
+          {
+            "action": "check",
+            "selector": "#enableDigest"
+          },
+          {
+            "action": "click",
+            "selector": "#saveSettingsBtn"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "notify.save",
+        "field": "state_code",
+        "value_pattern": "^[a-z0-9]{12}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after routing and input preparation, whose own body constructs the target observable value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_visible/captures/devtools-source-dump/127.0.0.1_4195/index.html",
+    "dist_bundle": "dist/assets/notify.state.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4195/assets/notify.state.bundle.js",
+    "bundle_bytes": 1488689,
+    "bundle_lines": 19816,
+    "captured_bundle_lines": 19816
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "primary_anchor": {
+    "answer_function": "r",
+    "source_function": "r",
+    "source_file": "src/z0/k7/q3/t9.js",
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4195/assets/notify.state.bundle.js",
+    "captured_span": {
+      "file": "captures/devtools-source-dump/127.0.0.1_4195/assets/notify.state.bundle.js",
+      "start_line": 7506,
+      "end_line": 7522,
+      "start_column": 9,
+      "end_column": 3,
+      "start_offset": 608456,
+      "end_offset": 609323,
+      "sha256": "690045217b872936329207c919191da685a12eadcf372ee9567e3d1152d9d097",
+      "normalized_sha256": "4c59575029c2a42361de6b91399b1b83315e4182421b5272e83ca644ad3b765a"
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1488689,
+        "captured_bundle_lines": 19816,
+        "notify_action_table_rows": 11,
+        "state_machine_steps": 3112
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "measurements": {
+        "behavior_chain_function_like_units": 15,
+        "off_chain_decoy_rows": 45,
+        "slot_reducer_configs": 32,
+        "live_slot": 23,
+        "vendor_noise_file_count": 25
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "async_boundaries": [
+        "queueMicrotask continuation",
+        "Promise.all continuation",
+        "setTimeout(..., 0)",
+        "requestAnimationFrame callback",
+        "MutationObserver callback",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "state_encoding",
+    "case_category": "client_side_state_encoding",
+    "subtype": "deterministic compact notification state code",
+    "network_request_present": false,
+    "reason": "The observable value is a deterministic state code derived from notification frequency, format, digest roll-up, scope flags, route state, and preference tuple data."
+  },
+  "counts": {
+    "src_lines": 20538,
+    "z0_lines": 19947,
+    "bundle_lines": 19816
+  }
+}

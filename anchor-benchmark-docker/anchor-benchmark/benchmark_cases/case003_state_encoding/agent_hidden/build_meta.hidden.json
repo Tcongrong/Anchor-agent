@@ -1,0 +1,197 @@
+{
+  "case_id": "case003_state_encoding",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 24,
+    "router_layers": 4,
+    "middleware_layers": 8,
+    "flow_step_count": 9,
+    "async_level": 4,
+    "obfuscation_level": 1,
+    "distractor_count": 69,
+    "semantic_decoy_count": 22,
+    "vendor_noise_level": "high",
+    "bundle_mode": "single_app_bundle",
+    "obfuscation_compact": false,
+    "design_family": "keyboard_intent_event_flow",
+    "vendor_noise_file_count": 25,
+    "semantic_decoy_note": "7 sidecar codecs, 12 shadow encoders (s00-s11), and 3 name-confusion decoys (composeDraftStateCode/Codec/Preview).",
+    "obfuscation_note": "Rollup bundle run through javascript-obfuscator with mangled local identifiers (seed 3003). The live anchor export is sealDraftFrameCode; composeDraftStateCode/Codec/Preview are off-chain name decoys. Haystack modules add 2400+ functions.",
+    "distractor_oracle_note": "Each haystack module (n00-n43, v00-v24) has one representative Off-chain row in role_oracle (label haystack:<id>)."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#noteText",
+            "value": "Call supplier before Friday"
+          },
+          {
+            "action": "type",
+            "selector": "#tagInput",
+            "value": "work"
+          },
+          {
+            "action": "select",
+            "selector": "#prioritySelect",
+            "value": "high"
+          },
+          {
+            "action": "focus",
+            "selector": "#noteText"
+          },
+          {
+            "action": "press",
+            "selector": "#noteText",
+            "keys": "Control+Enter"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "note.add",
+        "field": "state_code",
+        "value_pattern": "^sc_[a-z0-9]{14}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after routing and input preparation, whose own body constructs the target observable value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "dist/index.html",
+    "dist_bundle": "dist/assets/note.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "files": [
+      "assets/note.app.bundle.js",
+      "favicon.svg",
+      "index.html",
+      "styles.css"
+    ],
+    "bundle_bytes": 1739429,
+    "bundle_lines": 52467
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "keyboard shortcut capture plus microtask intent queue, CustomEvent dispatch, Promise and requestAnimationFrame continuations",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated application bundle with no source map exposed to the agent.",
+        "The target field name is assembled at the sink rather than written as one direct literal in source.",
+        "The state value is produced after a keyboard gate, intent queue, custom event bus and flow-step runner, so direct event-handler inspection does not reveal the value constructor."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1739429,
+        "captured_bundle_lines": 52467,
+        "flow_alias_rows": 3,
+        "flow_step_rows": 11
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The keyboard path crosses shortcut recognition, intent construction, microtask queue flushing, CustomEvent delivery, flow lookup, async flow-step execution, DOM state reading, normalization, slot storage, frame construction, state encoding, preview rendering and sink wrapping.",
+        "Multiple sidecar codecs compute note-shaped preview, undo, tag, priority, metric, queue and export values that are reachable-looking but do not feed the requested state_code field.",
+        "Button-like controls and sidecar flows remain near the composer while the target observable is produced only by the keyboard-submitted draft-state flow."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 47,
+        "off_chain_decoy_modules": 104,
+        "same_interaction_sidecar_values": 5
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target state is separated from the keydown handler by a microtask intent queue, a CustomEvent boundary, a Promise continuation and a requestAnimationFrame boundary before the encoder receives the prepared frame.",
+        "The slot store clones the decorated draft record before the shortcut frame is prepared, splitting state collection from state encoding.",
+        "The final console sink receives an already encoded state_code and only wraps the value under the observable action."
+      ],
+      "async_boundaries": [
+        "microtask intent queue",
+        "CustomEvent dispatch boundary",
+        "Promise.resolve continuation",
+        "requestAnimationFrame callback",
+        "async flow-step loop"
+      ]
+    },
+    "construct_validity_note": "Primary bottleneck is tracing the note.add keyboard path to sealDraftFrameCode and rejecting similarly named off-chain decoys (composeDraftStateCode/Codec/Preview), shadow encoders, sidecars, and haystack helpers inside a 1.7MB bundle."
+  },
+  "behavior_category": {
+    "paper_category": "state_encoding",
+    "case_category": "stable_ui_draft_state_encoding",
+    "subtype": "quick-note draft state code",
+    "network_request_present": false,
+    "reason": "The observable value is a stable compact encoding of local draft UI state: normalized body, tag, priority, page, shortcut lane, gesture, summary, seed and slot state. It is not a request signature, browser fingerprint, byte-array transform or request-body rewrite.",
+    "near_categories": [
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The output has no proof, ticket, seal, signature or request-authentication semantics."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "No network request body is emitted or rewritten; the observable is a console-visible state code."
+      },
+      {
+        "category": "byte_array_transformation",
+        "why_not": "The target is not a byte buffer or binary payload; nearby preview and undo sidecars are string-state decoys rather than binary transforms."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the public task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "primary_anchor": {
+    "answer_function": "sealDraftFrameCode",
+    "source_function": "sealDraftFrameCode",
+    "source_file": "src/noteBench/pack/final/noteStateCodec.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_7599/assets/note.app.bundle.js",
+    "captured_span": {
+      "start_line": 244,
+      "end_line": 252,
+      "start_offset": 7429,
+      "end_offset": 7914
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

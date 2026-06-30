@@ -1,0 +1,291 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On max.pedata.cn, the mobile-login request carries a `rast` query parameter (e.g. rast=1775912601246) that is freshly generated for each call. Locate the single complete function whose own body generates that rast value and appends it to the outgoing request URL. Return exactly one JSON object (see answer_format). Do NOT return a sibling request helper that does not add rast, the login action that merely calls this helper, or an unrelated store getter. Only code under captures is in scope.  network_request GET /api/sso/loginmobile rast (none; generated per request) 1775912601246\nObservable: {'type': 'network_request', 'method': 'GET', 'url_contains': '/api/sso/loginmobile', 'field': 'rast', 'plaintext_sample': '(none; generated per request)', 'value_sample': '1775912601246'}\nCandidate seed nodes (lexical prior, not a ranking): ['56d4fce1b607bef1', 'eb1fbfe1d42d6b50', '90709c569ff11e79', '807718b53386e255', '3a615188b429513c', '7dacb0d7f26c04d9', '81db91497bcf9a8f', '682ab81edf2618a1']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I'll start by searching for functions related to \"rast\" and \"loginmobile\" to find the anchor function."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4a7e9882f0b34f4792a8a02f",
+     "name": "search_entity",
+     "input": {
+      "query": "rast"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ec9ff1348e124654b6e6d60c",
+     "name": "search_entity",
+     "input": {
+      "query": "loginmobile"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4a7e9882f0b34f4792a8a02f",
+     "content": "{\"nodes\": [\"c97a967760629480\", \"30e733d57e4bd81d\", \"452c5f76a9236281\", \"9b60c750bf4b524a\", \"665e0a332d8142dc\", \"5835a0f32c1490a1\", \"d9222a99f6460227\", \"7319893843363dbf\", \"1111c81182fab096\", \"60db72392711e45f\", \"1254423402743c44\", \"ee677219b87aa8d0\", \"74d1533e88b7bd86\", \"e6165426772d771b\", \"db28f8180b56bf82\", \"adef93cead69bddd\", \"24d09b772d6de232\", \"90385214e9d4ae4d\", \"e5f550452217a1de\", \"dd7ecf0b198b38bd\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ec9ff1348e124654b6e6d60c",
+     "content": "{\"nodes\": [\"247a17b2f2688e3e\", \"485555fafbfa5f0a\", \"7951d656dd31e0c3\", \"95b29bc1c118ad24\", \"b247581cb85691d6\", \"27aaea0a1d333e90\", \"a5cad5f79f812e1a\", \"2887c7dfafddf83b\", \"1ba8fbc3913a913d\", \"338fcb288e01d759\", \"8513ce99d8c08955\", \"40f5b82d6e8b4da5\", \"4fcf18821d6654dc\", \"33bc30ec0334a6e5\", \"4744e19e1645b537\", \"1b62df6b13345c49\", \"a0079a89c5f46475\", \"e9d687febd9a5038\", \"3a615188b429513c\", \"7dacb0d7f26c04d9\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me retrieve some of the candidate seed nodes and also some of the nodes that appear in both search results."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4b9b602fd7de4f5585a1673c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "3a615188b429513c"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_d2a5afd97d67435cb9cfbe2a",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "7dacb0d7f26c04d9"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7cde68ca35064018bb372ddb",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "c97a967760629480"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_2c3f6989f71843edab015d1c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "247a17b2f2688e3e"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4b9b602fd7de4f5585a1673c",
+     "content": "{\"_best_guess\": {\"file\": \"captures/max.pedata.cn/client/js/chunk-router-views-322f2c33.c71294ff.js\", \"start_offset\": 186228, \"end_offset\": 206322}, \"_best_guess_score\": -4, \"name\": \"f982\", \"file\": \"captures/max.pedata.cn/client/js/chunk-router-views-322f2c33.c71294ff.js\", \"start_offset\": 186228, \"end_offset\": 206322, \"code\": \"function(t,e,a){\\\"use strict\\\";a.r(e);a(\\\"c975\\\");var i=function(){var t=this,e=t._self._c;return e(\\\"div\\\",{staticClass:\\\"login_page clearfix\\\",attrs:{id:\\\"popup-captcha\\\"}},[e(\\\"div\\\",{staticClass:\\\"login_leftcontent\\\"},[e(\\\"div\\\",{staticClass:\\\"inner\\\"},[e(\\\"div\\\",{directives:[{name:\\\"show\\\",rawName:\\\"v-show\\\",value:1==t.tabKey,expression:\\\"tabKey == 1\\\"}],staticClass:\\\"tabbtn\\\",on:{click:function(e){return t.toWechatCode()}}},[e(\\\"img\\\",{attrs:{src:a(\\\"f3a8\\\")}})]),e(\\\"div\\\",{directives:[{name:\\\"show\\\",rawName:\\\"v-show\\\",value:2==t.tabKey||3==t.tabKey,expression:\\\"tabKey == 2 || tabKey == 3\\\"}],staticClass:\\\"tabbtn\\\",on:{click:function(e){return t.toPhoneLogin()}}},[e(\\\"img\\\",{attrs:{src:a(\\\"2b11\\\")}})]),e(\\\"div\\\",{directives:[{name:\\\"show\\\",rawName:\\\"v-show\\\",value:1==t.tabKey,expression:\\\"tabKey == 1\\\"}],staticClass:\\\"login_tryout_zone\\\"},[e(\\\"div\\\",{staticClass:\\\"login_tryout_text\\\"},[e(\\\"span\\\",{staticStyle:{\\\"font-size\\\":\\\"35px\\\",color:\\\"#222\\\",\\\"font-weight\\\":\\\"600\\\"}},[t._v(\\\"\\u6b22\\u8fce\\u767b\\u5f55\\\"+t._s(t.loginMaxPcWebName))])]),\\\"account\\\"===t.loginType?e(\\\"div\\\",{staticClass:\\\"login-form_content\\\"},[e(\\\"a-form-model\\\",{ref:\\\"accountForm\\\",attrs:{model:t.accountForm,rules:t.accountRules,\\\"label-col\\\":{span:0},\\\"wrapper-col\\\":{span:24}}},[e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long\\\",attrs:{label:\\\"\\\",prop:\\\"tel\\\"}},[e(\\\"a-input\\\",{attrs:{placeholder:\\\"\\u8bf7\\u8f93\\u5165\\u624b\\u673a\\u53f7\\\"},on:{keyup:function(e){return!e.type.indexOf(\\\"key\\\")&&t._k(e.keyCode,\\\"enter\\\",13,e.key,\\\"Enter\\\")?null:t.enterSubmit.apply(null,arguments)}},model:{value:t.accountForm.tel,callback:function(e){t.$set(t.accountForm,\\\"tel\\\",e)},expression:\\\"accountForm.tel\\\"}})],1),e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long formitem_ali\\\",attrs:{label:\\\"\\\"}},[e(\\\"AliyunCaptcha\\\",{ref:\\\"accountCaptcha\\\",attrs:{\\\"scene-id\\\":t.accountCaptchaSceneId},on:{success:t.handleAccountCaptchaSuccess,fail:t.handleAccountCaptchaFail,error:t.handleAccountCaptchaError}}),t.isShowAccountError?e(\\\"div\\\",{staticClass:\\\"error-tryout-txt\\\"},[t._v(\\\" \\\"+t._s(t.accountErrorText)+\\\" \\\")]):t._e()],1)],1),e(\\\"a-form-model\\\",{ref:\\\"encodePwdForm\\\",attrs:{model:t.accountForm,rules:t.accountRules,\\\"label-col\\\":{span:0},\\\"wrapper-col\\\":{span:24}}},[e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long\\\",attrs:{label:\\\"\\\",prop:\\\"encodePwd\\\"}},[e(\\\"a-input\\\",{attrs:{placeholder:\\\"\\u8bf7\\u8f93\\u5165\\u5bc6\\u7801\\\",type:\\\"password\\\"},on:{keyup:function(e){return!e.type.indexOf(\\\"key\\\")&&t._k(e.keyCode,\\\"enter\\\",13,e.key,\\\"Enter\\\")?null:t.enterSubmit.apply(null,arguments)}},model:{value:t.accountForm.encodePwd,callback:function(e){t.$set(t.accountForm,\\\"encodePwd\\\",e)},expression:\\\"accountForm.encodePwd\\\"}}),t.isPasswordError?e(\\\"div\\\",{staticClass:\\\"error-tryout-txt\\\"},[t._v(\\\" \\\"+t._s(t.passerrorText)+\\\" \\\")]):t._e()],1)],1),e(\\\"div\\\",{staticStyle:{\\\"margin-top\\\":\\\"20px\\\",cursor:\\\"pointer\\\"},on:{click:function(e){return t.toApplyUse()}}},[e(\\\"span\\\",[t._v(\\\"\\u5fd8\\u8bb0\\u5bc6\\u7801\\uff1f\\u8bf7\\u5fae\\u4fe1\\u8054\\u7cfb\\\")]),e(\\\"span\\\",{staticStyle:{color:\\\"#1b62ff\\\",cursor:\\\"pointer\\\"},on:{click:function(e){return t.toApplyUse()}}},[t._v(\\\"\\u6e05\\u79d1\\u6570\\u636e\\u5c0f\\u52a9\\u624b\\\")])]),t.isShowAgreeError?e(\\\"div\\\",{staticClass:\\\"login-agreeError\\\"},[e(\\\"a-icon\\\",{attrs:{type:\\\"exclamation-circle\\\",theme:\\\"filled\\\"}}),t._v(\\\" \\u8bf7\\u540c\\u610f\\u7528\\u6237\\u670d\\u52a1\\u534f\\u8bae\\u548c\\u9690\\u79c1\\u653f\\u7b56 \\\")],1):t._e(),e(\\\"div\\\",{staticClass:\\\"loginbtntryout_zone\\\"},[t.accountLoginDisabled?e(\\\"div\\\",{staticClass:\\\"loginbtn loginbtn-disabled\\\"},[t._v(\\\" \\u767b\\u00a0\\u00a0\\u5f55 \\\")]):t.accountLoginLoading?e(\\\"div\\\",{staticClass:\\\"loginbtn loginbtn-loading\\\"},[t._v(\\\" \\u767b\\u00a0\\u00a0\\u5f55 \\\")]):e(\\\"div\\\",{staticClass:\\\"loginbtn\\\",on:{click:function(e){return t.onAccountSubmit()}}},[t._v(\\\" \\u767b\\u00a0\\u00a0\\u5f55 \\\")]),e(\\\"div\\\",{staticClass:\\\"testbtn\\\",on:{click:function(e){return t.jumpUrl(\\\"https://max.pedata.cn/apply.html\\\")}}},[t._v(\\\" \\u7533\\u8bf7\\u8bd5\\u7528 \\\")])])],1):t._e(),\\\"sms\\\"===t.loginType?e(\\\"div\\\",{staticClass:\\\"login-form_content\\\"},[e(\\\"a-form-model\\\",{ref:\\\"ruleForm\\\",attrs:{model:t.form,rules:t.rules,\\\"label-col\\\":{span:0},\\\"wrapper-col\\\":{span:24}}},[e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long\\\",attrs:{label:\\\"\\\",prop:\\\"tel\\\"}},[e(\\\"a-input\\\",{attrs:{placeholder:\\\"\\u8bf7\\u8f93\\u5165\\u624b\\u673a\\u53f7\\\"},model:{value:t.form.tel,callback:function(e){t.$set(t.form,\\\"tel\\\",e)},expression:\\\"form.tel\\\"}})],1),e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formit\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_d2a5afd97d67435cb9cfbe2a",
+     "content": "{\"_best_guess\": {\"file\": \"captures/max.pedata.cn/client/js/chunk-router-views-322f2c33.c71294ff.js\", \"start_offset\": 186223, \"end_offset\": 206322}, \"_best_guess_score\": -5, \"name\": \"f982\", \"file\": \"captures/max.pedata.cn/client/js/chunk-router-views-322f2c33.c71294ff.js\", \"start_offset\": 186223, \"end_offset\": 206322, \"code\": \"f982:function(t,e,a){\\\"use strict\\\";a.r(e);a(\\\"c975\\\");var i=function(){var t=this,e=t._self._c;return e(\\\"div\\\",{staticClass:\\\"login_page clearfix\\\",attrs:{id:\\\"popup-captcha\\\"}},[e(\\\"div\\\",{staticClass:\\\"login_leftcontent\\\"},[e(\\\"div\\\",{staticClass:\\\"inner\\\"},[e(\\\"div\\\",{directives:[{name:\\\"show\\\",rawName:\\\"v-show\\\",value:1==t.tabKey,expression:\\\"tabKey == 1\\\"}],staticClass:\\\"tabbtn\\\",on:{click:function(e){return t.toWechatCode()}}},[e(\\\"img\\\",{attrs:{src:a(\\\"f3a8\\\")}})]),e(\\\"div\\\",{directives:[{name:\\\"show\\\",rawName:\\\"v-show\\\",value:2==t.tabKey||3==t.tabKey,expression:\\\"tabKey == 2 || tabKey == 3\\\"}],staticClass:\\\"tabbtn\\\",on:{click:function(e){return t.toPhoneLogin()}}},[e(\\\"img\\\",{attrs:{src:a(\\\"2b11\\\")}})]),e(\\\"div\\\",{directives:[{name:\\\"show\\\",rawName:\\\"v-show\\\",value:1==t.tabKey,expression:\\\"tabKey == 1\\\"}],staticClass:\\\"login_tryout_zone\\\"},[e(\\\"div\\\",{staticClass:\\\"login_tryout_text\\\"},[e(\\\"span\\\",{staticStyle:{\\\"font-size\\\":\\\"35px\\\",color:\\\"#222\\\",\\\"font-weight\\\":\\\"600\\\"}},[t._v(\\\"\\u6b22\\u8fce\\u767b\\u5f55\\\"+t._s(t.loginMaxPcWebName))])]),\\\"account\\\"===t.loginType?e(\\\"div\\\",{staticClass:\\\"login-form_content\\\"},[e(\\\"a-form-model\\\",{ref:\\\"accountForm\\\",attrs:{model:t.accountForm,rules:t.accountRules,\\\"label-col\\\":{span:0},\\\"wrapper-col\\\":{span:24}}},[e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long\\\",attrs:{label:\\\"\\\",prop:\\\"tel\\\"}},[e(\\\"a-input\\\",{attrs:{placeholder:\\\"\\u8bf7\\u8f93\\u5165\\u624b\\u673a\\u53f7\\\"},on:{keyup:function(e){return!e.type.indexOf(\\\"key\\\")&&t._k(e.keyCode,\\\"enter\\\",13,e.key,\\\"Enter\\\")?null:t.enterSubmit.apply(null,arguments)}},model:{value:t.accountForm.tel,callback:function(e){t.$set(t.accountForm,\\\"tel\\\",e)},expression:\\\"accountForm.tel\\\"}})],1),e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long formitem_ali\\\",attrs:{label:\\\"\\\"}},[e(\\\"AliyunCaptcha\\\",{ref:\\\"accountCaptcha\\\",attrs:{\\\"scene-id\\\":t.accountCaptchaSceneId},on:{success:t.handleAccountCaptchaSuccess,fail:t.handleAccountCaptchaFail,error:t.handleAccountCaptchaError}}),t.isShowAccountError?e(\\\"div\\\",{staticClass:\\\"error-tryout-txt\\\"},[t._v(\\\" \\\"+t._s(t.accountErrorText)+\\\" \\\")]):t._e()],1)],1),e(\\\"a-form-model\\\",{ref:\\\"encodePwdForm\\\",attrs:{model:t.accountForm,rules:t.accountRules,\\\"label-col\\\":{span:0},\\\"wrapper-col\\\":{span:24}}},[e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long\\\",attrs:{label:\\\"\\\",prop:\\\"encodePwd\\\"}},[e(\\\"a-input\\\",{attrs:{placeholder:\\\"\\u8bf7\\u8f93\\u5165\\u5bc6\\u7801\\\",type:\\\"password\\\"},on:{keyup:function(e){return!e.type.indexOf(\\\"key\\\")&&t._k(e.keyCode,\\\"enter\\\",13,e.key,\\\"Enter\\\")?null:t.enterSubmit.apply(null,arguments)}},model:{value:t.accountForm.encodePwd,callback:function(e){t.$set(t.accountForm,\\\"encodePwd\\\",e)},expression:\\\"accountForm.encodePwd\\\"}}),t.isPasswordError?e(\\\"div\\\",{staticClass:\\\"error-tryout-txt\\\"},[t._v(\\\" \\\"+t._s(t.passerrorText)+\\\" \\\")]):t._e()],1)],1),e(\\\"div\\\",{staticStyle:{\\\"margin-top\\\":\\\"20px\\\",cursor:\\\"pointer\\\"},on:{click:function(e){return t.toApplyUse()}}},[e(\\\"span\\\",[t._v(\\\"\\u5fd8\\u8bb0\\u5bc6\\u7801\\uff1f\\u8bf7\\u5fae\\u4fe1\\u8054\\u7cfb\\\")]),e(\\\"span\\\",{staticStyle:{color:\\\"#1b62ff\\\",cursor:\\\"pointer\\\"},on:{click:function(e){return t.toApplyUse()}}},[t._v(\\\"\\u6e05\\u79d1\\u6570\\u636e\\u5c0f\\u52a9\\u624b\\\")])]),t.isShowAgreeError?e(\\\"div\\\",{staticClass:\\\"login-agreeError\\\"},[e(\\\"a-icon\\\",{attrs:{type:\\\"exclamation-circle\\\",theme:\\\"filled\\\"}}),t._v(\\\" \\u8bf7\\u540c\\u610f\\u7528\\u6237\\u670d\\u52a1\\u534f\\u8bae\\u548c\\u9690\\u79c1\\u653f\\u7b56 \\\")],1):t._e(),e(\\\"div\\\",{staticClass:\\\"loginbtntryout_zone\\\"},[t.accountLoginDisabled?e(\\\"div\\\",{staticClass:\\\"loginbtn loginbtn-disabled\\\"},[t._v(\\\" \\u767b\\u00a0\\u00a0\\u5f55 \\\")]):t.accountLoginLoading?e(\\\"div\\\",{staticClass:\\\"loginbtn loginbtn-loading\\\"},[t._v(\\\" \\u767b\\u00a0\\u00a0\\u5f55 \\\")]):e(\\\"div\\\",{staticClass:\\\"loginbtn\\\",on:{click:function(e){return t.onAccountSubmit()}}},[t._v(\\\" \\u767b\\u00a0\\u00a0\\u5f55 \\\")]),e(\\\"div\\\",{staticClass:\\\"testbtn\\\",on:{click:function(e){return t.jumpUrl(\\\"https://max.pedata.cn/apply.html\\\")}}},[t._v(\\\" \\u7533\\u8bf7\\u8bd5\\u7528 \\\")])])],1):t._e(),\\\"sms\\\"===t.loginType?e(\\\"div\\\",{staticClass:\\\"login-form_content\\\"},[e(\\\"a-form-model\\\",{ref:\\\"ruleForm\\\",attrs:{model:t.form,rules:t.rules,\\\"label-col\\\":{span:0},\\\"wrapper-col\\\":{span:24}}},[e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-formitem-long\\\",attrs:{label:\\\"\\\",prop:\\\"tel\\\"}},[e(\\\"a-input\\\",{attrs:{placeholder:\\\"\\u8bf7\\u8f93\\u5165\\u624b\\u673a\\u53f7\\\"},model:{value:t.form.tel,callback:function(e){t.$set(t.form,\\\"tel\\\",e)},expression:\\\"form.tel\\\"}})],1),e(\\\"a-form-model-item\\\",{staticClass:\\\"login-tryout-f\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7cde68ca35064018bb372ddb",
+     "content": "{\"_best_guess\": {\"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 13967, \"end_offset\": 18541}, \"_best_guess_score\": -40, \"name\": \"0c6d\", \"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 13967, \"end_offset\": 18541, \"code\": \"function(t,e,n){\\\"use strict\\\";n.d(e,\\\"e\\\",(function(){return A})),n.d(e,\\\"f\\\",(function(){return v})),n.d(e,\\\"g\\\",(function(){return b})),n.d(e,\\\"c\\\",(function(){return C})),n.d(e,\\\"d\\\",(function(){return m})),n.d(e,\\\"b\\\",(function(){return w}));var a=n(\\\"5530\\\"),r=(n(\\\"3b18\\\"),n(\\\"f64c\\\")),i=(n(\\\"caad\\\"),n(\\\"c975\\\"),n(\\\"a434\\\"),n(\\\"0d03\\\"),n(\\\"b64b\\\"),n(\\\"d3b7\\\"),n(\\\"ac1f\\\"),n(\\\"25f0\\\"),n(\\\"3ca3\\\"),n(\\\"5319\\\"),n(\\\"ddb0\\\"),n(\\\"2b3d\\\"),n(\\\"bf19\\\"),n(\\\"9861\\\"),n(\\\"cebe\\\")),o=n.n(i),s=n(\\\"5f87\\\"),c=n(\\\"4360\\\"),u=n(\\\"a18c\\\"),l=n(\\\"4328\\\"),f=n.n(l),d=n(\\\"1af2\\\"),p=n.n(d),h=(n(\\\"a5d8\\\"),n(\\\"fa7d\\\"));p.a.configure({showSpinner:!1}),o.a.defaults.baseURL=\\\"/api\\\";var g=[];function m(t,e){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"multipart/form-data\\\"}},n)).then((function(t){t&&t.data?r(t.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function A(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=arguments.length>3?arguments[3]:void 0;return r||(-1!==t.indexOf(\\\"?\\\")?t+=\\\"&rast=\\\"+(new Date).getTime().toString():t+=\\\"?rast=\\\"+(new Date).getTime().toString()),new Promise((function(r,i){o.a.get(t,{params:e},Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function v(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,f.a.stringify(e),Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function b(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function w(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};if(!g.includes(t))return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))[\\\"finally\\\"]((function(){g.splice(0)}))}));r[\\\"a\\\"].info(\\\"\\u6b63\\u5728\\u4e0b\\u8f7d\\uff0c\\u8bf7\\u7a0d\\u540e\\u91cd\\u8bd5\\\")}function C(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};if(!g.includes(t))return new Promise((function(i,s){o.a.post(t,e,Object(a[\\\"a\\\"])({responseType:\\\"blob\\\",headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){var e=t.data;if(t.headers[\\\"content-disposition\\\"]){var n=decodeURI(t.headers[\\\"content-disposition\\\"].split(\\\";\\\")[1].split(\\\"=\\\")[1]).replace(\\\"UTF-8''\\\",\\\"\\\");if(window.navigator.msSaveOrOpenBlob)navigator.msSaveBlob(e,n);else{var a=document.createElement(\\\"a\\\");a.href=window.URL.createObjectURL(e),a.download=n,a.click(),window.URL.revokeObjectURL(a.href)}i(t)}else{var o=new FileReader;o.readAsText(t.data,\\\"utf-8\\\"),o.onload=function(t){var e=JSON.parse(o.result);\\\"445\\\"==e.code&&r[\\\"a\\\"].info(\\\"\\u5bfc\\u51fa\\u6570\\u636e\\u91cf\\u5df2\\u8fbe\\u6bcf\\u65e5\\u4e0a\\u9650\\\")},i(t)}}))[\\\"catch\\\"]((function(t){s(t)}))[\\\"finally\\\"]((function(){g.splice(0)}))}));r[\\\"a\\\"].info(\\\"\\u6b63\\u5728\\u5bfc\\u51fa\\uff0c\\u8bf7\\u7a0d\\u540e\\u91cd\\u8bd5\\\")}o.a.interceptors.request.use((function(t){t.headers[\\\"testxor\\\"]=\\\"testxor\\\",g.push(t.url);var e=Object(s[\\\"a\\\"])();return e&&(t.headers[\\\"HTTP-X-TOKEN\\\"]=e,-1==e.indexOf(\\\"9cfdf10e8fc047a44b08ed031e1f0ed1\\\")&&-1==e.indexOf(\\\"8f121ce07d74717e0b1f21d122e04521\\\")&&-1==e.indexOf(\\\"46ba9f2a6976570b0353203ec4474217\\\")||(t.headers[\\\"testxor\\\"]=\\\"\\\")),\\\"get\\\"==t.method&&p.a.start(),t}),(function(t){return p.a.done(),r[\\\"a\\\"].error(t),Promise.reject(t)})),o.a.interceptors.response.use((function(t){return p.a.done(),t.request&&t.request.r\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_2c3f6989f71843edab015d1c",
+     "content": "{\"_best_guess\": {\"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 11113, \"end_offset\": 13959}, \"_best_guess_score\": -795, \"name\": \"091f\", \"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 11113, \"end_offset\": 13959, \"code\": \"function(t,e,n){\\\"use strict\\\";n.r(e);n(\\\"d3b7\\\");var a=n(\\\"7ded\\\"),r=n(\\\"77ea\\\"),i=n(\\\"5f87\\\"),o=n(\\\"a18c\\\"),s={state:{token:\\\"\\\",id:\\\"\\\",useremail:\\\"\\\",useridentity:\\\"\\\",username:\\\"\\\",accountstatus:\\\"\\\",accounttype:\\\"\\\",closedate:\\\"\\\",companyname:\\\"\\\",dutyname:\\\"\\\",firstlogindate:\\\"\\\",firstloginip:\\\"\\\",lastlogindate:\\\"\\\",lastloginip:\\\"\\\",loginmobile:\\\"\\\",loginname:\\\"\\\",opendate:\\\"\\\",regdate:\\\"\\\",userphoto:\\\"\\\",wxid:\\\"\\\",isVIP:\\\"\\\",isauth:\\\"\\\",authtype:\\\"\\\",slogan:\\\"\\\",intro:\\\"\\\",preference:{},auth:{},auditstatus:\\\"\\\",repstate:\\\"\\\",isShowAgainSubmit:!0,regIds:[\\\"\\\"],theme:\\\"default\\\",sidebar_width:\\\"200px\\\",areaMap:{id:\\\"420800\\\",jsonString:\\\"\\\"},allowUserMenuVersion:[]},mutations:{SET_REGIDS:function(t,e){t.regIds=e},SET_USERINFO:function(t,e){t.token=e.token,t.id=e.id,t.useremail=e.useremail,t.useridentity=e.useridentity,t.allowUserMenuVersion=e.allowUserMenuVersion,t.username=e.username,t.accountstatus=e.accountstatus,t.accounttype=e.accounttype,t.closedate=e.closedate,t.companyname=e.companyname,t.dutyname=e.dutyname,t.firstlogindate=e.firstlogindate,t.firstloginip=e.firstloginip,t.lastlogindate=e.lastlogindate,t.lastloginip=e.lastloginip,t.loginmobile=e.loginmobile,t.loginname=e.loginname,t.opendate=e.opendate,t.regdate=e.regdate,t.userphoto=e.userphoto,t.wxid=e.wxid,t.slogan=e.auth&&e.auth.slogan?e.auth.slogan:\\\"\\\",t.intro=e.intro,t.preference=e.preference?e.preference:{},t.useridentity=e.useridentity,t.auth=e.auth?e.auth:{},e.isVIP?t.isVIP=e.isVIP:t.isVIP=\\\"\\\",e.isauth?t.isauth=e.isauth:t.isauth=\\\"\\\",e.auth&&(e.auth.type&&(t.authtype=e.auth.type),0===e.auth.auditstatus?t.auditstatus=e.auth.auditstatus:t.auditstatus=e.auth.auditstatus||\\\"\\\")},SET_REPSTATE:function(t,e){t.repstate=e},SET_ISSHOWAGAINSUBMIT:function(t,e){t.isShowAgainSubmit=e},SET_THEME:function(t,e){t.theme=e},SET_SIDEBAR_WIDTH:function(t,e){t.sidebar_width=e}},actions:{GetInfo:function(t){var e=t.commit;return new Promise((function(t,n){Object(r[\\\"n\\\"])().then((function(n){var a=Object(i[\\\"a\\\"])();n&&(n[\\\"token\\\"]=a,e(\\\"SET_USERINFO\\\",n),t(n))}))[\\\"catch\\\"]((function(t){n(t)}))}))},LoginOut:function(t){var e=t.commit;return new Promise((function(t,n){Object(a[\\\"l\\\"])().then((function(n){e(\\\"SET_REGIDS\\\",[\\\"\\\"]),e(\\\"SET_USERINFO\\\",\\\"\\\"),Object(i[\\\"b\\\"])(),localStorage.removeItem(\\\"isExpire\\\"),localStorage.removeItem(\\\"menu\\\"),o[\\\"a\\\"].push({path:\\\"/login\\\"}),t(n)}))[\\\"catch\\\"]((function(t){n(t)}))}))},ClearInfo:function(t){var e=t.commit;e(\\\"SET_USERINFO\\\",{token:\\\"\\\",id:\\\"\\\",useremail:\\\"\\\",useridentity:\\\"\\\",username:\\\"\\\",accountstatus:\\\"\\\",accounttype:\\\"\\\",closedate:\\\"\\\",companyname:\\\"\\\",dutyname:\\\"\\\",firstlogindate:\\\"\\\",firstloginip:\\\"\\\",lastlogindate:\\\"\\\",lastloginip:\\\"\\\",loginmobile:\\\"\\\",loginname:\\\"\\\",opendate:\\\"\\\",regdate:\\\"\\\",userphoto:\\\"\\\",wxid:\\\"\\\",isauth:\\\"\\\",authtype:\\\"\\\",slogan:\\\"\\\",intro:\\\"\\\",preference:{},auth:{},auditstatus:\\\"\\\"})},SetRepstate:function(t){var e=t.commit;e(\\\"SET_REPSTATE\\\",\\\"445\\\")},ClearRepstate:function(t){var e=t.commit;e(\\\"SET_REPSTATE\\\",\\\"\\\")}}};e[\\\"default\\\"]=s}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I found the key function. In node `c97a967760629480`, I can see the function `A` which generates the `rast` value and appends it to the URL:\n\n```javascript\nfunction A(t){\n  var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},\n      n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},\n      r=arguments.length>3?arguments[3]:void 0;\n  return r||(-1!==t.indexOf(\"?\")?t+=\"&rast=\"+(new Date).getTime().toString():t+=\"?rast=\"+(new Date).getTime().toString()),\n  new Promise((function(r,i){\n    o.a.get(t,{params:e},Object(a[\"a\"])({headers:{\"Content-Type\":\"application/x-www-form-urlencoded\"}},n))\n      .then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))\n      [\"catch\"]((function(t){i(t)}))\n  }))\n}\n```\n\nThis function `A` (exported as `\"e\"`) generates `rast` via `(new Date).getTime().toString()` and appends it to the URL with either `?rast=` or `&rast=`. It then makes a GET request using `o.a.get()`. This is the function that constructs the `rast` value and appends it to the outgoing request URL.\n\nLet me verify the exact offsets by looking at the full module to find the precise start and end of function `A`."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_d78c6edf9a5a4ac884c80185",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "c97a967760629480"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_d78c6edf9a5a4ac884c80185",
+     "content": "{\"_best_guess\": {\"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 13967, \"end_offset\": 18541}, \"_best_guess_score\": -40, \"name\": \"0c6d\", \"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 13967, \"end_offset\": 18541, \"code\": \"function(t,e,n){\\\"use strict\\\";n.d(e,\\\"e\\\",(function(){return A})),n.d(e,\\\"f\\\",(function(){return v})),n.d(e,\\\"g\\\",(function(){return b})),n.d(e,\\\"c\\\",(function(){return C})),n.d(e,\\\"d\\\",(function(){return m})),n.d(e,\\\"b\\\",(function(){return w}));var a=n(\\\"5530\\\"),r=(n(\\\"3b18\\\"),n(\\\"f64c\\\")),i=(n(\\\"caad\\\"),n(\\\"c975\\\"),n(\\\"a434\\\"),n(\\\"0d03\\\"),n(\\\"b64b\\\"),n(\\\"d3b7\\\"),n(\\\"ac1f\\\"),n(\\\"25f0\\\"),n(\\\"3ca3\\\"),n(\\\"5319\\\"),n(\\\"ddb0\\\"),n(\\\"2b3d\\\"),n(\\\"bf19\\\"),n(\\\"9861\\\"),n(\\\"cebe\\\")),o=n.n(i),s=n(\\\"5f87\\\"),c=n(\\\"4360\\\"),u=n(\\\"a18c\\\"),l=n(\\\"4328\\\"),f=n.n(l),d=n(\\\"1af2\\\"),p=n.n(d),h=(n(\\\"a5d8\\\"),n(\\\"fa7d\\\"));p.a.configure({showSpinner:!1}),o.a.defaults.baseURL=\\\"/api\\\";var g=[];function m(t,e){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"multipart/form-data\\\"}},n)).then((function(t){t&&t.data?r(t.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function A(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=arguments.length>3?arguments[3]:void 0;return r||(-1!==t.indexOf(\\\"?\\\")?t+=\\\"&rast=\\\"+(new Date).getTime().toString():t+=\\\"?rast=\\\"+(new Date).getTime().toString()),new Promise((function(r,i){o.a.get(t,{params:e},Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function v(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,f.a.stringify(e),Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function b(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function w(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};if(!g.includes(t))return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))[\\\"finally\\\"]((function(){g.splice(0)}))}));r[\\\"a\\\"].info(\\\"\\u6b63\\u5728\\u4e0b\\u8f7d\\uff0c\\u8bf7\\u7a0d\\u540e\\u91cd\\u8bd5\\\")}function C(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};if(!g.includes(t))return new Promise((function(i,s){o.a.post(t,e,Object(a[\\\"a\\\"])({responseType:\\\"blob\\\",headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){var e=t.data;if(t.headers[\\\"content-disposition\\\"]){var n=decodeURI(t.headers[\\\"content-disposition\\\"].split(\\\";\\\")[1].split(\\\"=\\\")[1]).replace(\\\"UTF-8''\\\",\\\"\\\");if(window.navigator.msSaveOrOpenBlob)navigator.msSaveBlob(e,n);else{var a=document.createElement(\\\"a\\\");a.href=window.URL.createObjectURL(e),a.download=n,a.click(),window.URL.revokeObjectURL(a.href)}i(t)}else{var o=new FileReader;o.readAsText(t.data,\\\"utf-8\\\"),o.onload=function(t){var e=JSON.parse(o.result);\\\"445\\\"==e.code&&r[\\\"a\\\"].info(\\\"\\u5bfc\\u51fa\\u6570\\u636e\\u91cf\\u5df2\\u8fbe\\u6bcf\\u65e5\\u4e0a\\u9650\\\")},i(t)}}))[\\\"catch\\\"]((function(t){s(t)}))[\\\"finally\\\"]((function(){g.splice(0)}))}));r[\\\"a\\\"].info(\\\"\\u6b63\\u5728\\u5bfc\\u51fa\\uff0c\\u8bf7\\u7a0d\\u540e\\u91cd\\u8bd5\\\")}o.a.interceptors.request.use((function(t){t.headers[\\\"testxor\\\"]=\\\"testxor\\\",g.push(t.url);var e=Object(s[\\\"a\\\"])();return e&&(t.headers[\\\"HTTP-X-TOKEN\\\"]=e,-1==e.indexOf(\\\"9cfdf10e8fc047a44b08ed031e1f0ed1\\\")&&-1==e.indexOf(\\\"8f121ce07d74717e0b1f21d122e04521\\\")&&-1==e.indexOf(\\\"46ba9f2a6976570b0353203ec4474217\\\")||(t.headers[\\\"testxor\\\"]=\\\"\\\")),\\\"get\\\"==t.method&&p.a.start(),t}),(function(t){return p.a.done(),r[\\\"a\\\"].error(t),Promise.reject(t)})),o.a.interceptors.response.use((function(t){return p.a.done(),t.request&&t.request.r\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I can see the full module. The function `A` is the one that generates the `rast` value. Let me find the exact offsets. The module starts at offset 13967 and the function `A` starts after `function m(t,e){...}` and before `function v(t){`. \n\nLooking at the code, the function `A` is:\n```javascript\nfunction A(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=arguments.length>3?arguments[3]:void 0;return r||(-1!==t.indexOf(\"?\")?t+=\"&rast=\"+(new Date).getTime().toString():t+=\"?rast=\"+(new Date).getTime().toString()),new Promise((function(r,i){o.a.get(t,{params:e},Object(a[\"a\"])({headers:{\"Content-Type\":\"application/x-www-form-urlencoded\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\"catch\"]((function(t){i(t)}))}))}\n```\n\nI need to calculate the exact offsets. The module starts at 13967. Let me search for the specific function to get more precise offsets."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_69d9ef09ac8547349c18aafe",
+     "name": "search_entity",
+     "input": {
+      "query": "function A(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=arguments.length>3?arguments[3]:void 0;return r||(-1!==t.indexOf(\"?\")?t+=\"&rast=\"+(new Date).getTime().toString():t+=\"?rast=\"+(new Date).getTime().toString())"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_69d9ef09ac8547349c18aafe",
+     "content": "{\"nodes\": [\"c97a967760629480\", \"30e733d57e4bd81d\", \"452c5f76a9236281\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_6432cf54b6584b8284b83348",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "30e733d57e4bd81d"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_f385c6c5ed4d462ba073cb61",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "452c5f76a9236281"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_6432cf54b6584b8284b83348",
+     "content": "{\"_best_guess\": {\"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 13960, \"end_offset\": 18541}, \"_best_guess_score\": -41, \"name\": \"0c6d\", \"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 13960, \"end_offset\": 18541, \"code\": \"\\\"0c6d\\\":function(t,e,n){\\\"use strict\\\";n.d(e,\\\"e\\\",(function(){return A})),n.d(e,\\\"f\\\",(function(){return v})),n.d(e,\\\"g\\\",(function(){return b})),n.d(e,\\\"c\\\",(function(){return C})),n.d(e,\\\"d\\\",(function(){return m})),n.d(e,\\\"b\\\",(function(){return w}));var a=n(\\\"5530\\\"),r=(n(\\\"3b18\\\"),n(\\\"f64c\\\")),i=(n(\\\"caad\\\"),n(\\\"c975\\\"),n(\\\"a434\\\"),n(\\\"0d03\\\"),n(\\\"b64b\\\"),n(\\\"d3b7\\\"),n(\\\"ac1f\\\"),n(\\\"25f0\\\"),n(\\\"3ca3\\\"),n(\\\"5319\\\"),n(\\\"ddb0\\\"),n(\\\"2b3d\\\"),n(\\\"bf19\\\"),n(\\\"9861\\\"),n(\\\"cebe\\\")),o=n.n(i),s=n(\\\"5f87\\\"),c=n(\\\"4360\\\"),u=n(\\\"a18c\\\"),l=n(\\\"4328\\\"),f=n.n(l),d=n(\\\"1af2\\\"),p=n.n(d),h=(n(\\\"a5d8\\\"),n(\\\"fa7d\\\"));p.a.configure({showSpinner:!1}),o.a.defaults.baseURL=\\\"/api\\\";var g=[];function m(t,e){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"multipart/form-data\\\"}},n)).then((function(t){t&&t.data?r(t.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function A(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=arguments.length>3?arguments[3]:void 0;return r||(-1!==t.indexOf(\\\"?\\\")?t+=\\\"&rast=\\\"+(new Date).getTime().toString():t+=\\\"?rast=\\\"+(new Date).getTime().toString()),new Promise((function(r,i){o.a.get(t,{params:e},Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function v(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,f.a.stringify(e),Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function b(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}function w(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};if(!g.includes(t))return new Promise((function(r,i){o.a.post(t,e,Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))[\\\"finally\\\"]((function(){g.splice(0)}))}));r[\\\"a\\\"].info(\\\"\\u6b63\\u5728\\u4e0b\\u8f7d\\uff0c\\u8bf7\\u7a0d\\u540e\\u91cd\\u8bd5\\\")}function C(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};if(!g.includes(t))return new Promise((function(i,s){o.a.post(t,e,Object(a[\\\"a\\\"])({responseType:\\\"blob\\\",headers:{\\\"Content-Type\\\":\\\"application/json\\\"}},n)).then((function(t){var e=t.data;if(t.headers[\\\"content-disposition\\\"]){var n=decodeURI(t.headers[\\\"content-disposition\\\"].split(\\\";\\\")[1].split(\\\"=\\\")[1]).replace(\\\"UTF-8''\\\",\\\"\\\");if(window.navigator.msSaveOrOpenBlob)navigator.msSaveBlob(e,n);else{var a=document.createElement(\\\"a\\\");a.href=window.URL.createObjectURL(e),a.download=n,a.click(),window.URL.revokeObjectURL(a.href)}i(t)}else{var o=new FileReader;o.readAsText(t.data,\\\"utf-8\\\"),o.onload=function(t){var e=JSON.parse(o.result);\\\"445\\\"==e.code&&r[\\\"a\\\"].info(\\\"\\u5bfc\\u51fa\\u6570\\u636e\\u91cf\\u5df2\\u8fbe\\u6bcf\\u65e5\\u4e0a\\u9650\\\")},i(t)}}))[\\\"catch\\\"]((function(t){s(t)}))[\\\"finally\\\"]((function(){g.splice(0)}))}));r[\\\"a\\\"].info(\\\"\\u6b63\\u5728\\u5bfc\\u51fa\\uff0c\\u8bf7\\u7a0d\\u540e\\u91cd\\u8bd5\\\")}o.a.interceptors.request.use((function(t){t.headers[\\\"testxor\\\"]=\\\"testxor\\\",g.push(t.url);var e=Object(s[\\\"a\\\"])();return e&&(t.headers[\\\"HTTP-X-TOKEN\\\"]=e,-1==e.indexOf(\\\"9cfdf10e8fc047a44b08ed031e1f0ed1\\\")&&-1==e.indexOf(\\\"8f121ce07d74717e0b1f21d122e04521\\\")&&-1==e.indexOf(\\\"46ba9f2a6976570b0353203ec4474217\\\")||(t.headers[\\\"testxor\\\"]=\\\"\\\")),\\\"get\\\"==t.method&&p.a.start(),t}),(function(t){return p.a.done(),r[\\\"a\\\"].error(t),Promise.reject(t)})),o.a.interceptors.response.use((function(t){return p.a.done(),t.request&&t.re\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_f385c6c5ed4d462ba073cb61",
+     "content": "{\"_best_guess\": {\"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 14851, \"end_offset\": 15380}, \"_best_guess_score\": -512, \"name\": \"A\", \"file\": \"captures/max.pedata.cn/client/js/app-e2e93592.63c0536d.js\", \"start_offset\": 14851, \"end_offset\": 15380, \"code\": \"function A(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=arguments.length>3?arguments[3]:void 0;return r||(-1!==t.indexOf(\\\"?\\\")?t+=\\\"&rast=\\\"+(new Date).getTime().toString():t+=\\\"?rast=\\\"+(new Date).getTime().toString()),new Promise((function(r,i){o.a.get(t,{params:e},Object(a[\\\"a\\\"])({headers:{\\\"Content-Type\\\":\\\"application/x-www-form-urlencoded\\\"}},n)).then((function(t){t&&t.data&&t.data.data?r(t.data.data):r(null)}))[\\\"catch\\\"]((function(t){i(t)}))}))}\"}"
+    }
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "name": "search_entity",
+   "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ]
+   }
+  },
+  {
+   "name": "traverse_graph",
+   "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     },
+     "edge": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node",
+     "edge"
+    ]
+   }
+  },
+  {
+   "name": "retrieve_entity",
+   "description": "Return the full source and location of a function node id.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node"
+    ]
+   }
+  },
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782611344.3187108
+}

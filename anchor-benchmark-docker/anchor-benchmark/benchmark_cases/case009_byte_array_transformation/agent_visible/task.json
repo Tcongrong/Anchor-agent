@@ -1,0 +1,83 @@
+{
+  "case_id": "case009_byte_array_transformation",
+  "page": "captures/devtools-source-dump/127.0.0.1_4009/index.html",
+  "interaction": [
+    { "action": "click", "selector": "#bootLaneButton" },
+    { "action": "select", "selector": "#scopeBand", "value": "wide" },
+    { "action": "select", "selector": "#ledgerSlice", "value": "open" },
+    { "action": "fill", "selector": "#floorUnits", "value": "250" },
+    { "action": "fill", "selector": "#custodianTag", "value": "maria" },
+    { "action": "check", "selector": "#parityLock" },
+    { "action": "click", "selector": "#bindScopeButton" },
+    { "action": "click", "selector": "#emitBufferButton" }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "table.segment.commit",
+    "field": "typed_array_payload",
+    "value_pattern": "^ta_[A-Za-z0-9_-]{24}$"
+  },
+  "question": "Locate the anchor function for the typed_array_payload field in the console.log object whose action is table.segment.commit, observed after booting the byte lane, selecting the wide scope band, the open ledger slice, a floor units value, a custodian tag and parity lock, then binding the scope and clicking the final emit-buffer button on the page. The anchor function is the first target-specific typed-array transformation value constructor on the dynamic behavior chain: after staged lane boot/bind/emit gating, custom-event dispatch, action routing, tuple preparation and asynchronous continuation, its own function body constructs the target observable typed-array payload value rather than merely collecting inputs, dispatching control, wrapping a return value, or emitting to the console. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, a factory wrapper, a boot/bind gate, encoders reused outside the target path, or the final sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice. Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": { "type": "integer", "required": true, "description": "1-based inclusive start line of the function in file." },
+          "end_line": { "type": "integer", "required": true, "description": "1-based inclusive end line of the function in file." },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based byte offset in file where the function slice begins." },
+          "end_offset": { "type": "integer", "required": true, "description": "0-based byte offset in file where the function slice ends, exclusive." },
+          "code": { "type": "string", "required": true, "description": "Exact source text of the complete function from start_offset to end_offset. Must start with function <function_name>( and end with the closing brace of that function." }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleTypedArrayFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4009/assets/calendar.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 108,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleTypedArrayFn(tuple, config, context = {}) {\n  const text = exampleSourceFrom(tuple, config, context);\n  const bytes = exampleMaterialize(text, config, context);\n  return exampleEncode(bytes);\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function with balanced braces, not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or a payload wrapper that only emits an already constructed value.",
+    "Do not return a generic DOM reader, lane boot gate, scope binder, ledger filter routine, router, factory wrapper or formatter when a more target-specific typed-array value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The target behavior is byte_array_transformation / byte-array transformation, not request signing, browser fingerprinting, state encoding or request transformation."
+  ],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested field, or dispatches the requested action, and removing that statement would break the observed target output under the prescribed interaction. A function is generic when it is a reusable utility, control-flow dispatcher, scheduler, DOM/form collector, validator, serializer, normalizer or wrapper whose body would look the same regardless of which behavior it currently serves. The anchor is the shallowest target-specific function on the path from trigger to sink: upstream dispatchers are too generic, downstream reusable utilities are too low-level, and final sinks that only emit an already-built value are wrappers rather than anchors.",
+  "anchor_worked_example": "Worked example from a different scenario: a checkout page emits body.order_sig_v2 after Submit Order. The chain collects an order draft, encodes checkout state, collects an async profile receipt, composes a request envelope, runs a generic interceptor pipeline, then selects a sealing interceptor. The sealing interceptor is the anchor because its immediate caller is a generic dispatcher and its own body is the highest point that explains why order_sig_v2 is produced. Helpers below it that canonicalize fields or fold payload bytes are nested target-specific helpers; the digest routine is a reusable core utility; the dispatcher and request sender are wrappers or path functions; same-click analytics_sig or retry_fingerprint values are off-chain decoys. Apply the same reasoning to the actual page and bundle below.",
+  "notes": [
+    "The page stages a deterministic local byte-lane table and writes the observable object to the browser console.",
+    "The target value is a deterministic typed-array transformation of the staged table segment fields, not an environment digest.",
+    "The final emit path is gated by booting the lane and binding the scope before clicking emit; an unbooted or unbound lane only emits shadow output.",
+    "The final field name may be reconstructed dynamically at runtime.",
+    "Decoy shadow console outputs may appear before the requested log object.",
+    "The same bound scope produces the same typed_array_payload; changing scope band, ledger slice, floor units, custodian tag or parity lock changes it."
+  ]
+}

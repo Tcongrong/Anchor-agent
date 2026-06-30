@@ -1,0 +1,117 @@
+{
+  "case_id": "real13_kuwo_request_signature",
+  "schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "captured_js_files": 16,
+    "captured_js_total_bytes": 1399729,
+    "anchor_bundle_lines": 1,
+    "minified": true,
+    "bundler": "webpack",
+    "obfuscation_level": 1,
+    "vendor_noise_level": "high",
+    "call_depth_estimate": 3,
+    "cross_file_anchor": false,
+    "same_request_decoy_fields": 3,
+    "notes": "Single-line minified webpack bundle (4f4f4b5.js). The interceptor x sets reqId, plat, from, httpsStatus on the same request (sibling fields, not separate functions). uuid.v1 is module 113 in shared chunk 8dcf22e.js and is scored as a 0.5 core utility together with its rng/stringify helpers. Search trigger/call-site functions and the response-side callback are 0.2 path roles. There is no valid 0.7 nested helper because x calls the generic uuid library and binds reqId inline. GA/googletagmanager/bdstatic are analytics noise."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          "focus search box",
+          "type a query"
+        ]
+      },
+      "sink": {
+        "type": "network_request",
+        "method": "GET",
+        "url_contains": "/openapi/v1/www/search/searchKey",
+        "field": "reqId",
+        "plaintext_sample": "(none; generated)",
+        "value_sample": "8eb656f0-35a0-11f1-b1e8-b9604e7bb052"
+      }
+    },
+    "anchor_definition": "The request interceptor x that generates a uuid and binds it to t.data.reqId; not the search handler, the uuid lib, or result formatters. The 0.7 nested-helper tier is intentionally empty because the reqId-specific binding happens inline in x."
+  },
+  "candidate_scope": {
+    "included": [
+      "agent_visible/captures/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "worker scripts",
+      "extension scripts",
+      "files outside captures"
+    ]
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "request_nonce_uuid_generation",
+    "subtype": "v1 uuid reqId attached by an axios request interceptor",
+    "network_request_present": true,
+    "recomputable_offline": false,
+    "recompute_check": "reqId is a random/time-based uuid; not reproducible to a fixed value",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "reqId is a per-request random nonce, not an encoding of UI/app state."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "Only nonce/meta fields are attached; the request body is not transformed."
+      }
+    ]
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "Single-line minified bundle; the interceptor is anonymous and reached via a webpack export alias (o.a)."
+      ]
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The same interceptor sets reqId, plat, from and httpsStatus; only reqId is the target."
+      ]
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The reqId is generated inside an axios interceptor far from the search-box handler that triggers the request."
+      ]
+    }
+  },
+  "provenance": {
+    "source_url": "http://www.kuwo.cn/",
+    "label_in_1json": "4f4f4b5.js:1:19547",
+    "label_is_stale": false,
+    "located_by": "content_search",
+    "anchor_locate_method": "ast"
+  },
+  "primary_anchor": {
+    "answer_function": "x",
+    "source_function": "x",
+    "source_file": "h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+    "captured_file": "captures/h5s.kuwo.cn/www/kw-www/4f4f4b5.js",
+    "captured_span": {
+      "start_line": 1,
+      "end_line": 1,
+      "start_offset": 19379,
+      "end_offset": 20128
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  },
+  "audit": {
+    "answer_match": "Yes: the 1.json case 13 code and oracle.primary_anchor both resolve to x in 4f4f4b5.js.",
+    "question_direction": "The visible question asks for the complete function whose own body generates and attaches reqId, which points to x.",
+    "role_diversity": "Added 0.5 uuid core utilities, 0.2 search/request path roles, and off-chain duplicate/formatter/header decoys. The 0.7 tier is recorded as empty because no separate target-specific helper exists."
+  }
+}

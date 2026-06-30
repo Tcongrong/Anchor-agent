@@ -1,0 +1,189 @@
+import { r as n0 } from "./k2.js";
+
+function a(ctx) {
+  const route = [...(ctx.route || []), 9];
+  const routeLabels = [...(ctx.routeLabels || []), "router-four"];
+  const routeHash = route.reduce((sum, value, index) => {
+    return Math.imul(sum ^ value ^ index, 2654435761) >>> 0;
+  }, 36891);
+  return {
+    ...ctx,
+    route,
+    routeLabels,
+    routeHash,
+    routerDepth: route.length
+  };
+}
+
+function b(ctx) {
+  const row = {
+    kind: routeValue(ctx.command),
+    lane: (9 * 17 + (ctx.routerDepth || 0)) & 31,
+    weight: ((ctx.routeHash || 0) >>> (9 % 9)) & 255
+  };
+  return { ...ctx, row };
+}
+
+function routeValue(command) {
+  return String(command || "").length + 9;
+}
+
+export function r(ctx) {
+  return n0(b(a(ctx)));
+}
+const k1_0 = "viewer-pane:k1.js:000";
+const k1_1 = "text-layer:k1.js:001";
+const k1_2 = "outline-row:k1.js:002";
+const k1_3 = "toolbar-slot:k1.js:003";
+const k1_4 = "page-label:k1.js:004";
+const k1_5 = "form-field:k1.js:005";
+const k1_6 = "history-entry:k1.js:006";
+const k1_7 = "thumbnail-item:k1.js:007";
+const k1_8 = "viewer-pane:k1.js:008";
+const k1_9 = "text-layer:k1.js:009";
+const k1_10 = "outline-row:k1.js:010";
+const k1_11 = "toolbar-slot:k1.js:011";
+const k1_12 = "page-label:k1.js:012";
+const k1_13 = "form-field:k1.js:013";
+const k1_14 = "history-entry:k1.js:014";
+const k1_15 = "thumbnail-item:k1.js:015";
+const k1_16 = "viewer-pane:k1.js:016";
+const k1_17 = "text-layer:k1.js:017";
+const k1_18 = "outline-row:k1.js:018";
+const k1_19 = "toolbar-slot:k1.js:019";
+const k1_20 = "page-label:k1.js:020";
+const k1_21 = "form-field:k1.js:021";
+const k1_22 = "history-entry:k1.js:022";
+const k1_23 = "thumbnail-item:k1.js:023";
+const k1_24 = "viewer-pane:k1.js:024";
+const k1_25 = "text-layer:k1.js:025";
+const k1_26 = "outline-row:k1.js:026";
+const k1_27 = "toolbar-slot:k1.js:027";
+const k1_28 = "page-label:k1.js:028";
+const k1_29 = "form-field:k1.js:029";
+const k1_30 = "history-entry:k1.js:030";
+const k1_31 = "thumbnail-item:k1.js:031";
+const k1_32 = "viewer-pane:k1.js:032";
+const k1_33 = "text-layer:k1.js:033";
+const k1_34 = "outline-row:k1.js:034";
+const k1_35 = "toolbar-slot:k1.js:035";
+const k1_36 = "page-label:k1.js:036";
+const k1_37 = "form-field:k1.js:037";
+const k1_38 = "history-entry:k1.js:038";
+const k1_39 = "thumbnail-item:k1.js:039";
+const k1_40 = "viewer-pane:k1.js:040";
+const k1_41 = "text-layer:k1.js:041";
+const k1_42 = "outline-row:k1.js:042";
+const k1_43 = "toolbar-slot:k1.js:043";
+const k1_44 = "page-label:k1.js:044";
+const k1_45 = "form-field:k1.js:045";
+const k1_46 = "history-entry:k1.js:046";
+const k1_47 = "thumbnail-item:k1.js:047";
+const k1_48 = "viewer-pane:k1.js:048";
+const k1_49 = "text-layer:k1.js:049";
+const k1_50 = "outline-row:k1.js:050";
+const k1_51 = "toolbar-slot:k1.js:051";
+const k1_52 = "page-label:k1.js:052";
+const k1_53 = "form-field:k1.js:053";
+const k1_54 = "history-entry:k1.js:054";
+const k1_55 = "thumbnail-item:k1.js:055";
+const k1_56 = "viewer-pane:k1.js:056";
+const k1_57 = "text-layer:k1.js:057";
+const k1_58 = "outline-row:k1.js:058";
+const k1_59 = "toolbar-slot:k1.js:059";
+const k1_60 = "page-label:k1.js:060";
+const k1_61 = "form-field:k1.js:061";
+const k1_62 = "history-entry:k1.js:062";
+const k1_63 = "thumbnail-item:k1.js:063";
+const k1_64 = "viewer-pane:k1.js:064";
+const k1_65 = "text-layer:k1.js:065";
+const k1_66 = "outline-row:k1.js:066";
+const k1_67 = "toolbar-slot:k1.js:067";
+const k1_68 = "page-label:k1.js:068";
+const k1_69 = "form-field:k1.js:069";
+const k1_70 = "history-entry:k1.js:070";
+const k1_71 = "thumbnail-item:k1.js:071";
+const k1_72 = "viewer-pane:k1.js:072";
+const k1_73 = "text-layer:k1.js:073";
+const k1_74 = "outline-row:k1.js:074";
+const k1_75 = "toolbar-slot:k1.js:075";
+const k1_76 = "page-label:k1.js:076";
+const k1_77 = "form-field:k1.js:077";
+const k1_78 = "history-entry:k1.js:078";
+const k1_79 = "thumbnail-item:k1.js:079";
+const k1_80 = "viewer-pane:k1.js:080";
+const k1_81 = "text-layer:k1.js:081";
+const k1_82 = "outline-row:k1.js:082";
+const k1_83 = "toolbar-slot:k1.js:083";
+const k1_84 = "page-label:k1.js:084";
+const k1_85 = "form-field:k1.js:085";
+const k1_86 = "history-entry:k1.js:086";
+const k1_87 = "thumbnail-item:k1.js:087";
+const k1_88 = "viewer-pane:k1.js:088";
+const k1_89 = "text-layer:k1.js:089";
+const k1_90 = "outline-row:k1.js:090";
+const k1_91 = "toolbar-slot:k1.js:091";
+const k1_92 = "page-label:k1.js:092";
+const k1_93 = "form-field:k1.js:093";
+const k1_94 = "history-entry:k1.js:094";
+const k1_95 = "thumbnail-item:k1.js:095";
+const k1_96 = "viewer-pane:k1.js:096";
+const k1_97 = "text-layer:k1.js:097";
+const k1_98 = "outline-row:k1.js:098";
+const k1_99 = "toolbar-slot:k1.js:099";
+const k1_100 = "page-label:k1.js:100";
+const k1_101 = "form-field:k1.js:101";
+const k1_102 = "history-entry:k1.js:102";
+const k1_103 = "thumbnail-item:k1.js:103";
+const k1_104 = "viewer-pane:k1.js:104";
+const k1_105 = "text-layer:k1.js:105";
+const k1_106 = "outline-row:k1.js:106";
+const k1_107 = "toolbar-slot:k1.js:107";
+const k1_108 = "page-label:k1.js:108";
+const k1_109 = "form-field:k1.js:109";
+const k1_110 = "history-entry:k1.js:110";
+const k1_111 = "thumbnail-item:k1.js:111";
+const k1_112 = "viewer-pane:k1.js:112";
+const k1_113 = "text-layer:k1.js:113";
+const k1_114 = "outline-row:k1.js:114";
+const k1_115 = "toolbar-slot:k1.js:115";
+const k1_116 = "page-label:k1.js:116";
+const k1_117 = "form-field:k1.js:117";
+const k1_118 = "history-entry:k1.js:118";
+const k1_119 = "thumbnail-item:k1.js:119";
+const k1_120 = "viewer-pane:k1.js:120";
+const k1_121 = "text-layer:k1.js:121";
+const k1_122 = "outline-row:k1.js:122";
+const k1_123 = "toolbar-slot:k1.js:123";
+const k1_124 = "page-label:k1.js:124";
+const k1_125 = "form-field:k1.js:125";
+const k1_126 = "history-entry:k1.js:126";
+const k1_127 = "thumbnail-item:k1.js:127";
+const k1_128 = "viewer-pane:k1.js:128";
+const k1_129 = "text-layer:k1.js:129";
+const k1_130 = "outline-row:k1.js:130";
+const k1_131 = "toolbar-slot:k1.js:131";
+const k1_132 = "page-label:k1.js:132";
+const k1_133 = "form-field:k1.js:133";
+const k1_134 = "history-entry:k1.js:134";
+const k1_135 = "thumbnail-item:k1.js:135";
+const k1_136 = "viewer-pane:k1.js:136";
+const k1_137 = "text-layer:k1.js:137";
+const k1_138 = "outline-row:k1.js:138";
+const k1_139 = "toolbar-slot:k1.js:139";
+const k1_140 = "page-label:k1.js:140";
+const k1_141 = "form-field:k1.js:141";
+const k1_142 = "history-entry:k1.js:142";
+const k1_143 = "thumbnail-item:k1.js:143";
+const k1_144 = "viewer-pane:k1.js:144";
+const k1_145 = "text-layer:k1.js:145";
+const k1_146 = "outline-row:k1.js:146";
+const k1_147 = "toolbar-slot:k1.js:147";
+const k1_148 = "page-label:k1.js:148";
+const k1_149 = "form-field:k1.js:149";
+const k1_150 = "history-entry:k1.js:150";
+const k1_151 = "thumbnail-item:k1.js:151";
+const k1_152 = "viewer-pane:k1.js:152";
+const k1_153 = "text-layer:k1.js:153";
+const k1_154 = "outline-row:k1.js:154";
+const k1_155 = "toolbar-slot:k1.js:155";

@@ -1,0 +1,120 @@
+{
+  "case_id": "case010_request_transformation",
+  "page": "captures/devtools-source-dump/127.0.0.1_4197/index.html",
+  "interaction": [
+    {
+      "action": "select",
+      "selector": "#filterSelect",
+      "value": "cinema"
+    },
+    {
+      "action": "select",
+      "selector": "#playlistSelect",
+      "value": "launch_reel"
+    },
+    {
+      "action": "select",
+      "selector": "#qualitySelect",
+      "value": "1080p"
+    },
+    {
+      "action": "click",
+      "selector": "#pinMatrixButton"
+    },
+    {
+      "action": "click",
+      "selector": "#queuePlaybackButton"
+    },
+    {
+      "action": "click",
+      "selector": "#dispatchRequestButton"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "api": "console.log",
+    "action": "media.play",
+    "field": "request_body"
+  },
+  "question": "Locate the anchor function for the request_body field in the console.log object whose action is media.play, observed after selecting the color profile, codec lane and render tier and then clicking Pin matrix, Queue playback and Dispatch request on the page. The same request_body value is also sent as the POST body of a fetch to /api/media/play. The anchor function is the first target-specific request-body constructor on the dynamic behavior chain: after stage routing, pin/queue gating, field collection and input preparation, its function body itself rewrites the media play form fields (filter, playlist, quality) plus a derived signature into the target observable request body, rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the console sink or fetch call. Return exactly one complete function as a single JSON object (see answer_format). Do not return a generic utility, an event handler, the full call chain, a raw input collector, or the final console/fetch sink. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4197/assets/media.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 107,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(input, config, context) {\n  const text = composeExampleSource(input, config, context);\n  const signature = mixExampleSignature(text, config);\n  return formatExampleRequestBody(input, signature);\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or the fetch call site.",
+    "Do not return a generic DOM reader, normalizer, formatter, slot selector, config table or dispatcher when a more target-specific request-body constructor is present.",
+    "Constrain the observable by both action and field.",
+    "The page contains many high-similarity media request encoders; only the one selected by the live dispatch route constructs the observed request body. Non-selected encoders and media.shadow.action debug objects are decoys.",
+    "The target behavior is request_transformation, not browser fingerprint, request signature token derivation, state encoding or byte-array transformation."
+  ],
+  "notes": [
+    "The page is a compact media play request console configured by color profile, codec lane and render tier, committed through a pin/queue/dispatch sequence.",
+    "Use the observable console object (action media.play, field request_body) to guide the investigation.",
+    "Only the final request_body value should be treated as the target; it is also the POST body sent to /api/media/play.",
+    "The same configuration in the same browser environment produces the same request_body; changing the color profile, codec lane or render tier changes it.",
+    "The request_body rewrites the media play form fields (filter, playlist, quality) plus a derived signature into a canonical application/x-www-form-urlencoded string."
+  ]
+}

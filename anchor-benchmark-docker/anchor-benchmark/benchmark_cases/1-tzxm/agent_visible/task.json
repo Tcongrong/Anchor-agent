@@ -1,0 +1,45 @@
+{
+  "case_id": "real01_tzxm_request_signature",
+  "page": "captures/icity/ipro/open/publicity.html",
+  "interaction": [],
+  "observable": {
+    "type": "network_request",
+    "method": "POST",
+    "url_contains": "getBusinessListByProjectCode",
+    "field": "s,t,o",
+    "plaintext_sample": "(none; derived from random + time)",
+    "value_sample": "s=fb73601775544015992&t=6791_f95177_1775543981000&o=659719"
+  },
+  "question": "On the tzxm project-publicity page, the paging request to .../getBusinessListByProjectCode carries three signature query parameters s, t and o (e.g. s=fb73601775544015992&t=6791_f95177_1775543981000&o=659719). Locate the single complete function that is the anchor for these s/t/o values. The anchor function is the target-specific function on the dynamic behavior chain from the next-page click to the network request whose own body constructs the s/t/o signature and writes it onto the request URL: after the page handler creates the command object, sets generic request parameters and dispatches the request, the anchor's body itself derives s (sig), the keyed timestamp t and o (tkey) from the hex character table, Math.random and Date.parse and appends ?s=&t=&o= to the URL, rather than merely constructing the command object, setting generic parameters, checking preconditions, or being a thin async forwarder/sender. Return exactly one JSON object (see answer_format). Do NOT return generic parameter/data setters, the command constructor, or unrelated helpers. The signature corpus is served as a combined script file (captures/icity/public/scripts/a). Only code under captures is in scope.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/**/*",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": { "type": "string", "required": true, "description": "Identifier or member name of the function as it appears in the captured file." },
+      "file": { "type": "string", "required": true, "description": "captures-relative path; must match visible_corpus." },
+      "slice": {
+        "type": "object", "required": true,
+        "fields": {
+          "start_line": { "type": "integer", "required": true },
+          "end_line": { "type": "integer", "required": true },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based UTF-16 offset (BOM stripped)." },
+          "end_offset": { "type": "integer", "required": true, "description": "Exclusive end offset." },
+          "code": { "type": "string", "required": true, "description": "Exact text [start_offset,end_offset); one complete function." }
+        }
+      }
+    },
+    "example": { "function_name": "exampleExecute", "file": "captures/icity/public/scripts/a", "slice": { "start_line": 1, "end_line": 5, "start_offset": 1000, "end_offset": 1200, "code": "execute: function (type) {\n  /* build s/t/o */\n}" } }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema.",
+    "function_name and slice.code must refer to the same function in the captured file.",
+    "slice.code must be one complete function (balanced braces).",
+    "Return one top-1 function, not a list.",
+    "Do not return generic parameter/data setters or unrelated utilities."
+  ],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested request field, or dispatches the requested action, and removing that statement would break the observed value carried in the network request. A function is generic when it is a reusable utility (hash/encode/encrypt/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the complete function whose own body constructs the requested value and/or writes it into the request before dispatching — the value-construction / field-assignment site. A dedicated downstream encryptor/helper that this function calls to compute the value is a nested target-specific helper (not the anchor); reusable crypto/encoding primitives are core utilities; the request-sending service that merely emits an already-built body is a wrapper/sink. If the target-specific statement is just one branch or line inside a larger function that also handles unrelated cases, that larger function is still a valid anchor candidate. Special case: when the site has no app-level constructor and writes the field directly from a generic primitive call, that call site / primitive is itself the anchor.",
+  "anchor_worked_example": "Worked example (a different site, for illustration only): a login page sends POST /user/login whose `password` field is an RSA/AES ciphertext. On Submit the chain is: read the password input (generic: UI collection) -> validate password strength (generic: precondition) -> a submit/login function assembles the request body r = {password: enc(pwd), ...} and POSTs it (<-- ANCHOR: the complete function containing the field-assignment code) -> the app's dedicated encryptor enc() that it calls per field binds the site key and returns the ciphertext (nested target-specific helper, 0.7) -> a generic crypto library (JSEncrypt/CryptoJS/SM) performs the math (core utility, 0.5) -> the ajax service sends the body (wrapper/sink). The assembly/login function is the anchor because its own body is where the requested value is constructed / written into the payload. The dedicated encryptor below it is 0.7; the crypto library is 0.5; a same-request sibling-field mapper, `captcha` token or header signature is an off-chain decoy (0). Special case: if the page has no app-level constructor and writes the field directly from a primitive call, that primitive is itself the anchor. Apply the same reasoning to the captured bundle below."
+}

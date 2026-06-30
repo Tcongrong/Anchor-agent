@@ -1,0 +1,159 @@
+{
+  "case_id": "real20_fxbaogao_request_signature",
+  "captures_subdir": "captures",
+  "anchor_definition": "The anchor is the phone-login submit handler (the useCallback bound to _): its body reads e.password/e.mobile, derives a nonce i=F.dnGetter(), computes s=G().ne(nonce+password, d()(mobile.slice(3)+nonce)) and posts {mobile, data:s, time:i}. The encrypted data value is constructed inline here, so this enclosing callback is the anchor; not the imported cipher/hash helpers, not sibling QR login renders, and not modal/container UI wrappers. The immediately enclosing phone-login component is target-specific but broader than the value-building callback, so it receives 0.7.",
+  "anchor": {
+    "file": ".cache_chunks/614.js",
+    "locator": "var t=e.password,a=e.mobile,i=F.dnGetter(),s=G().ne(",
+    "answer_function": "_",
+    "source_function": "_",
+    "source_file": ".cache_chunks/614.js",
+    "why": "The memoized phone-login submit callback. Builds s = G().ne(nonce+password, key=d()(mobile.slice(3)+nonce)) and calls x.byPhoneNumber({mobile, data:s, time}). This constructs the exact encrypted data value sent in the login request."
+  },
+  "roles": [
+    {
+      "file": ".cache_chunks/614.js",
+      "locator": "function(e){var n=e.dispatch,o=e.onClose,a=e.handleChangeToQRCode",
+      "role": "Nested target-specific helper",
+      "answer_function": "J",
+      "source_function": "LoginByPhone component function",
+      "why": "The phone-login component owns the form and contains the anchor useCallback. It is target-specific and would reach the right behavior, but it also renders validation/UI and QR-switch controls, so it is broader than the exact value-building callback."
+    },
+    {
+      "file": ".cache_chunks/commons.js",
+      "locator": "e.exports=function(e,n){if(void 0===e||null===e)throw new Error(\"Illegal argument \"+e)",
+      "role": "Core utility",
+      "answer_function": "md5 export",
+      "source_function": "md5 exported function",
+      "why": "Reusable MD5 wrapper called as d()(mobile.slice(3)+nonce) to derive the key material for G().ne. It hashes bytes but does not read the form or bind the result to the login data field."
+    },
+    {
+      "file": ".cache_chunks/commons.js",
+      "locator": "a=function(e,n){e.constructor==String",
+      "role": "Core utility",
+      "answer_function": "md5 core",
+      "source_function": "md5 core transform",
+      "why": "Reusable MD5 digest implementation beneath the exported hash function. It performs generic block hashing and has no phone-login semantics."
+    },
+    {
+      "file": ".cache_chunks/commons.js",
+      "locator": "a._ff=function(e,t,n,r,o,i,a)",
+      "role": "Core utility",
+      "answer_function": "md5 _ff",
+      "source_function": "MD5 round ff",
+      "why": "Generic MD5 round helper used by the digest primitive. It is core crypto support, not the field-binding login logic."
+    },
+    {
+      "file": ".cache_chunks/commons.js",
+      "locator": "a._gg=function(e,t,n,r,o,i,a)",
+      "role": "Core utility",
+      "answer_function": "md5 _gg",
+      "source_function": "MD5 round gg",
+      "why": "Generic MD5 round helper used by the digest primitive. It is below the key derivation call and target-independent."
+    },
+    {
+      "file": ".cache_chunks/commons.js",
+      "locator": "a._hh=function(e,t,n,r,o,i,a)",
+      "role": "Core utility",
+      "answer_function": "md5 _hh",
+      "source_function": "MD5 round hh",
+      "why": "Generic MD5 round helper used by the digest primitive. It contributes to hashing but not to request-field assembly."
+    },
+    {
+      "file": ".cache_chunks/commons.js",
+      "locator": "a._ii=function(e,t,n,r,o,i,a)",
+      "role": "Core utility",
+      "answer_function": "md5 _ii",
+      "source_function": "MD5 round ii",
+      "why": "Generic MD5 round helper used by the digest primitive. It is reusable crypto internals, not the anchor."
+    },
+    {
+      "file": ".cache_chunks/614.js",
+      "start_offset": 5111,
+      "end_offset": 5440,
+      "role": "Wrapper",
+      "answer_function": "phoneLoginResponseCallback",
+      "source_function": "byPhoneNumber response callback",
+      "why": "Handles the response of x.byPhoneNumber after the request data has already been constructed and submitted. It is on the request path but not a value constructor."
+    },
+    {
+      "file": ".cache_chunks/614.js",
+      "locator": "function V(e){var n=e.onClose",
+      "role": "Path/Wrapper",
+      "answer_function": "V",
+      "source_function": "LoginContainer",
+      "why": "Login container that switches between QR and phone login and renders the phone component. It is an upstream UI wrapper, not the encrypted data builder."
+    },
+    {
+      "file": ".cache_chunks/614.js",
+      "start_offset": 8570,
+      "end_offset": 8592,
+      "role": "Path-critical",
+      "answer_function": "changeToPhoneLogin",
+      "source_function": "LoginContainer change-to-phone callback",
+      "why": "Switches the login container into the phone-login branch that contains the anchor. It is path-critical UI state, not encryption logic."
+    },
+    {
+      "file": ".cache_chunks/614.js",
+      "start_offset": 8679,
+      "end_offset": 9064,
+      "role": "Wrapper",
+      "answer_function": "loginCloseCallback",
+      "source_function": "LoginContainer onClose callback",
+      "why": "Post-login container callback that records analytics and closes/binds UI after a login result. It receives an already completed login outcome."
+    },
+    {
+      "file": ".cache_chunks/614.js",
+      "locator": "function N(e){var n=e.dispatch,o=e.onClose,a=e.uuid",
+      "role": "Off-chain",
+      "answer_function": "N",
+      "source_function": "LoginByGZH",
+      "why": "The WeChat official-account QR login component in the same chunk. It calls loginWechart/loginWechartQr and does not read the password or construct the phone-login data field."
+    },
+    {
+      "file": ".cache_chunks/614.js",
+      "locator": "function ee(e){var n=e.closable,o=e.onClose,i=e.uaGroup",
+      "role": "Off-chain",
+      "answer_function": "ee",
+      "source_function": "LoginModal",
+      "why": "Top-level modal shell for login UI. It wraps login components but does not read phone/password, derive the key, run the cipher, or assemble the data request field."
+    }
+  ],
+  "empty_roles": [],
+  "oracle_notes": {
+    "do_not_promote": [
+      "The exact anchor is the _ callback because the password/mobile reads, nonce derivation, MD5 key derivation, G().ne cipher call and x.byPhoneNumber({data:s}) request are all inline there.",
+      "J is target-specific but too broad: it contains the anchor plus form rendering, validators and QR-switch UI, so it is 0.7.",
+      "The imported hash/cipher/nonce helpers are reusable primitives and stay below the field-binding anchor.",
+      "Login containers, branch-switch callbacks, response callbacks and close handlers are path wrappers and should not outrank the anchor.",
+      "QR-code/WeChat login and modal-only UI code are off-chain decoys for this password-derived data observable."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention.",
+    "audit_notes": [
+      "Answer match check: 1.json case 20 code is a contiguous snippet inside the _ phone-login submit callback, and oracle.primary_anchor is _.",
+      "Question direction check: the visible question asks for the complete function whose own body reads password/mobile, derives a key, runs the cipher and submits the phone-login request; it also excludes imported helpers and sibling login components, so it points to _."
+    ]
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to the _ callback that computes s = G().ne(nonce+password, md5(mobile suffix+nonce)) and sends it as data."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "Span maps to the target-specific phone-login component that contains the anchor but is broader than the value-building callback."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to reusable MD5/cipher/nonce primitives used by the anchor."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to an upstream UI wrapper/branch switch, request response callback, or post-login wrapper on the same phone-login path."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to QR/WeChat login, modal-only scaffolding, unrelated analytics/UI helpers, or cannot be uniquely mapped."
+    }
+  ]
+}

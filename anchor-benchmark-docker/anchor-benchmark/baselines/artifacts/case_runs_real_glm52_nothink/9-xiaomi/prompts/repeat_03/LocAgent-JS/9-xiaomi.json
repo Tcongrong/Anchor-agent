@@ -1,0 +1,372 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You are LocAgent, a graph-guided code-localization agent. Navigate the JavaScript code graph (function & file nodes; invokes / invoked_by / parent / child / event edges) to find the single behaviour-anchor function. This benchmark requires a submit tool call, not a prose answer. Prefer the function that constructs or returns the observed field/value over a nested encoder helper. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request in which the username is AES-encrypted into an `encryptedParams` field (e.g. 15924231565 becomes Y3hb3j1gb2pO6cpfx6MRWg==). Locate the anchor function for that encryptedParams field. The anchor function is the target-specific account-login flow on the submit->request chain: the single complete function whose own body lazily loads the crypto module, runs the username through the AES encryptor and binds the returned encryptedParams into the login request parameters it posts \u2014 rather than the AES encryptor it calls to compute the ciphertext (a dedicated target-specific crypto helper in another chunk), the thin accessor that merely returns that encryptor (a getter/wrapper), or the sibling RSA encryptor used by a different path (an off-chain decoy). Note the encryptor lives cross-file in a separate crypto chunk; the anchor is the flow that binds its result into the request. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the AES encryptor, its accessor, or the sibling RSA encryptor \u2014 return the login flow that binds the username encryptedParams into the request. Only code under captures is in scope.  network_request POST /serviceLogin encryptedParams (user) 15924231565 Y3hb3j1gb2pO6cpfx6MRWg==\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/serviceLogin', 'field': 'encryptedParams (user)', 'plaintext_sample': '15924231565', 'value_sample': 'Y3hb3j1gb2pO6cpfx6MRWg=='}\nCandidate seed nodes (lexical prior, not a ranking): ['8e75f0c1e71249e7', 'ce5412a9b21133b8', '47bf5d1aafea3836', '7ce675ace5ece70d', 'edaa1544734069f3', 'ea1d7f8bc8f3bbb2', 'f798fefe80d373b8', '92312dc889d925c4']\nUse search_entity / traverse_graph / retrieve_entity, then call submit with file, start_offset, and end_offset for ONE complete function."
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I'll start by examining the candidate seed nodes and searching for relevant functions related to the login flow and encryptedParams."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_ad1dc122e2564c14a8dbc576",
+     "name": "search_entity",
+     "input": {
+      "query": "encryptedParams"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_8826ce36084c425099fe77cb",
+     "name": "search_entity",
+     "input": {
+      "query": "serviceLogin"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_60ba6a9eb5864c5ca3a9241e",
+     "name": "search_entity",
+     "input": {
+      "query": "AES encrypt username login"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_ad1dc122e2564c14a8dbc576",
+     "content": "{\"nodes\": [\"7ff0839cd3135df8\", \"dcd7116196c58b99\", \"dc8be935fb4c2923\", \"5404badcaa9bebb8\", \"f51a9a51e34c8992\", \"1e8cd112cc1c1245\", \"5189265f01c8b88d\", \"00d3922b05c83888\", \"f88ace1799d457a8\", \"92312dc889d925c4\", \"a795c6b7a8de517b\", \"b7cbfd450b741814\", \"e06e1ce5627dfe92\", \"9bdafaaf9c57023f\", \"70974fc2bb14e761\", \"a7d2cc5a448afe99\", \"2403e33036004e6d\", \"c7944561056af993\", \"770c6397252f1bba\", \"1b51c75b91393942\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_8826ce36084c425099fe77cb",
+     "content": "{\"nodes\": [\"d3df4f34af7bc276\", \"e159a54f18de17bd\", \"0aa24b8bd2874d34\", \"f3ee3d2c1de66bcc\", \"0797742fd27a7a80\", \"23adb489e47d7f06\", \"9fd04ab8e232b124\", \"d678c8e9832ebb15\", \"a7d1b2863be2e242\", \"8a38875b5a97ea27\", \"bdfd9c301e294b3c\", \"187cc87092c1ca7d\", \"0b3af42969eb7067\", \"c1a9e4cfe1269eb0\", \"455a607f7c9603ac\", \"9e39a8d413396c23\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_60ba6a9eb5864c5ca3a9241e",
+     "content": "{\"nodes\": []}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Let me retrieve the candidate seed nodes and some of the search results to understand the code structure."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_deb34b2f188944b2be07463e",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "92312dc889d925c4"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_cdf1bb90c8d24abf8480f739",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "8e75f0c1e71249e7"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_564bb91ed5f547528d015a77",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ce5412a9b21133b8"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_94ff65f7d6654ae99a015772",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "47bf5d1aafea3836"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_deb34b2f188944b2be07463e",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 13946, \"end_offset\": 14945}, \"_best_guess_score\": -7, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 13946, \"end_offset\": 14945, \"code\": \"function(r){for(;;)switch(r.prev=r.next){case 0:return r.next=2,H(t,\\\"pwd\\\");case 2:return l=r.sent,d=e?(0,p.jM)({callingCode:i.callingCode||\\\"\\\",phone:i.account}):i.account.trim(),r.next=6,Promise.all([n.e(2605),n.e(8132),n.e(695),n.e(7634)]).then(n.bind(n,23963));case 6:return f=r.sent,m=f.encryptAes,r.next=10,L.a.getFingerprint();case 10:return h=r.sent,g=h.visitorId,k=m({user:d}),w=k.encryptedParams,b=(0,p.Y3)(!!i.agreementChecked),_=function(){var e=(0,c.Z)((0,o.Z)().mark((function e(){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,s.Js)(t.withSearchParams((0,a.Z)((0,a.Z)({},l),{},{user:w.user,cc:i.callingCode,hash:v()(i.password).toUpperCase(),_json:\\\"true\\\",policyName:b,captCode:u||\\\"\\\",deviceFingerprint:g})),{EUI:k.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(){return e.apply(this,arguments)}}(),r.next=18,_();case 18:return r.abrupt(\\\"return\\\",r.sent);case 19:case\\\"end\\\":return r.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_cdf1bb90c8d24abf8480f739",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6229, \"end_offset\": 6686}, \"_best_guess_score\": 0, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6229, \"end_offset\": 6686, \"code\": \"function(e){for(;;)switch(e.prev=e.next){case 0:if(i=t.submitParams,c=t.searchParams,s=\\\"ticket\\\"!==c.get(\\\"_loginSign\\\")?\\\"pwd\\\":\\\"ticket\\\",!(i._sign&&s===n||r)){e.next=4;break}return e.abrupt(\\\"return\\\",i);case 4:return f.Z.remove(\\\"userId\\\",{domain:\\\"account.xiaomi.com\\\"}),f.Z.remove(\\\"userId\\\",{domain:\\\"xiaomi.com\\\"}),f.Z.remove(\\\"cUserId\\\",{domain:\\\"account.xiaomi.com\\\"}),f.Z.remove(\\\"cUserId\\\",{domain:\\\"xiaomi.com\\\"}),e.abrupt(\\\"return\\\",i);case 9:case\\\"end\\\":return e.stop()}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_564bb91ed5f547528d015a77",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 53361, \"end_offset\": 53707}, \"_best_guess_score\": -1, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 53361, \"end_offset\": 53707, \"code\": \"function(){var t=new URLSearchParams(e.search);return t.delete(\\\"_user\\\"),\\\"register\\\"===((0,A.LX)(e.pathname,{path:\\\"/login\\\"})?\\\"login\\\":\\\"register\\\")&&\\\"/register/phone\\\"===lt[n]&&-1!==e.search.indexOf(\\\"sid=oauth2.0\\\")&&(it(\\\"passToken\\\",\\\"/\\\",\\\".account.xiaomi.com\\\"),it(\\\"userId\\\",\\\"/\\\",\\\".account.xiaomi.com\\\"),it(\\\"cUserId\\\",\\\"/\\\",\\\".account.xiaomi.com\\\")),t.toString()}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_94ff65f7d6654ae99a015772",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6177, \"end_offset\": 6691}, \"_best_guess_score\": -2, \"name\": \"e\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6177, \"end_offset\": 6691, \"code\": \"function e(t,n,r,a){var i,c,s;return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(i=t.submitParams,c=t.searchParams,s=\\\"ticket\\\"!==c.get(\\\"_loginSign\\\")?\\\"pwd\\\":\\\"ticket\\\",!(i._sign&&s===n||r)){e.next=4;break}return e.abrupt(\\\"return\\\",i);case 4:return f.Z.remove(\\\"userId\\\",{domain:\\\"account.xiaomi.com\\\"}),f.Z.remove(\\\"userId\\\",{domain:\\\"xiaomi.com\\\"}),f.Z.remove(\\\"cUserId\\\",{domain:\\\"account.xiaomi.com\\\"}),f.Z.remove(\\\"cUserId\\\",{domain:\\\"xiaomi.com\\\"}),e.abrupt(\\\"return\\\",i);case 9:case\\\"end\\\":return e.stop()}}),e)}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "The first result (node `92312dc889d925c4`) is very promising - it shows the login flow that:\n1. Lazily loads a crypto module via `Promise.all([n.e(2605),...]).then(n.bind(n,23963))`\n2. Gets `encryptAes` from it\n3. Calls `m({user:d})` to encrypt the username\n4. Gets `encryptedParams` from the result\n5. Binds `w.user` (the encrypted user) into the login request parameters posted via `withSearchParams`\n\nLet me verify this is the complete function by checking its parent and examining the surrounding context more carefully."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_aa018dcae220423c80f72af2",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "7ce675ace5ece70d"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_f4c8acd02dca4c26957bf87c",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "edaa1544734069f3"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_4606557dc5a7438badc0df98",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "ea1d7f8bc8f3bbb2"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_58fe1ea5f941438693587574",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "f798fefe80d373b8"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_aa018dcae220423c80f72af2",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6131, \"end_offset\": 6718}, \"_best_guess_score\": -3, \"name\": \"q\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 6131, \"end_offset\": 6718, \"code\": \"function q(){return(q=(0,c.Z)((0,o.Z)().mark((function e(t,n,r,a){var i,c,s;return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(i=t.submitParams,c=t.searchParams,s=\\\"ticket\\\"!==c.get(\\\"_loginSign\\\")?\\\"pwd\\\":\\\"ticket\\\",!(i._sign&&s===n||r)){e.next=4;break}return e.abrupt(\\\"return\\\",i);case 4:return f.Z.remove(\\\"userId\\\",{domain:\\\"account.xiaomi.com\\\"}),f.Z.remove(\\\"userId\\\",{domain:\\\"xiaomi.com\\\"}),f.Z.remove(\\\"cUserId\\\",{domain:\\\"account.xiaomi.com\\\"}),f.Z.remove(\\\"cUserId\\\",{domain:\\\"xiaomi.com\\\"}),e.abrupt(\\\"return\\\",i);case 9:case\\\"end\\\":return e.stop()}}),e)})))).apply(this,arguments)}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_f4c8acd02dca4c26957bf87c",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 53282, \"end_offset\": 53730}, \"_best_guess_score\": -4, \"name\": \"(anon)\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"start_offset\": 53282, \"end_offset\": 53730, \"code\": \"function(){var e=(0,A.TH)(),n=(0,T.$H)().registerType;return{search:p.useMemo((function(){var t=new URLSearchParams(e.search);return t.delete(\\\"_user\\\"),\\\"register\\\"===((0,A.LX)(e.pathname,{path:\\\"/login\\\"})?\\\"login\\\":\\\"register\\\")&&\\\"/register/phone\\\"===lt[n]&&-1!==e.search.indexOf(\\\"sid=oauth2.0\\\")&&(it(\\\"passToken\\\",\\\"/\\\",\\\".account.xiaomi.com\\\"),it(\\\"userId\\\",\\\"/\\\",\\\".account.xiaomi.com\\\"),it(\\\"cUserId\\\",\\\"/\\\",\\\".account.xiaomi.com\\\")),t.toString()}),[e]),pathname:lt[n]}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_4606557dc5a7438badc0df98",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11849, \"end_offset\": 15482}, \"_best_guess_score\": -5, \"name\": \"99030\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11849, \"end_offset\": 15482, \"code\": \"function(e,n,t){\\\"use strict\\\";t.d(n,{$Q:function(){return w},B7:function(){return j},Bt:function(){return C},CV:function(){return _},IN:function(){return P},Iy:function(){return m},Lm:function(){return O},Mr:function(){return d},Mv:function(){return l},So:function(){return y},Uw:function(){return T},VO:function(){return a},X9:function(){return v},Yw:function(){return D},Zd:function(){return M},_B:function(){return F},dA:function(){return b},gN:function(){return k},gP:function(){return f},ij:function(){return E},l$:function(){return L},m0:function(){return R},qP:function(){return S},qs:function(){return A},xk:function(){return x},yh:function(){return p}});t(39275),t(10853),t(33290),t(21496),t(38472);var r,o,i,u=t(72791),c=t(38222),a=window.PASSPORT_JSB_METHOD_INVOKER,s=a&&a.isMethodSupported,f=s&&a.isMethodSupported(\\\"showDialog\\\"),l=s&&a.isMethodSupported(\\\"closePage\\\"),d=s&&a.isMethodSupported(\\\"skipProvision\\\"),p=s&&a.isMethodSupported(\\\"listenInboxSms\\\"),h=s&&a.isMethodSupported(\\\"getConfig\\\"),m=(s&&a.isMethodSupported(\\\"startPage\\\"),s&&a.isMethodSupported(\\\"goBack\\\")),v=(s&&a.isMethodSupported(\\\"removeAccount\\\"),s&&a.isMethodSupported(\\\"showToast\\\")),g=s&&a.isMethodSupported(\\\"getServiceData\\\"),_=s&&a.isMethodSupported(\\\"setAccountInfo\\\"),w=s&&a.isMethodSupported(\\\"isRegisteredFido2\\\"),y=s&&a.isMethodSupported(\\\"fido2Auth\\\"),b=a,S=!!(null===(r=window)||void 0===r||null===(o=r.webkit)||void 0===o||null===(i=o.messageHandlers)||void 0===i?void 0:i.PASSPORT_JSB_METHOD_INVOKER),I=s&&a.isMethodSupported(\\\"invalidateAccount\\\"),E=s&&a.isMethodSupported(\\\"goForwardAndSetResult\\\"),k=s&&a.isMethodSupported(\\\"getAccountInfo\\\"),O=s&&a.isMethodSupported(\\\"isLastPage\\\"),x=s&&a.isMethodSupported(\\\"onlyLoginEnd\\\"),C=s&&a.isMethodSupported(\\\"notifyWebLoadFinish\\\"),M=function(){return(0,u.useMemo)((function(){var e=\\\"\\\";try{if(g){var n=JSON.parse(a.invokeMethod(\\\"getServiceData\\\"));0===(null===n||void 0===n?void 0:n.code)&&(e=JSON.stringify(JSON.parse(n.result)))}}catch(t){}return e}),[])},P=function(e,n){if(b&&function(e){return!(!s||!a.isMethodSupported(e))}(e)){\\\"string\\\"!==typeof n&&(n=JSON.stringify(n)||\\\"{}\\\");try{return JSON.parse(a.invokeMethod(e,n))}catch(t){return null}}if(S){n=n||{};try{\\\"string\\\"===typeof n&&(n=JSON.parse(n))}catch(t){n={}}window.webkit.messageHandlers.PASSPORT_JSB_METHOD_INVOKER.postMessage({methodName:e,callbackId:n.callbackId,params:n})}return null},T=function(){l?(0,c.Uw)():S&&P(\\\"closePage\\\")},N=function(){var e=null;if(h){var n=P(\\\"getConfig\\\");0===(null===n||void 0===n?void 0:n.code)&&(e=n.result)}return e},A=function(){return(0,u.useMemo)((function(){return N()}),[])},R=function(){I&&P(\\\"invalidateAccount\\\")},j={callbackIds:{login:\\\"login\\\",notLogin:\\\"notLogin\\\",getSms:\\\"getSms\\\",getSmsRegister:\\\"getSmsRegister\\\",getRegisteredFido:\\\"getRegisteredFido\\\",fido2Auth:\\\"fido2Auth\\\",snsVerify:\\\"snsVerify\\\",getSmsTrustMobile:\\\"getSmsTrustMobile\\\",getHiddenTitleBar:\\\"getHiddenTitleBar\\\",getIsSupportWXLogin:\\\"getIsSupportWXLogin\\\",onlyLoginEnd:\\\"onlyLoginEnd\\\",getAccountInfo:\\\"getAccountInfo\\\",customBackAction:\\\"customBackAction\\\"},callbackMap:{},addCallback:function(e,n){var t=!(arguments.length>2&&void 0!==arguments[2])||arguments[2];if(this.callbackMap[e]&&!t)throw new Error(\\\"callbackId\\\\u4e0d\\\\u80fd\\\\u91cd\\\\u590d\\\");this.callbackMap[e]=n}},D=function(){var e=navigator.userAgent,n=A();return(0,u.useMemo)((function(){var t=n&&\\\"Harmony\\\"===n.system;return/Harmony/.test(e)||t}),[e,n])},L=function(){var e=N();if(e&&e.inMiuiProvisionStep&&e.appVersionCode){var n=e.appVersionCode,t=n.toString().substring(1);return t.startsWith(\\\"241105\\\")?parseInt(t)>=24110517:n>325062400}return!1},F=function(){return(0,u.useMemo)((function(){return L()}),[])}}\"}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_58fe1ea5f941438693587574",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11843, \"end_offset\": 15482}, \"_best_guess_score\": -6, \"name\": \"99030\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js\", \"start_offset\": 11843, \"end_offset\": 15482, \"code\": \"99030:function(e,n,t){\\\"use strict\\\";t.d(n,{$Q:function(){return w},B7:function(){return j},Bt:function(){return C},CV:function(){return _},IN:function(){return P},Iy:function(){return m},Lm:function(){return O},Mr:function(){return d},Mv:function(){return l},So:function(){return y},Uw:function(){return T},VO:function(){return a},X9:function(){return v},Yw:function(){return D},Zd:function(){return M},_B:function(){return F},dA:function(){return b},gN:function(){return k},gP:function(){return f},ij:function(){return E},l$:function(){return L},m0:function(){return R},qP:function(){return S},qs:function(){return A},xk:function(){return x},yh:function(){return p}});t(39275),t(10853),t(33290),t(21496),t(38472);var r,o,i,u=t(72791),c=t(38222),a=window.PASSPORT_JSB_METHOD_INVOKER,s=a&&a.isMethodSupported,f=s&&a.isMethodSupported(\\\"showDialog\\\"),l=s&&a.isMethodSupported(\\\"closePage\\\"),d=s&&a.isMethodSupported(\\\"skipProvision\\\"),p=s&&a.isMethodSupported(\\\"listenInboxSms\\\"),h=s&&a.isMethodSupported(\\\"getConfig\\\"),m=(s&&a.isMethodSupported(\\\"startPage\\\"),s&&a.isMethodSupported(\\\"goBack\\\")),v=(s&&a.isMethodSupported(\\\"removeAccount\\\"),s&&a.isMethodSupported(\\\"showToast\\\")),g=s&&a.isMethodSupported(\\\"getServiceData\\\"),_=s&&a.isMethodSupported(\\\"setAccountInfo\\\"),w=s&&a.isMethodSupported(\\\"isRegisteredFido2\\\"),y=s&&a.isMethodSupported(\\\"fido2Auth\\\"),b=a,S=!!(null===(r=window)||void 0===r||null===(o=r.webkit)||void 0===o||null===(i=o.messageHandlers)||void 0===i?void 0:i.PASSPORT_JSB_METHOD_INVOKER),I=s&&a.isMethodSupported(\\\"invalidateAccount\\\"),E=s&&a.isMethodSupported(\\\"goForwardAndSetResult\\\"),k=s&&a.isMethodSupported(\\\"getAccountInfo\\\"),O=s&&a.isMethodSupported(\\\"isLastPage\\\"),x=s&&a.isMethodSupported(\\\"onlyLoginEnd\\\"),C=s&&a.isMethodSupported(\\\"notifyWebLoadFinish\\\"),M=function(){return(0,u.useMemo)((function(){var e=\\\"\\\";try{if(g){var n=JSON.parse(a.invokeMethod(\\\"getServiceData\\\"));0===(null===n||void 0===n?void 0:n.code)&&(e=JSON.stringify(JSON.parse(n.result)))}}catch(t){}return e}),[])},P=function(e,n){if(b&&function(e){return!(!s||!a.isMethodSupported(e))}(e)){\\\"string\\\"!==typeof n&&(n=JSON.stringify(n)||\\\"{}\\\");try{return JSON.parse(a.invokeMethod(e,n))}catch(t){return null}}if(S){n=n||{};try{\\\"string\\\"===typeof n&&(n=JSON.parse(n))}catch(t){n={}}window.webkit.messageHandlers.PASSPORT_JSB_METHOD_INVOKER.postMessage({methodName:e,callbackId:n.callbackId,params:n})}return null},T=function(){l?(0,c.Uw)():S&&P(\\\"closePage\\\")},N=function(){var e=null;if(h){var n=P(\\\"getConfig\\\");0===(null===n||void 0===n?void 0:n.code)&&(e=n.result)}return e},A=function(){return(0,u.useMemo)((function(){return N()}),[])},R=function(){I&&P(\\\"invalidateAccount\\\")},j={callbackIds:{login:\\\"login\\\",notLogin:\\\"notLogin\\\",getSms:\\\"getSms\\\",getSmsRegister:\\\"getSmsRegister\\\",getRegisteredFido:\\\"getRegisteredFido\\\",fido2Auth:\\\"fido2Auth\\\",snsVerify:\\\"snsVerify\\\",getSmsTrustMobile:\\\"getSmsTrustMobile\\\",getHiddenTitleBar:\\\"getHiddenTitleBar\\\",getIsSupportWXLogin:\\\"getIsSupportWXLogin\\\",onlyLoginEnd:\\\"onlyLoginEnd\\\",getAccountInfo:\\\"getAccountInfo\\\",customBackAction:\\\"customBackAction\\\"},callbackMap:{},addCallback:function(e,n){var t=!(arguments.length>2&&void 0!==arguments[2])||arguments[2];if(this.callbackMap[e]&&!t)throw new Error(\\\"callbackId\\\\u4e0d\\\\u80fd\\\\u91cd\\\\u590d\\\");this.callbackMap[e]=n}},D=function(){var e=navigator.userAgent,n=A();return(0,u.useMemo)((function(){var t=n&&\\\"Harmony\\\"===n.system;return/Harmony/.test(e)||t}),[e,n])},L=function(){var e=N();if(e&&e.inMiuiProvisionStep&&e.appVersionCode){var n=e.appVersionCode,t=n.toString().substring(1);return t.startsWith(\\\"241105\\\")?parseInt(t)>=24110517:n>325062400}return!1},F=function(){return(0,u.useMemo)((function(){return L()}),[])}}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "The node `92312dc889d925c4` is clearly the anchor function. Let me now look at its parent to understand the full function context and make sure I have the right offsets for the complete function."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_7ff422b3181a4c4ebd949718",
+     "name": "traverse_graph",
+     "input": {
+      "node": "92312dc889d925c4",
+      "edge": "parent"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_fa89879147904e56bace689d",
+     "name": "traverse_graph",
+     "input": {
+      "node": "92312dc889d925c4",
+      "edge": "invokes"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_7ff422b3181a4c4ebd949718",
+     "content": "{\"neighbours\": [\"f88ace1799d457a8\"]}"
+    },
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_fa89879147904e56bace689d",
+     "content": "{\"neighbours\": [\"d2f6189ba2b528c6\", \"29e2f1a2e5cd0567\", \"c9ea52d4a22aa8fa\", \"dcd887e238729eab\", \"2df9014bd0f74b99\", \"24a1b9ac16ec23b2\", \"a797245854ac4803\", \"e03eaff1755ed007\", \"0c9a3781972eec94\", \"94e10e6c4307e16d\", \"4993d0942ce516a0\", \"012f062e0d7d4013\", \"e2a6a61768ff75e4\", \"d7135b55ed2a8fb6\", \"0db541a9007d71c4\", \"125e0e5db0a84394\", \"55ab4168b476d5e6\", \"7584a1df5a724910\", \"183a03c5fdb51f22\", \"42c3c04966c39d83\", \"8e5187cc3403eaa0\", \"2fa3c1567b7260fb\", \"20f65d367c356c4f\", \"8972086400a37474\", \"12a36303d8d23696\"]}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_a10f2976ce0d47c7a990dc62",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "f88ace1799d457a8"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_a10f2976ce0d47c7a990dc62",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 13884, \"end_offset\": 14950}, \"_best_guess_score\": -8, \"name\": \"r\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 13884, \"end_offset\": 14950, \"code\": \"function r(i,u){var l,d,f,m,h,g,k,w,b,_;return(0,o.Z)().wrap((function(r){for(;;)switch(r.prev=r.next){case 0:return r.next=2,H(t,\\\"pwd\\\");case 2:return l=r.sent,d=e?(0,p.jM)({callingCode:i.callingCode||\\\"\\\",phone:i.account}):i.account.trim(),r.next=6,Promise.all([n.e(2605),n.e(8132),n.e(695),n.e(7634)]).then(n.bind(n,23963));case 6:return f=r.sent,m=f.encryptAes,r.next=10,L.a.getFingerprint();case 10:return h=r.sent,g=h.visitorId,k=m({user:d}),w=k.encryptedParams,b=(0,p.Y3)(!!i.agreementChecked),_=function(){var e=(0,c.Z)((0,o.Z)().mark((function e(){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,s.Js)(t.withSearchParams((0,a.Z)((0,a.Z)({},l),{},{user:w.user,cc:i.callingCode,hash:v()(i.password).toUpperCase(),_json:\\\"true\\\",policyName:b,captCode:u||\\\"\\\",deviceFingerprint:g})),{EUI:k.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(){return e.apply(this,arguments)}}(),r.next=18,_();case 18:return r.abrupt(\\\"return\\\",r.sent);case 19:case\\\"end\\\":return r.stop()}}),r)}\"}"
+    }
+   ]
+  },
+  {
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Now I can see the parent function `r` (node `f88ace1799d457a8`) which is the complete function. This is the function that:\n\n1. Prepares the username `d` (either formatted phone or trimmed account)\n2. **Lazily loads the crypto module** via `Promise.all([n.e(2605),n.e(8132),n.e(695),n.e(7634)]).then(n.bind(n,23963))`\n3. Gets `encryptAes` from the loaded module: `m=f.encryptAes`\n4. **Runs the username through the AES encryptor**: `k=m({user:d})`\n5. **Binds the returned `encryptedParams`** into the login request: `w=k.encryptedParams` and then uses `w.user` in the `withSearchParams` call that posts to `/serviceLogin`\n\nThis is exactly the anchor function described in the task - the login flow that binds the encryptedParams into the request, not the AES encryptor itself, not an accessor, and not the RSA encryptor.\n\nLet me verify the exact offsets of this complete function to make sure I'm submitting the right boundaries."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_232313b6442f4868bc28ca9e",
+     "name": "retrieve_entity",
+     "input": {
+      "node": "f88ace1799d457a8"
+     }
+    }
+   ]
+  },
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "tool_result",
+     "tool_use_id": "call_232313b6442f4868bc28ca9e",
+     "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 13884, \"end_offset\": 14950}, \"_best_guess_score\": -8, \"name\": \"r\", \"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js\", \"start_offset\": 13884, \"end_offset\": 14950, \"code\": \"function r(i,u){var l,d,f,m,h,g,k,w,b,_;return(0,o.Z)().wrap((function(r){for(;;)switch(r.prev=r.next){case 0:return r.next=2,H(t,\\\"pwd\\\");case 2:return l=r.sent,d=e?(0,p.jM)({callingCode:i.callingCode||\\\"\\\",phone:i.account}):i.account.trim(),r.next=6,Promise.all([n.e(2605),n.e(8132),n.e(695),n.e(7634)]).then(n.bind(n,23963));case 6:return f=r.sent,m=f.encryptAes,r.next=10,L.a.getFingerprint();case 10:return h=r.sent,g=h.visitorId,k=m({user:d}),w=k.encryptedParams,b=(0,p.Y3)(!!i.agreementChecked),_=function(){var e=(0,c.Z)((0,o.Z)().mark((function e(){return(0,o.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,s.Js)(t.withSearchParams((0,a.Z)((0,a.Z)({},l),{},{user:w.user,cc:i.callingCode,hash:v()(i.password).toUpperCase(),_json:\\\"true\\\",policyName:b,captCode:u||\\\"\\\",deviceFingerprint:g})),{EUI:k.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(){return e.apply(this,arguments)}}(),r.next=18,_();case 18:return r.abrupt(\\\"return\\\",r.sent);case 19:case\\\"end\\\":return r.stop()}}),r)}\"}"
+    }
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "name": "search_entity",
+   "description": "Find function/file nodes by keyword (matches name or body). Returns node ids.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ]
+   }
+  },
+  {
+   "name": "traverse_graph",
+   "description": "List neighbours of a function node along an edge type. edge in {invokes, invoked_by, parent, child, event}.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     },
+     "edge": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node",
+     "edge"
+    ]
+   }
+  },
+  {
+   "name": "retrieve_entity",
+   "description": "Return the full source and location of a function node id.",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "node": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "node"
+    ]
+   }
+  },
+  {
+   "name": "submit",
+   "description": "Submit the single complete anchor function (file + offsets).",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "start_offset": {
+      "type": "integer"
+     },
+     "end_offset": {
+      "type": "integer"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "file",
+     "start_offset",
+     "end_offset"
+    ]
+   }
+  }
+ ],
+ "ts": 1782567570.6048608
+}

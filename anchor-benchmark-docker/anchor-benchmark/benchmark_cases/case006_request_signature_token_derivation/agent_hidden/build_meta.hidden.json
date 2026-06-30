@@ -1,0 +1,208 @@
+{
+  "case_id": "case006_request_signature_token_derivation",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "bundle_mode": "single_app_bundle",
+    "router_layers": 8,
+    "middleware_layers": 8,
+    "state_machine_steps": 3088,
+    "distractor_count": 44,
+    "semantic_decoy_count": 20,
+    "submit_path_decoy_count": 12,
+    "vendor_noise_file_count": 25,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#endpointPath",
+            "value": "/api/payments/v2/transfers/batch"
+          },
+          {
+            "action": "select",
+            "selector": "#httpMethod",
+            "value": "POST"
+          },
+          {
+            "action": "select",
+            "selector": "#endpointClass",
+            "value": "payments"
+          },
+          {
+            "action": "select",
+            "selector": "#signingAlgorithm",
+            "value": "hmac-sha256"
+          },
+          {
+            "action": "type",
+            "selector": "#requestBody",
+            "value": "{\"amount\":9800,\"currency\":\"USD\"}"
+          },
+          {
+            "action": "check",
+            "selector": "#replayProtection"
+          },
+          {
+            "action": "click",
+            "selector": "#validatePayload"
+          },
+          {
+            "action": "click",
+            "selector": "#lockNonce"
+          },
+          {
+            "action": "click",
+            "selector": "#commitSign"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "vault.req.commit",
+        "field": "request_sig",
+        "value_pattern": "^rs_[a-z0-9]{6}-[a-z0-9]{6}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after delegated control capture, action-table routing, three-step validate/lock/commit gating, request-material collection and transit preparation, whose own body constructs the target observable request_sig value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "dist/index.html",
+    "dist_bundle": "dist/assets/upload.app.bundle.js",
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4191/assets/upload.app.bundle.js",
+    "capture_manifest": "captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 2430151,
+    "bundle_lines": 92716
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The observable field name is assembled from character-code arrays at the sink, so literal field search is not sufficient.",
+        "The request material is collected only after a validate action (non-GET method, non-empty algorithm), a lock action (replay protection enabled, algorithm unchanged), and the final commit gate have all succeeded.",
+        "The active function is surrounded by high-similarity ticket reducers and 44 off-chain decoy modules, and the token format is rs_XXXXXX-XXXXXX derived from body hash and replay token."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 3904020,
+        "captured_bundle_lines": 52861,
+        "router_layers": 8,
+        "middleware_layers": 8,
+        "state_machine_steps": 3088,
+        "off_chain_decoy_modules": 44
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The target path crosses delegated event handling, action-table routing, prepare state mutation, consent/mode gating, sign-state mutation, final gate verification, form normalization, request-material collection, asynchronous scheduling, local event dispatch, middleware, state-machine transit calculation and sink wrapping.",
+        "Submit-time debug and info decoys emit ticket-like shadow keys that do not feed the requested request_sig field.",
+        "The same core module retains legacy reducer factories that resemble the target constructor but do not construct the request signature token."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 29,
+        "semantic_decoy_count": 20,
+        "same_interaction_decoy_console_objects": 12
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "Request material fields are collected only after the prepare/consent gate opens, then encoded after Promise, microtask, timer, animation-frame, MutationObserver and CustomEvent boundaries.",
+        "The final sink receives an already encoded value under a dynamically reconstructed field name.",
+        "Route action context surrounds the signature token construction, while form-derived transit stays outside the final request-material digest."
+      ],
+      "async_boundaries": [
+        "queueMicrotask continuation",
+        "Promise.resolve continuation",
+        "setTimeout(..., 0)",
+        "requestAnimationFrame callback",
+        "MutationObserver callback",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "client_side_proof_token_derivation",
+    "subtype": "deterministic request signature from endpoint path, HTTP method, body hash, endpoint class, algorithm and replay token",
+    "network_request_present": false,
+    "reason": "The observable value is derived from request material fields (endpoint path, HTTP method, body hash, endpoint class, signing algorithm, replay token) rather than from browser surface fields, UI state code, or request payload rewrite.",
+    "near_categories": [
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The output is anchored by request material derivation including body hash and replay token, not browser capability collection."
+      },
+      {
+        "category": "state_encoding",
+        "why_not": "The form and route state are path context; the target value is anchored by request material construction and digest folding with transit seed."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "No request body is emitted or rewritten to a network endpoint; the signing is entirely local and deterministic."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "audit_rows": [],
+  "primary_anchor": {
+    "answer_function": "requestSignatureTokenDerivation",
+    "source_function": "requestSignatureTokenDerivation",
+    "source_file": "src/z0/k7/q3/t9.js",
+    "captured_span": {
+      "file": "captures/devtools-source-dump/127.0.0.1_4191/assets/upload.app.bundle.js",
+      "start_line": 28997,
+      "end_line": 29010,
+      "start_column": 0,
+      "end_column": 1,
+      "start_offset": 772144,
+      "end_offset": 772860,
+      "sha256": "5a772bf7fee119966c7aa3ea6bae19b863b6455e622f6efa767778d852bae489",
+      "normalized_sha256": "4a5198b5f1c7080e012cac43229c358d60d0116005cbfa98bbaa274495434734"
+    }
+  }
+}

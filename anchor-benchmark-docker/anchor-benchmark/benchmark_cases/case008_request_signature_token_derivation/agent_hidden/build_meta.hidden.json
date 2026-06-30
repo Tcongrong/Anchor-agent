@@ -1,0 +1,210 @@
+{
+  "case_id": "case008_request_signature_token_derivation",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "main_thread_only",
+    "call_depth": 44,
+    "router_layers": 8,
+    "middleware_layers": 10,
+    "state_machine_steps": 3128,
+    "async_level": 7,
+    "distractor_count": 44,
+    "semantic_decoy_count": 24,
+    "submit_path_decoy_count": 14,
+    "vendor_noise_file_count": 25,
+    "obfuscation_level": 3,
+    "obfuscation_compact": false,
+    "construct_validity_note": "Names of module-level functions are preserved (renameGlobals:false) so submissions can name captured functions deterministically; locals are mangled, strings are array-encoded, and control flow is flattened. The primary challenge is semantic disambiguation among the request-signature reducers, staged gate handlers, sink wrappers and off-chain decoys, not literal keyword search (the target field/action are assembled from character-code arrays at the sink)."
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "public_task_label": "request_signature_token_derivation",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "selector": "#apiEndpoint",
+            "action": "fill",
+            "value": "/api/v2/orders"
+          },
+          {
+            "selector": "#httpMethod",
+            "action": "select",
+            "value": "POST"
+          },
+          {
+            "selector": "#authScheme",
+            "action": "select",
+            "value": "bearer"
+          },
+          {
+            "selector": "#requestBody",
+            "action": "fill",
+            "value": "amount=250&owner=maria"
+          },
+          {
+            "selector": "#replayGuard",
+            "action": "check"
+          },
+          {
+            "selector": "#stageRequest",
+            "action": "click"
+          },
+          {
+            "selector": "#sealRequest",
+            "action": "click"
+          },
+          {
+            "selector": "#signRequest",
+            "action": "click"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log",
+        "argument_type": "object",
+        "action": "request.sign",
+        "field": "req_sig",
+        "value_pattern": "^sig_[a-z0-9]{16}$"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after staged stage/seal/sign gating, async sign dispatch, tuple preparation and asynchronous continuation, whose own body constructs the target observable request signature token value rather than merely collecting inputs, dispatching control, packaging a return value, or emitting to console."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_visible/captures/devtools-source-dump/127.0.0.1_4008/index.html",
+    "dist_bundle": "dist/assets/filter.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4008/assets/filter.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 2610826,
+    "bundle_lines": 98469,
+    "captured_bundle_lines": 98469,
+    "total_source_lines": 21145,
+    "src_lines": 21145,
+    "z8_lines": 20574
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "staged stage/seal/sign click gate plus async/await handoff, microtask, animation-frame, timer and mutation-observer continuations",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "primary_anchor": {
+    "answer_function": "deriveRequestSignature",
+    "source_function": "deriveRequestSignature",
+    "source_file": "src/z8/k7/q3/t9.js",
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4008/assets/filter.app.bundle.js",
+    "captured_span": {
+      "file": "captures/devtools-source-dump/127.0.0.1_4008/assets/filter.app.bundle.js",
+      "start_line": 34527,
+      "end_line": 34537,
+      "start_column": 0,
+      "end_column": 1,
+      "start_offset": 933150,
+      "end_offset": 933542,
+      "sha256": "bbf679a3cd403d462edd242b8c9bccf4558c141db65fd7b791ef21984d8a4dcd",
+      "normalized_sha256": "541d0c8072779f183e813cbcb735ce154219ef4d3bb7d61350a0034c395f4a34"
+    },
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name and action are assembled from character-code arrays at the sink, so direct literal search is insufficient.",
+        "The request signature token is carried through a stage/seal/sign staged request flow before the sink wrapper receives it.",
+        "The selected slot and config are recovered through a runtime table before the converter is called."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 2610826,
+        "captured_bundle_lines": 98469,
+        "router_layers": 8,
+        "state_machine_steps": 3128,
+        "shadow_file_count": 44,
+        "vendor_noise_file_count": 25
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The click path crosses staged session gating, async sign dispatch, action routing, filtering, priority projection, tuple construction, asynchronous scheduling, middleware, table config selection, request signature derivation and console sink wrapping.",
+        "Dozens of decoy modules call the same factory with non-target slots, so nearby factory usage is not enough to identify the target anchor."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 14,
+        "off_chain_decoy_rows": 2,
+        "same_factory_decoy_slots": 31
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from the commit click by stage and seal state, async/await handoff, queueMicrotask, animation-frame, timer and MutationObserver boundaries.",
+        "The final sink receives an already derived sig_ token, so sink inspection alone cannot identify the conversion site."
+      ],
+      "async_boundaries": [
+        "async/await handoff",
+        "queueMicrotask continuation",
+        "requestAnimationFrame callback",
+        "setTimeout(..., 0)",
+        "MutationObserver callback"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "request_signature_token_derivation",
+    "subtype": "staged table-segment request signature derivation",
+    "network_request_present": false,
+    "reason": "The observable value is constructed by deriving a keyed request signature from staged table segment tuple lanes, runtime transit state and statistics, then serializing it as a stable sig_ console token.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "The anchor derives a keyed request signature hash rather than only formatting state fields."
+      },
+      {
+        "category": "byte_array_transformation",
+        "why_not": "The anchor derives a keyed signature token rather than materializing and emitting a raw byte array."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "No network request body is emitted or rewritten."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The target inputs come from local request controls and segment staging state, not browser or device capability collection."
+      }
+    ]
+  },
+  "counts": {
+    "src_lines": 21145,
+    "z8_lines": 20574,
+    "bundle_lines": 98469
+  }
+}

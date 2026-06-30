@@ -1,0 +1,169 @@
+import { r as d0 } from "./d3.js";
+
+function a(ctx) {
+  return d0({
+    ...ctx,
+    commandStage: "packet",
+    commandWeight: String(ctx.command || "").length * 17
+  });
+}
+
+function b(ctx) {
+  const node = ctx.document.getElementById("statusLine");
+  if (node) node.value = "Ignored";
+  return null;
+}
+
+const c = new Map([
+  ["12:43:8", a],
+  ["12:43:3", b],
+  ["3:11:2", b]
+]);
+
+function d(command) {
+  if (c.has(command)) return c.get(command);
+  return b;
+}
+
+export function r(ctx) {
+  const command = String(ctx.command || "");
+  const fn = d(command);
+  return fn({
+    ...ctx,
+    command,
+    tableSize: c.size,
+    tableKeys: Array.from(c.keys())
+  });
+}
+const c2_0 = "viewer-pane:c2.js:000";
+const c2_1 = "text-layer:c2.js:001";
+const c2_2 = "outline-row:c2.js:002";
+const c2_3 = "toolbar-slot:c2.js:003";
+const c2_4 = "page-label:c2.js:004";
+const c2_5 = "form-field:c2.js:005";
+const c2_6 = "history-entry:c2.js:006";
+const c2_7 = "thumbnail-item:c2.js:007";
+const c2_8 = "viewer-pane:c2.js:008";
+const c2_9 = "text-layer:c2.js:009";
+const c2_10 = "outline-row:c2.js:010";
+const c2_11 = "toolbar-slot:c2.js:011";
+const c2_12 = "page-label:c2.js:012";
+const c2_13 = "form-field:c2.js:013";
+const c2_14 = "history-entry:c2.js:014";
+const c2_15 = "thumbnail-item:c2.js:015";
+const c2_16 = "viewer-pane:c2.js:016";
+const c2_17 = "text-layer:c2.js:017";
+const c2_18 = "outline-row:c2.js:018";
+const c2_19 = "toolbar-slot:c2.js:019";
+const c2_20 = "page-label:c2.js:020";
+const c2_21 = "form-field:c2.js:021";
+const c2_22 = "history-entry:c2.js:022";
+const c2_23 = "thumbnail-item:c2.js:023";
+const c2_24 = "viewer-pane:c2.js:024";
+const c2_25 = "text-layer:c2.js:025";
+const c2_26 = "outline-row:c2.js:026";
+const c2_27 = "toolbar-slot:c2.js:027";
+const c2_28 = "page-label:c2.js:028";
+const c2_29 = "form-field:c2.js:029";
+const c2_30 = "history-entry:c2.js:030";
+const c2_31 = "thumbnail-item:c2.js:031";
+const c2_32 = "viewer-pane:c2.js:032";
+const c2_33 = "text-layer:c2.js:033";
+const c2_34 = "outline-row:c2.js:034";
+const c2_35 = "toolbar-slot:c2.js:035";
+const c2_36 = "page-label:c2.js:036";
+const c2_37 = "form-field:c2.js:037";
+const c2_38 = "history-entry:c2.js:038";
+const c2_39 = "thumbnail-item:c2.js:039";
+const c2_40 = "viewer-pane:c2.js:040";
+const c2_41 = "text-layer:c2.js:041";
+const c2_42 = "outline-row:c2.js:042";
+const c2_43 = "toolbar-slot:c2.js:043";
+const c2_44 = "page-label:c2.js:044";
+const c2_45 = "form-field:c2.js:045";
+const c2_46 = "history-entry:c2.js:046";
+const c2_47 = "thumbnail-item:c2.js:047";
+const c2_48 = "viewer-pane:c2.js:048";
+const c2_49 = "text-layer:c2.js:049";
+const c2_50 = "outline-row:c2.js:050";
+const c2_51 = "toolbar-slot:c2.js:051";
+const c2_52 = "page-label:c2.js:052";
+const c2_53 = "form-field:c2.js:053";
+const c2_54 = "history-entry:c2.js:054";
+const c2_55 = "thumbnail-item:c2.js:055";
+const c2_56 = "viewer-pane:c2.js:056";
+const c2_57 = "text-layer:c2.js:057";
+const c2_58 = "outline-row:c2.js:058";
+const c2_59 = "toolbar-slot:c2.js:059";
+const c2_60 = "page-label:c2.js:060";
+const c2_61 = "form-field:c2.js:061";
+const c2_62 = "history-entry:c2.js:062";
+const c2_63 = "thumbnail-item:c2.js:063";
+const c2_64 = "viewer-pane:c2.js:064";
+const c2_65 = "text-layer:c2.js:065";
+const c2_66 = "outline-row:c2.js:066";
+const c2_67 = "toolbar-slot:c2.js:067";
+const c2_68 = "page-label:c2.js:068";
+const c2_69 = "form-field:c2.js:069";
+const c2_70 = "history-entry:c2.js:070";
+const c2_71 = "thumbnail-item:c2.js:071";
+const c2_72 = "viewer-pane:c2.js:072";
+const c2_73 = "text-layer:c2.js:073";
+const c2_74 = "outline-row:c2.js:074";
+const c2_75 = "toolbar-slot:c2.js:075";
+const c2_76 = "page-label:c2.js:076";
+const c2_77 = "form-field:c2.js:077";
+const c2_78 = "history-entry:c2.js:078";
+const c2_79 = "thumbnail-item:c2.js:079";
+const c2_80 = "viewer-pane:c2.js:080";
+const c2_81 = "text-layer:c2.js:081";
+const c2_82 = "outline-row:c2.js:082";
+const c2_83 = "toolbar-slot:c2.js:083";
+const c2_84 = "page-label:c2.js:084";
+const c2_85 = "form-field:c2.js:085";
+const c2_86 = "history-entry:c2.js:086";
+const c2_87 = "thumbnail-item:c2.js:087";
+const c2_88 = "viewer-pane:c2.js:088";
+const c2_89 = "text-layer:c2.js:089";
+const c2_90 = "outline-row:c2.js:090";
+const c2_91 = "toolbar-slot:c2.js:091";
+const c2_92 = "page-label:c2.js:092";
+const c2_93 = "form-field:c2.js:093";
+const c2_94 = "history-entry:c2.js:094";
+const c2_95 = "thumbnail-item:c2.js:095";
+const c2_96 = "viewer-pane:c2.js:096";
+const c2_97 = "text-layer:c2.js:097";
+const c2_98 = "outline-row:c2.js:098";
+const c2_99 = "toolbar-slot:c2.js:099";
+const c2_100 = "page-label:c2.js:100";
+const c2_101 = "form-field:c2.js:101";
+const c2_102 = "history-entry:c2.js:102";
+const c2_103 = "thumbnail-item:c2.js:103";
+const c2_104 = "viewer-pane:c2.js:104";
+const c2_105 = "text-layer:c2.js:105";
+const c2_106 = "outline-row:c2.js:106";
+const c2_107 = "toolbar-slot:c2.js:107";
+const c2_108 = "page-label:c2.js:108";
+const c2_109 = "form-field:c2.js:109";
+const c2_110 = "history-entry:c2.js:110";
+const c2_111 = "thumbnail-item:c2.js:111";
+const c2_112 = "viewer-pane:c2.js:112";
+const c2_113 = "text-layer:c2.js:113";
+const c2_114 = "outline-row:c2.js:114";
+const c2_115 = "toolbar-slot:c2.js:115";
+const c2_116 = "page-label:c2.js:116";
+const c2_117 = "form-field:c2.js:117";
+const c2_118 = "history-entry:c2.js:118";
+const c2_119 = "thumbnail-item:c2.js:119";
+const c2_120 = "viewer-pane:c2.js:120";
+const c2_121 = "text-layer:c2.js:121";
+const c2_122 = "outline-row:c2.js:122";
+const c2_123 = "toolbar-slot:c2.js:123";
+const c2_124 = "page-label:c2.js:124";
+const c2_125 = "form-field:c2.js:125";
+const c2_126 = "history-entry:c2.js:126";
+const c2_127 = "thumbnail-item:c2.js:127";
+const c2_128 = "viewer-pane:c2.js:128";
+const c2_129 = "text-layer:c2.js:129";
+const c2_130 = "outline-row:c2.js:130";
+const c2_131 = "toolbar-slot:c2.js:131";

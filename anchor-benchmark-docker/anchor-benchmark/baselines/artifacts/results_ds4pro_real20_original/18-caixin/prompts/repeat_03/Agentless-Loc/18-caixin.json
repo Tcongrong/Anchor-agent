@@ -1,0 +1,16 @@
+{
+ "provider": "openai",
+ "model": "DeepSeek-V4-Pro",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On u.caixin.com login, the submitted `password` is an encrypted token (e.g. 13819912565 becomes Wy0AkgthChYWCDF9MwOCyQ==). The submit handler builds it as encode(encrypt(password)). Locate the single complete function whose own body produces the encrypted ciphertext from the plaintext password (the inner step that binds the cipher key and runs the block cipher). Return exactly one JSON object (see answer_format). Do NOT return the submit handler that assembles the request payload, the outer encode/wrapper step, or the inverse decrypt function. Only code under captures is in scope.  network_request POST login password 13819912565 Wy0AkgthChYWCDF9MwOCyQ==\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"Wy0AkgthChYWCDF9MwOCyQ==\"}\n\nSuspicious functions:\n### 595bfca0bde1c1be (encryptBlock)\n```js\nfunction(t,e){var n=u(s,t[e],t[e+1]);t[e]=n.left,t[e+1]=n.right}\n```\n### 8958b8818fbf1ad6 (encrypt)\n```js\nencrypt:function(t,e,n,r){var i=(r=this.cfg.extend(r)).kdf.execute(n,t.keySize,t.ivSize,r.salt,r.hasher);r.iv=i.iv;var o=g.encrypt.call(this,t,e,i.key,r);return o.mixIn(i),o}\n```\n### d0a430aca3355643 (o)\n```js\nfunction o(t,e){return e&&!0===e.clone&&r(t)?c(function(t){return Array.isArray(t)?[]:{}}(t),t,e):t}\n```\n### ff145ea1bac77241 (exports)\n```js\nfunction(t,e){var n=r.Iterator,i=n&&n.prototype,o=i&&i[t],a=!1;if(o)try{o.call({next:function(){return{done:!0}},return:function(){a=!0}},-1)}catch(s){s instanceof e||(a=!1)}if(!a)return o}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782444786.4185896
+}

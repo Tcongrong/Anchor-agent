@@ -1,0 +1,46 @@
+{
+  "case_id": "real11_fuwu_request_transformation",
+  "page": "captures/fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js",
+  "interaction": [],
+  "observable": {
+    "type": "network_request",
+    "method": "POST",
+    "url_contains": "/api/nthl/api/CommQuery/queryFixedHospital",
+    "field": "encData",
+    "plaintext_sample": "(the query request body)",
+    "value_sample": "3DFBCA4667B978F639BB23B95DCE4CC74CE34C33DC32F1068E9E23CA546C9EA8CCD20943B4DAE96380B41164D761DE97..."
+  },
+  "question": "On the national medical-insurance hall (fuwu.nhsa.gov.cn) hospital-search flow, the POST to queryFixedHospital sends its body inside an encrypted `encData` field (with a separate `signData` signature). Locate the single complete function whose own body builds the encrypted `encData` value specifically. Return exactly one JSON object (see answer_format). Return the `encData` builder itself, not the surrounding request interceptor that assembles the whole request body (that is only a wrapper around it), and not the builder of the sibling `signData` signature field. Only code under captures is in scope.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": { "type": "string", "required": true, "description": "Identifier or property name of the function as it appears in the captured bundle." },
+      "file": { "type": "string", "required": true, "description": "captures-relative path; must match visible_corpus." },
+      "slice": {
+        "type": "object", "required": true,
+        "fields": {
+          "start_line": { "type": "integer", "required": true },
+          "end_line": { "type": "integer", "required": true },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based UTF-16 offset (BOM stripped)." },
+          "end_offset": { "type": "integer", "required": true, "description": "Exclusive end offset." },
+          "code": { "type": "string", "required": true, "description": "Exact text [start_offset,end_offset); one complete function." }
+        }
+      }
+    },
+    "example": { "function_name": "encData", "file": "captures/fuwu.nhsa.gov.cncd/nationalHallSt/static/app.1770190565320.js", "slice": { "start_line": 1, "end_line": 1, "start_offset": 1000, "end_offset": 1500, "code": "function(e,t){switch(e){case\"SM4\":return enc(t)}}" } }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema.",
+    "function_name and slice.code must refer to the same function in the captured bundle.",
+    "slice.code must be one complete function (balanced braces).",
+    "Return one top-1 function, not a list.",
+    "Do not return the header-signature interceptor or the sibling signData builder."
+  ],
+  "_answer_leak_allow": ["encData"],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested request field, or dispatches the requested action, and removing that statement would break the observed value carried in the network request. A function is generic when it is a reusable utility (hash/encode/encrypt/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the shallowest target-specific function on the path from the user trigger to the network sink: upstream dispatchers are too generic, downstream reusable crypto/encoding primitives are too low-level, and the request-sending service that merely emits an already-built value is a wrapper rather than the anchor. If a generic function only writes whatever its callee returns into the target field while the callee is the function dedicated to computing that value, the callee is the anchor (even though the field assignment is syntactically inside the caller). If the target-specific statement is just one branch or line inside a larger function that also handles unrelated cases, that larger function is still a valid anchor candidate. Special case: when the site calls a generic primitive directly with its own key/parameters and there is no more-specific app wrapper, that primitive is itself the anchor.",
+  "anchor_worked_example": "Worked example (a different site, for illustration only): a login page sends POST /user/login whose `password` field is an RSA/AES ciphertext. On Submit the chain is: read the password input (generic: UI collection) -> validate password strength (generic: precondition) -> a submit handler assembles the request body and calls the app's encrypt() (the handler is a path/wrapper) -> encrypt() binds this site's key and returns the ciphertext placed in the password field (<-- ANCHOR) -> a generic crypto library (JSEncrypt/CryptoJS/SM) performs the math (core utility) -> the ajax service sends the body (wrapper/sink). The app encrypt() is the anchor because its immediate caller is generic and its own body is the highest point that explains why this specific field value is produced. The crypto library below it is a core utility (0.5); the submit handler and the ajax sender are path/wrapper (0.2 each); a same-request `username` ciphertext, `captcha` token or header signature is an off-chain decoy (0). Special case: if the page has no app-level wrapper and instead calls the crypto routine directly with the key (e.g. encryptString(siteKey, password)), that routine is itself the anchor. Apply the same reasoning to the captured bundle below."
+}

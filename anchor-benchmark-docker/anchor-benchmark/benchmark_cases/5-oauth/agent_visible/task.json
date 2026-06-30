@@ -1,0 +1,45 @@
+{
+  "case_id": "real05_oauth_request_signature",
+  "page": "captures/oauth.d.cn/auth/goLogin.html",
+  "interaction": [],
+  "observable": {
+    "type": "network_request",
+    "method": "POST",
+    "url_contains": "/auth",
+    "field": "pwd",
+    "plaintext_sample": "13819912565",
+    "value_sample": "4f72f474ed4f636ac6977f4ed38b8030fa8a6f3686693a697763b34887705081616077a451a0839119c89bea4ce39d558c448e111e96ff24821e9067149b72638ebd98d3c25fee9247056643d05130ad147de8e0bef9f66e5de8f1fe484adcb1733463a2060f246467b2cae02f721b371a2154fe1bbd93d7559d7c1effb3d147"
+  },
+  "question": "On the d.cn oauth login page, the password is RSA-encrypted into the request `pwd` field (e.g. 13819912565 becomes a long hex token). Locate the single complete function that is the anchor for the encrypted `pwd` field. The anchor function is the target-specific function on the dynamic behavior chain from the login click to the network request whose own body assembles the login request and writes the encrypted password into it: after the page binds the click handler, the anchor's body reads the account/password inputs, validates the captcha, obtains the RSA password token from the site encryptor it calls, writes it as the pwd field of submitData = {name, pwd: <RSA token>, ...} and POSTs it, rather than itself binding this site's RSA key and returning the token (the dedicated encryptor it calls), performing the RSA math (the generic RSA library primitive), or validating a sibling phone/code field. Return exactly one JSON object (see answer_format). The dedicated RSA encryptor it calls and the generic RSA string-encryption primitive below that are NOT the answer (they are helpers nested below this function). The page is an HTML file with an inline script; code under captures (including .html) is in scope.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/**/*.{js,html}",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": { "type": "string", "required": true, "description": "Identifier or variable name of the function as it appears in the captured file." },
+      "file": { "type": "string", "required": true, "description": "captures-relative path; must match visible_corpus." },
+      "slice": {
+        "type": "object", "required": true,
+        "fields": {
+          "start_line": { "type": "integer", "required": true },
+          "end_line": { "type": "integer", "required": true },
+          "start_offset": { "type": "integer", "required": true, "description": "0-based UTF-16 offset (BOM stripped)." },
+          "end_offset": { "type": "integer", "required": true, "description": "Exclusive end offset." },
+          "code": { "type": "string", "required": true, "description": "Exact text [start_offset,end_offset); one complete function." }
+        }
+      }
+    },
+    "example": { "function_name": "exampleSubmit", "file": "captures/oauth.d.cn/auth/goLogin.html", "slice": { "start_line": 1, "end_line": 5, "start_offset": 1000, "end_offset": 1200, "code": "function () {\n  var pwd = enc(getPassword());\n  $.post('/auth', { pwd: pwd });\n}" } }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope (including the inline script in the .html page).",
+    "Submit exactly one JSON object matching answer_format.response_schema.",
+    "function_name and slice.code must refer to the same function in the captured file.",
+    "slice.code must be one complete function (balanced braces).",
+    "Return one top-1 function, not a list.",
+    "Do not return the dedicated site RSA encryptor it calls or the generic RSA string-encryption primitive (those are helpers nested below the anchor)."
+  ],
+  "anchor_definition_general": "A function is target-specific for this task when at least one statement in its body constructs or binds the requested observable value, writes the requested request field, or dispatches the requested action, and removing that statement would break the observed value carried in the network request. A function is generic when it is a reusable utility (hash/encode/encrypt/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the complete function whose own body constructs the requested value and/or writes it into the request before dispatching — the value-construction / field-assignment site. A dedicated downstream encryptor/helper that this function calls to compute the value is a nested target-specific helper (not the anchor); reusable crypto/encoding primitives are core utilities; the request-sending service that merely emits an already-built body is a wrapper/sink. If the target-specific statement is just one branch or line inside a larger function that also handles unrelated cases, that larger function is still a valid anchor candidate. Special case: when the site has no app-level constructor and writes the field directly from a generic primitive call, that call site / primitive is itself the anchor.",
+  "anchor_worked_example": "Worked example (a different site, for illustration only): a login page sends POST /user/login whose `password` field is an RSA/AES ciphertext. On Submit the chain is: read the password input (generic: UI collection) -> validate password strength (generic: precondition) -> a submit/login function assembles the request body r = {password: enc(pwd), ...} and POSTs it (<-- ANCHOR: the complete function containing the field-assignment code) -> the app's dedicated encryptor enc() that it calls per field binds the site key and returns the ciphertext (nested target-specific helper, 0.7) -> a generic crypto library (JSEncrypt/CryptoJS/SM) performs the math (core utility, 0.5) -> the ajax service sends the body (wrapper/sink). The assembly/login function is the anchor because its own body is where the requested value is constructed / written into the payload. The dedicated encryptor below it is 0.7; the crypto library is 0.5; a same-request sibling-field mapper, `captcha` token or header signature is an off-chain decoy (0). Special case: if the page has no app-level constructor and writes the field directly from a primitive call, that primitive is itself the anchor. Apply the same reasoning to the captured bundle below."
+}

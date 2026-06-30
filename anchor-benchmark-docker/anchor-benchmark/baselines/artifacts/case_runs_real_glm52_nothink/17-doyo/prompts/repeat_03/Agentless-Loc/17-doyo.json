@@ -1,0 +1,19 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "Stage 3 (fine-grained localization, Agentless). Choose the single anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On doyo.cn login, the submitted `password` is not the raw password but a salted SHA-1 hash (the page first fetches a nonce + ts, then hashes; e.g. 13819912565 becomes 16119784763b3e501cc8eae56190fb0993517cfe). Locate the single complete function whose own body derives that final password value (combining the fetched nonce/ts with the hashed password) and posts it. Return exactly one JSON object (see answer_format). Do NOT return the generic SHA-1 implementation it calls, or an unrelated page/search helper. Only code under captures is in scope.  network_request POST /User/Passport/login password 13819912565 16119784763b3e501cc8eae56190fb0993517cfe\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/User/Passport/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"16119784763b3e501cc8eae56190fb0993517cfe\"}\n\nSuspicious functions:\n### 92320937fd44d71f (a)\n```js\nfunction(d){return Y(this,function(a,d,e){var f=mc(a);return void 0===e?f?b in f?f[b]:f.document.documentElement[d]:a[d]:void(f?f.scrollTo(c?n(f).scrollLeft():e,c?e:n(f).scrollTop()):a[d]=e)},a,d,arguments.length,null)}\n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782614472.0490053
+}

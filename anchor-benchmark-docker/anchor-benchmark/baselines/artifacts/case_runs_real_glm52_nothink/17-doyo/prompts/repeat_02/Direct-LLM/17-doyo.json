@@ -1,0 +1,19 @@
+{
+ "provider": "openai",
+ "model": "GLM-5.2",
+ "temperature": 0,
+ "top_p": 1,
+ "max_tokens": null,
+ "system": "You locate the single behaviour-anchor function. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it. Return strict JSON only.",
+ "thinking": {
+  "type": "disabled"
+ },
+ "messages": [
+  {
+   "role": "user",
+   "content": "Task: On doyo.cn login, the submitted `password` is not the raw password but a salted SHA-1 hash (the page first fetches a nonce + ts, then hashes; e.g. 13819912565 becomes 16119784763b3e501cc8eae56190fb0993517cfe). Locate the single complete function whose own body derives that final password value (combining the fetched nonce/ts with the hashed password) and posts it. Return exactly one JSON object (see answer_format). Do NOT return the generic SHA-1 implementation it calls, or an unrelated page/search helper. Only code under captures is in scope.  network_request POST /User/Passport/login password 13819912565 16119784763b3e501cc8eae56190fb0993517cfe\nObservable: {\"type\": \"network_request\", \"method\": \"POST\", \"url_contains\": \"/User/Passport/login\", \"field\": \"password\", \"plaintext_sample\": \"13819912565\", \"value_sample\": \"16119784763b3e501cc8eae56190fb0993517cfe\"}\n\nShortlisted functions:\n### 8323357816d30a9e (b)\n```js\nfunction(b,\nd){return b===d}\n```\n### 7be815a28f0aadf2 (hash)\n```js\nfunction(msg, utf8encode) {\n  utf8encode =  (typeof utf8encode == 'undefined') ? true : utf8encode;\n  \n  // convert string to UTF-8, as SHA only deals with byte-streams\n  if (utf8encode) msg = Utf8.encode(msg);\n  \n  // constants [\u00a74.2.1]\n  var K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];\n  \n  // PREPROCESSING \n  \n  msg += String.fromCharCode(0x80);  // add trailing '1' bit (+ 0's padding) to string [\u00a75.1.1]\n  \n  // convert string msg into 512-bit/16-integer blocks arrays of ints [\u00a75.2.1]\n  var l = msg.length/4 + 2;  // length (in 32-bit integers) of msg + \u20181\u2019 + appended length\n  var N = Math.ceil(l/16);   // number of 16-integer-blocks required to hold 'l' ints\n  var M = new Array(N);\n  \n  for (var i=0; i<N; i++) {\n    M[i] = new Array(16);\n    for (var j=0; j<16; j++) {  // encode 4 chars per integer, big-endian encoding\n      M[i][j] = (msg.charCodeAt(i*64+j*4)<<24) | (msg.charCodeAt(i*64+j*4+1)<<16) | \n        (msg.charCodeAt(i*64+j*4+2)<<8) | (msg.charCodeAt(i*64+j*4+3));\n    } // note running off the end of msg is ok 'cos bitwise ops on NaN return 0\n  }\n  // add length (in bits) into final pair of 32-bit integers (big-endian) [\u00a75.1.1]\n  // note: most significant word would be (len-1)*8 >>> 32, but since JS converts\n  // bitwise-op args to 32 bits, we need to simulate this by arithmetic operators\n  M[N-1][14] = ((msg.length-1)*8) / Math.pow(2, 32); M[N-1][14] = Math.floor(M[N-1][14])\n  M[N-1][15] = ((msg.length-1)*8) & 0xffffffff;\n  \n  // set initial hash value [\u00a75.3.1]\n  var H0 = 0x67452301;\n  var H1 = 0xefcdab89;\n  var H2 = 0x98badcfe;\n  var H3 = 0x10325476;\n  var H4 = 0xc3d2e1f0;\n  \n  // HASH COMPUTATION [\u00a76.1.2]\n  \n  var W = new Array(80); var a, b, c, d, e;\n  for (var i=0; i<N; i++) {\n  \n    // 1 - prepare message schedule 'W'\n    for (var t=0;  t<16; \n```\n\nReturn JSON {\"top1\":\"<func_id>\",\"ranking\":[\"<func_id>\",...]}."
+  }
+ ],
+ "tools": null,
+ "ts": 1782613665.4305968
+}

@@ -1,0 +1,967 @@
+[
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are SWE-agent, a software-engineering agent working through an Agent-Computer Interface on a deployed, obfuscated browser bundle (read-only; no patches). This is not a patching task: your only success criterion is to submit exactly one complete enclosing function. Use the tools to search and read source, prefer the function that constructs or returns the observed field/value over a nested encoder helper, and then call submit. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request whose password is sent as an uppercase MD5 `hash` field (e.g. 13819912565 becomes 9E2BFBE3D7050EDF876679FE5CE6E5AA). The bundle is string-array obfuscated (object keys appear as Qe([...]) decoder calls). Locate the anchor function for that hash field. The anchor function is the target-specific login param-builder on the submit->request chain: the single complete function whose own body assembles the account-login parameters object and binds the password hash into it \u2014 it runs the password through the md5 routine, uppercases the result and places it under the (decoded) hash key \u2014 rather than the md5 primitive it invokes to compute the digest (a generic crypto utility reached cross-file via module interop, not defined in this file), the string-array decoder that only reveals the obfuscated key names (an off-chain helper), or the request-sending sink. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the md5 routine, the string-array decoder, or unrelated utilities \u2014 return the param-builder that binds the uppercase-MD5 hash into the login request. Only code under captures is in scope.  network_request POST /serviceLogin hash 13819912565 9E2BFBE3D7050EDF876679FE5CE6E5AA\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/serviceLogin', 'field': 'hash', 'plaintext_sample': '13819912565', 'value_sample': '9E2BFBE3D7050EDF876679FE5CE6E5AA'}\nBundle files: captures/cdn.cnbj1.fds.api.mi-img.com/captcha/0.73/m.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2618.674b8060.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3439.13e1fdc4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3532.29fd3e17.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/690.66efe0a9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7743.04b0b984.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7745.a2a4f69a.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9044.30329d9d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9227.7415cab7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/antd.23f102b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto.17efe504.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/desk.667e3c03.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/fingerprintjs.e8cc27b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/formatJs.4d7707fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-locale-data-zh.d6d06a09.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill-zh_CN.a5eb31fd.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill.4e609b4d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-util.70a2e4e0.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/languages-zh_CN.c8ab5ec6.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/mi-util.c059f9a3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/miui-design.287224b3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react-dom.adf081c1.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react.1ee906a3.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/runtime-main.761c1a1b.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/yup-formik.b81d479a.chunk.js, captures/ssl-cdn.static.browser.mi-img.com/mistat-data/onestrack/onetrack.js, captures/static-verify.sec.xiaomi.com/v2/js/v.js\nCandidate seed locations (lexical prior, not a ranking): [{'func_id': '6a3a23effd219d2e', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 10049}, {'func_id': '8c7499447e0aa318', 'name': 'e', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9967}, {'func_id': '0358c9862f21edfe', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9926}, {'func_id': '03f2024c2a3d3779', 'name': 'O', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9152}, {'func_id': '2515b0bd20fe2cf4', 'name': '$', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js', 'offset': 80140}, {'func_id': '8848a014db94944b', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11849}, {'func_id': '96c2d2373f67e040', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11843}, {'func_id': 'e0a67af98d927b43', 'name': 'Pe', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js', 'offset': 20923}]\nRequired final action: call submit with file, start_offset, and end_offset for ONE complete function."
+    }
+   ],
+   "tools": [
+    {
+     "name": "search",
+     "description": "Search the bundle source with a regex/substring. Returns up to 20 matches {file, offset, snippet}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "open_function",
+     "description": "Return the complete enclosing candidate function at a (file, offset).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "offset": {
+        "type": "integer"
+       }
+      },
+      "required": [
+       "file",
+       "offset"
+      ]
+     }
+    },
+    {
+     "name": "list_files",
+     "description": "List the bundle files and their sizes.",
+     "input_schema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782564395.1041396
+  },
+  "response": {
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_05dd25eb58914e1c8d93fe7b",
+     "name": "search",
+     "input": {
+      "query": "serviceLogin"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_440bfc3d03614e8891efa199",
+     "name": "search",
+     "input": {
+      "query": "hash.*md5"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_e932a846716e4b09837bcfd0",
+     "name": "search",
+     "input": {
+      "query": "toUpperCase.*md5"
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 2700,
+    "output_tokens": 34
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-12cdb183-fe25-9b71-93fc-13752b2b36d6",
+    "object": "chat.completion",
+    "created": 1782564393,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 2700,
+     "completion_tokens": 34,
+     "total_tokens": 2734,
+     "prompt_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens_details": {
+      "cached_tokens": 0
+     },
+     "input_tokens": 2700,
+     "output_tokens": 34
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "search",
+          "arguments": "{\"query\": \"serviceLogin\"}"
+         },
+         "index": 0,
+         "id": "call_05dd25eb58914e1c8d93fe7b",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search",
+          "arguments": "{\"query\": \"hash.*md5\"}"
+         },
+         "index": 1,
+         "id": "call_440bfc3d03614e8891efa199",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search",
+          "arguments": "{\"query\": \"toUpperCase.*md5\"}"
+         },
+         "index": 2,
+         "id": "call_e932a846716e4b09837bcfd0",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 2700,
+   "output_tokens": 34
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are SWE-agent, a software-engineering agent working through an Agent-Computer Interface on a deployed, obfuscated browser bundle (read-only; no patches). This is not a patching task: your only success criterion is to submit exactly one complete enclosing function. Use the tools to search and read source, prefer the function that constructs or returns the observed field/value over a nested encoder helper, and then call submit. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request whose password is sent as an uppercase MD5 `hash` field (e.g. 13819912565 becomes 9E2BFBE3D7050EDF876679FE5CE6E5AA). The bundle is string-array obfuscated (object keys appear as Qe([...]) decoder calls). Locate the anchor function for that hash field. The anchor function is the target-specific login param-builder on the submit->request chain: the single complete function whose own body assembles the account-login parameters object and binds the password hash into it \u2014 it runs the password through the md5 routine, uppercases the result and places it under the (decoded) hash key \u2014 rather than the md5 primitive it invokes to compute the digest (a generic crypto utility reached cross-file via module interop, not defined in this file), the string-array decoder that only reveals the obfuscated key names (an off-chain helper), or the request-sending sink. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the md5 routine, the string-array decoder, or unrelated utilities \u2014 return the param-builder that binds the uppercase-MD5 hash into the login request. Only code under captures is in scope.  network_request POST /serviceLogin hash 13819912565 9E2BFBE3D7050EDF876679FE5CE6E5AA\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/serviceLogin', 'field': 'hash', 'plaintext_sample': '13819912565', 'value_sample': '9E2BFBE3D7050EDF876679FE5CE6E5AA'}\nBundle files: captures/cdn.cnbj1.fds.api.mi-img.com/captcha/0.73/m.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2618.674b8060.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3439.13e1fdc4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3532.29fd3e17.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/690.66efe0a9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7743.04b0b984.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7745.a2a4f69a.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9044.30329d9d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9227.7415cab7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/antd.23f102b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto.17efe504.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/desk.667e3c03.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/fingerprintjs.e8cc27b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/formatJs.4d7707fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-locale-data-zh.d6d06a09.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill-zh_CN.a5eb31fd.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill.4e609b4d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-util.70a2e4e0.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/languages-zh_CN.c8ab5ec6.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/mi-util.c059f9a3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/miui-design.287224b3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react-dom.adf081c1.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react.1ee906a3.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/runtime-main.761c1a1b.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/yup-formik.b81d479a.chunk.js, captures/ssl-cdn.static.browser.mi-img.com/mistat-data/onestrack/onetrack.js, captures/static-verify.sec.xiaomi.com/v2/js/v.js\nCandidate seed locations (lexical prior, not a ranking): [{'func_id': '6a3a23effd219d2e', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 10049}, {'func_id': '8c7499447e0aa318', 'name': 'e', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9967}, {'func_id': '0358c9862f21edfe', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9926}, {'func_id': '03f2024c2a3d3779', 'name': 'O', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9152}, {'func_id': '2515b0bd20fe2cf4', 'name': '$', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js', 'offset': 80140}, {'func_id': '8848a014db94944b', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11849}, {'func_id': '96c2d2373f67e040', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11843}, {'func_id': 'e0a67af98d927b43', 'name': 'Pe', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js', 'offset': 20923}]\nRequired final action: call submit with file, start_offset, and end_offset for ONE complete function."
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "call_05dd25eb58914e1c8d93fe7b",
+       "name": "search",
+       "input": {
+        "query": "serviceLogin"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_440bfc3d03614e8891efa199",
+       "name": "search",
+       "input": {
+        "query": "hash.*md5"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_e932a846716e4b09837bcfd0",
+       "name": "search",
+       "input": {
+        "query": "toUpperCase.*md5"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_05dd25eb58914e1c8d93fe7b",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"73329:function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:fu\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"function N(e,r){return v.post(\\\"/pass/serviceLoginAuth2\\\",c().stringify(e),{headers:r}).then(m).then(b)}\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76764, \"snippet\": \"function x(e){return v.post(\\\"/pass/serviceLoginTicketAuth\\\",c().stringify(e)).then(m).then(b)}\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(4942)\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"7332:function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"function fe(){var e=(0,A.TH)().search,n=(0,se.Z)().searchParams.get(\\\"_bannerBiz\\\")||\\\"\\\",t=p.useMemo((function(){return ue(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(74165),\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"90075:function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(7\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function w(){var e,n,t=(0,h.Z)(),s=(0,c.k6)().location.state||{},d=s.encryptedPwd,u=void 0===d?\\\"\\\":d,f=s.encryptedEmail,x\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)swit\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSu\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSubmitting,o=s.setFormError,e.next=3,_.a.getFingerprint();\"}]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_440bfc3d03614e8891efa199",
+       "content": "{\"matches\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_e932a846716e4b09837bcfd0",
+       "content": "{\"matches\": []}"
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "search",
+     "description": "Search the bundle source with a regex/substring. Returns up to 20 matches {file, offset, snippet}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "open_function",
+     "description": "Return the complete enclosing candidate function at a (file, offset).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "offset": {
+        "type": "integer"
+       }
+      },
+      "required": [
+       "file",
+       "offset"
+      ]
+     }
+    },
+    {
+     "name": "list_files",
+     "description": "List the bundle files and their sizes.",
+     "input_schema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782564396.3641438
+  },
+  "response": {
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_de5c8d1547bb4ac6a3c65973",
+     "name": "search",
+     "input": {
+      "query": "hash.*toUpperCase"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_960defa93b3a4df5bc8e0762",
+     "name": "search",
+     "input": {
+      "query": "\\.hash"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "call_d42dd8e5c33b4f2497ad5f40",
+     "name": "search",
+     "input": {
+      "query": "md5"
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 3968,
+    "output_tokens": 31
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-072cb569-8d0d-9d4f-ba39-aaecfad5417e",
+    "object": "chat.completion",
+    "created": 1782564394,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 3968,
+     "completion_tokens": 31,
+     "total_tokens": 3999,
+     "prompt_tokens_details": {
+      "cached_tokens": 2688
+     },
+     "input_tokens_details": {
+      "cached_tokens": 2688
+     },
+     "input_tokens": 3968,
+     "output_tokens": 31
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "search",
+          "arguments": "{\"query\": \"hash.*toUpperCase\"}"
+         },
+         "index": 0,
+         "id": "call_de5c8d1547bb4ac6a3c65973",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search",
+          "arguments": "{\"query\": \"\\\\.hash\"}"
+         },
+         "index": 1,
+         "id": "call_960defa93b3a4df5bc8e0762",
+         "type": "function"
+        },
+        {
+         "function": {
+          "name": "search",
+          "arguments": "{\"query\": \"md5\"}"
+         },
+         "index": 2,
+         "id": "call_d42dd8e5c33b4f2497ad5f40",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 3968,
+   "output_tokens": 31
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are SWE-agent, a software-engineering agent working through an Agent-Computer Interface on a deployed, obfuscated browser bundle (read-only; no patches). This is not a patching task: your only success criterion is to submit exactly one complete enclosing function. Use the tools to search and read source, prefer the function that constructs or returns the observed field/value over a nested encoder helper, and then call submit. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request whose password is sent as an uppercase MD5 `hash` field (e.g. 13819912565 becomes 9E2BFBE3D7050EDF876679FE5CE6E5AA). The bundle is string-array obfuscated (object keys appear as Qe([...]) decoder calls). Locate the anchor function for that hash field. The anchor function is the target-specific login param-builder on the submit->request chain: the single complete function whose own body assembles the account-login parameters object and binds the password hash into it \u2014 it runs the password through the md5 routine, uppercases the result and places it under the (decoded) hash key \u2014 rather than the md5 primitive it invokes to compute the digest (a generic crypto utility reached cross-file via module interop, not defined in this file), the string-array decoder that only reveals the obfuscated key names (an off-chain helper), or the request-sending sink. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the md5 routine, the string-array decoder, or unrelated utilities \u2014 return the param-builder that binds the uppercase-MD5 hash into the login request. Only code under captures is in scope.  network_request POST /serviceLogin hash 13819912565 9E2BFBE3D7050EDF876679FE5CE6E5AA\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/serviceLogin', 'field': 'hash', 'plaintext_sample': '13819912565', 'value_sample': '9E2BFBE3D7050EDF876679FE5CE6E5AA'}\nBundle files: captures/cdn.cnbj1.fds.api.mi-img.com/captcha/0.73/m.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2618.674b8060.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3439.13e1fdc4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3532.29fd3e17.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/690.66efe0a9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7743.04b0b984.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7745.a2a4f69a.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9044.30329d9d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9227.7415cab7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/antd.23f102b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto.17efe504.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/desk.667e3c03.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/fingerprintjs.e8cc27b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/formatJs.4d7707fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-locale-data-zh.d6d06a09.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill-zh_CN.a5eb31fd.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill.4e609b4d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-util.70a2e4e0.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/languages-zh_CN.c8ab5ec6.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/mi-util.c059f9a3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/miui-design.287224b3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react-dom.adf081c1.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react.1ee906a3.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/runtime-main.761c1a1b.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/yup-formik.b81d479a.chunk.js, captures/ssl-cdn.static.browser.mi-img.com/mistat-data/onestrack/onetrack.js, captures/static-verify.sec.xiaomi.com/v2/js/v.js\nCandidate seed locations (lexical prior, not a ranking): [{'func_id': '6a3a23effd219d2e', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 10049}, {'func_id': '8c7499447e0aa318', 'name': 'e', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9967}, {'func_id': '0358c9862f21edfe', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9926}, {'func_id': '03f2024c2a3d3779', 'name': 'O', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9152}, {'func_id': '2515b0bd20fe2cf4', 'name': '$', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js', 'offset': 80140}, {'func_id': '8848a014db94944b', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11849}, {'func_id': '96c2d2373f67e040', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11843}, {'func_id': 'e0a67af98d927b43', 'name': 'Pe', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js', 'offset': 20923}]\nRequired final action: call submit with file, start_offset, and end_offset for ONE complete function."
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "call_05dd25eb58914e1c8d93fe7b",
+       "name": "search",
+       "input": {
+        "query": "serviceLogin"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_440bfc3d03614e8891efa199",
+       "name": "search",
+       "input": {
+        "query": "hash.*md5"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_e932a846716e4b09837bcfd0",
+       "name": "search",
+       "input": {
+        "query": "toUpperCase.*md5"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_05dd25eb58914e1c8d93fe7b",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"73329:function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:fu\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"function N(e,r){return v.post(\\\"/pass/serviceLoginAuth2\\\",c().stringify(e),{headers:r}).then(m).then(b)}\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76764, \"snippet\": \"function x(e){return v.post(\\\"/pass/serviceLoginTicketAuth\\\",c().stringify(e)).then(m).then(b)}\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(4942)\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"7332:function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"function fe(){var e=(0,A.TH)().search,n=(0,se.Z)().searchParams.get(\\\"_bannerBiz\\\")||\\\"\\\",t=p.useMemo((function(){return ue(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(74165),\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"90075:function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(7\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function w(){var e,n,t=(0,h.Z)(),s=(0,c.k6)().location.state||{},d=s.encryptedPwd,u=void 0===d?\\\"\\\":d,f=s.encryptedEmail,x\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)swit\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSu\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSubmitting,o=s.setFormError,e.next=3,_.a.getFingerprint();\"}]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_440bfc3d03614e8891efa199",
+       "content": "{\"matches\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_e932a846716e4b09837bcfd0",
+       "content": "{\"matches\": []}"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "call_de5c8d1547bb4ac6a3c65973",
+       "name": "search",
+       "input": {
+        "query": "hash.*toUpperCase"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_960defa93b3a4df5bc8e0762",
+       "name": "search",
+       "input": {
+        "query": "\\.hash"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_d42dd8e5c33b4f2497ad5f40",
+       "name": "search",
+       "input": {
+        "query": "md5"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_de5c8d1547bb4ac6a3c65973",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(e,t,r){r.d(t,{Wc:function(){return ye},sY:function(){return xe},V5:function(){return _e},Ip:function(){return P\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"57381:function(e,t,r){r.d(t,{Wc:function(){return ye},sY:function(){return xe},V5:function(){return _e},Ip:function(){re\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function Pe(e){var t=(0,b.Z)(),n=(0,g._8)(),i=(0,ce.nZ)(),c=(0,m.UQ)(),s=u.useCallback(function(){var s=(0,o.Z)((0,a.Z)(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(){var s=(0,o.Z)((0,a.Z)().mark((function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((functio\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(s){for(;;)switch(s.prev=s.next){case 0:return p=u.setSubmitting,s.prev=1,d=e.callback,h=e.sid,g=e.qs,b=e._sign,\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(){var e=(0,o.Z)((0,a.Z)().mark((function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){ca\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"tru\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"true\\\",callback:d,sid:h,qs:g,_sign:b,ser\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js\", \"offset\": 15157, \"snippet\": \"function(t,e,n){\\\"use strict\\\";n.d(e,{S1:function(){return Ue}});var r=n(71002),i=(n(18821),n(10853),n(33290),n(85005),n(5\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js\", \"offset\": 15157, \"snippet\": \"55981:function(t,e,n){\\\"use strict\\\";n.d(e,{S1:function(){return Ue}});var r=n(71002),i=(n(18821),n(10853),n(33290),n(8500\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 27199, \"snippet\": \"function(t,n,r){var e;t=r.nmd(t);var u=r(18698).default;r(72975),r(39275),r(33290),r(85005),r(11592),r(38472),r(75668),r\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 27199, \"snippet\": \"763:function(t,n,r){var e;t=r.nmd(t);var u=r(18698).default;r(72975),r(39275),r(33290),r(85005),r(11592),r(38472),r(7566\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 27199, \"snippet\": \"function(){var o,i=200,c=\\\"Unsupported core-js use. Try https://npms.io/search?q=ponyfill.\\\",a=\\\"Expected a function\\\",f=\\\"In\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 44393, \"snippet\": \"function t(n){var r=(n=null==n?Vn:Kr.defaults(Vn.Object(),n,Kr.pick(Vn,Pn))).Array,e=n.Date,Pt=n.Error,tn=n.Function,nn=\"}]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_960defa93b3a4df5bc8e0762",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(e,r,s){\\\"use strict\\\";s.d(r,{X:function(){return f},a:function(){return d}});var t=s(45987),n=s(74165),p=s(15861)\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"12854:function(e,r,s){\\\"use strict\\\";s.d(r,{X:function(){return f},a:function(){return d}});var t=s(45987),n=s(74165),p=s(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(){function e(){(0,o.Z)(this,e),this.fpPromise=null,this.fingerPrintJs=null,this.fpPromise=null}return(0,i.Z)(e,\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(){var e=(0,p.Z)((0,n.Z)().mark((function e(){var r,s,p,o,i,a;return(0,n.Z)().wrap((function(e){for(;;)switch(e.\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function e(){var r,s,p,o,i,a;return(0,n.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(!u.kC){e.next=2;br\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(e){for(;;)switch(e.prev=e.next){case 0:if(!u.kC){e.next=2;break}return e.abrupt(\\\"return\\\",{});case 2:return this\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"function(e,t,n){\\\"use strict\\\";n(39275),n(22321),n(23528);var r=n(33589);e.exports=r.isStandardBrowserEnv()?function(){var\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"95411:function(e,t,n){\\\"use strict\\\";n(39275),n(22321),n(23528);var r=n(33589);e.exports=r.isStandardBrowserEnv()?function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"function(){var e,t=/(msie|trident)/i.test(navigator.userAgent),n=document.createElement(\\\"a\\\");function o(e){var r=e;retur\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"function o(e){var r=e;return t&&(n.setAttribute(\\\"href\\\",r),r=n.href),n.setAttribute(\\\"href\\\",r),{href:n.href,protocol:n.pro\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 66945, \"snippet\": \"function(t,r,e){var n=e(79044),o=e(52280),i=e(21178),u=o(\\\"iterator\\\");t.exports=!n((function(){var t=new URL(\\\"b?a=1&b=2&c\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 66945, \"snippet\": \"95474:function(t,r,e){var n=e(79044),o=e(52280),i=e(21178),u=o(\\\"iterator\\\");t.exports=!n((function(){var t=new URL(\\\"b?a=1\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 66945, \"snippet\": \"function(){var t=new URL(\\\"b?a=1&b=2&c=3\\\",\\\"http://a\\\"),r=t.searchParams,e=\\\"\\\";return t.pathname=\\\"c%20d\\\",r.forEach((function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 144200, \"snippet\": \"function(t,r,e){\\\"use strict\\\";e(45007);var n,o=e(19882),i=e(7493),u=e(95474),a=e(98363),c=e(98166),f=e(88697),s=e(50403),\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 144200, \"snippet\": \"4283:function(t,r,e){\\\"use strict\\\";e(45007);var n,o=e(19882),i=e(7493),u=e(95474),a=e(98363),c=e(98166),f=e(88697),s=e(50\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 144200, \"snippet\": \"function(t){var r=p(this,Ct),e=w(arguments.length,1)>1?arguments[1]:void 0,n=E(r,new Ut(t,!1,e));i||(r.href=n.serialize(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"function(t,e,r){var n,i,o,s,c=r(18698).default;r(55862),s=function(t){return function(){var e=t,r=e.lib,n=r.Base,i=r.Wor\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"68228:function(t,e,r){var n,i,o,s,c=r(18698).default;r(55862),s=function(t){return function(){var e=t,r=e.lib,n=r.Base,i\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"function(t){return function(){var e=t,r=e.lib,n=r.Base,i=r.WordArray,o=e.algo,s=o.MD5,c=o.EvpKDF=n.extend({cfg:n.extend(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"function(){var e=t,r=e.lib,n=r.Base,i=r.WordArray,o=e.algo,s=o.MD5,c=o.EvpKDF=n.extend({cfg:n.extend({keySize:4,hasher:s\"}]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_d42dd8e5c33b4f2497ad5f40",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js\", \"offset\": 35388, \"snippet\": \"function(t,e,i){i.d(e,{X:function(){return ut}});i(38472),i(10853);var r=\\\"0123456789abcdefghijklmnopqrstuvwxyz\\\";function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js\", \"offset\": 35388, \"snippet\": \"695:function(t,e,i){i.d(e,{X:function(){return ut}});i(38472),i(10853);var r=\\\"0123456789abcdefghijklmnopqrstuvwxyz\\\";func\"}]}"
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "search",
+     "description": "Search the bundle source with a regex/substring. Returns up to 20 matches {file, offset, snippet}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "open_function",
+     "description": "Return the complete enclosing candidate function at a (file, offset).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "offset": {
+        "type": "integer"
+       }
+      },
+      "required": [
+       "file",
+       "offset"
+      ]
+     }
+    },
+    {
+     "name": "list_files",
+     "description": "List the bundle files and their sizes.",
+     "input_schema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782564398.2208285
+  },
+  "response": {
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "call_2ec6fa3183cf4c7bb96ed42b",
+     "name": "open_function",
+     "input": {
+      "file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js",
+      "offset": 20923
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 7546,
+    "output_tokens": 48
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-3be400d6-e873-9392-843a-a80bc02cc6d6",
+    "object": "chat.completion",
+    "created": 1782564395,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 7546,
+     "completion_tokens": 48,
+     "total_tokens": 7594,
+     "prompt_tokens_details": {
+      "cached_tokens": 3840
+     },
+     "input_tokens_details": {
+      "cached_tokens": 3840
+     },
+     "input_tokens": 7546,
+     "output_tokens": 48
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "open_function",
+          "arguments": "{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 20923}"
+         },
+         "index": 0,
+         "id": "call_2ec6fa3183cf4c7bb96ed42b",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 7546,
+   "output_tokens": 48
+  }
+ },
+ {
+  "request": {
+   "provider": "openai",
+   "model": "GLM-5.2",
+   "temperature": 0,
+   "top_p": 1,
+   "max_tokens": null,
+   "thinking": {
+    "type": "disabled"
+   },
+   "system": "You are SWE-agent, a software-engineering agent working through an Agent-Computer Interface on a deployed, obfuscated browser bundle (read-only; no patches). This is not a patching task: your only success criterion is to submit exactly one complete enclosing function. Use the tools to search and read source, prefer the function that constructs or returns the observed field/value over a nested encoder helper, and then call submit. The anchor is the first target-specific value-construction function on the dynamic behaviour chain: the earliest function (after routing and input preparation) whose own body constructs the target observable value, rather than collecting inputs, dispatching control, wrapping a result, or emitting it.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Task: On the Xiaomi account login page, clicking login POSTs to /serviceLogin a request whose password is sent as an uppercase MD5 `hash` field (e.g. 13819912565 becomes 9E2BFBE3D7050EDF876679FE5CE6E5AA). The bundle is string-array obfuscated (object keys appear as Qe([...]) decoder calls). Locate the anchor function for that hash field. The anchor function is the target-specific login param-builder on the submit->request chain: the single complete function whose own body assembles the account-login parameters object and binds the password hash into it \u2014 it runs the password through the md5 routine, uppercases the result and places it under the (decoded) hash key \u2014 rather than the md5 primitive it invokes to compute the digest (a generic crypto utility reached cross-file via module interop, not defined in this file), the string-array decoder that only reveals the obfuscated key names (an off-chain helper), or the request-sending sink. Return exactly one complete function as a single JSON object (see answer_format). Do NOT return the md5 routine, the string-array decoder, or unrelated utilities \u2014 return the param-builder that binds the uppercase-MD5 hash into the login request. Only code under captures is in scope.  network_request POST /serviceLogin hash 13819912565 9E2BFBE3D7050EDF876679FE5CE6E5AA\nObservable: {'type': 'network_request', 'method': 'POST', 'url_contains': '/serviceLogin', 'field': 'hash', 'plaintext_sample': '13819912565', 'value_sample': '9E2BFBE3D7050EDF876679FE5CE6E5AA'}\nBundle files: captures/cdn.cnbj1.fds.api.mi-img.com/captcha/0.73/m.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2395.988a36fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/2618.674b8060.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3439.13e1fdc4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/3532.29fd3e17.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/690.66efe0a9.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7743.04b0b984.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7745.a2a4f69a.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9044.30329d9d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/9227.7415cab7.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/antd.23f102b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto.17efe504.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/desk.667e3c03.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/fingerprintjs.e8cc27b2.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/formatJs.4d7707fc.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-locale-data-zh.d6d06a09.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill-zh_CN.a5eb31fd.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-polyfill.4e609b4d.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/intl-util.70a2e4e0.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/languages-zh_CN.c8ab5ec6.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/mi-util.c059f9a3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/miui-design.287224b3.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react-dom.adf081c1.chunk.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/react.1ee906a3.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/runtime-main.761c1a1b.js, captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/yup-formik.b81d479a.chunk.js, captures/ssl-cdn.static.browser.mi-img.com/mistat-data/onestrack/onetrack.js, captures/static-verify.sec.xiaomi.com/v2/js/v.js\nCandidate seed locations (lexical prior, not a ranking): [{'func_id': '6a3a23effd219d2e', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 10049}, {'func_id': '8c7499447e0aa318', 'name': 'e', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9967}, {'func_id': '0358c9862f21edfe', 'name': '(anon)', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9926}, {'func_id': '03f2024c2a3d3779', 'name': 'O', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/538.86247266.chunk.js', 'offset': 9152}, {'func_id': '2515b0bd20fe2cf4', 'name': '$', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7503.a6eaacac.chunk.js', 'offset': 80140}, {'func_id': '8848a014db94944b', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11849}, {'func_id': '96c2d2373f67e040', 'name': '99030', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/main.6fd10b10.js', 'offset': 11843}, {'func_id': 'e0a67af98d927b43', 'name': 'Pe', 'file': 'captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js', 'offset': 20923}]\nRequired final action: call submit with file, start_offset, and end_offset for ONE complete function."
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "call_05dd25eb58914e1c8d93fe7b",
+       "name": "search",
+       "input": {
+        "query": "serviceLogin"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_440bfc3d03614e8891efa199",
+       "name": "search",
+       "input": {
+        "query": "hash.*md5"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_e932a846716e4b09837bcfd0",
+       "name": "search",
+       "input": {
+        "query": "toUpperCase.*md5"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_05dd25eb58914e1c8d93fe7b",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"73329:function(e,r,s){\\\"use strict\\\";s.d(r,{$f:function(){return Se},$i:function(){return M},By:function(){return I},GU:fu\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76232, \"snippet\": \"function N(e,r){return v.post(\\\"/pass/serviceLoginAuth2\\\",c().stringify(e),{headers:r}).then(m).then(b)}\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 76764, \"snippet\": \"function x(e){return v.post(\\\"/pass/serviceLoginTicketAuth\\\",c().stringify(e)).then(m).then(b)}\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(4942)\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"7332:function(e,n,t){\\\"use strict\\\";t.r(n),t.d(n,{default:function(){return dt}});t(83821);var r,s=t(65993),a=t(1413),i=t(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 24200, \"snippet\": \"function fe(){var e=(0,A.TH)().search,n=(0,se.Z)().searchParams.get(\\\"_bannerBiz\\\")||\\\"\\\",t=p.useMemo((function(){return ue(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(74165),\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"90075:function(e,n,t){\\\"use strict\\\";t.d(n,{G:function(){return k},O:function(){return w}});var r=t(1413),s=t(29439),a=t(7\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function w(){var e,n,t=(0,h.Z)(),s=(0,c.k6)().location.state||{},d=s.encryptedPwd,u=void 0===d?\\\"\\\":d,f=s.encryptedEmail,x\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(){var e=(0,i.Z)((0,a.Z)().mark((function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)swit\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function e(n,s){var i,o,l,c,d,p,h;return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSu\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/DHome.0d9b9f38.chunk.js\", \"offset\": 64715, \"snippet\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return i=s.setSubmitting,o=s.setFormError,e.next=3,_.a.getFingerprint();\"}]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_440bfc3d03614e8891efa199",
+       "content": "{\"matches\": []}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_e932a846716e4b09837bcfd0",
+       "content": "{\"matches\": []}"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "call_de5c8d1547bb4ac6a3c65973",
+       "name": "search",
+       "input": {
+        "query": "hash.*toUpperCase"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_960defa93b3a4df5bc8e0762",
+       "name": "search",
+       "input": {
+        "query": "\\.hash"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "call_d42dd8e5c33b4f2497ad5f40",
+       "name": "search",
+       "input": {
+        "query": "md5"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_de5c8d1547bb4ac6a3c65973",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(e,t,r){r.d(t,{Wc:function(){return ye},sY:function(){return xe},V5:function(){return _e},Ip:function(){return P\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"57381:function(e,t,r){r.d(t,{Wc:function(){return ye},sY:function(){return xe},V5:function(){return _e},Ip:function(){re\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function Pe(e){var t=(0,b.Z)(),n=(0,g._8)(),i=(0,ce.nZ)(),c=(0,m.UQ)(),s=u.useCallback(function(){var s=(0,o.Z)((0,a.Z)(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(){var s=(0,o.Z)((0,a.Z)().mark((function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((functio\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(s){for(;;)switch(s.prev=s.next){case 0:return p=u.setSubmitting,s.prev=1,d=e.callback,h=e.sid,g=e.qs,b=e._sign,\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(){var e=(0,o.Z)((0,a.Z)().mark((function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){ca\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"tru\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"offset\": 21649, \"snippet\": \"function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"true\\\",callback:d,sid:h,qs:g,_sign:b,ser\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js\", \"offset\": 15157, \"snippet\": \"function(t,e,n){\\\"use strict\\\";n.d(e,{S1:function(){return Ue}});var r=n(71002),i=(n(18821),n(10853),n(33290),n(85005),n(5\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/elastic.e9062100.js\", \"offset\": 15157, \"snippet\": \"55981:function(t,e,n){\\\"use strict\\\";n.d(e,{S1:function(){return Ue}});var r=n(71002),i=(n(18821),n(10853),n(33290),n(8500\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 27199, \"snippet\": \"function(t,n,r){var e;t=r.nmd(t);var u=r(18698).default;r(72975),r(39275),r(33290),r(85005),r(11592),r(38472),r(75668),r\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 27199, \"snippet\": \"763:function(t,n,r){var e;t=r.nmd(t);var u=r(18698).default;r(72975),r(39275),r(33290),r(85005),r(11592),r(38472),r(7566\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 27199, \"snippet\": \"function(){var o,i=200,c=\\\"Unsupported core-js use. Try https://npms.io/search?q=ponyfill.\\\",a=\\\"Expected a function\\\",f=\\\"In\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/lodash.f944fe7e.chunk.js\", \"offset\": 44393, \"snippet\": \"function t(n){var r=(n=null==n?Vn:Kr.defaults(Vn.Object(),n,Kr.pick(Vn,Pn))).Array,e=n.Date,Pt=n.Error,tn=n.Function,nn=\"}]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_960defa93b3a4df5bc8e0762",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(e,r,s){\\\"use strict\\\";s.d(r,{X:function(){return f},a:function(){return d}});var t=s(45987),n=s(74165),p=s(15861)\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"12854:function(e,r,s){\\\"use strict\\\";s.d(r,{X:function(){return f},a:function(){return d}});var t=s(45987),n=s(74165),p=s(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(){function e(){(0,o.Z)(this,e),this.fpPromise=null,this.fingerPrintJs=null,this.fpPromise=null}return(0,i.Z)(e,\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(){var e=(0,p.Z)((0,n.Z)().mark((function e(){var r,s,p,o,i,a;return(0,n.Z)().wrap((function(e){for(;;)switch(e.\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function e(){var r,s,p,o,i,a;return(0,n.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(!u.kC){e.next=2;br\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/5721.8f2f02d9.chunk.js\", \"offset\": 32390, \"snippet\": \"function(e){for(;;)switch(e.prev=e.next){case 0:if(!u.kC){e.next=2;break}return e.abrupt(\\\"return\\\",{});case 2:return this\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"function(e,t,n){\\\"use strict\\\";n(39275),n(22321),n(23528);var r=n(33589);e.exports=r.isStandardBrowserEnv()?function(){var\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"95411:function(e,t,n){\\\"use strict\\\";n(39275),n(22321),n(23528);var r=n(33589);e.exports=r.isStandardBrowserEnv()?function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"function(){var e,t=/(msie|trident)/i.test(navigator.userAgent),n=document.createElement(\\\"a\\\");function o(e){var r=e;retur\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/axios.56e98e44.js\", \"offset\": 11005, \"snippet\": \"function o(e){var r=e;return t&&(n.setAttribute(\\\"href\\\",r),r=n.href),n.setAttribute(\\\"href\\\",r),{href:n.href,protocol:n.pro\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 66945, \"snippet\": \"function(t,r,e){var n=e(79044),o=e(52280),i=e(21178),u=o(\\\"iterator\\\");t.exports=!n((function(){var t=new URL(\\\"b?a=1&b=2&c\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 66945, \"snippet\": \"95474:function(t,r,e){var n=e(79044),o=e(52280),i=e(21178),u=o(\\\"iterator\\\");t.exports=!n((function(){var t=new URL(\\\"b?a=1\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 66945, \"snippet\": \"function(){var t=new URL(\\\"b?a=1&b=2&c=3\\\",\\\"http://a\\\"),r=t.searchParams,e=\\\"\\\";return t.pathname=\\\"c%20d\\\",r.forEach((function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 144200, \"snippet\": \"function(t,r,e){\\\"use strict\\\";e(45007);var n,o=e(19882),i=e(7493),u=e(95474),a=e(98363),c=e(98166),f=e(88697),s=e(50403),\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 144200, \"snippet\": \"4283:function(t,r,e){\\\"use strict\\\";e(45007);var n,o=e(19882),i=e(7493),u=e(95474),a=e(98363),c=e(98166),f=e(88697),s=e(50\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/babel-util.470d03a8.js\", \"offset\": 144200, \"snippet\": \"function(t){var r=p(this,Ct),e=w(arguments.length,1)>1?arguments[1]:void 0,n=E(r,new Ut(t,!1,e));i||(r.href=n.serialize(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"function(t,e,r){var n,i,o,s,c=r(18698).default;r(55862),s=function(t){return function(){var e=t,r=e.lib,n=r.Base,i=r.Wor\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"68228:function(t,e,r){var n,i,o,s,c=r(18698).default;r(55862),s=function(t){return function(){var e=t,r=e.lib,n=r.Base,i\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"function(t){return function(){var e=t,r=e.lib,n=r.Base,i=r.WordArray,o=e.algo,s=o.MD5,c=o.EvpKDF=n.extend({cfg:n.extend(\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/crypto-util.7ebfad42.js\", \"offset\": 12624, \"snippet\": \"function(){var e=t,r=e.lib,n=r.Base,i=r.WordArray,o=e.algo,s=o.MD5,c=o.EvpKDF=n.extend({cfg:n.extend({keySize:4,hasher:s\"}]}"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_d42dd8e5c33b4f2497ad5f40",
+       "content": "{\"matches\": [{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js\", \"offset\": 35388, \"snippet\": \"function(t,e,i){i.d(e,{X:function(){return ut}});i(38472),i(10853);var r=\\\"0123456789abcdefghijklmnopqrstuvwxyz\\\";function\"}, {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/695.8108a2e7.chunk.js\", \"offset\": 35388, \"snippet\": \"695:function(t,e,i){i.d(e,{X:function(){return ut}});i(38472),i(10853);var r=\\\"0123456789abcdefghijklmnopqrstuvwxyz\\\";func\"}]}"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "call_2ec6fa3183cf4c7bb96ed42b",
+       "name": "open_function",
+       "input": {
+        "file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js",
+        "offset": 20923
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "call_2ec6fa3183cf4c7bb96ed42b",
+       "content": "{\"_best_guess\": {\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519}, \"_best_guess_score\": -7, \"name\": \"Pe\", \"start_offset\": 20923, \"end_offset\": 22519, \"code\": \"function Pe(e){var t=(0,b.Z)(),n=(0,g._8)(),i=(0,ce.nZ)(),c=(0,m.UQ)(),s=u.useCallback(function(){var s=(0,o.Z)((0,a.Z)().mark((function s(l,u){var p,f,d,h,g,b,v,w,y,O,x,_,E,j,k;return(0,a.Z)().wrap((function(s){for(;;)switch(s.prev=s.next){case 0:return p=u.setSubmitting,s.prev=1,d=e.callback,h=e.sid,g=e.qs,b=e._sign,v=e.serviceParam,w=e.user,s.next=5,Promise.all([r.e(2605),r.e(8132),r.e(695),r.e(7634)]).then(r.bind(r,23963));case 5:return y=s.sent,O=y.encryptAes,x=O({user:w}),_=x.encryptedParams,E=function(){var e=(0,o.Z)((0,a.Z)().mark((function e(t){return(0,a.Z)().wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,(0,m.Js)({_json:\\\"true\\\",callback:d,sid:h,qs:g,_sign:b,serviceParam:v,user:_.user,hash:he()(l.password).toUpperCase(),policyName:i?\\\"miaccount\\\":\\\"globalmiaccount\\\",captCode:t.icode||\\\"\\\"},{EUI:x.EUI});case 2:return e.abrupt(\\\"return\\\",e.sent);case 3:case\\\"end\\\":return e.stop()}}),e)})));return function(t){return e.apply(this,arguments)}}(),j=\\\"\\\".concat(null!==(f=Ee[t.dataCenterZone])&&void 0!==f?f:\\\"en\\\",\\\"-pwd-login\\\"),s.next=13,n(E,{icodeType:\\\"login\\\",action:j});case 13:k=s.sent,(0,ae.Gt)(k),s.next=20;break;case 17:s.prev=17,s.t0=s.catch(1),c(s.t0,u);case 20:return s.prev=20,p(!1),s.finish(20);case 23:case\\\"end\\\":return s.stop()}}),s,null,[[1,17,20,23]])})));return function(e,t){return s.apply(this,arguments)}}(),[t,n,e,i,c]),l=u.useMemo((function(){return(0,re.Ry)().shape({password:(0,re.Z_)().required((function(){return(0,we.jsx)(p.Z,{id:\\\"EmptyErrorPwd\\\"})}))})}),[]);return{formik:(0,ne.TA)({initialValues:{password:\\\"\\\"},validationSchema:l,onSubmit:s})}}\"}"
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "search",
+     "description": "Search the bundle source with a regex/substring. Returns up to 20 matches {file, offset, snippet}.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "open_function",
+     "description": "Return the complete enclosing candidate function at a (file, offset).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "offset": {
+        "type": "integer"
+       }
+      },
+      "required": [
+       "file",
+       "offset"
+      ]
+     }
+    },
+    {
+     "name": "list_files",
+     "description": "List the bundle files and their sizes.",
+     "input_schema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     }
+    },
+    {
+     "name": "submit",
+     "description": "Submit the single complete anchor function (file + offsets).",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "start_offset": {
+        "type": "integer"
+       },
+       "end_offset": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "file",
+       "start_offset",
+       "end_offset"
+      ]
+     }
+    }
+   ],
+   "ts": 1782564402.7787576
+  },
+  "response": {
+   "content": [
+    {
+     "type": "text",
+     "text": "This is the anchor function. It contains `hash:he()(l.password).toUpperCase()` \u2014 running the password through the md5 routine (`he`), uppercasing the result, and placing it under the `hash` key in the login parameters object passed to `(0,m.Js)({...})` which sends the POST to `/serviceLogin`."
+    },
+    {
+     "type": "tool_use",
+     "id": "call_194ffe6f762846448dcaa8d5",
+     "name": "submit",
+     "input": {
+      "file": "captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js",
+      "start_offset": 20923,
+      "end_offset": 22519,
+      "reason": "This function `Pe` is the target-specific login param-builder. Its body assembles the account-login parameters object passed to `(0,m.Js)({...})` (which POSTs to /serviceLogin). It binds the password hash via `hash:he()(l.password).toUpperCase()` \u2014 running the password through the md5 routine (`he`), uppercasing the result, and placing it under the decoded `hash` key. This is the earliest function on the submit\u2192request chain that constructs the target observable value, not the md5 primitive itself, the string-array decoder, or the request-sending sink."
+     }
+    }
+   ],
+   "usage": {
+    "input_tokens": 8285,
+    "output_tokens": 257
+   },
+   "stop_reason": "tool_calls",
+   "raw_response": {
+    "id": "chatcmpl-5053f9ff-56f1-99fb-8d28-9e4d2187eea8",
+    "object": "chat.completion",
+    "created": 1782564397,
+    "model": "GLM-5.2",
+    "usage": {
+     "prompt_tokens": 8285,
+     "completion_tokens": 257,
+     "total_tokens": 8542,
+     "prompt_tokens_details": {
+      "cached_tokens": 7424
+     },
+     "input_tokens_details": {
+      "cached_tokens": 7424
+     },
+     "input_tokens": 8285,
+     "output_tokens": 257
+    },
+    "choices": [
+     {
+      "index": 0,
+      "message": {
+       "content": "This is the anchor function. It contains `hash:he()(l.password).toUpperCase()` \u2014 running the password through the md5 routine (`he`), uppercasing the result, and placing it under the `hash` key in the login parameters object passed to `(0,m.Js)({...})` which sends the POST to `/serviceLogin`.",
+       "role": "assistant",
+       "tool_calls": [
+        {
+         "function": {
+          "name": "submit",
+          "arguments": "{\"file\": \"captures/cdn.web-global.fds.api.mi-img.com/mcfe-mi-account/static/static/js/7381.5e160cb4.chunk.js\", \"start_offset\": 20923, \"end_offset\": 22519, \"reason\": \"This function `Pe` is the target-specific login param-builder. Its body assembles the account-login parameters object passed to `(0,m.Js)({...})` (which POSTs to /serviceLogin). It binds the password hash via `hash:he()(l.password).toUpperCase()` \u2014 running the password through the md5 routine (`he`), uppercasing the result, and placing it under the decoded `hash` key. This is the earliest function on the submit\u2192request chain that constructs the target observable value, not the md5 primitive itself, the string-array decoder, or the request-sending sink.\"}"
+         },
+         "index": 0,
+         "id": "call_194ffe6f762846448dcaa8d5",
+         "type": "function"
+        }
+       ]
+      },
+      "refs": null,
+      "logprobs": null,
+      "finish_reason": "tool_calls",
+      "service_tier": null
+     }
+    ]
+   }
+  },
+  "usage": {
+   "input_tokens": 8285,
+   "output_tokens": 257
+  }
+ }
+]

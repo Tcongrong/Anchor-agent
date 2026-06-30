@@ -1,0 +1,455 @@
+{
+  "case_id": "real19_yhd_request_signature",
+  "oracle_schema_version": "1.0",
+  "suite": "real_benchmarks",
+  "answer_type": "top_1_weighted_function_anchor",
+  "metric": "top_1_weighted_anchor_score",
+  "task_type": "top_1_function_level_runtime_behavior_localization",
+  "answer_unit": "complete_javascript_function",
+  "target_reference": {
+    "task_file": "agent_visible/task.json",
+    "metadata_file": "agent_hidden/build_meta.hidden.json",
+    "request": {
+      "type": "network_request",
+      "method": "POST",
+      "url_contains": "/publicPassport/login.do",
+      "field": "credentials.password",
+      "plaintext_sample": "13819912565",
+      "value_sample": "bp1dsyIheluuzn6x5RrP+EX8AzIMySLl8lCLBPiwXeUyOBIOyn5qEmj6UcuPl6tN5srY23KkSd8QCmeUGH4Hma9MpH8qYIK0CO1wKZW00SvsG0gba0a/mVpfFTpCbwApJMVLAJuKpQsYL/vQZdsjwJDq2blUvuufuaiRAIL70V4="
+    }
+  },
+  "score_values": {
+    "Anchor": 1,
+    "Nested target-specific helper": 0.7,
+    "Core utility": 0.5,
+    "Path-critical": 0.2,
+    "Path-generic-helper": 0.1,
+    "Path/Wrapper": 0.2,
+    "Wrapper": 0.2,
+    "Off-chain": 0
+  },
+  "anchor_definition": "The anchor is double_submit: the login submit handler whose body reads #pwd/#un, constructs a JSEncrypt, sets the public key, RSA-encrypts password (and username) inline, and assembles the credentials.* payload it posts. PLAN section 4.3: the password ciphertext is constructed inline inside this function (no dedicated encrypt function), so this enclosing function is the anchor; PLAN section 5.1: not the validation precondition it calls, a cookie util, or the JSEncrypt library primitive. There is no separate 0.7 target-specific helper because the target-specific construction is inline in double_submit.",
+  "primary_anchor": {
+    "answer_function": "double_submit",
+    "source_function": "double_submit",
+    "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+    "captured_file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+    "captured_span": {
+      "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "start_line": 267,
+      "end_line": 274,
+      "start_column": 683,
+      "end_column": 216,
+      "start_offset": 202443,
+      "end_offset": 208075,
+      "sha256": "4f6dce2b9a5d090e9907a0772f106e36b6a1797706b9d52d0e89af9e42c928e8",
+      "normalized_sha256": "9e9c95928694227b4f0ece822009ce392325d0e32a7433aeb8c9d636924acdea"
+    },
+    "semantic_role": "Anchor",
+    "score": 1,
+    "why": "Builds the login request: new JSEncrypt + setPublicKey(pubkey), j=i.encrypt(password), then h={'credentials.password':j,...} which is posted to /publicPassport/login.do. This constructs the exact credentials.password value observed."
+  },
+  "acceptable_hit_conditions": [
+    "Canonical match is primary_anchor.captured_span (file + offsets + sha256 of one complete function).",
+    "A returned function name is scored against answer_function ONLY when that identifier is recoverable from the captured slice (named declaration, leading property key, or leading `NAME =`). Anonymous function expressions are graded by span alone.",
+    "Explanation must distinguish the anchor from the call-site wrapper, the generic crypto primitive, the sink and same-request decoy fields.",
+    "A snippet answer is accepted only when it maps uniquely to one complete enclosing function."
+  ],
+  "role_oracle": [
+    {
+      "function": "double_submit",
+      "role": "Anchor",
+      "score": 1,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 267,
+        "end_line": 274,
+        "start_column": 683,
+        "end_column": 216,
+        "start_offset": 202443,
+        "end_offset": 208075,
+        "sha256": "4f6dce2b9a5d090e9907a0772f106e36b6a1797706b9d52d0e89af9e42c928e8",
+        "normalized_sha256": "9e9c95928694227b4f0ece822009ce392325d0e32a7433aeb8c9d636924acdea"
+      },
+      "why": "Builds the login request: new JSEncrypt + setPublicKey(pubkey), j=i.encrypt(password), then h={'credentials.password':j,...} which is posted to /publicPassport/login.do. This constructs the exact credentials.password value observed.",
+      "answer_function": "double_submit",
+      "source_function": "double_submit"
+    },
+    {
+      "function": "JSEncrypt.encrypt",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 227,
+        "end_line": 227,
+        "start_column": 466,
+        "end_column": 541,
+        "start_offset": 164924,
+        "end_offset": 164999,
+        "sha256": "694c1b94bee3efca49cdc431611121b7c624260fcbc1d76419bf24ce79e29edd",
+        "normalized_sha256": "694c1b94bee3efca49cdc431611121b7c624260fcbc1d76419bf24ce79e29edd"
+      },
+      "why": "Generic JSEncrypt public API used by the anchor for both password and username. It delegates to the RSA key and base64-encodes the ciphertext, but does not bind the result to credentials.password.",
+      "answer_function": "JSEncrypt.encrypt",
+      "source_function": "JSEncrypt.prototype.encrypt"
+    },
+    {
+      "function": "JSEncrypt.setPublicKey",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 227,
+        "end_line": 227,
+        "start_column": 320,
+        "end_column": 347,
+        "start_offset": 164778,
+        "end_offset": 164805,
+        "sha256": "9c83020e7e8bc909d4e0986ac42d1e4349009d938361fd05d3ce6f00dbaafd76",
+        "normalized_sha256": "9c83020e7e8bc909d4e0986ac42d1e4349009d938361fd05d3ce6f00dbaafd76"
+      },
+      "why": "Generic key-loading wrapper called by the anchor before encryption. It binds a key object for the library, not the target request field.",
+      "answer_function": "JSEncrypt.setPublicKey",
+      "source_function": "JSEncrypt.prototype.setPublicKey"
+    },
+    {
+      "function": "RSAKey.encrypt",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 186,
+        "end_line": 186,
+        "start_column": 286,
+        "end_column": 478,
+        "start_offset": 133421,
+        "end_offset": 133613,
+        "sha256": "d751acc438995480121bad6cce6267b9045fdf4e9b0e870e1713949247f75a4d",
+        "normalized_sha256": "d751acc438995480121bad6cce6267b9045fdf4e9b0e870e1713949247f75a4d"
+      },
+      "why": "Generic RSA encrypt routine below JSEncrypt.encrypt. It applies PKCS#1 padding and public-key exponentiation but is reusable library code.",
+      "answer_function": "RSAKey.encrypt",
+      "source_function": "RSA key encrypt"
+    },
+    {
+      "function": "pkcs1pad2",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 185,
+        "end_line": 185,
+        "start_column": 330,
+        "end_column": 781,
+        "start_offset": 132657,
+        "end_offset": 133108,
+        "sha256": "23b48813f4b6269c3cd35c345b7f068aecce2c563619af6f1375f5bef9a32ce3",
+        "normalized_sha256": "23b48813f4b6269c3cd35c345b7f068aecce2c563619af6f1375f5bef9a32ce3"
+      },
+      "why": "Generic PKCS#1 v1.5 padding helper that introduces random padding before RSA. It explains non-determinism but not the credentials.password binding.",
+      "answer_function": "pkcs1pad2",
+      "source_function": "PKCS#1 padding helper"
+    },
+    {
+      "function": "RSA.doPublic",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 186,
+        "end_line": 186,
+        "start_column": 237,
+        "end_column": 286,
+        "start_offset": 133372,
+        "end_offset": 133421,
+        "sha256": "092491db987c2bb4f05a5c0b963cc54673386a6fec7f4c0125f0be4b4e3620ab",
+        "normalized_sha256": "092491db987c2bb4f05a5c0b963cc54673386a6fec7f4c0125f0be4b4e3620ab"
+      },
+      "why": "Generic public-key modular exponentiation called by the RSA encrypt path.",
+      "answer_function": "RSA.doPublic",
+      "source_function": "RSA public exponentiation"
+    },
+    {
+      "function": "hex2b64",
+      "role": "Core utility",
+      "score": 0.5,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 190,
+        "end_line": 191,
+        "start_column": 708,
+        "end_column": 235,
+        "start_offset": 137087,
+        "end_offset": 137421,
+        "sha256": "6bb8369a3a5c985717aca7cfe43164d6c669b02030ff649e522c819b0d6406eb",
+        "normalized_sha256": "143ffb4d721abba42d6fa2727dc23ed0cd244fee313d692b52c86d3ffa142cc2"
+      },
+      "why": "Generic hex-to-base64 formatter used by JSEncrypt.encrypt to return the ciphertext string.",
+      "answer_function": "hex2b64",
+      "source_function": "hex to base64 encoder"
+    },
+    {
+      "function": "checkAccountAndPwdForLogin",
+      "role": "Path-critical",
+      "score": 0.2,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 266,
+        "end_line": 267,
+        "start_column": 665,
+        "end_column": 683,
+        "start_offset": 201597,
+        "end_offset": 202443,
+        "sha256": "4139dce1748b9c823b90544447368553a838eee72622a58fdf0e0491d85dbd47",
+        "normalized_sha256": "e3ac960af94c97717d5a2f25ae27d2daabd1b9f4e4184579d527deb1d790a2d7"
+      },
+      "why": "Validation gate called by the submit handler before encryption (checks the account and password fields). On the path but does not construct the encrypted value.",
+      "answer_function": "checkAccountAndPwdForLogin",
+      "source_function": "checkAccountAndPwdForLogin"
+    },
+    {
+      "function": "doEnter keydown handler",
+      "role": "Path-critical",
+      "score": 0.2,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 253,
+        "end_line": 253,
+        "start_column": 286,
+        "end_column": 441,
+        "start_offset": 189679,
+        "end_offset": 189834,
+        "sha256": "26dc478c5afef46831257d5557a1c0a09b14bc9ac6437c2019494876cbf8d932",
+        "normalized_sha256": "26dc478c5afef46831257d5557a1c0a09b14bc9ac6437c2019494876cbf8d932"
+      },
+      "why": "Enter-key handler that clicks #login_button and reaches the submit flow. It is an upstream trigger, not the encryption constructor.",
+      "answer_function": "doEnter keydown handler",
+      "source_function": "jsLoginFed.doEnter anonymous keydown handler"
+    },
+    {
+      "function": "initSlideCaptcha",
+      "role": "Path-critical",
+      "score": 0.2,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 260,
+        "end_line": 261,
+        "start_column": 622,
+        "end_column": 78,
+        "start_offset": 195858,
+        "end_offset": 196165,
+        "sha256": "6c81303732c2fe056588aa76e82a9f3b6d747f04e1008a89fb8d0c90ace55759",
+        "normalized_sha256": "6464845b38c7647f2f1388fb7474e95343e1fe451e577dd59b1ea5be3c5c2b5e"
+      },
+      "why": "Configures the slide captcha and calls double_submit on validation success. It is path-critical for the slider branch but does not derive credentials.password.",
+      "answer_function": "initSlideCaptcha",
+      "source_function": "jsLoginValidatCode.initSlideCaptcha"
+    },
+    {
+      "function": "jQuery.get/post wrapper",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 135,
+        "end_line": 135,
+        "start_column": 259,
+        "end_column": 380,
+        "start_offset": 94004,
+        "end_offset": 94125,
+        "sha256": "6f6b8cf7b935932059009c319eb26ed4bbc5adbef7c0d77df010a9d987e786f6",
+        "normalized_sha256": "6f6b8cf7b935932059009c319eb26ed4bbc5adbef7c0d77df010a9d987e786f6"
+      },
+      "why": "Generic jQuery shorthand used by the login request. It forwards already prepared data to ajax and does not encrypt the password.",
+      "answer_function": "jQuery.get/post wrapper",
+      "source_function": "jQuery get/post shorthand"
+    },
+    {
+      "function": "jQuery.ajax",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 131,
+        "end_line": 135,
+        "start_column": 44,
+        "end_column": 97,
+        "start_offset": 90520,
+        "end_offset": 93842,
+        "sha256": "e53bdf87c86e513587f04503cab90d335eabe60144c3612de1b9b4e8cf7b0427",
+        "normalized_sha256": "96e0c5017a1b07189b9a0e615f1412a7befa3a3eddad3d25c4f4cd97d8ed838c"
+      },
+      "why": "Generic network sink reached after double_submit has already constructed the encrypted credentials.password field.",
+      "answer_function": "jQuery.ajax",
+      "source_function": "jQuery.ajax"
+    },
+    {
+      "function": "loginPostCallback",
+      "role": "Wrapper",
+      "score": 0.2,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 269,
+        "end_line": 274,
+        "start_column": 49,
+        "end_column": 214,
+        "start_offset": 203447,
+        "end_offset": 208073,
+        "sha256": "f0982bdeddf08bb395efde56df70a75e413dbf3463f70fbaa652bab42df821e5",
+        "normalized_sha256": "5c598f76812e2024aac464aa90aef9ccfd99e369dc77410ee736e36fe33ed6da"
+      },
+      "why": "Response callback for /publicPassport/login.do. It handles errors/redirects after the request has already been sent.",
+      "answer_function": "loginPostCallback",
+      "source_function": "login response callback"
+    },
+    {
+      "function": "getCookie",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 228,
+        "end_line": 228,
+        "start_column": 505,
+        "end_column": 673,
+        "start_offset": 165772,
+        "end_offset": 165940,
+        "sha256": "f30e8d762f3fd50f3159b37933985b2e823aae1b42769277d972fcfddcab8d1f",
+        "normalized_sha256": "f30e8d762f3fd50f3159b37933985b2e823aae1b42769277d972fcfddcab8d1f"
+      },
+      "why": "A generic cookie reader utility; unrelated to the password encryption path.",
+      "answer_function": "getCookie",
+      "source_function": "getCookie"
+    },
+    {
+      "function": "jsLoginValidatCode.getCookie",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 256,
+        "end_line": 256,
+        "start_column": 98,
+        "end_column": 266,
+        "start_offset": 191996,
+        "end_offset": 192164,
+        "sha256": "62a7c8c0c7b274e510c6fe853553d79a6ef62e03bbb19e4d1833f94d1577582a",
+        "normalized_sha256": "62a7c8c0c7b274e510c6fe853553d79a6ef62e03bbb19e4d1833f94d1577582a"
+      },
+      "why": "A second cookie reader used by validation-code initialization. Cookie-looking helper but off the RSA password construction path.",
+      "answer_function": "jsLoginValidatCode.getCookie",
+      "source_function": "jsLoginValidatCode.getCookie"
+    },
+    {
+      "function": "checkUserType",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 252,
+        "end_line": 253,
+        "start_column": 709,
+        "end_column": 229,
+        "start_offset": 189272,
+        "end_offset": 189622,
+        "sha256": "0310b304248a8da294e2ac301394836f2c832a64bdda046eb0cd1dd91100817d",
+        "normalized_sha256": "b0da4f4cc4b30355ca12c4f6f397e0b92c90a8fe97b3812f11005195b2984f51"
+      },
+      "why": "Checks whether a username/mobile account needs password completion. It posts credentials.username only and is not the login password encryption path.",
+      "answer_function": "checkUserType",
+      "source_function": "jsLoginFed.checkUserType"
+    },
+    {
+      "function": "codeScan.refreshFunc",
+      "role": "Off-chain",
+      "score": 0,
+      "source_file": "passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+      "captured_span": {
+        "file": "captures/passport.yhd.com/front-passport/passport/js/pc_login_new.js",
+        "start_line": 261,
+        "end_line": 261,
+        "start_column": 100,
+        "end_column": 611,
+        "start_offset": 196187,
+        "end_offset": 196698,
+        "sha256": "28ecfc017fe85bea62ce032e8a48dab3a8fa2114cedc964b0c673bb35d9fb657",
+        "normalized_sha256": "28ecfc017fe85bea62ce032e8a48dab3a8fa2114cedc964b0c673bb35d9fb657"
+      },
+      "why": "QR-code login flow helper. It uses passport endpoints but does not construct credentials.password.",
+      "answer_function": "codeScan.refreshFunc",
+      "source_function": "codeScan.refreshFunc"
+    }
+  ],
+  "empty_roles": [
+    {
+      "role": "Nested target-specific helper",
+      "score": 0.7,
+      "why": "No separate complete target-specific helper exists: double_submit itself reads #pwd, sets the RSA public key, encrypts the password, and writes credentials.password inline. Downstream helpers are generic RSA/JSEncrypt utilities (0.5), and upstream triggers are path-critical (0.2)."
+    }
+  ],
+  "scoring_policy": {
+    "top_1_only": true,
+    "multiple_answers": "use_first_clearly_selected_function",
+    "snippet_answer": "map_to_enclosing_function_if_unique",
+    "source_level_answer": "not_applicable_for_real_captures; grade by captured_span and answer_function only",
+    "ambiguous_name": "score_zero_unless_file_or_span_disambiguates",
+    "anonymous_anchor_name": "when answer_function is not recoverable from the captured slice, the name veto is skipped and an exact/unique span match scores the role regardless of submitted name",
+    "span_overlap_policy": "score by the unique role_oracle row whose captured_span fully contains the submitted span, or whose captured_span is fully contained by a uniquely submitted enclosing function span",
+    "cross_file_answer": "score_zero",
+    "oversized_span": "score_zero_when_larger_than_twice_the_largest_role_span"
+  },
+  "oracle_notes": {
+    "do_not_promote": [
+      "The exact anchor is double_submit because the target-specific password read, key binding, RSA encrypt call and credentials.password payload assignment are all inline there.",
+      "There is no legitimate 0.7 nested target-specific helper; JSEncrypt/RSA functions are generic primitives and stay at 0.5.",
+      "checkAccountAndPwdForLogin, doEnter and initSlideCaptcha are on the path but do not construct the encrypted password.",
+      "jQuery get/post/ajax and the login response callback emit or process an already prepared request.",
+      "The username ciphertext is a same-request sibling field and should not be treated as the requested credentials.password observable.",
+      "Cookie readers, account-type checks, QR-code login and captcha helpers are off-chain decoys."
+    ],
+    "offset_convention": "All offsets are 0-based UTF-16 code-unit indices over the BOM-stripped UTF-8 text. sha256 is over the UTF-8 bytes of the slice. This differs from the synthetic suite's response_schema wording (\"byte offset\"); both graders slice by their own convention.",
+    "audit_notes": [
+      "Answer match check: 1.json case 19 code is a contiguous snippet inside double_submit, and oracle.primary_anchor is double_submit.",
+      "Question direction check: the visible question asks for the complete function whose own body reads #pwd, RSA-encrypts it with the public key and assembles credentials.password; this points to double_submit."
+    ]
+  },
+  "scoring_examples": [
+    {
+      "score": 1,
+      "matched_reason": "Span maps uniquely to double_submit, which reads #pwd, calls JSEncrypt with pubkey, and assigns credentials.password."
+    },
+    {
+      "score": 0.7,
+      "matched_reason": "No valid role in this case; the target-specific construction is inline in double_submit."
+    },
+    {
+      "score": 0.5,
+      "matched_reason": "Span maps to JSEncrypt/RSA/PKCS#1/base64 primitives used by the anchor."
+    },
+    {
+      "score": 0.2,
+      "matched_reason": "Span maps to validation, submit-trigger/captcha path, jQuery request wrapper, ajax sink, or the login response callback."
+    },
+    {
+      "score": 0,
+      "matched_reason": "Span maps to cookie readers, account pre-checks, QR-code login/captcha helpers, same-request sibling-field logic, or cannot be uniquely mapped."
+    }
+  ]
+}

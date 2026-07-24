@@ -245,9 +245,9 @@ artifacts/batch_runs/<timestamp>/
 推荐命令：
 
 ```bash
-cd /home/luis/anchor-benchmark/baselines || exit 1
+cd /home/user/anchor-benchmark/baselines || exit 1
 set -a
-. /home/luis/.config/sweagent/sophnet.env
+. /home/user/.config/sweagent/sophnet.env
 set +a
 unset ANCHOR_LLM_MAX_TOKENS
 unset ANCHOR_LLM_TIMEOUT_SEC
@@ -255,7 +255,7 @@ export ANCHOR_LLM_PROVIDER=openai
 export ANCHOR_LLM_MODEL=DeepSeek-V4-Pro
 export PYTHONUNBUFFERED=1
 mkdir -p artifacts/batch_runs
-nohup /home/luis/miniforge3/envs/locagent/bin/python scripts/run_case_groups.py --all --repeats 3 --skip-complete > artifacts/batch_runs/nohup_latest.log 2>&1 &
+nohup /home/user/miniforge3/envs/locagent/bin/python scripts/run_case_groups.py --all --repeats 3 --skip-complete > artifacts/batch_runs/nohup_latest.log 2>&1 &
 ```
 
 查看批量进度：
@@ -276,9 +276,9 @@ cat artifacts/case_runs/case001/summary.md
 中断后继续：
 
 ```bash
-cd /home/luis/anchor-benchmark/baselines || exit 1
+cd /home/user/anchor-benchmark/baselines || exit 1
 set -a
-. /home/luis/.config/sweagent/sophnet.env
+. /home/user/.config/sweagent/sophnet.env
 set +a
 unset ANCHOR_LLM_MAX_TOKENS
 unset ANCHOR_LLM_TIMEOUT_SEC
@@ -286,7 +286,7 @@ export ANCHOR_LLM_PROVIDER=openai
 export ANCHOR_LLM_MODEL=DeepSeek-V4-Pro
 export PYTHONUNBUFFERED=1
 mkdir -p artifacts/batch_runs
-nohup /home/luis/miniforge3/envs/locagent/bin/python scripts/run_case_groups.py --all --repeats 3 --skip-complete > artifacts/batch_runs/nohup_resume.log 2>&1 &
+nohup /home/user/miniforge3/envs/locagent/bin/python scripts/run_case_groups.py --all --repeats 3 --skip-complete > artifacts/batch_runs/nohup_resume.log 2>&1 &
 ```
 
 `--skip-complete` 会跳过已完整跑完且 repeats 匹配的 case；未完成或失败的 case 会重新跑。

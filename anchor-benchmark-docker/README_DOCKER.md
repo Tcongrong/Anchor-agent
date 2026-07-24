@@ -8,7 +8,7 @@ artifacts, backup cases, API key files, and unrelated logs.
 Build:
 
 ```bash
-cd /home/luis/anchor-benchmark-docker
+cd /path/to/anchor-benchmark-docker
 docker build -t anchor-benchmark:repro .
 ```
 

@@ -1,1 +1,0 @@
-geetest_1776760538457({"status": "success", "data": {"challenge": "2a376dcc7d7ecf7c4e4fabe4ad536ebb", "c": [12, 58, 98, 36, 43, 95, 62, 15, 12], "s": "676b2a71"}})

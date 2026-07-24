@@ -357,35 +357,3 @@ npm test
 
 Agent-related tests: `test/anchor-agent.test.js`, `test/confidence-update.test.js`, `test/reverse-anchor-recovery.test.js`, `test/info-gain-breakpoint.test.js`.
 
----
-
-## Related documentation
-
-| Document | Content |
-|----------|---------|
-| [整体agent流程.md](./整体agent流程.md) | Five-stage design and convergence |
-| [结构先验（Structural Prior）开发文档.md](./结构先验（Structural Prior）开发文档.md) | TC1 / p₀(f) |
-| [信息增益驱动断点选择.md](./信息增益驱动断点选择.md) | TC2 |
-| [反向恢复 .md](./反向恢复%20.md) | TVN, reverse traverse, LLM anchor scoring |
-| [置信度更新.md](./置信度更新.md) | L_val / L_anchor / H updates |
-| [cdp-workflow/README.md](./cdp-workflow/README.md) | CDP workflow, AST, breakpoint CLI |
-| [docs/experiment-automation-scheduling.md](./docs/experiment-automation-scheduling.md) | Benchmark batch automation |
-
----
-
-## FAQ
-
-**Q: Top confidence stays low and never reaches `converged`?**  
-Observations may be insufficient after several breakpoint rounds, or the LLM never assigns ≥0.7 to an Anchor Candidate. Try lowering `--theta-conf` for experiments, or verify task description / keywords match observed fields.
-
-**Q: Causal graph not updated with `skip-collect`?**  
-This mode assumes existing `breakpoint-observations.json` and `anchor-snapshots.jsonl`. The Agent calls `updateCausalGraphFromFiles` but does not connect to the browser.
-
-**Q: `emitSearchTelemetry` stays Top but behavior is in `runCatalogSearch`?**  
-Structural prior often ranks functions near the Sink first; multiple TC2 rounds and confidence updates (L_val rewarding f_hit) are needed to separate them.
-
-**Q: Why is the file named `causual-graph.json` (typo)?**  
-Historical path kept for compatibility; use this name project-wide to avoid broken references.
-
-**Q: Terminal does not exit after Agent finishes?**  
-Multi-turn TC3 keeps Chrome CDP WebSocket connections. Current builds disconnect CDP in a `finally` after each collection round, and `main.js` calls `process.exit(0)` on success. If it still hangs, check for other child processes or stuck `node` tasks.

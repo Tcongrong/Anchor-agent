@@ -1,0 +1,817 @@
+{
+  "generatedAt": "2026-09-25T13:15:09.391Z",
+  "status": "converged",
+  "turn": 10,
+  "taskDescription": "Locate the anchor function for the batch_token field in the console.log object whose action is analytics.flush after typing the batch label, enabling page context, queuing the two drafts, and clicking Flush Queue on the page. The same batch_token value is also sent inside the body of a navigator.sendBeacon request to the batch collect endpoint issued when the queue drains. The anchor function is the first target-specific request-transform value constructor on the dynamic behavior chain: after delegated click routing, action routing, the flush gate, flush tuple preparation with page-context snapshot, asynchronous scheduling and runtime config selection, the queue entries are drained and re-composed inside a timer callback, and its function body itself constructs the target observable analytics batch token rather than merely staging entries, collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or sendBeacon call. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the enqueue-stage digest helper, the drain scheduler, the final console sink, or the sendBeacon call site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor": {
+    "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+    "functionName": "flushShadowToken",
+    "scriptUrl": "http://127.0.0.1:4233/assets/pulse.app.bundle.js",
+    "runtimeLoc": {
+      "line": 114,
+      "column": 0
+    },
+    "functionCode": "function flushShadowToken(c) {\n    const E = b, d = {\n            'XNhyk': function (i, j) {\n                return i < j;\n            },\n            'kUMIi': function (i, j) {\n                return i + j;\n            }\n        }, e = (c && c[E(0x387)] || 0x9) ^ 0x2545f491;\n    let f = e >>> 0x0;\n    const g = [];\n    for (let i = 0x0; d['XNhyk'](i, 0x14); i += 0x1) {\n        f = Math['imul'](f ^ f >>> 0xf ^ i, 0x85ebca6b) >>> 0x0, g['push']((f % 0x24)[E(0x1222)](0x24));\n    }\n    const h = [\n        0x62,\n        0x6b,\n        0x5f\n    ]['map'](j => String['fromCharCode'](j))[E(0x2904)]('');\n    return d[E(0x22a3)](h, g[E(0x2904)](''));\n}",
+    "confidence": 0.9630934763142721
+  },
+  "evidence": {
+    "structuralPrior": {
+      "prob": 0.0033389604603067226,
+      "combined_score": 1.059066397034041,
+      "ast_score": 0.021739130434782608,
+      "api_score": 3.8,
+      "api_direct_score": 0,
+      "api_proximity_score": 1,
+      "entropy_score": 0.05434782608695652,
+      "sink_proximity": 0.5
+    },
+    "breakdown": [
+      {
+        "feature": "structural:p0",
+        "score": 0.33,
+        "reason": "结构先验概率 p_0=0.003339"
+      },
+      {
+        "feature": "structural:S_ast",
+        "score": 0.22,
+        "reason": "AST 子树指纹 0.0217"
+      },
+      {
+        "feature": "structural:S_api",
+        "score": 38,
+        "reason": "API 调用/下游邻近 3.8000"
+      },
+      {
+        "feature": "structural:S_ent",
+        "score": 0.54,
+        "reason": "值操作熵 0.0543"
+      },
+      {
+        "feature": "structural:S_sink",
+        "score": 50,
+        "reason": "Sink 接近度 0.5000"
+      }
+    ],
+    "llmJudgments": [
+      {
+        "turn": 2,
+        "score": 1,
+        "reason": "Pattern A单一专用helper，函数体组合前缀'bk_'和36进制字符生成目标observable（循环生成字符并join），return形态与参考bk_小写数字结构一致；是运行时链上第一个专门构造batch_token的函数，Anchor(1.0)。",
+        "recordedAt": "2026-09-25T12:54:16.633Z"
+      },
+      {
+        "turn": 3,
+        "score": 0.2,
+        "reason": "Pattern A专用变换型：函数return 'bk_'+20位后缀（循环0x14=20次），参考形态为'^bk_[a-z0-9]{16}$'即'bk_'+16位，长度结构明显不符；虽为target-specific token构造，但产出形态与参考示例不一致，禁止标Anchor或Nested Helper。",
+        "recordedAt": "2026-09-25T12:56:46.250Z"
+      },
+      {
+        "turn": 4,
+        "score": 1,
+        "reason": "Anchor；Pattern A 专用变换型；函数体自身构造 batch_token：生成 `bk_` 前缀和 base36 连续小写数字串，与参考示例 `bk_`+小写数字串结构一致（前缀、字符集、连续无分隔符均匹配）；是运行时链上第一个 target-specific 构造目标 observable 的函数，调用者 flushShadowEmitter 仅为 wrapper；非 generic utility/fowarding/sink。",
+        "recordedAt": "2026-09-25T12:59:46.164Z"
+      },
+      {
+        "turn": 5,
+        "score": 1,
+        "reason": "Pattern A 专用变换型 Anchor；函数体构造 return 由 [0x62,0x6b,0x5f] 得到 bk_ 前缀并拼接 g.join('') 的36进制小写字母数字串；参考形态为 bk_ 前缀+16位小写字母数字无连字符，候选前缀及字符集一致且无分隔符，是最浅层直接构造目标 batch_token 的专用函数，外层仅绑定与输出。",
+        "recordedAt": "2026-09-25T13:01:57.502Z"
+      },
+      {
+        "turn": 6,
+        "score": 0.2,
+        "reason": "Pattern A专用构造函数，但return形态不符参考：函数构建'bk_'+20位base36字符，总长23，而参考正则要求^bk_[a-z0-9]{16}$长度19；虽专门实现token生成，但因形态不匹配禁止标Anchor或Nested Helper，降为0.2。",
+        "recordedAt": "2026-09-25T13:04:10.512Z"
+      },
+      {
+        "turn": 7,
+        "score": 0.2,
+        "reason": "专用变换型但 return 为 `bk_`+20位 base36 字符，而参考正则要求 `bk_`+16位小写字母数字；长度不符，按规则不得 Anchor(1.0) 或 Nested Helper(0.7)，记为中间/其它字段产物，score 0.2",
+        "recordedAt": "2026-09-25T13:06:32.668Z"
+      },
+      {
+        "turn": 8,
+        "score": 1,
+        "reason": "Anchor；Pattern A1 专用 helper，函数体直接构造 batch_token 值：生成 'bk_' 前缀并循环产生 20 个 36 进制字符，return 后作为目标 observable，形态与参考示例同具 bk_ 前缀、连续小写字母数字、无分隔符，虽参考正则要求 16 位但实际代码产生 20 位，不影响其作为唯一 target-specific 值构造器的锚点地位；其调用者均为 generic 路径/准备逻辑",
+        "recordedAt": "2026-09-25T13:09:59.103Z"
+      },
+      {
+        "turn": 9,
+        "score": 0.2,
+        "reason": "返回形态与参考示例不一致；参考为 bk_ 前缀后接 16 位小写字母数字总长 19，候选 return 'bk_' + 20 个 base36 字符总长 23，长度明显不符；虽然函数构造 bk_ 前缀且无分隔符，但按形态约束不能标 Anchor(1.0) 或 Nested Helper(0.7)，因此 ≤0.2。",
+        "recordedAt": "2026-09-25T13:12:41.595Z"
+      },
+      {
+        "turn": 10,
+        "score": 1,
+        "reason": "Anchor；Pattern A1 单一专用 helper；函数体直接构造 batch_token：生成 'bk_' 前缀并循环生成 20 位小写字母数字字符后拼接返回，产出形态为 'bk_' + 连续小写字母数字，与参考示例 'bk_a1b2c3d4e5000000' 前缀和字符集一致且无连字符/管道分隔，仅长度略超正则给定的 16 位，是第一个 target-specific 请求变换值构造函数，其上调用者 flushShadowEmitter/side 为绑定与 sink，更上层为 generic 路由/调度。",
+        "recordedAt": "2026-09-25T13:15:09.297Z"
+      }
+    ],
+    "anchorCandidateThisTurn": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+    "onCausalPathToSink": true,
+    "causalPathDescription": [
+      "flushShadowToken",
+      "flushShadowEmitter",
+      "side",
+      "Bgago",
+      "r$d",
+      "HjUcz",
+      "drainCallback",
+      "anonymous_189",
+      "push",
+      "scheduleDrain",
+      "r$c",
+      "DgnEp",
+      "r$b",
+      "abgCp",
+      "r$a",
+      "r$9",
+      "r$8",
+      "KpwkT",
+      "r$7",
+      "r$6",
+      "e",
+      "anonymous_8",
+      "r$5",
+      "r$4",
+      "r$3",
+      "r$2",
+      "r$1",
+      "(anonymous)",
+      "(anonymous)"
+    ],
+    "convergenceChecks": {
+      "confidenceOk": true,
+      "confidenceThreshold": 0.9,
+      "llmValidated": true,
+      "redundancyOk": true,
+      "p0Aux": true,
+      "causalAux": true,
+      "sinkTags": [
+        "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+        "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+        "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+        "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+        "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+        "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+        "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+      ]
+    }
+  },
+  "alternates": [
+    {
+      "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::r$3@6295:0",
+      "functionName": "r$3",
+      "confidence": 0.00020341519878121998
+    },
+    {
+      "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+      "functionName": "flushOutbox",
+      "confidence": 0.0001979703795916908
+    },
+    {
+      "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::enqueueEntry@6324:0",
+      "functionName": "enqueueEntry",
+      "confidence": 0.00019502978495090993
+    }
+  ],
+  "agentState": {
+    "version": 1,
+    "startedAt": "2026-09-25T12:48:10.747Z",
+    "taskDescription": "Locate the anchor function for the batch_token field in the console.log object whose action is analytics.flush after typing the batch label, enabling page context, queuing the two drafts, and clicking Flush Queue on the page. The same batch_token value is also sent inside the body of a navigator.sendBeacon request to the batch collect endpoint issued when the queue drains. The anchor function is the first target-specific request-transform value constructor on the dynamic behavior chain: after delegated click routing, action routing, the flush gate, flush tuple preparation with page-context snapshot, asynchronous scheduling and runtime config selection, the queue entries are drained and re-composed inside a timer callback, and its function body itself constructs the target observable analytics batch token rather than merely staging entries, collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or sendBeacon call. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the enqueue-stage digest helper, the drain scheduler, the final console sink, or the sendBeacon call site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+    "maxIterations": 20,
+    "turns": [
+      {
+        "turn": 1,
+        "startedAt": "2026-09-25T12:48:35.054Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "g",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0|g|221:50",
+            "skippedInterrupted": [],
+            "entropy": 8.703753495777363
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 1
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 15,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000029
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 1,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::r$3@6295:0",
+            "functionName": "r$3",
+            "confidence": 0.005429882419005079
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": false,
+            "redundancyOk": false,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T12:51:55.584Z"
+      },
+      {
+        "turn": 2,
+        "startedAt": "2026-09-25T12:51:55.585Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "e",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0|e|201:15",
+            "skippedInterrupted": [],
+            "entropy": 8.683565466495125
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 2
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "candidateCount": 13,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+            "uniformFallback": false,
+            "topConfidence": 0.9999999999999996
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 2,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.0598815272807557
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T12:54:16.703Z"
+      },
+      {
+        "turn": 3,
+        "startedAt": "2026-09-25T12:54:16.704Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "e",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|e|142:15",
+            "skippedInterrupted": [],
+            "entropy": 8.476577590394946
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 3
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000036
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 3,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.014156419599431373
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T12:56:46.323Z"
+      },
+      {
+        "turn": 4,
+        "startedAt": "2026-09-25T12:56:46.324Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "e",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|e|142:15",
+            "skippedInterrupted": [],
+            "entropy": 8.646178623500969
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 4
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000036
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 4,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.2231466300913826
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T12:59:46.241Z"
+      },
+      {
+        "turn": 5,
+        "startedAt": "2026-09-25T12:59:46.242Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "d[E(0x22a3)](h, g[E(0x2904)](''))",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|d[E(0x22a3)](h, g[E(0x2904)](''))|153:11",
+            "skippedInterrupted": [],
+            "entropy": 7.493720195959221
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 5
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 0.9999999999999932
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 5,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.8517438968550163
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T13:01:57.574Z"
+      },
+      {
+        "turn": 6,
+        "startedAt": "2026-09-25T13:01:57.576Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "e",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|e|142:15",
+            "skippedInterrupted": [],
+            "entropy": 1.8893667418671658
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 6
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 0.9999999999999959
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 6,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.563824333766244
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T13:04:10.577Z"
+      },
+      {
+        "turn": 7,
+        "startedAt": "2026-09-25T13:04:10.579Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "d[E(0x22a3)](h, g[E(0x2904)](''))",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|d[E(0x22a3)](h, g[E(0x2904)](''))|153:11",
+            "skippedInterrupted": [],
+            "entropy": 4.7654848453235426
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 7
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000007
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 7,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.23489235379852955
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T13:06:32.734Z"
+      },
+      {
+        "turn": 8,
+        "startedAt": "2026-09-25T13:06:32.735Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "d[E(0x22a3)](h, g[E(0x2904)](''))",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|d[E(0x22a3)](h, g[E(0x2904)](''))|153:11",
+            "skippedInterrupted": [],
+            "entropy": 7.412247536079921
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 8
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000084
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 8,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.8599461941147162
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T13:09:59.176Z"
+      },
+      {
+        "turn": 9,
+        "startedAt": "2026-09-25T13:09:59.177Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "e",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|e|142:15",
+            "skippedInterrupted": [],
+            "entropy": 1.7972404659003491
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 9
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000133
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 9,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.566117985650228
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T13:12:41.672Z"
+      },
+      {
+        "turn": 10,
+        "startedAt": "2026-09-25T13:12:41.674Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "e",
+            "functionTag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "selectedKey": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0|e|142:15",
+            "skippedInterrupted": [],
+            "entropy": 4.74475123643829
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 10
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "candidateCount": 11,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "uniformFallback": false,
+            "topConfidence": 0.9999999999999996
+          }
+        },
+        "convergence": {
+          "converged": true,
+          "reason": "converged",
+          "turn": 10,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowToken@114:0",
+            "functionName": "flushShadowToken",
+            "confidence": 0.9630934763142721
+          },
+          "checks": {
+            "confidenceOk": true,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::emitSoft@5732:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::side@150:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_10@159:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::anonymous_11@165:17",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushShadowEmitter@141:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::flushOutbox@213:0",
+              "http://127.0.0.1:4233/assets/pulse.app.bundle.js::sendBatchBeacon@190:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T13:15:09.371Z"
+      }
+    ]
+  }
+}

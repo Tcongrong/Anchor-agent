@@ -1,0 +1,188 @@
+{
+  "case_id": "case011_analytics_batch_flush",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "scenario": "analytics",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3072,
+    "async_level": 6,
+    "distractor_count": 44,
+    "semantic_decoy_count": 24,
+    "submit_path_decoy_count": 14,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#batchLabel",
+            "value": "cohort_snapshot"
+          },
+          {
+            "action": "check",
+            "selector": "#includeContext"
+          },
+          {
+            "action": "click",
+            "selector": "#queueOne"
+          },
+          {
+            "action": "click",
+            "selector": "#queueTwo"
+          },
+          {
+            "action": "click",
+            "selector": "#flushQueue"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log + navigator.sendBeacon",
+        "argument_type": "object",
+        "action": "analytics.flush",
+        "field": "batch_token",
+        "value_pattern": "^bk_[a-z0-9]{16}$",
+        "beacon_url": "/api/collect/batch",
+        "beacon_body_contains": "batch_token"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after routing and input preparation, whose own body constructs the target observable value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink or beacon call. In this case the value is constructed inside the flush drain timer callback, after the queue is drained and materialized, so the enqueue-stage digest helpers are not the anchor."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_hidden/dist/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/pulse.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4233/assets/pulse.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 1565623,
+    "bundle_lines": 30249
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name is assembled from adjusted character-code arrays at the sink, so direct literal search is insufficient.",
+        "The target batch token is carried through runtime-derived transport keys and recovered shortly before console output and beacon submission.",
+        "The flush route selects its live configuration only after click-time DOM, form-order, style and dataset state are captured."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "route_table_rows": 44,
+        "state_machine_steps": 3072,
+        "captured_js_total_bytes": 1565623,
+        "captured_bundle_lines": 30249
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The flush path crosses delegated event handling, action routing, an enqueue/drain gate, flush tuple construction with page-context snapshot, asynchronous scheduling, local event dispatch, a middleware pipeline, runtime slot materialization, batch payload token construction and sink wrapping.",
+        "The same flush interaction emits non-target analytics-like objects carrying batch_token-like values before the target analytics.flush object.",
+        "A telemetry.batchhf shadow emitter logs a bk_-styled fake token via console.debug, and enqueue clicks fire prefetch beacons carrying fake tokens off the target chain."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 24,
+        "off_chain_decoy_modules": 44,
+        "same_field_non_target_console_objects": 2
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is constructed inside a setTimeout(0..2) drain callback after the flush click, so value construction is temporally decoupled from every user action.",
+        "The target value is separated from the flush click by Promise, microtask, timer, animation-frame, MutationObserver and DOM CustomEvent boundaries.",
+        "The selected runtime configuration is cloned and mutated in a WeakMap-backed materialization step before the encoder receives it.",
+        "Enqueue clicks only stage queue entries (single-entry digests); the batch token is folded from the drained queue inside the timer callback, so enqueue-stage inspection does not reveal the construction site."
+      ],
+      "async_boundaries": [
+        "queueMicrotask continuation",
+        "Promise.resolve continuation",
+        "setTimeout(..., 0)",
+        "setTimeout(..., 2) drain callback containing the anchor",
+        "requestAnimationFrame callback",
+        "MutationObserver callback",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_transformation",
+    "case_category": "analytics_batch_flush_payload_token_construction",
+    "subtype": "queued event entries folded into a 16-char base36 batch token inside the flush drain timer callback and sent as an outbound beacon payload",
+    "network_request_present": true,
+    "reason": "The observable value is a batch payload token constructed for an outbound collect request: the queue entries are normalized and re-composed into a token that is written into the analytics.flush object and the /api/collect/batch beacon body. The primary semantics are request payload construction. It is not a persisted local state code, a one-way digest or seal, a byte-array payload, or browser/device capability collection.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "The batch value is emitted as an outbound beacon payload; it does not persist as a local state code."
+      },
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The token is a normalized re-composition of queue content, not a cryptographic one-way digest or seal semantic."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The chain uses queue content and page context, not browser/device capability collection as the target behavior."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "primary_anchor": {
+    "answer_function": "buildBatchPayloadToken",
+    "source_function": "buildBatchPayloadToken",
+    "source_file": "src/z0/b5/v9/w2.js",
+    "source_bundle_name_aligned": true,
+    "captured_span": {
+      "start_line": 624,
+      "end_line": 644,
+      "start_offset": 43609,
+      "end_offset": 44491
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

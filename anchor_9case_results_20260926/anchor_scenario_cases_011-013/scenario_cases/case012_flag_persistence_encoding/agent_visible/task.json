@@ -1,0 +1,106 @@
+{
+  "case_id": "case012_flag_persistence_encoding",
+  "scenario": "feature_flag",
+  "page": "captures/devtools-source-dump/127.0.0.1_4235/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#sessionKey",
+      "value": "session_8841"
+    },
+    {
+      "action": "select",
+      "selector": "#rolloutScope",
+      "value": "global"
+    },
+    {
+      "action": "check",
+      "selector": "#persistAcrossReload"
+    },
+    {
+      "action": "click",
+      "selector": "#persistAssignment"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "flag.persist",
+    "field": "assignment_code"
+  },
+  "question": "Locate the anchor function for the assignment_code field in the console.log object whose action is flag.persist after typing the session key, choosing the rollout scope, enabling persist-across-reload, and clicking Persist Assignment on the page. The same assignment_code value is also persisted by a localStorage.setItem call under the ff_state key issued on persist. The anchor function is the first target-specific state-encoding value constructor on the dynamic behavior chain: after delegated click routing, action routing, the persist gate, assignment material collection with page-context snapshot, tuple input preparation, asynchronous scheduling and runtime config selection, its function body itself constructs the target observable assignment persistence code rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or localStorage call. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the final console sink, or the localStorage write site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "General rule for resolving ambiguity: a function is target-specific with respect to the observable described above if at least one statement in its body either constructs/binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) If target-specific C is called by generic dispatcher B and calls generic utility D, the anchor is C, not B or D. (2) If generic A writes whatever callee B returns into the target field and B computes that value, the anchor is B. (3) If the target-specific statement is one branch inside a larger function F, F remains a valid anchor candidate.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): A fleet-dispatch board emits trip.vault_code after the dispatcher taps Seal Trip. Chain: tap Seal Trip -> collect route legs (generic prep) -> snapshot depot context (generic prep) -> schedule via Promise (generic dispatcher) -> select depot salt config (generic prep) -> compose vault seal variant (ANCHOR) -> order envelope rows (nested helper) -> fold legs into code (nested helper) -> compute digest (core utility) -> store push (generic helper) -> write trip.vault_code -> persist sealed trip (wrapper/sink). The vault seal variant composer is the anchor because its immediate caller is the generic config selector and its body explains why vault_code is produced. Apply the same reasoning to this assignment store page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleStateEncoder",
+      "file": "captures/devtools-source-dump/127.0.0.1_4235/assets/rollout.app.bundle.js",
+      "slice": {
+        "start_line": 120,
+        "end_line": 127,
+        "start_offset": 5100,
+        "end_offset": 5650,
+        "code": "function exampleStateEncoder(session, scope, runtime, config) {\n  const pick = typeof variant === 'number' ? variant : selectBranch(config, session, runtime);\n  const folded = reducers[pick](cells, config, runtime);\n  return formatStateCode(folded, config, buildFrame(cells, config, runtime));\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or the localStorage write site.",
+    "Do not return a generic DOM reader, version reader, namespace manager, formatter, router or storage helper when a more target-specific assignment persistence code constructor is present.",
+    "Constrain the observable by both action and field.",
+    "Ignore console.debug and console.info decoy objects unless they feed the requested console.log object.",
+    "The target value is a 12-character base36 assignment persistence code and should not be confused with shadow_assignment, persist_ref, rollout_ref, preference tags or non-target flag.sync/flag.audit assignment_code-like decoys."
+  ]
+}

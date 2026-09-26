@@ -1,0 +1,194 @@
+{
+  "case_id": "case013_cache_key_digest",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "scenario": "cache_query_serialization",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3072,
+    "async_level": 6,
+    "distractor_count": 44,
+    "semantic_decoy_count": 24,
+    "submit_path_decoy_count": 15,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#viewOwner",
+            "value": "owner_3912"
+          },
+          {
+            "action": "select",
+            "selector": "#viewMode",
+            "value": "board"
+          },
+          {
+            "action": "select",
+            "selector": "#density",
+            "value": "balanced"
+          },
+          {
+            "action": "check",
+            "selector": "#memoize"
+          },
+          {
+            "action": "click",
+            "selector": "#materializeView"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log + in-memory LRU Map put",
+        "argument_type": "object",
+        "action": "cache.materialize",
+        "field": "cache_key",
+        "value_pattern": "^ck_[a-f0-9]{16}$",
+        "lru_window_record": "__vc_lru",
+        "lru_key_same_as_console": true
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific cache-digest value-construction function on the dynamic behavior chain: the earliest function, after routing, view material collection, normalization, tuple preparation, asynchronous scheduling and runtime config materialization, whose own body constructs the target observable cache_key rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the console or the LRU cache write."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_hidden/dist/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/viewcache.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4238/assets/viewcache.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 1590376,
+    "bundle_lines": 31830
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name is assembled from character-code arrays at the sink, so direct literal search is insufficient.",
+        "The target cache_key is carried through runtime-derived transport keys and recovered shortly before console output and the LRU map put.",
+        "The materialize route selects its live salt-bearing configuration only after click-time DOM, form-order, style and dataset state are captured.",
+        "The LRU write target is a plain in-memory Map reachable only through the sink module, obscuring the persistence destination."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1590376,
+        "captured_bundle_lines": 31830,
+        "route_table_rows": 44,
+        "state_machine_steps": 3072
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The click path crosses delegated event handling, action routing, gate checks, view material collection with page-context snapshot, tuple construction, asynchronous scheduling, local event dispatch, runtime slot materialization, digest folding, dynamic transport and sink wrapping.",
+        "The same materialize interaction emits non-target cache.evict/cache.audit objects carrying cache_key-like values before the target cache.materialize object.",
+        "A probe emitter emits a ck_-styled shadow_cache value via console.debug, and an off-chain static-asset cache-key generator plus an inactive shadow-roll chain remain reachable-looking without feeding the target cache_key field."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 24,
+        "off_chain_decoy_modules": 44,
+        "same_field_non_target_console_objects": 2
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from the click by animation-frame, microtask, MutationObserver, Promise, timer and DOM CustomEvent boundaries.",
+        "The selected runtime configuration is cloned and mutated in a WeakMap-backed materialization step before the digest constructor receives its salt.",
+        "The final sink receives an already constructed cache_key after dynamic cell and lane recovery, so sink inspection alone does not identify the construction site."
+      ],
+      "async_boundaries": [
+        "requestAnimationFrame callback",
+        "queueMicrotask continuation",
+        "MutationObserver callback",
+        "Promise.resolve continuation",
+        "setTimeout(..., 0)",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "client_side_view_cache_digest_derivation",
+    "subtype": "route-selected salt-mixed murmur-style fold over view owner/mode/density material rendered as a 16-hex cache key",
+    "network_request_present": false,
+    "reason": "The observable cache_key is a deterministic but one-way digest: the view owner, mode, density, memoize bit and runtime-materialized salt are folded through murmur-style 32-bit mixing and avalanched into a 16-hex key. The digest cannot be decoded back into the view state, and the value never enters an outbound request or the URL; the in-memory LRU map under __vc_lru only mirrors the console field as its entry key.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "The cache_key is not an encoding of a normalized view state that a receiver could decode or verify; it is a one-way digest of that state. Same view state always maps to the same key, but no receiver can reconstruct the owner/mode/density material from the key."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "The primary observable does not enter any outbound request, URL or storage persistence; this case has no network egress at all and the only secondary sink is the in-memory LRU map, which mirrors the console value as its entry key."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The chain uses local DOM/form state and page context as routing input, not browser/device capability collection as the target behavior."
+      },
+      {
+        "category": "byte_array_transformation",
+        "why_not": "The output is a short hex key string, not a byte array; byte-payload-like code in the bundle is decoy material and does not feed the target cache_key field."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "primary_anchor": {
+    "answer_function": "digestViewState",
+    "source_function": "digestViewState",
+    "source_file": "src/z0/y6/g4/z1.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4238/assets/viewcache.app.bundle.js",
+    "captured_span": {
+      "start_line": 246,
+      "end_line": 269,
+      "start_offset": 8698,
+      "end_offset": 9655
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

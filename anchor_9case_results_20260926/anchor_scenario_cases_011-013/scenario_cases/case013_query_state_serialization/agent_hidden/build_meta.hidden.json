@@ -1,0 +1,223 @@
+{
+  "case_id": "case013_query_state_serialization",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "scenario": "cache_query_serialization",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 38,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3072,
+    "async_level": 6,
+    "distractor_count": 44,
+    "semantic_decoy_count": 24,
+    "submit_path_decoy_count": 15,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "select",
+            "selector": "#statusFilter",
+            "value": "open"
+          },
+          {
+            "action": "select",
+            "selector": "#regionFilter",
+            "value": "west"
+          },
+          {
+            "action": "type",
+            "selector": "#minAmount",
+            "value": "500"
+          },
+          {
+            "action": "select",
+            "selector": "#sortOrder",
+            "value": "recent"
+          },
+          {
+            "action": "type",
+            "selector": "#pageInput",
+            "value": "2"
+          },
+          {
+            "action": "check",
+            "selector": "#includeArchived"
+          },
+          {
+            "action": "click",
+            "selector": "#applyFilters"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log + history.pushState",
+        "argument_type": "object",
+        "action": "listing.filter",
+        "field": "query_key",
+        "value_pattern": "^qs_[a-z0-9]{16}$",
+        "url_query_param": "q",
+        "url_contains_same_key": true
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific value-construction function on the dynamic behavior chain: the earliest function, after routing and input preparation, whose own body constructs the target observable value rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the sink."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "dist/index.html",
+    "dist_bundle": "dist/assets/listing.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4237/assets/listing.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "dist_files": [
+      "dist/assets/listing.app.bundle.js",
+      "dist/favicon.svg",
+      "dist/index.html",
+      "dist/styles.css"
+    ],
+    "capture_files": [
+      "captures/devtools-source-dump/127.0.0.1_4237/assets/listing.app.bundle.js",
+      "captures/devtools-source-dump/127.0.0.1_4237/favicon.svg",
+      "captures/devtools-source-dump/127.0.0.1_4237/index.html",
+      "captures/devtools-source-dump/127.0.0.1_4237/styles.css",
+      "captures/devtools-source-dump/manifest.json",
+      "captures/devtools-source-dump/source-tree.txt"
+    ],
+    "bundle_bytes": 1373715,
+    "bundle_lines": 23507
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document with local async continuations",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false,
+    "forbidden_api_scan": {
+      "passed": true,
+      "files": [
+        "assets/listing.app.bundle.js",
+        "favicon.svg",
+        "index.html",
+        "styles.css"
+      ]
+    }
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible corpus is a single hard-style bundle without an exposed source map.",
+        "The target field name is assembled from character-code arrays at the sink, so direct literal search is incomplete.",
+        "The target value is carried through a reducer factory, selected slot, dynamic payload field, pushState URL and console wrapper.",
+        "The apply route selects its live profile after filter collection, tuple shape and state-machine outputs are available."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1373715,
+        "captured_bundle_lines": 23507,
+        "route_table_rows": 44,
+        "state_machine_steps": 3072
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The click path crosses filter collection, numeric normalization, intent routing, lane matrix routing, tuple construction, deferred scheduling, local state-plane dispatch, runtime config materialization, state encoding and sink wrapping.",
+        "The bundle contains shadow query outputs in debug/info, dataset and window cache locations that do not feed the target console.log query_key.",
+        "Vendor-like files and alternate reducer rows are imported into the same bundle and resemble target-producing code."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 22,
+        "off_chain_decoy_modules": 44,
+        "vendor_like_modules": 25,
+        "same_interaction_decoy_outputs": 12
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target query key is separated from the click by MutationObserver, microtask, Promise, animation-frame and timer boundaries.",
+        "The selected reducer slot and runtime ticket are computed before the anchor receives the filter composite, route and machine state.",
+        "The final sink receives an already constructed value under a dynamically assembled field name and mirrors it into the page URL via history.pushState."
+      ],
+      "async_boundaries": [
+        "MutationObserver callback",
+        "queueMicrotask continuation",
+        "Promise.resolve continuation",
+        "requestAnimationFrame callback",
+        "setTimeout(..., 0)"
+      ]
+    },
+    "construct_validity_note": "Primary bottleneck is semantic disambiguation among similarly named path functions in a large bundle; keyword search narrows high-score candidates but does not replace tracing the listing.filter path."
+  },
+  "behavior_category": {
+    "paper_category": "state_encoding",
+    "case_category": "listing_query_state_serialization",
+    "subtype": "normalized filter tuple (status, region, amount, archived, order, page) folded into a qs_-prefixed 16-char base36 query state key",
+    "network_request_present": false,
+    "reason": "The observable query_key is a compact deterministic encoding of the normalized listing filter state: the same filter state always yields the same key, and a receiver holding the filter spec can decode and verify the key against the query state. The URL written by history.pushState is a local mirror of the same encoding, not a network request, so the value semantics never cross a transport boundary.",
+    "near_categories": [
+      {
+        "category": "request_transformation",
+        "why_not": "The primary observable is the local query state key; the pushState URL is a mirror exit and no network request is emitted or rewritten."
+      },
+      {
+        "category": "request_signature_token_derivation",
+        "why_not": "The key is a deterministic encoding of the normalized filter state, not an irreversible derivation: the same state always yields the same key and a receiver can verify it against the filter spec, which a digest or seal would not allow."
+      },
+      {
+        "category": "byte_array_transformation",
+        "why_not": "The target is a 19-character prefixed base36 string key, not a byte buffer or binary payload transform."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope, build artifacts and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "primary_anchor": {
+    "answer_function": "serializeQueryState",
+    "source_function": "serializeQueryState",
+    "source_file": "src/z0/m8/q2/s5.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4237/assets/listing.app.bundle.js",
+    "captured_span": {
+      "start_line": 264,
+      "end_line": 286,
+      "start_offset": 9255,
+      "end_offset": 10180
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

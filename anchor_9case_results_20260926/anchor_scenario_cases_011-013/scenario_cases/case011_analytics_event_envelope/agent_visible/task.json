@@ -1,0 +1,110 @@
+{
+  "case_id": "case011_analytics_event_envelope",
+  "page": "captures/devtools-source-dump/127.0.0.1_4231/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#eventName",
+      "value": "checkout_complete"
+    },
+    {
+      "action": "select",
+      "selector": "#sourceSelect",
+      "value": "web_app"
+    },
+    {
+      "action": "select",
+      "selector": "#platformSelect",
+      "value": "desktop"
+    },
+    {
+      "action": "check",
+      "selector": "#consentToggle"
+    },
+    {
+      "action": "click",
+      "selector": "#sendEvent"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "analytics.track",
+    "field": "event_token"
+  },
+  "question": "Locate the anchor function for the event_token field in the console.log object whose action is analytics.track after typing the event name, choosing the source and platform, granting consent, and clicking Send Event on the page. The same event_token value is also sent inside the body of a navigator.sendBeacon request to the collect endpoint issued on track. The anchor function is the first target-specific request-transform value constructor on the dynamic behavior chain: after delegated click routing, action routing, the track gate, event-property collection with page-context snapshot, tuple input preparation, asynchronous scheduling and runtime config selection, its function body itself constructs the target observable analytics event token rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or sendBeacon call. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the final console sink, or the sendBeacon call site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "General rule for resolving ambiguity: a function is target-specific with respect to the observable described above if at least one statement in its body either constructs/binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) If target-specific C is called by generic dispatcher B and calls generic utility D, the anchor is C, not B or D. (2) If generic A writes whatever callee B returns into the target field and B computes that value, the anchor is B. (3) If the target-specific statement is one branch inside a larger function F, F remains a valid anchor candidate.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): A ride-booking page emits ride.share_code after the user taps Share Ride. Chain: tap Share Ride -> collect ride draft (generic prep) -> snapshot rider context (generic prep) -> schedule via microtask (generic dispatcher) -> select runtime variant config (generic prep) -> compose share envelope variant (ANCHOR) -> format code body (nested helper) -> fold material into code (nested helper) -> compute digest (core utility) -> queue push (generic helper) -> write ride.share_code -> send share request (wrapper/sink). The share envelope variant composer is the anchor because its immediate caller is the generic config selector and its body explains why share_code is produced. Apply the same reasoning to this metrics console page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4231/assets/metrics.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 107,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(props, context, config = {}) {\n  const pick = (config.branch ^ context.routeScore ^ context.tupleScore) & 7;\n  return 'cx_' + encodeExampleField(reducers[pick](props, config, context));\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or the sendBeacon call site.",
+    "Do not return a generic DOM reader, formatter, router or transport helper when a more target-specific event token value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "Ignore console.debug and console.info decoy objects unless they feed the requested console.log object.",
+    "The target value is an analytics event token and should not be confused with beacon_ref, queue_ref or non-target telemetry.pageview/telemetry.audit event_token-like decoys."
+  ]
+}

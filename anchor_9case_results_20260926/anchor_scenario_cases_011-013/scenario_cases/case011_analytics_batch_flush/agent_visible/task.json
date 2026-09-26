@@ -1,0 +1,108 @@
+{
+  "case_id": "case011_analytics_batch_flush",
+  "page": "captures/devtools-source-dump/127.0.0.1_4233/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#batchLabel",
+      "value": "cohort_snapshot"
+    },
+    {
+      "action": "check",
+      "selector": "#includeContext"
+    },
+    {
+      "action": "click",
+      "selector": "#queueOne"
+    },
+    {
+      "action": "click",
+      "selector": "#queueTwo"
+    },
+    {
+      "action": "click",
+      "selector": "#flushQueue"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "analytics.flush",
+    "field": "batch_token"
+  },
+  "question": "Locate the anchor function for the batch_token field in the console.log object whose action is analytics.flush after typing the batch label, enabling page context, queuing the two drafts, and clicking Flush Queue on the page. The same batch_token value is also sent inside the body of a navigator.sendBeacon request to the batch collect endpoint issued when the queue drains. The anchor function is the first target-specific request-transform value constructor on the dynamic behavior chain: after delegated click routing, action routing, the flush gate, flush tuple preparation with page-context snapshot, asynchronous scheduling and runtime config selection, the queue entries are drained and re-composed inside a timer callback, and its function body itself constructs the target observable analytics batch token rather than merely staging entries, collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or sendBeacon call. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the enqueue-stage digest helper, the drain scheduler, the final console sink, or the sendBeacon call site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "General rule for resolving ambiguity: a function is target-specific with respect to the observable described above if at least one statement in its body either constructs/binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) If target-specific C is called by generic dispatcher B and calls generic utility D, the anchor is C, not B or D. (2) If generic A writes whatever callee B returns into the target field and B computes that value, the anchor is B. (3) If the target-specific statement is one branch inside a larger function F, F remains a valid anchor candidate.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): A print-shop page emits jobs.shipment_code after the clerk taps Ship All. Chain: tap Ship All -> queue one job (stages a per-job stamp; generic prep) -> queue a second job -> tap Ship All -> gate (generic dispatcher) -> schedule drain via microtask (generic dispatcher) -> drain jobs inside a timer callback (generic dispatcher) -> select runtime variant config (generic prep) -> compose shipment variant code from the drained jobs (ANCHOR) -> expand code body (nested helper) -> fold material into code (nested helper) -> compute digest (core utility) -> write jobs.shipment_code -> send shipment request (wrapper/sink). The shipment variant composer is the anchor because its immediate caller is the generic timer drain host and its body explains why shipment_code is produced; the per-job stamp and the drain scheduler are not. Apply the same reasoning to this event queue page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleAnchorFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4233/assets/pulse.app.bundle.js",
+      "slice": {
+        "start_line": 100,
+        "end_line": 107,
+        "start_offset": 4200,
+        "end_offset": 4750,
+        "code": "function exampleAnchorFn(entries, flag, runtime = {}, config = {}) {\n  const pick = (config.branch ^ flag.length ^ runtime.ticket) & 7;\n  return 'sk_' + encodeExampleField(reducers[pick](entries, config, runtime));\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or the sendBeacon call site.",
+    "Do not return a generic DOM reader, formatter, router, queue scheduler or transport helper when a more target-specific batch token value constructor is present.",
+    "Constrain the observable by both action and field.",
+    "Ignore console.debug and console.info decoy objects unless they feed the requested console.log object.",
+    "The target value is the analytics batch token constructed when the queue drains; it should not be confused with the per-entry enqueue digest, beacon_ref, queue_ref or non-target telemetry.batchhf/telemetry.audit batch_token-like decoys."
+  ]
+}

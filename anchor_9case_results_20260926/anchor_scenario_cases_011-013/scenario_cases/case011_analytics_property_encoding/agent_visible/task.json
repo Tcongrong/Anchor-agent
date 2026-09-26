@@ -1,0 +1,110 @@
+{
+  "case_id": "case011_analytics_property_encoding",
+  "page": "captures/devtools-source-dump/127.0.0.1_4232/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#propertyKey",
+      "value": "plan_tier"
+    },
+    {
+      "action": "type",
+      "selector": "#propertyValue",
+      "value": "growth q3 roadmap"
+    },
+    {
+      "action": "select",
+      "selector": "#propScope",
+      "value": "session"
+    },
+    {
+      "action": "check",
+      "selector": "#stripPII"
+    },
+    {
+      "action": "click",
+      "selector": "#encodeProperties"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "analytics.properties",
+    "field": "props_code"
+  },
+  "question": "Locate the anchor function for the props_code field in the console.log object whose action is analytics.properties after typing the property key and value, choosing the property scope, enabling PII stripping, and clicking Encode Properties on the page. The same props_code value is also sent inside the body of a fetch request to the property collect endpoint issued on encode. The anchor function is the first target-specific state-encoding value constructor on the dynamic behavior chain: after delegated click routing, action routing, the encode gate, property collection with PII scrubbing and key-order normalization, tuple input preparation, asynchronous scheduling and runtime config selection, its function body itself constructs the target observable property state code rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or fetch call. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the final console sink, or the fetch call site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "General rule for resolving ambiguity: a function is target-specific with respect to the observable described above if at least one statement in its body either constructs/binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) If target-specific C is called by generic dispatcher B and calls generic utility D, the anchor is C, not B or D. (2) If generic A writes whatever callee B returns into the target field and B computes that value, the anchor is B. (3) If the target-specific statement is one branch inside a larger function F, F remains a valid anchor candidate.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): A library-lending desk page emits loans.pickup_code after the librarian taps Print Slip. Chain: tap Print Slip -> collect loan draft rows (generic prep) -> snapshot shelf context (generic prep) -> schedule via microtask (generic dispatcher) -> select runtime variant config (generic prep) -> compose pickup slip variant (ANCHOR) -> order slip rows (nested helper) -> fold rows into code (nested helper) -> compute digest (core utility) -> queue push (generic helper) -> write loans.pickup_code -> send slip request (wrapper/sink). The pickup slip variant composer is the anchor because its immediate caller is the generic config selector and its body explains why pickup_code is produced. Apply the same reasoning to this property encoder page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleStateEncoder",
+      "file": "captures/devtools-source-dump/127.0.0.1_4232/assets/props.app.bundle.js",
+      "slice": {
+        "start_line": 120,
+        "end_line": 127,
+        "start_offset": 5100,
+        "end_offset": 5650,
+        "code": "function exampleStateEncoder(entries, scope, runtime, config) {\n  const pick = typeof variant === 'number' ? variant : selectBranch(config, entries, runtime);\n  const folded = reducers[pick](entries, config, runtime);\n  return formatStateCode(folded, config, buildFrame(entries, config, runtime));\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or the fetch call site.",
+    "Do not return a generic DOM reader, PII scrubber, order normalizer, formatter, router or transport helper when a more target-specific property state code constructor is present.",
+    "Constrain the observable by both action and field.",
+    "Ignore console.debug and console.info decoy objects unless they feed the requested console.log object.",
+    "The target value is a 12-character base36 property state code and should not be confused with shadow_props, session tags or non-target telemetry.props/props.audit props_code-like decoys."
+  ]
+}

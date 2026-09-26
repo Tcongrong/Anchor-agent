@@ -1,0 +1,111 @@
+{
+  "case_id": "case013_cache_key_digest",
+  "scenario": "cache_query_serialization",
+  "page": "captures/devtools-source-dump/127.0.0.1_4238/index.html",
+  "interaction": [
+    {
+      "action": "type",
+      "selector": "#viewOwner",
+      "value": "owner_3912"
+    },
+    {
+      "action": "select",
+      "selector": "#viewMode",
+      "value": "board"
+    },
+    {
+      "action": "select",
+      "selector": "#density",
+      "value": "balanced"
+    },
+    {
+      "action": "check",
+      "selector": "#memoize"
+    },
+    {
+      "action": "click",
+      "selector": "#materializeView"
+    }
+  ],
+  "observable": {
+    "type": "console",
+    "action": "cache.materialize",
+    "field": "cache_key"
+  },
+  "question": "Locate the anchor function for the cache_key field in the console.log object whose action is cache.materialize after typing the view owner, choosing the view mode, choosing the density, enabling memoize, and clicking Materialize View on the page. The same cache_key value is also used as the entry key when the composed view snapshot is written into the in-memory LRU view cache issued on materialize. The anchor function is the first target-specific token-derivation value constructor on the dynamic behavior chain: after delegated click routing, action routing, the materialize gate, view material collection with normalization and page-context snapshot, tuple input preparation, asynchronous scheduling and runtime config materialization, its function body itself constructs the target observable view cache digest rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or the LRU cache write. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the final console sink, or the LRU write site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor_definition_general": "General rule for resolving ambiguity: a function is target-specific with respect to the observable described above if at least one statement in its body either constructs/binds the target value, writes the target field, or dispatches the target action — and removing that statement would break the observed target output under the prescribed interaction. A function is generic if it is a reusable utility (hash/encode/serialize/normalize/collect-features), a control-flow dispatcher (router/interceptor-pipeline/event-bus/scheduler), or a preparation routine (validate input/collect UI state/lifecycle hook) whose body would look the same regardless of which behavior it currently serves. The anchor is the unique target-specific function on the chain whose immediate caller is generic — equivalently, the shallowest target-specific function on the path from the trigger to the sink. Three situations commonly cause confusion: (1) If target-specific C is called by generic dispatcher B and calls generic utility D, the anchor is C, not B or D. (2) If generic A writes whatever callee B returns into the target field and B computes that value, the anchor is B. (3) If the target-specific statement is one branch inside a larger function F, F remains a valid anchor candidate.",
+  "anchor_worked_example": "Worked example (different scenario, for illustration only): An image-pipeline board emits asset.dedupe_tag after the curator taps Compress Batch. Chain: tap Compress Batch -> collect batch rows (generic prep) -> snapshot pipeline context (generic prep) -> schedule via timer (generic dispatcher) -> select codec profile config (generic prep) -> compose digest variant (ANCHOR) -> fold pixel material into digest (nested helper) -> map digest onto tag label (nested helper) -> compute digest (core utility) -> cache push (generic helper) -> write asset.dedupe_tag -> store dedupe record (wrapper/sink). The digest variant composer is the anchor because its immediate caller is the generic config selector and its body explains why dedupe_tag is produced. Apply the same reasoning to this view composer page and bundle.",
+  "answer_format": {
+    "answer_unit": "complete_javascript_function",
+    "location_required": true,
+    "visible_corpus": "captures/devtools-source-dump/**/*.js",
+    "response_type": "json",
+    "response_schema": {
+      "function_name": {
+        "type": "string",
+        "required": true,
+        "description": "The identifier on the function declaration line in the captured bundle slice (the name immediately after the `function` keyword). Use the name as it appears in captures, not a guessed source-level name."
+      },
+      "file": {
+        "type": "string",
+        "required": true,
+        "description": "Path to the JavaScript file under captures/ that contains the function. Must match visible_corpus."
+      },
+      "slice": {
+        "type": "object",
+        "required": true,
+        "description": "One contiguous source slice covering exactly one complete function body in the captured bundle.",
+        "fields": {
+          "start_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive start line of the function in file."
+          },
+          "end_line": {
+            "type": "integer",
+            "required": true,
+            "description": "1-based inclusive end line of the function in file."
+          },
+          "start_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice begins."
+          },
+          "end_offset": {
+            "type": "integer",
+            "required": true,
+            "description": "0-based byte offset in file where the function slice ends (exclusive)."
+          },
+          "code": {
+            "type": "string",
+            "required": true,
+            "description": "Exact source text of the complete function from start_offset to end_offset. Must start with `function <function_name>(` and end with the closing brace of that function."
+          }
+        }
+      }
+    },
+    "example": {
+      "function_name": "exampleDigestFn",
+      "file": "captures/devtools-source-dump/127.0.0.1_4238/assets/viewcache.app.bundle.js",
+      "slice": {
+        "start_line": 90,
+        "end_line": 97,
+        "start_offset": 3900,
+        "end_offset": 4450,
+        "code": "function exampleDigestFn(view, mode, density, runtime, config) {\n  const pick = typeof variant === 'number' ? variant : selectBranch(config, view, runtime);\n  const folded = reducers[pick](cells, config, runtime);\n  return formatCacheKey(folded, config, buildFrame(cells, config, runtime));\n}"
+      }
+    }
+  },
+  "public_constraints": [
+    "Only code visible under captures is in scope.",
+    "Submit exactly one JSON object matching answer_format.response_schema; do not wrap it in markdown fences unless the evaluation harness explicitly requires that.",
+    "function_name and slice.code must refer to the same function declaration in the captured bundle.",
+    "slice.code must be one complete function (balanced braces), not a signature fragment, partial body, or multiple functions.",
+    "Return one top-1 function, not a list of candidate chains.",
+    "Do not return the final console sink or the LRU cache write site.",
+    "Do not return a generic DOM reader, normalizer, hex utility, digest step, formatter, router or cache helper when a more target-specific cache key digest constructor is present.",
+    "Constrain the observable by both action and field.",
+    "Ignore console.debug and console.info decoy objects unless they feed the requested console.log object.",
+    "The target value is a 19-character cache key (ck_ prefix plus 16 lowercase hex characters) and should not be confused with shadow_cache, evict_ref, asset_ref, asset cache keys (as_ prefix), view tags or non-target cache.evict/cache.audit cache_key-like decoys."
+  ]
+}

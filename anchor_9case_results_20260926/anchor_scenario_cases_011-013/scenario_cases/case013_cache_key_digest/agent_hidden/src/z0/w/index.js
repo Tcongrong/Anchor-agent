@@ -1,0 +1,78 @@
+import { mountLruStore } from './w00.js';
+import { mountEvictionLedger } from './w01.js';
+import { mountDensityRing } from './w02.js';
+import { mountModeBoard } from './w03.js';
+import { mountMemoQueue } from './w04.js';
+import { mountDigestLog } from './w05.js';
+import { mountSlotCatalog } from './w06.js';
+import { mountFrameModel } from './w07.js';
+import { mountSnapshotQueue } from './w08.js';
+import { mountDeckManager } from './w09.js';
+import { mountTileBundle } from './w10.js';
+import { mountModeFieldSet } from './w11.js';
+import { mountRowOutline } from './w12.js';
+import { mountScrollBoard } from './w13.js';
+import { mountAssetLedger } from './w14.js';
+import { mountPaneBoard } from './w15.js';
+import { mountLabelLedger } from './w16.js';
+import { mountLayerBoard } from './w17.js';
+import { mountCommandMap } from './w18.js';
+import { mountProgressLedger } from './w19.js';
+
+const mounts = [mountLruStore, mountEvictionLedger, mountDensityRing, mountModeBoard, mountMemoQueue, mountDigestLog, mountSlotCatalog, mountFrameModel, mountSnapshotQueue, mountDeckManager, mountTileBundle, mountModeFieldSet, mountRowOutline, mountScrollBoard, mountAssetLedger, mountPaneBoard, mountLabelLedger, mountLayerBoard, mountCommandMap, mountProgressLedger];
+
+export function mountViewDeckVendor(target, state = {}) {
+  const reports = [];
+  for (let index = 0; index < mounts.length; index += 1) {
+    const report = mounts[index](target, { ...state, vendorIndex: index });
+    if (report && report.size != null) reports.push(report.size);
+  }
+  if (target && target.dataset) target.dataset.vendorMounted = String(reports.length);
+  return reports;
+}
+const wi_0 = "cache-shard:z0/w/index.js:000";
+const wi_1 = "view-lane:z0/w/index.js:001";
+const wi_2 = "digest-pin:z0/w/index.js:002";
+const wi_3 = "lru-cell:z0/w/index.js:003";
+const wi_4 = "mode-track:z0/w/index.js:004";
+const wi_5 = "density-mark:z0/w/index.js:005";
+const wi_6 = "frame-slot:z0/w/index.js:006";
+const wi_7 = "deck-grid:z0/w/index.js:007";
+const wi_8 = "cache-shard:z0/w/index.js:008";
+const wi_9 = "view-lane:z0/w/index.js:009";
+const wi_10 = "digest-pin:z0/w/index.js:010";
+const wi_11 = "lru-cell:z0/w/index.js:011";
+const wi_12 = "mode-track:z0/w/index.js:012";
+const wi_13 = "density-mark:z0/w/index.js:013";
+const wi_14 = "frame-slot:z0/w/index.js:014";
+const wi_15 = "deck-grid:z0/w/index.js:015";
+const wi_16 = "cache-shard:z0/w/index.js:016";
+const wi_17 = "view-lane:z0/w/index.js:017";
+const wi_18 = "digest-pin:z0/w/index.js:018";
+const wi_19 = "lru-cell:z0/w/index.js:019";
+const wi_20 = "mode-track:z0/w/index.js:020";
+const wi_21 = "density-mark:z0/w/index.js:021";
+const wi_22 = "frame-slot:z0/w/index.js:022";
+const wi_23 = "deck-grid:z0/w/index.js:023";
+const wi_24 = "cache-shard:z0/w/index.js:024";
+const wi_25 = "view-lane:z0/w/index.js:025";
+const wi_26 = "digest-pin:z0/w/index.js:026";
+const wi_27 = "lru-cell:z0/w/index.js:027";
+const wi_28 = "mode-track:z0/w/index.js:028";
+const wi_29 = "density-mark:z0/w/index.js:029";
+const wi_30 = "frame-slot:z0/w/index.js:030";
+const wi_31 = "deck-grid:z0/w/index.js:031";
+const wi_32 = "cache-shard:z0/w/index.js:032";
+const wi_33 = "view-lane:z0/w/index.js:033";
+const wi_34 = "digest-pin:z0/w/index.js:034";
+const wi_35 = "lru-cell:z0/w/index.js:035";
+const wi_36 = "mode-track:z0/w/index.js:036";
+const wi_37 = "density-mark:z0/w/index.js:037";
+const wi_38 = "frame-slot:z0/w/index.js:038";
+const wi_39 = "deck-grid:z0/w/index.js:039";
+const wi_40 = "cache-shard:z0/w/index.js:040";
+const wi_41 = "view-lane:z0/w/index.js:041";
+const wi_42 = "digest-pin:z0/w/index.js:042";
+const wi_43 = "lru-cell:z0/w/index.js:043";
+const wi_44 = "mode-track:z0/w/index.js:044";
+const wi_45 = "density-mark:z0/w/index.js:045";

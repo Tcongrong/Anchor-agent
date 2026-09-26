@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ANCHOR vs Baselines — scenario-generalization set (case011–013)</title>
+<style>
+  :root {
+    --surface: #fcfcfb;
+    --ink: #1a1a19;
+    --ink-2: #5c5c58;
+    --ink-3: #8a8a85;
+    --grid: #e8e8e4;
+    --ours: #4E7CF6;
+    --llm: #0F8A76;
+    --control: #C25E00;
+    --classic: #8A2E8A;
+    --card: #ffffff;
+    --border: #e3e3de;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface: #1a1a19;
+      --ink: #f5f5f4;
+      --ink-2: #b8b8b2;
+      --ink-3: #8a8a85;
+      --grid: #333330;
+      --ours: #4E7CF6;
+      --llm: #0F8A76;
+      --control: #C25E00;
+      --classic: #9C439C;
+      --card: #232322;
+      --border: #383836;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--surface); color: var(--ink);
+    font: 14px/1.55 "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    display: flex; justify-content: center; padding: 28px 16px 40px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px 26px 16px; max-width: 1040px; width: 100%;
+  }
+  h1 { font-size: 17px; margin: 0 0 4px; font-weight: 650; }
+  h2 { font-size: 14px; margin: 18px 0 4px; font-weight: 650; }
+  .sub { color: var(--ink-2); font-size: 12.5px; margin: 0 0 2px; }
+  .meta { color: var(--ink-3); font-size: 11.5px; margin: 0 0 14px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px 18px; margin: 2px 0 10px; font-size: 12px; color: var(--ink-2); }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 11px; height: 11px; border-radius: 3px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--surface); border: 2px solid var(--ink-2); }
+  svg text { font-family: inherit; }
+  .rowlabel { fill: var(--ink); font-size: 12.5px; }
+  .rowlabel.ours { font-weight: 700; }
+  .vallabel { fill: var(--ink-2); font-size: 12px; }
+  .axisline { stroke: var(--grid); }
+  .axistext { fill: var(--ink-3); font-size: 11px; }
+  .foot { border-top: 1px solid var(--border); margin-top: 12px; padding-top: 10px;
+          color: var(--ink-3); font-size: 11.5px; }
+  .foot b { color: var(--ink-2); font-weight: 600; }
+  details { margin-top: 10px; font-size: 12px; color: var(--ink-2); }
+  summary { cursor: pointer; color: var(--ink-2); font-size: 12px; }
+  table { border-collapse: collapse; margin-top: 8px; width: 100%; font-size: 11.5px; }
+  th, td { text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--grid); }
+  th { color: var(--ink-3); font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.miss td { background: color-mix(in srgb, var(--control) 10%, transparent); }
+  td.ours { font-weight: 650; }
+  .cap { color: var(--ink-3); font-size: 11.5px; margin: 0 0 8px; }
+  #tip {
+    position: fixed; pointer-events: none; display: none; z-index: 9;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 11px; font-size: 12px; color: var(--ink); box-shadow: 0 4px 14px rgba(0,0,0,.14);
+    max-width: 300px;
+  }
+  #tip .t { font-weight: 650; margin-bottom: 2px; }
+  #tip .k { color: var(--ink-3); }
+</style>
+</head>
+<body data-palette="#4E7CF6,#0F8A76,#C25E00,#8A2E8A">
+<div class="card">
+  <h1>Runtime behavior localization — scenario-generalization set (case011–013, 9 tasks)</h1>
+  <p class="sub">Mean weighted oracle score S<sub>d</sub> (bars) and strict top-1 accuracy (hollow dots), per method family</p>
+  <p class="meta">Analytics · feature-flag · cache/query · 2026-09-26 · 9 tasks × 3 repeats · backbone: DeepSeek-V4-Pro (temperature 0)</p>
+
+  <div class="legend">
+    <span class="item"><span class="swatch" style="background:var(--ours)"></span>Full ANCHOR (ours)</span>
+    <span class="item"><span class="swatch" style="background:var(--llm)"></span>LLM / agent baselines</span>
+    <span class="item"><span class="swatch" style="background:var(--control)"></span>Matched-capability control</span>
+    <span class="item"><span class="swatch" style="background:var(--classic)"></span>Classical IR / diagnostic</span>
+    <span class="item"><span class="dot"></span>strict top-1 accuracy</span>
+  </div>
+
+  <div id="chart"></div>
+
+  <div class="foot">
+    <b>n:</b> every method is 9 tasks × 3 repeats (ANCHOR on the Windows harness, baselines on the WSL suite).
+    <b>Stability:</b> each ANCHOR repeat is 8/9 (mean 0.889, strict 0.889); pooled 24/27. Repeat-mean spread is 0.
+    <b>Miss:</b> case011_analytics_batch_flush is 0 on all 3 repeats (timer-decoupled A3; returned off-chain <i>flushShadowToken</i>). Direct-LLM strict-hits that task 3/3, which is why Direct-LLM leads the case011 group (0.744 vs 0.667).
+    <b>Caliber:</b> same per-case oracle (sha256 span match). Debugger-Agent budget = 50 steps / 1200 s.
+    <b>Caveat:</b> this backbone lifts every LLM baseline far above the paper’s original-50 numbers (Direct-LLM 0.290 → 0.781).
+  </div>
+
+  <h2>Per-task mean S<sub>d</sub> (3 repeats)</h2>
+  <p class="cap">Cell is the mean of three repeats. ANCHOR is 1.000 on eight tasks and 0.000 on analytics_batch_flush. Source: full_anchor/graded.json and baselines_raw/*/raw.jsonl · 2026-09-26.</p>
+  <table>
+    <tr>
+      <th>task</th>
+      <th class="num">Full ANCHOR</th>
+      <th class="num">LocAgent-JS</th>
+      <th class="num">Direct-LLM</th>
+      <th class="num">Exec-LLM</th>
+      <th class="num">SWE-agent</th>
+    </tr>
+    <tr><td>analytics_event_envelope</td><td class="num ours">1.000</td><td class="num">0.733</td><td class="num">1.000</td><td class="num">1.000</td><td class="num">0.467</td></tr>
+    <tr><td>analytics_property_encoding</td><td class="num ours">1.000</td><td class="num">0.800</td><td class="num">0.233</td><td class="num">0.700</td><td class="num">0.700</td></tr>
+    <tr class="miss"><td>analytics_batch_flush</td><td class="num ours">0.000</td><td class="num">0.333</td><td class="num">1.000</td><td class="num">0.200</td><td class="num">0.667</td></tr>
+    <tr><td>flag_variant_hashing</td><td class="num ours">1.000</td><td class="num">1.000</td><td class="num">0.700</td><td class="num">0.000</td><td class="num">1.000</td></tr>
+    <tr><td>flag_persistence_encoding</td><td class="num ours">1.000</td><td class="num">1.000</td><td class="num">0.700</td><td class="num">1.000</td><td class="num">0.800</td></tr>
+    <tr><td>flag_exposure_event</td><td class="num ours">1.000</td><td class="num">0.533</td><td class="num">0.700</td><td class="num">0.667</td><td class="num">0.367</td></tr>
+    <tr><td>query_state_serialization</td><td class="num ours">1.000</td><td class="num">0.700</td><td class="num">0.800</td><td class="num">1.000</td><td class="num">0.467</td></tr>
+    <tr><td>cache_key_digest</td><td class="num ours">1.000</td><td class="num">1.000</td><td class="num">0.900</td><td class="num">1.000</td><td class="num">0.633</td></tr>
+    <tr><td>route_state_rewrite</td><td class="num ours">1.000</td><td class="num">1.000</td><td class="num">1.000</td><td class="num">1.000</td><td class="num">1.000</td></tr>
+    <tr><td>case011 group</td><td class="num ours">0.667</td><td class="num">0.622</td><td class="num">0.744</td><td class="num">0.633</td><td class="num">0.611</td></tr>
+    <tr><td>case012 group</td><td class="num ours">1.000</td><td class="num">0.844</td><td class="num">0.700</td><td class="num">0.556</td><td class="num">0.722</td></tr>
+    <tr><td>case013 group</td><td class="num ours">1.000</td><td class="num">0.900</td><td class="num">0.900</td><td class="num">1.000</td><td class="num">0.700</td></tr>
+  </table>
+
+  <h2>Full ANCHOR, three repeats</h2>
+  <p class="cap">Score is the same on every repeat. Turns are not. exposure_event and route_state_rewrite hit the anchor at max_iterations (20) every time. Mean turns over 27 runs: 8.6.</p>
+  <table>
+    <tr>
+      <th>task</th>
+      <th class="num">S<sub>d</sub> r1–r3</th>
+      <th class="num">turns r1 / r2 / r3</th>
+      <th>status</th>
+      <th>returned function</th>
+    </tr>
+    <tr><td>analytics_event_envelope</td><td class="num">1 · 1 · 1</td><td class="num">4 / 5 / 5</td><td>converged</td><td>buildAnalyticsEventToken</td></tr>
+    <tr><td>analytics_property_encoding</td><td class="num">1 · 1 · 1</td><td class="num">3 / 3 / 3</td><td>converged</td><td>encodePropertyState</td></tr>
+    <tr class="miss"><td>analytics_batch_flush</td><td class="num">0 · 0 · 0</td><td class="num">10 / 7 / 10</td><td>converged</td><td>flushShadowToken (Off-chain)</td></tr>
+    <tr><td>flag_variant_hashing</td><td class="num">1 · 1 · 1</td><td class="num">5 / 4 / 9</td><td>converged</td><td>computeVariantBucket</td></tr>
+    <tr><td>flag_persistence_encoding</td><td class="num">1 · 1 · 1</td><td class="num">4 / 4 / 5</td><td>converged</td><td>encodeAssignmentEnvelope</td></tr>
+    <tr><td>flag_exposure_event</td><td class="num">1 · 1 · 1</td><td class="num">20 / 20 / 20</td><td>max_iterations</td><td>buildExposurePayload</td></tr>
+    <tr><td>query_state_serialization</td><td class="num">1 · 1 · 1</td><td class="num">4 / 4 / 3</td><td>converged</td><td>serializeQueryState</td></tr>
+    <tr><td>cache_key_digest</td><td class="num">1 · 1 · 1</td><td class="num">6 / 7 / 6</td><td>converged</td><td>digestViewState</td></tr>
+    <tr><td>route_state_rewrite</td><td class="num">1 · 1 · 1</td><td class="num">20 / 20 / 20</td><td>max_iterations</td><td>buildRouteRewriteValue</td></tr>
+  </table>
+
+  <details>
+    <summary>Method summary table</summary>
+    <table id="tbl"></table>
+  </details>
+</div>
+<div id="tip"></div>
+
+<script>
+const DATA = [
+  { m: "Full ANCHOR",   fam: "ours",     mean: 0.889, strict: 0.889, n: 27,
+    note: "24/27 strict hits. Each repeat is 8/9. The miss is case011_analytics_batch_flush on all 3 repeats (A3, timer-decoupled, flushShadowToken). Mean turns 8.6; exposure_event and route_state_rewrite hit the anchor at max_iterations every repeat." },
+  { m: "LocAgent-JS",   fam: "llm",      mean: 0.789, strict: 0.667, n: 27, note: "read-only code agent" },
+  { m: "Direct-LLM",    fam: "llm",      mean: 0.781, strict: 0.444, n: 27, note: "two-pass shortlist-then-select, static" },
+  { m: "Exec-LLM",      fam: "llm",      mean: 0.730, strict: 0.630, n: 27, note: "execution-aware diagnostic" },
+  { m: "SWE-agent",     fam: "llm",      mean: 0.678, strict: 0.444, n: 27, note: "read-only code agent" },
+  { m: "Agentless-Loc", fam: "llm",      mean: 0.511, strict: 0.296, n: 27, note: "static region-based localizer" },
+  { m: "Debugger-Agent",fam: "control",  mean: 0.396, strict: 0.185, n: 27, note: "ReAct/CodeAct on ANCHOR's CDP surface, no strategy operators" },
+  { m: "BM25-Static",   fam: "classic",  mean: 0.178, strict: 0.000, n: 27, note: "" },
+  { m: "SITIR",         fam: "classic",  mean: 0.156, strict: 0.000, n: 27, note: "" },
+  { m: "LSI-FL",        fam: "classic",  mean: 0.111, strict: 0.000, n: 27, note: "" },
+  { m: "Uniform-Tracer",fam: "classic",  mean: 0.056, strict: 0.000, n: 27, note: "" },
+  { m: "SimpleSink",    fam: "classic",  mean: 0.044, strict: 0.000, n: 27, note: "" },
+  { m: "Software-Recon",fam: "classic",  mean: 0.007, strict: 0.000, n: 27, note: "" },
+  { m: "Uniform-Random",fam: "classic",  mean: 0.005, strict: 0.000, n: 27, note: "" },
+  { m: "JS-DynSlice",   fam: "classic",  mean: 0.000, strict: 0.000, n: 27, note: "" },
+];
+const FAMCOLOR = { ours: "var(--ours)", llm: "var(--llm)", control: "var(--control)", classic: "var(--classic)" };
+const FAMNAME = { ours: "Full ANCHOR (ours)", llm: "LLM / agent baseline", control: "Matched control", classic: "Classical / diagnostic" };
+
+const W = 640, labelW = 128, rowH = 34, padR = 64, padT = 6;
+const H = padT + DATA.length * rowH + 18;
+const svgNS = "http://www.w3.org/2000/svg";
+const svg = document.createElementNS(svgNS, "svg");
+svg.setAttribute("width", "100%");
+svg.setAttribute("viewBox", `0 0 ${labelW + W + padR} ${H}`);
+svg.style.display = "block";
+
+const x = (v) => labelW + v * W;
+
+// grid + axis
+for (const t of [0, 0.25, 0.5, 0.75, 1]) {
+  const gl = document.createElementNS(svgNS, "line");
+  gl.setAttribute("x1", x(t)); gl.setAttribute("x2", x(t));
+  gl.setAttribute("y1", padT); gl.setAttribute("y2", H - 16);
+  gl.setAttribute("class", "axisline");
+  svg.appendChild(gl);
+  const tx = document.createElementNS(svgNS, "text");
+  tx.setAttribute("x", x(t)); tx.setAttribute("y", H - 3);
+  tx.setAttribute("text-anchor", "middle"); tx.setAttribute("class", "axistext");
+  tx.textContent = t.toFixed(2);
+  svg.appendChild(tx);
+}
+
+const tip = document.getElementById("tip");
+DATA.forEach((d, i) => {
+  const y = padT + i * rowH;
+  const cy = y + rowH / 2 - 4;
+  const g = document.createElementNS(svgNS, "g");
+  g.setAttribute("data-i", i);
+  g.style.cursor = "default";
+
+  // bar: thin (16px), 4px rounded data-end anchored to baseline
+  const bar = document.createElementNS(svgNS, "path");
+  const bh = 16, r = 4;
+  const x0 = x(0), x1 = x(d.mean);
+  const rounded = Math.max(0, Math.min(x1 - x0, r * 2)) >= r * 2 ? r : Math.max(0, (x1 - x0) / 2);
+  bar.setAttribute("d",
+    `M${x0},${cy - bh / 2} H${x1 - rounded} Q${x1},${cy - bh / 2} ${x1},${cy - bh / 2 + rounded} V${cy + bh / 2 - rounded} Q${x1},${cy + bh / 2} ${x1 - rounded},${cy + bh / 2} H${x0} Z`);
+  bar.setAttribute("fill", FAMCOLOR[d.fam]);
+  g.appendChild(bar);
+
+  // strict dot (hollow, 2px surface ring)
+  const dot = document.createElementNS(svgNS, "circle");
+  dot.setAttribute("cx", x(d.strict)); dot.setAttribute("cy", cy);
+  dot.setAttribute("r", 4.5);
+  dot.setAttribute("fill", "var(--surface)");
+  dot.setAttribute("stroke", d.fam === "ours" ? "var(--ours)" : "var(--ink-2)");
+  dot.setAttribute("stroke-width", "2");
+  g.appendChild(dot);
+
+  // row label
+  const lb = document.createElementNS(svgNS, "text");
+  lb.setAttribute("x", labelW - 10); lb.setAttribute("y", cy + 4);
+  lb.setAttribute("text-anchor", "end");
+  lb.setAttribute("class", "rowlabel" + (d.fam === "ours" ? " ours" : ""));
+  lb.textContent = d.m;
+  g.appendChild(lb);
+
+  // value label at bar end
+  const vl = document.createElementNS(svgNS, "text");
+  vl.setAttribute("x", x(d.mean) + 8); vl.setAttribute("y", cy + 4);
+  vl.setAttribute("class", "vallabel");
+  vl.textContent = d.mean.toFixed(3);
+  g.appendChild(vl);
+
+  // hover
+  g.addEventListener("pointerenter", (e) => {
+    bar.setAttribute("opacity", "0.85");
+    tip.style.display = "block";
+    tip.innerHTML = `<div class="t">${d.m}</div>` +
+      `<div><span class="k">family</span> ${FAMNAME[d.fam]}</div>` +
+      `<div><span class="k">mean S_d</span> ${d.mean.toFixed(3)} · <span class="k">strict</span> ${d.strict.toFixed(3)} · <span class="k">n</span> ${d.n}</div>` +
+      (d.note ? `<div style="margin-top:4px;color:var(--ink-2)">${d.note}</div>` : "");
+  });
+  g.addEventListener("pointermove", (e) => {
+    tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 320) + "px";
+    tip.style.top = (e.clientY + 14) + "px";
+  });
+  g.addEventListener("pointerleave", () => {
+    bar.setAttribute("opacity", "1");
+    tip.style.display = "none";
+  });
+  svg.appendChild(g);
+});
+document.getElementById("chart").appendChild(svg);
+
+let html = "<tr><th>method</th><th>family</th><th class=num>mean S_d</th><th class=num>strict</th><th class=num>n</th></tr>";
+for (const d of DATA) {
+  html += `<tr><td>${d.m}</td><td>${FAMNAME[d.fam]}</td><td class=num>${d.mean.toFixed(3)}</td><td class=num>${d.strict.toFixed(3)}</td><td class=num>${d.n}</td></tr>`;
+}
+document.getElementById("tbl").innerHTML = html;
+</script>
+</body>
+</html>

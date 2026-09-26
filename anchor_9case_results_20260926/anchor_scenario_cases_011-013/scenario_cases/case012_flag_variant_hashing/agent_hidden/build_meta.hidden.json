@@ -1,0 +1,189 @@
+{
+  "case_id": "case012_flag_variant_hashing",
+  "schema_version": "1.0",
+  "metadata_role": "case_metadata_and_analysis",
+  "scenario": "feature_flag",
+  "difficulty": {
+    "preset": "hard_no_worker_main_thread_only",
+    "runtime_boundary": "none",
+    "call_depth": 39,
+    "router_layers": 6,
+    "middleware_layers": 8,
+    "state_machine_steps": 3072,
+    "async_level": 6,
+    "distractor_count": 44,
+    "semantic_decoy_count": 24,
+    "submit_path_decoy_count": 15,
+    "vendor_noise_level": "very_high",
+    "obfuscation_level": 4,
+    "obfuscation_compact": false
+  },
+  "task_contract": {
+    "task_type": "top_1_function_level_runtime_behavior_localization",
+    "answer_unit": "complete_javascript_function",
+    "primary_metric": "top_1_weighted_anchor_score",
+    "exact_anchor_score": 1,
+    "target_observable": {
+      "trigger": {
+        "steps": [
+          {
+            "action": "type",
+            "selector": "#userKey",
+            "value": "user_4471"
+          },
+          {
+            "action": "select",
+            "selector": "#flagSelect",
+            "value": "checkout_redesign"
+          },
+          {
+            "action": "check",
+            "selector": "#stickyToggle"
+          },
+          {
+            "action": "click",
+            "selector": "#assignVariant"
+          }
+        ]
+      },
+      "sink": {
+        "api": "console.log + localStorage.setItem",
+        "argument_type": "object",
+        "action": "flag.assign",
+        "field": "variant",
+        "value_pattern": "^variant_[a-h]$",
+        "storage_key": "ff_assignment",
+        "storage_value_contains": "variant"
+      }
+    },
+    "anchor_definition": "The anchor is the first target-specific variant-bucket value-construction function on the dynamic behavior chain: the earliest function, after routing, material collection, tuple preparation and runtime salt-config materialization, whose own body constructs the target observable variant name rather than merely collecting inputs, dispatching control, packaging the result, or emitting it to the console or localStorage."
+  },
+  "candidate_scope": {
+    "included": [
+      "captures/devtools-source-dump/**/*.js"
+    ],
+    "execution_context": "main browsing context",
+    "source_maps_exposed_to_agent": false,
+    "excluded": [
+      "browser-internal scripts",
+      "extension scripts",
+      "debugger-generated views",
+      "source files outside captures",
+      "Web Worker scripts",
+      "Service Worker scripts",
+      "Shared Worker scripts",
+      "WebAssembly modules"
+    ]
+  },
+  "build_artifacts": {
+    "page": "agent_hidden/dist/index.html",
+    "dist_bundle": "agent_hidden/dist/assets/assign.app.bundle.js",
+    "captured_bundle": "agent_visible/captures/devtools-source-dump/127.0.0.1_4234/assets/assign.app.bundle.js",
+    "capture_manifest": "agent_visible/captures/devtools-source-dump/manifest.json",
+    "bundle_bytes": 1547336,
+    "bundle_lines": 27533
+  },
+  "runtime_boundary": {
+    "threading": "main_thread_only",
+    "event_plane": "DOM CustomEvent on the main document",
+    "uses_web_worker": false,
+    "uses_service_worker": false,
+    "uses_shared_worker": false,
+    "uses_wasm": false,
+    "uses_post_message_for_core": false
+  },
+  "challenge_analysis": {
+    "structural_uncertainty": {
+      "applies": true,
+      "evidence": [
+        "The DevTools-visible JavaScript corpus is a single obfuscated bundle and no source map is exposed to the agent.",
+        "The target field name is assembled from character-code arrays at the sink, so direct literal search is insufficient.",
+        "The target variant is carried through runtime-derived transport keys and recovered shortly before console output and storage persistence.",
+        "The assign route selects its live salt-bearing configuration only after click-time DOM, form-order, style and dataset state are captured.",
+        "The storage key is assembled from character-code arrays, obscuring the persistence destination."
+      ],
+      "measurements": {
+        "captured_js_files": 1,
+        "captured_js_total_bytes": 1547336,
+        "captured_bundle_lines": 27533,
+        "route_table_rows": 44,
+        "state_machine_steps": 3072
+      }
+    },
+    "semantic_explosion": {
+      "applies": true,
+      "evidence": [
+        "The click path crosses delegated event handling, action routing, gate checks, user/flag material collection with page-context snapshot, tuple construction, asynchronous scheduling, local event dispatch, runtime slot materialization, variant bucketing, dynamic transport and sink wrapping.",
+        "The same assign interaction emits non-target flag.exposure/flag.audit objects carrying variant-like values before the target flag.assign object.",
+        "An exposure logger emits a variant-styled probe via console.debug, and an inactive shadow-roll chain remains reachable-looking without feeding the target variant field."
+      ],
+      "measurements": {
+        "behavior_chain_function_like_units": 24,
+        "off_chain_decoy_modules": 44,
+        "same_field_non_target_console_objects": 2
+      }
+    },
+    "causal_fragmentation": {
+      "applies": true,
+      "evidence": [
+        "The target value is separated from the click by Promise, microtask, timer, animation-frame, MutationObserver and DOM CustomEvent boundaries.",
+        "The selected runtime configuration is cloned and mutated in a WeakMap-backed materialization step before the variant constructor receives its salt.",
+        "The final sink receives an already assigned variant name after dynamic cell and lane recovery, so sink inspection alone does not identify the construction site."
+      ],
+      "async_boundaries": [
+        "queueMicrotask continuation",
+        "Promise.resolve continuation",
+        "setTimeout(..., 0)",
+        "requestAnimationFrame callback",
+        "MutationObserver callback",
+        "document.dispatchEvent(new CustomEvent(...)) listener"
+      ]
+    }
+  },
+  "behavior_category": {
+    "paper_category": "request_signature_token_derivation",
+    "case_category": "client_side_bucketing_token_derivation",
+    "subtype": "route-selected salt-mixed murmur-style bucket hash over user and flag material mapped to an 8-arm experiment variant",
+    "network_request_present": false,
+    "reason": "The observable variant is a deterministic but one-way bucketing derivation: the user key, flag key and runtime-materialized salt are folded through a murmur-style 32-bit mix whose modulo-8 bucket selects the arm label. The variant cannot be decoded back into the hashing material, and the value never enters an outbound request; the localStorage record under ff_assignment only mirrors the console field.",
+    "near_categories": [
+      {
+        "category": "state_encoding",
+        "why_not": "The variant is not an encoding of a normalized assignment state; it is a one-way bucketed derivation of the hashing material. Same input always maps to the same variant, but no receiver can decode or verify the variant back into the user/flag state."
+      },
+      {
+        "category": "request_transformation",
+        "why_not": "The primary observable does not enter any outbound request; this case has no network egress at all and the only secondary sink is localStorage, which mirrors the console value."
+      },
+      {
+        "category": "browser_fingerprint",
+        "why_not": "The chain uses local DOM/form state and page context as routing input, not browser/device capability collection as the target behavior."
+      },
+      {
+        "category": "byte_array_transformation",
+        "why_not": "The output is a short arm label, not a byte array; byte-payload-like code in the bundle is decoy material and does not feed the target variant field."
+      }
+    ]
+  },
+  "metadata_partitioning_notes": {
+    "answer_bearing_material": "stored only in oracle.hidden.json",
+    "private_oracle_location": "oracle.hidden.json",
+    "benchmark_summary_location": "benchmark.summary.json or an equivalent corpus-level artifact",
+    "reason": "This file describes the task contract, candidate scope and difficulty analysis without exposing the primary anchor or role oracle."
+  },
+  "primary_anchor": {
+    "answer_function": "computeVariantBucket",
+    "source_function": "computeVariantBucket",
+    "source_file": "src/z0/h4/r8/n2.js",
+    "source_bundle_name_aligned": true,
+    "captured_bundle": "captures/devtools-source-dump/127.0.0.1_4234/assets/assign.app.bundle.js",
+    "captured_span": {
+      "start_line": 433,
+      "end_line": 461,
+      "start_offset": 22487,
+      "end_offset": 23389
+    },
+    "role_oracle_anchor_entries": 1,
+    "oracle_pointer": "oracle.hidden.json:primary_anchor"
+  }
+}

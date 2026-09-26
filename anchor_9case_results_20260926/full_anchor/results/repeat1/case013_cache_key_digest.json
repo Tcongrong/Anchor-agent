@@ -1,0 +1,530 @@
+{
+  "generatedAt": "2026-09-25T15:34:17.085Z",
+  "status": "converged",
+  "turn": 6,
+  "taskDescription": "Locate the anchor function for the cache_key field in the console.log object whose action is cache.materialize after typing the view owner, choosing the view mode, choosing the density, enabling memoize, and clicking Materialize View on the page. The same cache_key value is also used as the entry key when the composed view snapshot is written into the in-memory LRU view cache issued on materialize. The anchor function is the first target-specific token-derivation value constructor on the dynamic behavior chain: after delegated click routing, action routing, the materialize gate, view material collection with normalization and page-context snapshot, tuple input preparation, asynchronous scheduling and runtime config materialization, its function body itself constructs the target observable view cache digest rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or the LRU cache write. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the final console sink, or the LRU write site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+  "anchor": {
+    "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+    "functionName": "digestViewState",
+    "scriptUrl": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js",
+    "runtimeLoc": {
+      "line": 246,
+      "column": 0
+    },
+    "functionCode": "function digestViewState(c = '', d = '', e = '', f = {}, g = {}) {\n    const Q = L, h = {\n            'yiEba': function (s, t) {\n                return s & t;\n            },\n            'UJEsK': function (s, t) {\n                return s(t);\n            }\n        }, i = String(c || '');\n    let j = 0x0;\n    for (let s = 0x0; s < i[Q(0x3477)]; s += 0x1) {\n        j = h['yiEba']((j ^ i[Q(0x2d5a)](s)) + s * 0xb, 0xffff);\n    }\n    const k = buildViewCells(i, {\n            'mode': String(d || ''),\n            'density': h['UJEsK'](String, e || ''),\n            'version': f[Q(0x2483)]\n        }), l = k['reduce']((t, w, x) => t + w['n'] + w['i'] + x * 0x4, 0x0), m = f[Q(0x2d74)] || g[Q(0x2d74)] || 0x0, n = (g[Q(0x11f6)] ^ g[Q(0x365)] >>> 0x3 ^ j ^ l ^ m) & 0x7, o = reducers[n](k, g, f), q = viewFrame(k, g, {\n            ...f,\n            'mode': String(d || ''),\n            'density': String(e || '')\n        });\n    return encodeCacheKey(o, g, q);\n}",
+    "confidence": 0.9829573488078858
+  },
+  "evidence": {
+    "structuralPrior": {
+      "prob": 0.006381079677392587,
+      "combined_score": 1.622883312807882,
+      "ast_score": 0.05803571428571429,
+      "api_score": 9.750000000000002,
+      "api_direct_score": 0,
+      "api_proximity_score": 1,
+      "entropy_score": 0.03571428571428571,
+      "sink_proximity": 0.5
+    },
+    "breakdown": [
+      {
+        "feature": "structural:p0",
+        "score": 0.64,
+        "reason": "结构先验概率 p_0=0.006381"
+      },
+      {
+        "feature": "structural:S_ast",
+        "score": 0.58,
+        "reason": "AST 子树指纹 0.0580"
+      },
+      {
+        "feature": "structural:S_api",
+        "score": 97.5,
+        "reason": "API 调用/下游邻近 9.7500"
+      },
+      {
+        "feature": "structural:S_ent",
+        "score": 0.36,
+        "reason": "值操作熵 0.0357"
+      },
+      {
+        "feature": "structural:S_sink",
+        "score": 50,
+        "reason": "Sink 接近度 0.5000"
+      }
+    ],
+    "llmJudgments": [
+      {
+        "turn": 4,
+        "score": 1,
+        "reason": "Anchor；Pattern A2 Envelope：函数体编排 buildViewCells/reducers/viewFrame/encodeCacheKey 子步骤并 return encodeCacheKey 最终 ck_... digest，形态匹配 ^ck_[a-f0-9]{16}$；调用者 u/d 仅为 generic 转发，故是最浅层 target-specific 构造点",
+        "recordedAt": "2026-09-25T15:30:12.073Z"
+      },
+      {
+        "turn": 5,
+        "score": 1,
+        "reason": "Anchor；Pattern A2 Envelope：函数体编排 buildViewCells/reducers/viewFrame 并 return encodeCacheKey(o,g,q)，encodeCacheKey 生成 'ck_' + 两个 8 位 hex 段，与参考正则 ^ck_[a-f0-9]{16}$ 一致；其上方调用者是 u/d 薄转发，最浅层 target-specific 入口。",
+        "recordedAt": "2026-09-25T15:32:23.155Z"
+      },
+      {
+        "turn": 6,
+        "score": 1,
+        "reason": "Anchor；Pattern A2 Envelope：函数体编排 buildViewCells、reducers[n]、viewFrame、encodeCacheKey 等 target-specific 子步骤，组合 view/mode/density/version/salt/ticket 等语义种子，最终 return encodeCacheKey(o,g,q) 产出形态匹配参考 ^ck_[a-f0-9]{16}$ 的最终 digest；其调用者 u/d 为 generic 转发，故本函数是最浅层 target-specific 入口。",
+        "recordedAt": "2026-09-25T15:34:17.001Z"
+      }
+    ],
+    "anchorCandidateThisTurn": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+    "onCausalPathToSink": true,
+    "causalPathDescription": [
+      "digestViewState",
+      "viewFrame",
+      "f",
+      "kiwsC",
+      "r$1",
+      "BnPth",
+      "r$2",
+      "r$3",
+      "r$4",
+      "r$5",
+      "r$6",
+      "r$7",
+      "r$8",
+      "r$9",
+      "r$a",
+      "r$b",
+      "r$c",
+      "r$d",
+      "side"
+    ],
+    "convergenceChecks": {
+      "confidenceOk": true,
+      "confidenceThreshold": 0.9,
+      "llmValidated": true,
+      "redundancyOk": true,
+      "p0Aux": true,
+      "causalAux": true,
+      "sinkTags": [
+        "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::emitSoft@5630:0",
+        "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::side@497:0",
+        "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_25@515:17",
+        "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_26@521:17",
+        "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+        "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::flushQueue@545:0"
+      ]
+    }
+  },
+  "alternates": [
+    {
+      "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::materialize@5760:0",
+      "functionName": "materialize",
+      "confidence": 0.00012275150879185063
+    },
+    {
+      "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+      "functionName": "shadowCacheEmitter",
+      "confidence": 0.0001194571751815194
+    },
+    {
+      "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::remix1$9@1229:0",
+      "functionName": "remix1$9",
+      "confidence": 0.00011526795293164438
+    }
+  ],
+  "agentState": {
+    "version": 1,
+    "startedAt": "2026-09-25T15:21:44.639Z",
+    "taskDescription": "Locate the anchor function for the cache_key field in the console.log object whose action is cache.materialize after typing the view owner, choosing the view mode, choosing the density, enabling memoize, and clicking Materialize View on the page. The same cache_key value is also used as the entry key when the composed view snapshot is written into the in-memory LRU view cache issued on materialize. The anchor function is the first target-specific token-derivation value constructor on the dynamic behavior chain: after delegated click routing, action routing, the materialize gate, view material collection with normalization and page-context snapshot, tuple input preparation, asynchronous scheduling and runtime config materialization, its function body itself constructs the target observable view cache digest rather than merely collecting inputs, dispatching control, wrapping a return value, or writing the value to the console or the LRU cache write. Return exactly one complete function as a single JSON object (see answer_format). Do not return generic utilities, event handlers, the full call chain, the final console sink, or the LRU write site. Note: you may only inspect code under captures; the full codebase is not accessible.",
+    "maxIterations": 20,
+    "turns": [
+      {
+        "turn": 1,
+        "startedAt": "2026-09-25T15:22:13.985Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "c",
+            "functionTag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::fieldName@289:0",
+            "selectedKey": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::fieldName@289:0|c|605:21",
+            "skippedInterrupted": [],
+            "entropy": 8.656643332800249
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 1
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 8,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::fieldName@289:0",
+            "uniformFallback": false,
+            "topConfidence": 0.9999999999999953
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 1,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::remix1$a@855:0",
+            "functionName": "remix1$a",
+            "confidence": 0.007213184801157429
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": false,
+            "redundancyOk": false,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::emitSoft@5630:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::side@497:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_25@515:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_26@521:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::flushQueue@545:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T15:24:26.439Z"
+      },
+      {
+        "turn": 2,
+        "startedAt": "2026-09-25T15:24:26.440Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "c['slice'](0x0, 0x9) + '.' + (cfg$G['slot'] + 0x3)['toString'](0x24) + 'dk'",
+            "functionTag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::remix1$a@855:0",
+            "selectedKey": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::remix1$a@855:0|c['slice'](0x0, 0x9) + '.' + (cfg$G['slot'] + 0x3)['toString'](0x24) + 'dk'|1530:11",
+            "skippedInterrupted": [],
+            "entropy": 8.658148221172512
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 2
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 8,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::remix1$a@855:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000033
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 2,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::walkMachine@5689:0",
+            "functionName": "walkMachine",
+            "confidence": 0.006761425162633377
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": false,
+            "redundancyOk": false,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::emitSoft@5630:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::side@497:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_25@515:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_26@521:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::flushQueue@545:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T15:26:20.612Z"
+      },
+      {
+        "turn": 3,
+        "startedAt": "2026-09-25T15:26:20.613Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "e >>> 0x0",
+            "functionTag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::walkMachine@5689:0",
+            "selectedKey": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::walkMachine@5689:0|e >>> 0x0|7876:11",
+            "skippedInterrupted": [],
+            "entropy": 8.65381912433892
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 3
+          },
+          "reverseAnchor": {
+            "anchorCandidate": null,
+            "candidateCount": 15,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::walkMachine@5689:0",
+            "uniformFallback": false,
+            "topConfidence": 1.000000000000006
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 3,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "functionName": "digestViewState",
+            "confidence": 0.006957340939046651
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": false,
+            "redundancyOk": false,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::emitSoft@5630:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::side@497:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_25@515:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_26@521:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::flushQueue@545:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T15:28:13.445Z"
+      },
+      {
+        "turn": 4,
+        "startedAt": "2026-09-25T15:28:13.446Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "n",
+            "functionTag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "selectedKey": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0|n|521:123",
+            "skippedInterrupted": [
+              {
+                "key": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0|encodeCacheKey(o, g, q)|526:11",
+                "var_name": "encodeCacheKey(o, g, q)",
+                "function_tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0"
+              }
+            ],
+            "entropy": 8.639317214142514
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 4
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "candidateCount": 15,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000029
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 4,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "functionName": "digestViewState",
+            "confidence": 0.12540386482506508
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::emitSoft@5630:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::side@497:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_25@515:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_26@521:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::flushQueue@545:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T15:30:12.144Z"
+      },
+      {
+        "turn": 5,
+        "startedAt": "2026-09-25T15:30:12.145Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "n",
+            "functionTag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "selectedKey": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0|n|521:123",
+            "skippedInterrupted": [
+              {
+                "key": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0|encodeCacheKey(o, g, q)|526:11",
+                "var_name": "encodeCacheKey(o, g, q)",
+                "function_tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0"
+              }
+            ],
+            "entropy": 8.091527329764114
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 5
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "candidateCount": 15,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "uniformFallback": false,
+            "topConfidence": 0.9999999999999989
+          }
+        },
+        "convergence": {
+          "converged": false,
+          "reason": "continue",
+          "turn": 5,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "functionName": "digestViewState",
+            "confidence": 0.7423422112216539
+          },
+          "checks": {
+            "confidenceOk": false,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::emitSoft@5630:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::side@497:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_25@515:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_26@521:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::flushQueue@545:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T15:32:23.227Z"
+      },
+      {
+        "turn": 6,
+        "startedAt": "2026-09-25T15:32:23.228Z",
+        "steps": {
+          "tc2": {
+            "selectedVar": "o",
+            "functionTag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "selectedKey": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0|o|521:183",
+            "skippedInterrupted": [
+              {
+                "key": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0|encodeCacheKey(o, g, q)|526:11",
+                "var_name": "encodeCacheKey(o, g, q)",
+                "function_tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0"
+              }
+            ],
+            "entropy": 3.043164384153214
+          },
+          "tc3": {
+            "hitCount": 1,
+            "reason": "continue 后未再命中断点，quit (q)",
+            "outFile": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\breakpoint-observations.json",
+            "anchorOut": "D:\\Projects\\Dagent\\Anchor-main\\cdp-workflow\\anchor-snapshots.jsonl",
+            "interactionMode": "auto",
+            "pageAutomationLaunched": true,
+            "causalGraphTurn": 6
+          },
+          "reverseAnchor": {
+            "anchorCandidate": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "candidateCount": 15,
+            "observationRelevant": true,
+            "reflection": null
+          },
+          "confidenceUpdate": {
+            "fHit": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "uniformFallback": false,
+            "topConfidence": 1.0000000000000002
+          }
+        },
+        "convergence": {
+          "converged": true,
+          "reason": "converged",
+          "turn": 6,
+          "maxIterations": 20,
+          "reachedMaxIterations": false,
+          "topFunction": {
+            "tag": "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::digestViewState@246:0",
+            "functionName": "digestViewState",
+            "confidence": 0.9829573488078858
+          },
+          "checks": {
+            "confidenceOk": true,
+            "confidenceThreshold": 0.9,
+            "llmValidated": true,
+            "redundancyOk": true,
+            "p0Aux": true,
+            "causalAux": true,
+            "sinkTags": [
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::emitSoft@5630:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::side@497:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_25@515:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::anonymous_26@521:17",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::shadowCacheEmitter@493:0",
+              "http://127.0.0.1:4238/assets/viewcache.app.bundle.js::flushQueue@545:0"
+            ]
+          }
+        },
+        "finishedAt": "2026-09-25T15:34:17.068Z"
+      }
+    ]
+  }
+}
